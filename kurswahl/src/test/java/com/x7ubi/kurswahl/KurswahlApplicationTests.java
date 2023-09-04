@@ -1,4 +1,4 @@
-package com.ubi.kurswahl;
+package com.x7ubi.kurswahl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
