@@ -36,7 +36,7 @@ public class AuthService {
         ResultResponse response = new ResultResponse();
         response.setErrorMessages(findRegisterErrors(signupRequest));
 
-        if(response.getErrorMessages().size() > 0) {
+        if(!response.getErrorMessages().isEmpty()) {
             return response;
         }
 
@@ -46,8 +46,6 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
         userRepo.save(user);
-
-        response.setSuccess(true);
 
         logger.info("User was created");
 

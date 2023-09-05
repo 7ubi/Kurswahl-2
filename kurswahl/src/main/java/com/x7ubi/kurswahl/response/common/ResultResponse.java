@@ -4,24 +4,12 @@ import java.util.List;
 
 public class ResultResponse {
 
-    private boolean success;
-
     private List<MessageResponse> errorMessages;
 
     public ResultResponse() {}
 
-    public ResultResponse(boolean success, List<MessageResponse> errorMessages) {
-        this.success = success;
+    public ResultResponse(List<MessageResponse> errorMessages) {
         this.errorMessages = errorMessages;
-    }
-
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public List<MessageResponse> getErrorMessages() {

@@ -46,7 +46,7 @@ public class AuthRestController {
 
         ResultResponse response = authService.registerNewUserAccount(signupRequest);
 
-        if(response.isSuccess()) {
+        if(response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);
         }
 
