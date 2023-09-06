@@ -1,0 +1,16 @@
+<form [formGroup]="loginFormGroup" (ngSubmit)="makeLogin()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Nutzername</mat-label>
+        <input matInput formControlName="username" name="username" id="username" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required>
+        <mat-label>Passwort</mat-label>
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Anmelden</button>
+    </div>
+  </div>
+</form>
