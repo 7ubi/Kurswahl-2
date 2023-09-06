@@ -1,6 +1,5 @@
 package com.x7ubi.kurswahl.config;
 
-import com.x7ubi.kurswahl.jwt.AuthEntryPointJwt;
 import com.x7ubi.kurswahl.service.authentication.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JpaUserDetailsService userDetailsService;
 
-    private final AuthEntryPointJwt unauthorizedHandler;
-
-    public SecurityConfig(JpaUserDetailsService userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+    public SecurityConfig(JpaUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
     }
 
     @Bean

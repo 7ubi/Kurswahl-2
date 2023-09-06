@@ -10,7 +10,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private Long user_id;
+    private Long userId;
 
     @Column(nullable = false, length = 100)
     private String username;
@@ -34,7 +34,7 @@ public class User implements Serializable {
     }
 
     public Long getId() {
-        return user_id;
+        return userId;
     }
 
     public String getUsername() {
