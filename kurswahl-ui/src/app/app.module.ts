@@ -17,6 +17,7 @@ import { CreateAdminComponent } from './component/admin/user/create-admin/create
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {LoginRequired} from "./login-required";
 import {AdminRequired} from "./admin-required";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {AdminRequired} from "./admin-required";
     MatToolbarModule,
     MatIconModule,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]

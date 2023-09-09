@@ -14,6 +14,18 @@ export interface LoginResponse {
   readonly role: Role;
 }
 
+export interface UserResponse {
+  readonly username: string;
+  readonly firstname: string;
+  readonly surname: string;
+}
+
+export interface AdminResponse extends UserResponse {}
+
+export interface AdminResponses {
+  readonly adminResponses: AdminResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

@@ -5,12 +5,17 @@ import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
+import com.x7ubi.kurswahl.response.admin.AdminResponse;
+import com.x7ubi.kurswahl.response.admin.AdminResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AdminCreationService extends AbstractUserCreationService {
@@ -44,5 +49,17 @@ public class AdminCreationService extends AbstractUserCreationService {
         logger.info(String.format("Admin %s was created", admin.getUser().getUsername()));
 
         return resultResponse;
+    }
+
+    public AdminResponses getAllAdmins() {
+        AdminResponses adminResultResponses = new AdminResponses();
+        adminResultResponses.setAdminResponses(new ArrayList<>());
+
+        List<Admin> admins = this.adminRepo.findAll();
+        for(Admin admin: admins) {
+            adminResultResponses.getAdminResponses().add(this.mapper.map(admin.getUser(), AdminResponse.class));
+        }
+
+        return adminResultResponses;
     }
 }
