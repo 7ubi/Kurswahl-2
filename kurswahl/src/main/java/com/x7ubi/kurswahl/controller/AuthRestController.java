@@ -2,10 +2,14 @@ package com.x7ubi.kurswahl.controller;
 
 import com.x7ubi.kurswahl.jwt.JwtUtils;
 import com.x7ubi.kurswahl.models.SecurityUser;
+import com.x7ubi.kurswahl.repository.AdminRepo;
+import com.x7ubi.kurswahl.repository.StudentRepo;
+import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.auth.LoginRequest;
 import com.x7ubi.kurswahl.request.auth.SignupRequest;
 import com.x7ubi.kurswahl.response.common.JwtResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.response.common.Role;
 import com.x7ubi.kurswahl.service.authentication.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +36,19 @@ public class AuthRestController {
 
     private final JwtUtils jwtUtils;
 
-    public AuthRestController(AuthService authService, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    private final AdminRepo adminRepo;
+
+    private final TeacherRepo teacherRepo;
+
+    private final StudentRepo studentRepo;
+
+    public AuthRestController(AuthService authService, AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo, TeacherRepo teacherRepo, StudentRepo studentRepo) {
         this.authService = authService;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.adminRepo = adminRepo;
+        this.teacherRepo = teacherRepo;
+        this.studentRepo = studentRepo;
     }
 
     @PostMapping("/signup")
@@ -68,12 +81,30 @@ public class AuthRestController {
 
             SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
 
+            Role role =  getRoleUser(userDetails.getUsername());
+
             return ResponseEntity.ok(new JwtResponse(jwt,
                     userDetails.getUser().getId(),
-                    userDetails.getUsername()));
+                    userDetails.getUsername(), role));
         } catch (Exception e) {
             logger.error(String.valueOf(e));
         }
         return (ResponseEntity<?>) ResponseEntity.badRequest();
+    }
+
+    private Role getRoleUser(String username) {
+        if(adminRepo.existsAdminByUser_Username(username)) {
+            return Role.ADMIN;
+        }
+
+        if(studentRepo.existsStudentByUser_Username(username)) {
+            return Role.STUDENT;
+        }
+
+        if(teacherRepo.existsTeacherByUser_Username(username)) {
+            return Role.TEACHER;
+        }
+
+        return Role.NOROLE;
     }
 }

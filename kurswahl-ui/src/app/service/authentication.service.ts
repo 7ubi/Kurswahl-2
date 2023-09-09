@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Router} from "@angular/router";
-import {LoginResponse} from "../app.responses";
+import {LoginResponse, Role} from "../app.responses";
 import {StorageService} from "./storage.service";
 import {HttpHeaders} from "@angular/common/http";
 
@@ -31,6 +31,14 @@ export class AuthenticationService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getBearer()}`
     })
+  }
+
+  public saveRole(role: Role) {
+    StorageService.saveData('role', role.toString());
+  }
+
+  public getRole(): string | null {
+    return StorageService.getData('role');
   }
 
   public logout(): void {

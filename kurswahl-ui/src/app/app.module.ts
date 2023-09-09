@@ -12,12 +12,19 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {HttpClientModule} from "@angular/common/http";
+import { ShowAdminsComponent } from './component/admin/user/show-admins/show-admins.component';
+import { CreateAdminComponent } from './component/admin/user/create-admin/create-admin.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {LoginRequired} from "./login-required";
+import {AdminRequired} from "./admin-required";
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    LoginComponent
+    LoginComponent,
+    ShowAdminsComponent,
+    CreateAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -29,8 +36,9 @@ import {HttpClientModule} from "@angular/common/http";
     MatToolbarModule,
     MatIconModule,
     HttpClientModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

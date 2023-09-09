@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.config;
 
+import com.x7ubi.kurswahl.jwt.AuthEntryPointJwt;
 import com.x7ubi.kurswahl.service.authentication.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new AuthEntryPointJwt()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults());
 
