@@ -1,2 +1,21 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer style="min-width: 200px; width: 85vw; max-width: 400px;" #drawer class="example-sidenav" mode="side">
+    <app-sidenav></app-sidenav>
+  </mat-drawer>
+
+  <mat-toolbar color="primary">
+    <button mat-icon-button class="example-icon" (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Kurswahl</span>
+    <span class="example-spacer"></span>
+    <span *ngIf="isLoggedIn()">
+      <button  (click)="logout()" mat-icon-button class="example-icon">
+        <mat-icon>input</mat-icon>
+      </button>
+    </span>
+  </mat-toolbar>
+
+  <router-outlet></router-outlet>
+</mat-drawer-container>

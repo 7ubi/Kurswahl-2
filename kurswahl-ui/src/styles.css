@@ -17,3 +17,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   text-align: center;
   min-height: 85vh;
 }
+
+.example-spacer {
+  flex: 1 1 auto;
+}

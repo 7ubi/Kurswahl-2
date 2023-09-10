@@ -23,7 +23,7 @@ export class AuthenticationService {
   }
 
   public isLoggedIn(): boolean {
-    return StorageService.getData(this.type) !== '';
+    return StorageService.getData(this.type) !== null;
   }
 
   public getHeaderWithBearer(): HttpHeaders {

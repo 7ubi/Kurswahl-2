@@ -1,11 +1,14 @@
+
+<app-hero title="Admins"></app-hero>
+
 <div class="container">
   <div class="center">
     <div class="header">
-      <h1 class="title">Admins</h1>
-      <mat-form-field style="float: right">
+      <mat-form-field>
         <mat-label>Suche</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
       </mat-form-field>
+      <button mat-raised-button color="primary">Admin erstellen</button>
     </div>
     <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
 
