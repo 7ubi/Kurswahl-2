@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {AdminResponse, AdminResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-show-admins',
@@ -14,8 +15,12 @@ export class ShowAdminsComponent implements OnInit {
   dataSource!: MatTableDataSource<AdminResponse>;
   displayedColumns: string[];
 
-  constructor(private httpService: HttpService) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname']
+  constructor(
+    private httpService: HttpService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort']
   }
 
   ngOnInit(): void {
@@ -28,5 +33,9 @@ export class ShowAdminsComponent implements OnInit {
   applyFilter($event: KeyboardEvent) {
     const filterValue = (event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  createAdmin(): void {
+    this.router.navigate(['erstellen'], {relativeTo: this.route});
   }
 }

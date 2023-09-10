@@ -18,6 +18,7 @@ export interface UserResponse {
   readonly username: string;
   readonly firstname: string;
   readonly surname: string;
+  readonly generatedPassword: number;
 }
 
 export interface AdminResponse extends UserResponse {}

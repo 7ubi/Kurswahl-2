@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class AdminCreationService extends AbstractUserCreationService {
@@ -42,7 +43,8 @@ public class AdminCreationService extends AbstractUserCreationService {
 
         Admin admin = new Admin();
         admin.setUser(this.mapper.map(signupRequest, User.class));
-        admin.getUser().setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        admin.getUser().setGeneratedPassword(this.generatePassword());
+        admin.getUser().setPassword(passwordEncoder.encode(admin.getUser().getGeneratedPassword()));
 
         this.adminRepo.save(admin);
 
@@ -57,9 +59,32 @@ public class AdminCreationService extends AbstractUserCreationService {
 
         List<Admin> admins = this.adminRepo.findAll();
         for(Admin admin: admins) {
-            adminResultResponses.getAdminResponses().add(this.mapper.map(admin.getUser(), AdminResponse.class));
+            AdminResponse adminResponse = this.mapper.map(admin.getUser(), AdminResponse.class);
+            adminResponse.setAdminId(admin.getAdminId());
+            adminResultResponses.getAdminResponses().add(adminResponse);
         }
 
         return adminResultResponses;
+    }
+
+    private String generatePassword() {
+        int length = 12;
+        StringBuilder password = new StringBuilder();
+        Random random = new Random(System.nanoTime());
+        final String lowerLetters = "abcdefghikmnpqrstuvwxyz";
+        final String upperLetters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
+        final String digits = "0123456789";
+        final String extraCharacters = "!#$%";
+
+        // Collect the categories to use.
+        List<String> charCategories = new ArrayList<>(List.of(lowerLetters, upperLetters, digits, extraCharacters));
+
+        // Build the password.
+        for (int i = 0; i < length; i++) {
+            String charCategory = charCategories.get(random.nextInt(charCategories.size()));
+            int position = random.nextInt(charCategory.length());
+            password.append(charCategory.charAt(position));
+        }
+        return new String(password);
     }
 }

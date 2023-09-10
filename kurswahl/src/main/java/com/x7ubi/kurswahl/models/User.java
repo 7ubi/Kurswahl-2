@@ -24,6 +24,9 @@ public class User implements Serializable {
     @Column(nullable = false, length = 100)
     private String password;
 
+    @Column(nullable = true, length = 100)
+    private String generatedPassword;
+
     public User() {}
 
     public User(String username, String firstname, String surname, String password) {
@@ -67,5 +70,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGeneratedPassword() {
+        return generatedPassword;
+    }
+
+    public void setGeneratedPassword(String generatedPassword) {
+        this.generatedPassword = generatedPassword;
     }
 }

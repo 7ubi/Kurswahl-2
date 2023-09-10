@@ -6,11 +6,8 @@ import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.auth.LoginRequest;
-import com.x7ubi.kurswahl.request.auth.SignupRequest;
 import com.x7ubi.kurswahl.response.common.JwtResponse;
-import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.response.common.Role;
-import com.x7ubi.kurswahl.service.authentication.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +27,6 @@ public class AuthRestController {
 
     Logger logger = LoggerFactory.getLogger(AuthRestController.class);
 
-    private final AuthService authService;
-
     private final AuthenticationManager authenticationManager;
 
     private final JwtUtils jwtUtils;
@@ -42,28 +37,12 @@ public class AuthRestController {
 
     private final StudentRepo studentRepo;
 
-    public AuthRestController(AuthService authService, AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo, TeacherRepo teacherRepo, StudentRepo studentRepo) {
-        this.authService = authService;
+    public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo, TeacherRepo teacherRepo, StudentRepo studentRepo) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.adminRepo = adminRepo;
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(
-        @RequestBody SignupRequest signupRequest
-    ) {
-        logger.info("Signing up new account");
-
-        ResultResponse response = authService.registerNewUserAccount(signupRequest);
-
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/login")

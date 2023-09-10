@@ -4,13 +4,11 @@ public class SignupRequest {
     private String username;
     private String firstname;
     private String surname;
-    private String password;
 
-    public SignupRequest(String username, String firstname, String surname, String password) {
+    public SignupRequest(String username, String firstname, String surname) {
         this.username = username;
         this.firstname = firstname;
         this.surname = surname;
-        this.password = password;
     }
 
     public SignupRequest() {}
@@ -37,13 +35,5 @@ public class SignupRequest {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

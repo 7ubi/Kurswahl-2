@@ -8,6 +8,8 @@ public class UserResponse {
 
     private String surname;
 
+    private String generatedPassword;
+
     public UserResponse() {}
 
     public String getUsername() {
@@ -32,5 +34,13 @@ public class UserResponse {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getGeneratedPassword() {
+        return generatedPassword;
+    }
+
+    public void setGeneratedPassword(String generatedPassword) {
+        this.generatedPassword = generatedPassword;
     }
 }
