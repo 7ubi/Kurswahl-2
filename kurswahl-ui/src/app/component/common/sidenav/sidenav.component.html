@@ -1,5 +1,10 @@
 <mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <span></span>
-    </mat-toolbar-row>
+        <mat-toolbar-row *ngIf="getRole() === 'ADMIN'">
+            <span >Administration</span>
+        </mat-toolbar-row>
 </mat-toolbar>
+
+<div *ngIf="getRole() === 'ADMIN'">
+    <span><h2>Benutzerverwaltung</h2></span>
+    <span (click)="navigateTo('/admin/admins')" class="side-nav-item"><mat-icon>person</mat-icon>Administratoren</span>
+</div>
