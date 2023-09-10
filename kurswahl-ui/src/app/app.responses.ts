@@ -21,7 +21,9 @@ export interface UserResponse {
   readonly generatedPassword: number;
 }
 
-export interface AdminResponse extends UserResponse {}
+export interface AdminResponse extends UserResponse {
+  readonly adminId: number;
+}
 
 export interface AdminResponses {
   readonly adminResponses: AdminResponse[];

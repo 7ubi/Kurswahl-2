@@ -36,6 +36,19 @@ public class AdminController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @DeleteMapping("/admin")
+    public ResponseEntity<?> deleteAdmin(
+            @RequestParam Long adminId
+    ) {
+        ResultResponse response = adminCreationService.deleteAdmin(adminId);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @GetMapping("/admins")
     public ResponseEntity<?> getAdmins() {
         logger.info("Getting all Admins");

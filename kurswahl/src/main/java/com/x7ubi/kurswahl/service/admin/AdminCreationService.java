@@ -8,6 +8,7 @@ import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.response.admin.AdminResponse;
 import com.x7ubi.kurswahl.response.admin.AdminResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.utils.PasswordGenerator;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +17,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class AdminCreationService extends AbstractUserCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(AdminCreationService.class);
-    private final AdminRepo adminRepo;
     private final ModelMapper mapper = new ModelMapper();
     private final PasswordEncoder passwordEncoder;
 
     protected AdminCreationService(UserRepo userRepo, AdminRepo adminRepo, PasswordEncoder passwordEncoder) {
-        super(userRepo);
-        this.adminRepo = adminRepo;
+        super(userRepo, adminRepo);
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -43,7 +41,7 @@ public class AdminCreationService extends AbstractUserCreationService {
 
         Admin admin = new Admin();
         admin.setUser(this.mapper.map(signupRequest, User.class));
-        admin.getUser().setGeneratedPassword(this.generatePassword());
+        admin.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         admin.getUser().setPassword(passwordEncoder.encode(admin.getUser().getGeneratedPassword()));
 
         this.adminRepo.save(admin);
@@ -67,24 +65,23 @@ public class AdminCreationService extends AbstractUserCreationService {
         return adminResultResponses;
     }
 
-    private String generatePassword() {
-        int length = 12;
-        StringBuilder password = new StringBuilder();
-        Random random = new Random(System.nanoTime());
-        final String lowerLetters = "abcdefghikmnpqrstuvwxyz";
-        final String upperLetters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
-        final String digits = "0123456789";
-        final String extraCharacters = "!#$%";
+    public ResultResponse deleteAdmin(Long adminId) {
+        ResultResponse resultResponse = new ResultResponse();
 
-        // Collect the categories to use.
-        List<String> charCategories = new ArrayList<>(List.of(lowerLetters, upperLetters, digits, extraCharacters));
+        resultResponse.setErrorMessages(this.getAdminNotFound(adminId));
 
-        // Build the password.
-        for (int i = 0; i < length; i++) {
-            String charCategory = charCategories.get(random.nextInt(charCategories.size()));
-            int position = random.nextInt(charCategory.length());
-            password.append(charCategory.charAt(position));
+        if(!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
         }
-        return new String(password);
+
+        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
+        User adminUser = admin.getUser();
+
+        logger.info(String.format("Deleting Admin %s", adminUser.getUsername()));
+
+        this.adminRepo.delete(admin);
+        this.userRepo.delete(adminUser);
+
+        return resultResponse;
     }
 }

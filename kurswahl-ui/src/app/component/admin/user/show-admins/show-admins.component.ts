@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
-import {AdminResponse, AdminResponses} from "../../../../app.responses";
+import {AdminResponse, AdminResponses, ResultResponse} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-show-admins',
@@ -18,14 +19,20 @@ export class ShowAdminsComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort']
+    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen']
   }
 
   ngOnInit(): void {
+    this.loadAdmins();
+  }
+
+  private loadAdmins() {
     this.httpService.get<AdminResponses>('/api/admin/admins', response => {
       this.adminResponses = response;
+      console.log(this.adminResponses);
       this.dataSource = new MatTableDataSource(this.adminResponses.adminResponses);
     });
   }
@@ -37,5 +44,17 @@ export class ShowAdminsComponent implements OnInit {
 
   createAdmin(): void {
     this.router.navigate(['erstellen'], {relativeTo: this.route});
+  }
+
+  deleteAdmin(adminId: number) {
+    console.log(adminId);
+    this.httpService.delete<ResultResponse>(`api/admin/admin?adminId=${adminId}`, response => {
+      this.loadAdmins();
+      this.snackBar.open('Admin wurde erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    });
   }
 }
