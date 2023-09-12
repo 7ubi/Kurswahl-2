@@ -4,5 +4,5 @@ import com.x7ubi.kurswahl.request.auth.SignupRequest;
 
 public class AdminSignupRequest extends SignupRequest {
 
-    AdminSignupRequest() {}
+    public AdminSignupRequest() {}
 }

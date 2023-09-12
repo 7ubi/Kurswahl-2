@@ -7,6 +7,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
@@ -34,6 +35,10 @@ public class User implements Serializable {
         this.firstname = firstname;
         this.surname = surname;
         this.password = password;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getId() {
