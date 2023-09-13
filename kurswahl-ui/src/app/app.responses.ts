@@ -29,6 +29,14 @@ export interface AdminResponses {
   readonly adminResponses: AdminResponse[];
 }
 
+export interface StudentResponse extends UserResponse {
+  readonly studentId: number;
+}
+
+export interface StudentResponses {
+  readonly studentResponses: StudentResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

@@ -20,6 +20,8 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { HeroComponent } from './component/common/hero/hero.component';
 import { SidenavComponent } from './component/common/sidenav/sidenav.component';
+import { ShowStudentsComponent } from './component/admin/user/show-students/show-students.component';
+import { CreateStudentComponent } from './component/admin/user/create-student/create-student.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { SidenavComponent } from './component/common/sidenav/sidenav.component';
     ShowAdminsComponent,
     CreateAdminComponent,
     HeroComponent,
-    SidenavComponent
+    SidenavComponent,
+    ShowStudentsComponent,
+    CreateStudentComponent
   ],
     imports: [
         BrowserModule,

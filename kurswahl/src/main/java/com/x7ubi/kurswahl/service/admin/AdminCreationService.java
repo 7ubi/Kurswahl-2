@@ -3,13 +3,13 @@ package com.x7ubi.kurswahl.service.admin;
 import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
+import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.response.admin.AdminResponse;
 import com.x7ubi.kurswahl.response.admin.AdminResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +22,10 @@ import java.util.List;
 public class AdminCreationService extends AbstractUserCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(AdminCreationService.class);
-    private final ModelMapper mapper = new ModelMapper();
-    private final PasswordEncoder passwordEncoder;
 
-    protected AdminCreationService(UserRepo userRepo, AdminRepo adminRepo, PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo);
-        this.passwordEncoder = passwordEncoder;
+    protected AdminCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
+                                   PasswordEncoder passwordEncoder) {
+        super(userRepo, adminRepo, studentRepo, passwordEncoder);
     }
 
     public ResultResponse registerAdmin(AdminSignupRequest signupRequest) {

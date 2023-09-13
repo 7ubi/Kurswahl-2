@@ -32,7 +32,6 @@ export class ShowAdminsComponent implements OnInit {
   private loadAdmins() {
     this.httpService.get<AdminResponses>('/api/admin/admins', response => {
       this.adminResponses = response;
-      console.log(this.adminResponses);
       this.dataSource = new MatTableDataSource(this.adminResponses.adminResponses);
     });
   }
@@ -47,7 +46,6 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   deleteAdmin(adminId: number) {
-    console.log(adminId);
     this.httpService.delete<ResultResponse>(`api/admin/admin?adminId=${adminId}`, response => {
       this.loadAdmins();
       this.snackBar.open('Admin wurde erfolgreich gelöscht.', 'Verstanden', {
