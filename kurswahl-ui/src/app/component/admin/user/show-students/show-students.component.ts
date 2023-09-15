@@ -25,7 +25,7 @@ export class ShowStudentsComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen']
+    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   createStudent(): void {
-    this.router.navigate(['erstellen'], {relativeTo: this.route});
+    this.router.navigate(['create'], {relativeTo: this.route});
   }
 
   deleteStudent(studentId: number) {

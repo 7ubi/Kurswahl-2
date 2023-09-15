@@ -7,6 +7,8 @@ import {AdminRequired} from "./admin-required";
 import {CreateAdminComponent} from "./component/admin/user/create-admin/create-admin.component";
 import {ShowStudentsComponent} from "./component/admin/user/show-students/show-students.component";
 import {CreateStudentComponent} from "./component/admin/user/create-student/create-student.component";
+import {ShowTeachersComponent} from "./component/admin/user/show-teachers/show-teachers.component";
+import {CreateTeacherComponent} from "./component/admin/user/create-teacher/create-teacher.component";
 
 const routes: Routes = [
   {
@@ -19,7 +21,7 @@ const routes: Routes = [
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {
-    path: 'admin/admins/erstellen',
+    path: 'admin/admins/create',
     component: CreateAdminComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
@@ -29,8 +31,18 @@ const routes: Routes = [
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {
-    path: 'admin/students/erstellen',
+    path: 'admin/students/create',
     component: CreateStudentComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/teachers',
+    component: ShowTeachersComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/teachers/create',
+    component: CreateTeacherComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];

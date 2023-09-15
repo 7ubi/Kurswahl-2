@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
+import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.response.admin.AdminResponse;
@@ -24,8 +25,8 @@ public class AdminCreationService extends AbstractUserCreationService {
     private final Logger logger = LoggerFactory.getLogger(AdminCreationService.class);
 
     protected AdminCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
-                                   PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo, studentRepo, passwordEncoder);
+                                   TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
+        super(userRepo, adminRepo, studentRepo, teacherRepo, passwordEncoder);
     }
 
     public ResultResponse registerAdmin(AdminSignupRequest signupRequest) {
@@ -75,7 +76,7 @@ public class AdminCreationService extends AbstractUserCreationService {
         Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
         User adminUser = admin.getUser();
 
-        logger.info(String.format("Deleting Admin %s", adminUser.getUsername()));
+        logger.info(String.format("Deleted Admin %s", adminUser.getUsername()));
 
         this.adminRepo.delete(admin);
         this.userRepo.delete(adminUser);

@@ -2,11 +2,14 @@ package com.x7ubi.kurswahl.controller;
 
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
+import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
 import com.x7ubi.kurswahl.response.admin.AdminResponses;
 import com.x7ubi.kurswahl.response.admin.StudentResponses;
+import com.x7ubi.kurswahl.response.admin.TeacherResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminCreationService;
 import com.x7ubi.kurswahl.service.admin.StudentCreationService;
+import com.x7ubi.kurswahl.service.admin.TeacherCreationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +25,15 @@ public class AdminController {
 
     private final StudentCreationService studentCreationService;
 
+    private final TeacherCreationService teacherCreationService;
+
     public AdminController(
             AdminCreationService adminCreationService,
-            StudentCreationService studentCreationService
-    ) {
+            StudentCreationService studentCreationService,
+            TeacherCreationService teacherCreationService) {
         this.adminCreationService = adminCreationService;
         this.studentCreationService = studentCreationService;
+        this.teacherCreationService = teacherCreationService;
     }
 
     @PostMapping("/admin")
@@ -100,6 +106,43 @@ public class AdminController {
         logger.info("Getting all Students");
 
         StudentResponses response = this.studentCreationService.getAllStudents();
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/teacher")
+    public ResponseEntity<?> createTeacher(
+            @RequestBody TeacherSignupRequest teacherSignupRequest
+    ) {
+        logger.info("Signing up new Teacher");
+
+        ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("/teacher")
+    public ResponseEntity<?> deleteTeacher(@RequestParam Long teacherId) {
+        logger.info("Deleting Teacher");
+
+        ResultResponse response = this.teacherCreationService.deleteTeacher(teacherId);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/teachers")
+    public ResponseEntity<?> getTeacher() {
+        logger.info("Getting all Teachers");
+
+        TeacherResponses response = this.teacherCreationService.getAllTeachers();
 
         return ResponseEntity.ok().body(response);
     }

@@ -42,7 +42,7 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   createAdmin(): void {
-    this.router.navigate(['erstellen'], {relativeTo: this.route});
+    this.router.navigate(['create'], {relativeTo: this.route});
   }
 
   deleteAdmin(adminId: number) {

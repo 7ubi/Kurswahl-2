@@ -22,6 +22,8 @@ import { HeroComponent } from './component/common/hero/hero.component';
 import { SidenavComponent } from './component/common/sidenav/sidenav.component';
 import { ShowStudentsComponent } from './component/admin/user/show-students/show-students.component';
 import { CreateStudentComponent } from './component/admin/user/create-student/create-student.component';
+import { ShowTeachersComponent } from './component/admin/user/show-teachers/show-teachers.component';
+import { CreateTeacherComponent } from './component/admin/user/create-teacher/create-teacher.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { CreateStudentComponent } from './component/admin/user/create-student/cr
     HeroComponent,
     SidenavComponent,
     ShowStudentsComponent,
-    CreateStudentComponent
+    CreateStudentComponent,
+    ShowTeachersComponent,
+    CreateTeacherComponent
   ],
     imports: [
         BrowserModule,

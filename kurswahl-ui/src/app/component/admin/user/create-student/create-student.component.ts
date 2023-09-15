@@ -21,7 +21,7 @@ export class CreateStudentComponent {
       firstname: ['', Validators.required],
       surname: ['', Validators.required],
       username: ['', Validators.required],
-    })
+    });
   }
 
   createStudent() {

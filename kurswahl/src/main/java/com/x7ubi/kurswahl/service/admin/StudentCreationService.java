@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
+import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.response.admin.StudentResponse;
@@ -24,8 +25,8 @@ public class StudentCreationService extends AbstractUserCreationService {
     private final Logger logger = LoggerFactory.getLogger(StudentCreationService.class);
 
     protected StudentCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
-                                     PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo, studentRepo, passwordEncoder);
+                                     TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
+        super(userRepo, adminRepo, studentRepo, teacherRepo, passwordEncoder);
     }
 
     public ResultResponse registerStudent(StudentSignupRequest studentSignupRequest) {
@@ -75,7 +76,7 @@ public class StudentCreationService extends AbstractUserCreationService {
         Student student = this.studentRepo.findStudentByStudentId(studentId).get();
         User studentUser = student.getUser();
 
-        logger.info(String.format("Deleting Student %s", studentUser.getUsername()));
+        logger.info(String.format("Deleted Student %s", studentUser.getUsername()));
 
         this.studentRepo.delete(student);
         this.userRepo.delete(studentUser);

@@ -3,6 +3,7 @@ package com.x7ubi.kurswahl.service.admin;
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
+import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.auth.SignupRequest;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
@@ -23,14 +24,18 @@ public abstract class AbstractUserCreationService {
 
     protected final StudentRepo studentRepo;
 
+    protected final TeacherRepo teacherRepo;
+
     protected final PasswordEncoder passwordEncoder;
 
     protected final ModelMapper mapper = new ModelMapper();
 
-    protected AbstractUserCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo, PasswordEncoder passwordEncoder) {
+    protected AbstractUserCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
+                                          TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.adminRepo = adminRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo = teacherRepo;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -63,6 +68,17 @@ public abstract class AbstractUserCreationService {
         if(!studentRepo.existsStudentByStudentId(studentId)){
             logger.error(ErrorMessage.Administration.STUDENT_NOT_FOUND);
             errors.add(new MessageResponse(ErrorMessage.Administration.STUDENT_NOT_FOUND));
+        }
+
+        return errors;
+    }
+
+    protected List<MessageResponse> getTeacherNotFound(Long teacherId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if(!teacherRepo.existsTeacherByTeacherId(teacherId)){
+            logger.error(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.TEACHER_NOT_FOUND));
         }
 
         return errors;
