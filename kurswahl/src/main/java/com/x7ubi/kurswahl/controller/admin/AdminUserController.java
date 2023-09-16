@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.controller;
+package com.x7ubi.kurswahl.controller.admin;
 
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+public class AdminUserController {
 
-    Logger logger = LoggerFactory.getLogger(AdminController.class);
+    Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
     private final AdminCreationService adminCreationService;
 
@@ -27,7 +27,7 @@ public class AdminController {
 
     private final TeacherCreationService teacherCreationService;
 
-    public AdminController(
+    public AdminUserController(
             AdminCreationService adminCreationService,
             StudentCreationService studentCreationService,
             TeacherCreationService teacherCreationService) {

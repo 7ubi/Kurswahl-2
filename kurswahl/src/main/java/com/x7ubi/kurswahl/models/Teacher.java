@@ -2,6 +2,8 @@ package com.x7ubi.kurswahl.models;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "TEACHER")
 public class Teacher {
@@ -12,6 +14,10 @@ public class Teacher {
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @Column(nullable = true)
+    private Set<Class> classes;
 
     public Teacher() {
     }
