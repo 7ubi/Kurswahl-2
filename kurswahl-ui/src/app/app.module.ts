@@ -24,6 +24,8 @@ import { ShowStudentsComponent } from './component/admin/user/show-students/show
 import { CreateStudentComponent } from './component/admin/user/create-student/create-student.component';
 import { ShowTeachersComponent } from './component/admin/user/show-teachers/show-teachers.component';
 import { CreateTeacherComponent } from './component/admin/user/create-teacher/create-teacher.component';
+import { ShowSubjectAreasComponent } from './component/admin/classes/show-subject-areas/show-subject-areas.component';
+import { CreateSubjectAreaComponent } from './component/admin/classes/create-subject-area/create-subject-area.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { CreateTeacherComponent } from './component/admin/user/create-teacher/cr
     ShowStudentsComponent,
     CreateStudentComponent,
     ShowTeachersComponent,
-    CreateTeacherComponent
+    CreateTeacherComponent,
+    ShowSubjectAreasComponent,
+    CreateSubjectAreaComponent
   ],
     imports: [
         BrowserModule,

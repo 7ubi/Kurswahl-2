@@ -1,0 +1,12 @@
+<app-hero title="Fachbereich erstellen"></app-hero>
+<form [formGroup]="createSubjectAreaForm" (ngSubmit)="createSubjectArea()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" name="name" id="name" type="text">
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Fachbereich erstellen</button>
+    </div>
+  </div>
+</form>

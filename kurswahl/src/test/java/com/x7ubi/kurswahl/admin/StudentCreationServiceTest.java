@@ -6,7 +6,7 @@ import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.StudentCreationService;
+import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

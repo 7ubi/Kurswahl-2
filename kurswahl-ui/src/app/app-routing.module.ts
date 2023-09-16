@@ -9,6 +9,8 @@ import {ShowStudentsComponent} from "./component/admin/user/show-students/show-s
 import {CreateStudentComponent} from "./component/admin/user/create-student/create-student.component";
 import {ShowTeachersComponent} from "./component/admin/user/show-teachers/show-teachers.component";
 import {CreateTeacherComponent} from "./component/admin/user/create-teacher/create-teacher.component";
+import {ShowSubjectAreasComponent} from "./component/admin/classes/show-subject-areas/show-subject-areas.component";
+import {CreateSubjectAreaComponent} from "./component/admin/classes/create-subject-area/create-subject-area.component";
 
 const routes: Routes = [
   {
@@ -43,6 +45,16 @@ const routes: Routes = [
   {
     path: 'admin/teachers/create',
     component: CreateTeacherComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/subjectAreas',
+    component: ShowSubjectAreasComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/subjectAreas/create',
+    component: CreateSubjectAreaComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];

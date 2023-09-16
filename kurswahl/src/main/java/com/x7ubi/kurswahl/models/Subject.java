@@ -19,6 +19,10 @@ public class Subject {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Class> classes;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(nullable = false)
+    private SubjectArea subjectArea;
+
     public Subject() {}
 
     public Long getSubjectId() {
@@ -43,5 +47,13 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public SubjectArea getSubjectArea() {
+        return subjectArea;
+    }
+
+    public void setSubjectArea(SubjectArea subjectArea) {
+        this.subjectArea = subjectArea;
     }
 }

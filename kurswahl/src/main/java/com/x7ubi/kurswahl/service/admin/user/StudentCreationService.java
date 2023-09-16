@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.service.admin;
+package com.x7ubi.kurswahl.service.admin.user;
 
 import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.User;
