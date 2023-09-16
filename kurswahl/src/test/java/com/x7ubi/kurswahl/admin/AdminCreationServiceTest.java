@@ -22,7 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest()
 @TestPropertySource(properties = {
         "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.url=jdbc:h2:mem:kurswahlTestdb;NON_KEYWORDS=user"
+        "spring.datasource.url=jdbc:h2:mem:kurswahlTestdb;NON_KEYWORDS=user",
+        "spring.jpa.properties.hibernate.globally_quoted_identifiers=true"
 })
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
