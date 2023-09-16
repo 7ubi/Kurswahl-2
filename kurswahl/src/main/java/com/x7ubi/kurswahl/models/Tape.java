@@ -26,11 +26,9 @@ public class Tape {
     private int releaseYear;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Class aClass;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Set<Lesson> lessons;
 
     public Tape() {}

@@ -21,7 +21,6 @@ public class Lesson {
     private int releaseYear;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Tape tape;
 
 

@@ -16,7 +16,6 @@ public class Teacher {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Set<Class> classes;
 
     public Teacher() {

@@ -15,15 +15,12 @@ public class Class {
     private String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Teacher teacher;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @Column(nullable = false)
     private Subject subject;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @Column(nullable = false)
     private Tape tape;
 
     public Class() {}

@@ -17,7 +17,6 @@ public class Subject {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private Set<Class> classes;
 
     public Subject() {}
