@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.response.admin;
+package com.x7ubi.kurswahl.response.admin.classes;
 
 import java.util.List;
 

@@ -26,6 +26,10 @@ import { ShowTeachersComponent } from './component/admin/user/show-teachers/show
 import { CreateTeacherComponent } from './component/admin/user/create-teacher/create-teacher.component';
 import { ShowSubjectAreasComponent } from './component/admin/classes/show-subject-areas/show-subject-areas.component';
 import { CreateSubjectAreaComponent } from './component/admin/classes/create-subject-area/create-subject-area.component';
+import { ShowSubjectsComponent } from './component/admin/classes/show-subjects/show-subjects.component';
+import { CreateSubjectComponent } from './component/admin/classes/create-subject/create-subject.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatFormFieldModule} from "@angular/material/form-field";
 
 @NgModule({
   declarations: [
@@ -40,7 +44,9 @@ import { CreateSubjectAreaComponent } from './component/admin/classes/create-sub
     ShowTeachersComponent,
     CreateTeacherComponent,
     ShowSubjectAreasComponent,
-    CreateSubjectAreaComponent
+    CreateSubjectAreaComponent,
+    ShowSubjectsComponent,
+    CreateSubjectComponent
   ],
     imports: [
         BrowserModule,
@@ -49,12 +55,14 @@ import { CreateSubjectAreaComponent } from './component/admin/classes/create-sub
         BrowserAnimationsModule,
         MatInputModule,
         MatButtonModule,
+        MatFormFieldModule,
         MatToolbarModule,
         MatIconModule,
         HttpClientModule,
         MatSnackBarModule,
         MatTableModule,
-        MatSidenavModule
+        MatSidenavModule,
+        MatSelectModule
     ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]

@@ -16,7 +16,7 @@ public class SubjectArea {
     @Column(length = 100)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subject> subjects;
 
     public SubjectArea() {}

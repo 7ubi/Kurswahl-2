@@ -2,9 +2,10 @@ package com.x7ubi.kurswahl.service.admin.classes;
 
 import com.x7ubi.kurswahl.models.SubjectArea;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
+import com.x7ubi.kurswahl.repository.SubjectRepo;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
-import com.x7ubi.kurswahl.response.admin.SubjectAreaResponse;
-import com.x7ubi.kurswahl.response.admin.SubjectAreaResponses;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponse;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,8 @@ import java.util.List;
 public class SubjectAreaCreationService extends AbstractClassesCreationService {
     private final Logger logger = LoggerFactory.getLogger(SubjectAreaCreationService.class);
 
-    public SubjectAreaCreationService(SubjectAreaRepo subjectAreaRepo) {
-        super(subjectAreaRepo);
+    public SubjectAreaCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo) {
+        super(subjectAreaRepo, subjectRepo);
     }
 
     public ResultResponse createSubjectArea(SubjectAreaCreationRequest subjectAreaCreationRequest) {

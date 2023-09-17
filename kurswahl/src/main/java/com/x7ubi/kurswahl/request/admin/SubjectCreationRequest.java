@@ -1,11 +1,11 @@
-package com.x7ubi.kurswahl.response.admin;
+package com.x7ubi.kurswahl.request.admin;
 
-public class SubjectAreaResponse {
+public class SubjectCreationRequest {
     private String name;
 
     private Long subjectAreaId;
 
-    public SubjectAreaResponse() {}
+    public SubjectCreationRequest() {}
 
     public String getName() {
         return name;

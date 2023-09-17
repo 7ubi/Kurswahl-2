@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ResultResponse, SubjectAreaResponse, SubjectAreaResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
@@ -10,7 +10,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   templateUrl: './show-subject-areas.component.html',
   styleUrls: ['./show-subject-areas.component.css']
 })
-export class ShowSubjectAreasComponent {
+export class ShowSubjectAreasComponent implements OnInit {
   subjectAreaResponses!: SubjectAreaResponses;
   dataSource!: MatTableDataSource<SubjectAreaResponse>;
   displayedColumns: string[];
@@ -34,7 +34,6 @@ export class ShowSubjectAreasComponent {
     this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
       this.subjectAreaResponses = response;
       this.dataSource = new MatTableDataSource(this.subjectAreaResponses.subjectAreaResponses);
-      console.log(this.dataSource)
     });
   }
 
@@ -48,7 +47,6 @@ export class ShowSubjectAreasComponent {
   }
 
   deleteSubjectArea(subjectAreaId: number) {
-    console.log(subjectAreaId);
     this.httpService.delete<ResultResponse>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
       this.loadSubjectAreas();
       this.snackBar.open('Fachbereich wurde erfolgreich gelöscht.', 'Verstanden', {

@@ -1,9 +1,12 @@
 package com.x7ubi.kurswahl.controller.admin;
 
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
-import com.x7ubi.kurswahl.response.admin.SubjectAreaResponses;
+import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
+import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +20,12 @@ public class AdminClassesController {
 
     private final SubjectAreaCreationService subjectAreaCreationService;
 
-    public AdminClassesController(SubjectAreaCreationService subjectAreaCreationService) {
+    private final SubjectCreationService subjectCreationService;
+
+    public AdminClassesController(SubjectAreaCreationService subjectAreaCreationService,
+                                  SubjectCreationService subjectCreationService) {
         this.subjectAreaCreationService = subjectAreaCreationService;
+        this.subjectCreationService = subjectCreationService;
     }
 
     @PostMapping("/subjectArea")
@@ -53,6 +60,44 @@ public class AdminClassesController {
     public ResponseEntity<?> getSubjectAreas() {
 
         SubjectAreaResponses response = this.subjectAreaCreationService.getAllSubjectAreas();
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/subject")
+    public ResponseEntity<?> createSubject(
+            @RequestBody SubjectCreationRequest subjectCreationRequest
+    ) {
+        logger.info("Creating new Subject area");
+
+        ResultResponse response = this.subjectCreationService.createSubject(subjectCreationRequest);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("/subject")
+    public ResponseEntity<?> deleteSubject(
+            @RequestParam Long subjectId
+    ) {
+        logger.info("Creating new Subject area");
+
+        ResultResponse response = this.subjectCreationService.deleteSubject(subjectId);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/subjects")
+    public ResponseEntity<?> getSubjects() {
+
+        SubjectResponses response = this.subjectCreationService.getAllSubjects();
 
         return ResponseEntity.ok().body(response);
     }

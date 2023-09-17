@@ -19,7 +19,7 @@ public class Subject {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Class> classes;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne()
     @JoinColumn(nullable = false)
     private SubjectArea subjectArea;
 

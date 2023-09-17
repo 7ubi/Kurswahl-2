@@ -23,12 +23,12 @@ export class CreateSubjectAreaComponent {
   }
 
   createSubjectArea() {
-    this.httpService.post<ResultResponse>('/api/admin/subjectArea', this.getCreateAdminRequest(), response => {
+    this.httpService.post<ResultResponse>('/api/admin/subjectArea', this.getCreateSubjectAreaRequest(), response => {
       this.router.navigate(['admin', 'subjectAreas']);
     });
   }
 
-  private getCreateAdminRequest() {
+  private getCreateSubjectAreaRequest() {
     return {
       name: this.createSubjectAreaForm.get('name')?.value,
     }

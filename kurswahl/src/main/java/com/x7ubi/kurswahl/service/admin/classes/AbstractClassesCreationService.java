@@ -2,7 +2,9 @@ package com.x7ubi.kurswahl.service.admin.classes;
 
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
+import com.x7ubi.kurswahl.repository.SubjectRepo;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
+import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -17,10 +19,13 @@ public abstract class AbstractClassesCreationService {
 
     protected final SubjectAreaRepo subjectAreaRepo;
 
+    protected final SubjectRepo subjectRepo;
+
     protected final ModelMapper modelMapper = new ModelMapper();
 
-    protected AbstractClassesCreationService(SubjectAreaRepo subjectAreaRepo) {
+    protected AbstractClassesCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo) {
         this.subjectAreaRepo = subjectAreaRepo;
+        this.subjectRepo = subjectRepo;
     }
 
     protected List<MessageResponse> findSubjectAreaCreationError(
@@ -41,6 +46,28 @@ public abstract class AbstractClassesCreationService {
         if(!this.subjectAreaRepo.existsSubjectAreaBySubjectAreaId(subjectAreaId)) {
             logger.error(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
             errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND));
+        }
+
+        return errors;
+    }
+
+    protected List<MessageResponse> findSubjectCreationError(SubjectCreationRequest subjectCreationRequest) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if(this.subjectRepo.existsSubjectByName(subjectCreationRequest.getName())) {
+            logger.error(ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS);
+            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS));
+        }
+
+        return errors;
+    }
+
+    protected List<MessageResponse> getSubjectNotFound(Long subjectId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if(!this.subjectRepo.existsSubjectAreaBySubjectId(subjectId)) {
+            logger.error(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_NOT_FOUND));
         }
 
         return errors;

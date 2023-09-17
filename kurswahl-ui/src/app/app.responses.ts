@@ -54,6 +54,16 @@ export interface SubjectAreaResponses {
   readonly subjectAreaResponses: SubjectAreaResponse[];
 }
 
+export interface SubjectResponse {
+  readonly name: string;
+  readonly subjectId: number;
+  readonly subjectAreaResponse: SubjectAreaResponse;
+}
+
+export interface SubjectResponses {
+  readonly subjectResponses: SubjectResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
