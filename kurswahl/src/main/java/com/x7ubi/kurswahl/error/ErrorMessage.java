@@ -13,5 +13,7 @@ public class ErrorMessage {
         public static String TEACHER_NOT_FOUND = "Lehrer konnte nicht gefunden werden!";
 
         public static String SUBJECT_AREA_ALREADY_EXISTS = "Fachbereich existiert bereits";
+
+        public static String SUBJECT_AREA_NOT_FOUND = "Fachbereich konnte nicht gefunden werden!";
     }
 }

@@ -50,4 +50,18 @@ public class SubjectAreaCreationService extends AbstractClassesCreationService {
 
         return subjectAreaResponses;
     }
+
+    public ResultResponse deleteSubjectArea(Long subjectAreaId) {
+        ResultResponse resultResponse = new ResultResponse();
+        resultResponse.setErrorMessages(this.getSubjectAreaNotFound(subjectAreaId));
+
+        if(!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
+        this.subjectAreaRepo.delete(subjectArea);
+
+        return resultResponse;
+    }
 }

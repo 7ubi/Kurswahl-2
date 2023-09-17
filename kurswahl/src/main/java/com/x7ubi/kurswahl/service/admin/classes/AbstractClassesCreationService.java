@@ -35,4 +35,14 @@ public abstract class AbstractClassesCreationService {
         return errors;
     }
 
+    protected List<MessageResponse> getSubjectAreaNotFound(Long subjectAreaId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if(!this.subjectAreaRepo.existsSubjectAreaBySubjectAreaId(subjectAreaId)) {
+            logger.error(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND));
+        }
+
+        return errors;
+    }
 }

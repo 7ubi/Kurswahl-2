@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.admin;
+package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.Admin;

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {SubjectAreaResponse, SubjectAreaResponses, TeacherResponse, TeacherResponses} from "../../../../app.responses";
+import {ResultResponse, SubjectAreaResponse, SubjectAreaResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -47,5 +47,15 @@ export class ShowSubjectAreasComponent {
     this.router.navigate(['create'], {relativeTo: this.route});
   }
 
-  deleteSubjectArea(subjectAreaId: number) {}
+  deleteSubjectArea(subjectAreaId: number) {
+    console.log(subjectAreaId);
+    this.httpService.delete<ResultResponse>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
+      this.loadSubjectAreas();
+      this.snackBar.open('Fachbereich wurde erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    });
+  }
 }

@@ -36,6 +36,19 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @DeleteMapping("/subjectArea")
+    public ResponseEntity<?> deleteSubjectArea(@RequestParam Long subjectAreaId) {
+        logger.info("Deleting Subject area");
+
+        ResultResponse response = this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @GetMapping("/subjectAreas")
     public ResponseEntity<?> getSubjectAreas() {
 

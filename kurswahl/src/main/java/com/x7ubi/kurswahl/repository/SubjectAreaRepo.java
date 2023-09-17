@@ -8,5 +8,9 @@ import java.util.Optional;
 public interface SubjectAreaRepo extends JpaRepository<SubjectArea, Long> {
     Optional<SubjectArea> findSubjectAreaBySubjectAreaId(Long subjectAreaId);
 
+    Optional<SubjectArea> findSubjectAreaByName(String name);
+
     Boolean existsSubjectAreaByName(String name);
+
+    Boolean existsSubjectAreaBySubjectAreaId(Long subjectAreaId);
 }

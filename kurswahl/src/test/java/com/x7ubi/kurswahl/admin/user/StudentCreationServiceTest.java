@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.admin;
+package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.Student;
@@ -51,7 +51,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testCreateAdmin() {
+    public void testCreateStudent() {
         // Given
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
@@ -70,7 +70,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testCreateAdminUsernameExists() {
+    public void testCreateStudentUsernameExists() {
         // Given
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
@@ -90,7 +90,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testDeleteAdmin() {
+    public void testDeleteStudent() {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId();
@@ -104,7 +104,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testDeleteAdminWrongId() {
+    public void testDeleteStudentWrongId() {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId() + 1;
