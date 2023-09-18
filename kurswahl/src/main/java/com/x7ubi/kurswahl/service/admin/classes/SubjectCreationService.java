@@ -9,6 +9,7 @@ import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class SubjectCreationService extends AbstractClassesCreationService {
         super(subjectAreaRepo, subjectRepo);
     }
 
+    @Transactional
     public ResultResponse createSubject(SubjectCreationRequest subjectCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
