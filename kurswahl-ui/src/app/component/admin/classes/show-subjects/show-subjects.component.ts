@@ -24,6 +24,8 @@ export class ShowSubjectsComponent implements OnInit {
   subjectAreaResponses?: SubjectAreaResponses;
   subjectAreaFilter: FormGroup;
 
+  lastSort: Sort | null = null;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -50,14 +52,17 @@ export class ShowSubjectsComponent implements OnInit {
     this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
       this.subjectResponses = response;
       this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
-      this.dataSource.data
-        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
+      if(this.lastSort) {
+        this.sortData(this.lastSort);
+      } else {
+        this.dataSource.data
+          = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
+      }
     });
   }
 
   applyFilter() {
     const filterValue = this.subjectAreaFilter.get('name')?.value;
-    console.log(filterValue, filterValue !== '')
     if(filterValue !== '') {
       this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses
         .filter(value => value.subjectAreaResponse.subjectAreaId === Number(filterValue)));
@@ -87,6 +92,7 @@ export class ShowSubjectsComponent implements OnInit {
   }
 
   sortData(sort: Sort) {
+    this.lastSort = sort;
     if (!sort.active || sort.direction === '') {
       this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
       return;
