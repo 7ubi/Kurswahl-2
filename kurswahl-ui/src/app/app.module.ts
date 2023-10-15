@@ -30,6 +30,7 @@ import { ShowSubjectsComponent } from './component/admin/classes/show-subjects/s
 import { CreateSubjectComponent } from './component/admin/classes/create-subject/create-subject.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
         MatSnackBarModule,
         MatTableModule,
         MatSidenavModule,
-        MatSelectModule
+        MatSelectModule,
+        MatSortModule
     ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]

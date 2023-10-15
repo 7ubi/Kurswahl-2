@@ -10,6 +10,7 @@ import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-show-subjects',
@@ -49,6 +50,8 @@ export class ShowSubjectsComponent implements OnInit {
     this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
       this.subjectResponses = response;
       this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
+      this.dataSource.data
+        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
     });
   }
 
@@ -81,5 +84,28 @@ export class ShowSubjectsComponent implements OnInit {
   applySearch($event: KeyboardEvent) {
     const filterValue = (event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  sortData(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
+      return;
+    }
+
+    this.dataSource.data = this.dataSource.data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'name':
+          return this.compare(a.name, b.name, isAsc);
+        case 'fachbereich':
+          return this.compare(a.subjectAreaResponse.name, b.subjectAreaResponse.name, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 }

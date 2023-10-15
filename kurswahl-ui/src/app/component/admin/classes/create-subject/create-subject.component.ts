@@ -26,6 +26,7 @@ export class CreateSubjectComponent implements OnInit{
 
   ngOnInit(): void {
     this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
+      response.subjectAreaResponses.sort((a, b) =>  a.name.localeCompare(b.name));
       this.subjectAreaResponses = response;
     });
   }
