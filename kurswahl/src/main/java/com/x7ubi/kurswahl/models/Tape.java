@@ -20,10 +20,10 @@ public class Tape {
     private Boolean isLk;
 
     @Column(nullable = false)
-    private int year;
+    private Integer year;
 
     @Column(nullable = false)
-    private int releaseYear;
+    private Integer releaseYear;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Class aClass;
@@ -57,19 +57,19 @@ public class Tape {
         isLk = lk;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(int releaseYear) {
+    public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 

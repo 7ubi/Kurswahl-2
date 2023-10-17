@@ -2,11 +2,13 @@ package com.x7ubi.kurswahl.controller.admin;
 
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
+import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
+import com.x7ubi.kurswahl.service.admin.classes.TapeCreationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +24,16 @@ public class AdminClassesController {
 
     private final SubjectCreationService subjectCreationService;
 
-    public AdminClassesController(SubjectAreaCreationService subjectAreaCreationService,
-                                  SubjectCreationService subjectCreationService) {
+    private final TapeCreationService tapeCreationService;
+
+    public AdminClassesController(
+            SubjectAreaCreationService subjectAreaCreationService,
+            SubjectCreationService subjectCreationService,
+            TapeCreationService tapeCreationService
+    ) {
         this.subjectAreaCreationService = subjectAreaCreationService;
         this.subjectCreationService = subjectCreationService;
+        this.tapeCreationService = tapeCreationService;
     }
 
     @PostMapping("/subjectArea")
@@ -100,5 +108,20 @@ public class AdminClassesController {
         SubjectResponses response = this.subjectCreationService.getAllSubjects();
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/tape")
+    public ResponseEntity<?> createTape(
+            @RequestBody TapeCreationRequest tapeCreationRequest
+    ) {
+        logger.info("Creating new Tape");
+
+        ResultResponse response = this.tapeCreationService.createTape(tapeCreationRequest);
+
+        if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
     }
 }
