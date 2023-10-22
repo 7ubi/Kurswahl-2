@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
       - name: Start docker-compose
         run: |
           export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
