@@ -23,9 +23,6 @@ services:
       SPRING_DATASOURCE_USERNAME: 'root'
       SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD}'
       SPRING_JPA_DATABASE-PLATFORM: 'org.hibernate.dialect.MySQL5InnoDBDialect'
-      SPRING_APPLICATION_JSON: '{
-              bezkoder.app.jwtSecret: ${JWT_SECRET}
-            }'
     volumes:
       - './kurswahl:/usr/src/app'
     ports:
