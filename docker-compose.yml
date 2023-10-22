@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_DATABASE: 'kurswahldb'
       # Password for root access
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
     networks:
       - springmysql-net
     ports:
@@ -21,8 +21,11 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/kurswahldb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: 'root'
-      SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD}'
+      SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
       SPRING_JPA_DATABASE-PLATFORM: 'org.hibernate.dialect.MySQL5InnoDBDialect'
+      SPRING_APPLICATION_JSON: '{
+              bezkoder.app.jwtSecret: ${JWT_SECRET}
+            }'
     volumes:
       - './kurswahl:/usr/src/app'
     ports:
