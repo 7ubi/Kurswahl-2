@@ -18,6 +18,9 @@ public class Teacher {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Class> classes;
 
+    @OneToMany
+    private Set<StudentClass> studentClasses;
+
     public Teacher() {
     }
 
