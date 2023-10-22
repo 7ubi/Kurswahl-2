@@ -1,4 +1,4 @@
-FROM maven:3.6.3-jdk-20
+FROM jelastic/maven:3.8.6-openjdk-20.ea-b24
 
 WORKDIR /app
 COPY . .
