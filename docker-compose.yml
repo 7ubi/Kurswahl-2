@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysqldb:
-    container_name: dbcontainer
+    container_name: kurswahl_dbcontainer
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'kurswahldb'
@@ -16,7 +16,7 @@ services:
     volumes:
       - my-db:/var/lib/mysql
   backend:
-    container_name: backendcontainer
+    container_name: kurswahl_backendcontainer
     build: ./kurswahl
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/kurswahldb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
@@ -38,7 +38,7 @@ services:
     depends_on:
       - mysqldb
   frontend:
-    container_name: frontendcontainer
+    container_name: kurswahl_frontendcontainer
     build: ./kurswahl-ui
     volumes:
       - './kurswahl-ui:/usr/src/app'
