@@ -1,0 +1,18 @@
+<app-hero title="Fach erstellen"></app-hero>
+<form [formGroup]="createSubjectForm" (ngSubmit)="createSubject()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" name="name" id="name" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Fachbereich</mat-label>
+        <mat-select formControlName="subjectArea">
+          <mat-option *ngFor="let subjectArea of subjectAreaResponses?.subjectAreaResponses" value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Fach erstellen</button>
+    </div>
+  </div>
+</form>

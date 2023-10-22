@@ -13,6 +13,9 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
+    @ManyToOne
+    private StudentClass studentClass;
+
     public Student() {
     }
 

@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.admin;
+package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.Student;
@@ -6,7 +6,7 @@ import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.StudentCreationService;
+import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest()
 @TestPropertySource(properties = {
         "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.url=jdbc:h2:mem:kurswahlTestdb;NON_KEYWORDS=user"
+        "spring.datasource.url=jdbc:h2:mem:kurswahlTestdb;NON_KEYWORDS=user",
+        "spring.jpa.properties.hibernate.globally_quoted_identifiers=true"
 })
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -50,7 +51,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testCreateAdmin() {
+    public void testCreateStudent() {
         // Given
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
@@ -69,7 +70,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testCreateAdminUsernameExists() {
+    public void testCreateStudentUsernameExists() {
         // Given
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
@@ -89,7 +90,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testDeleteAdmin() {
+    public void testDeleteStudent() {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId();
@@ -103,7 +104,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testDeleteAdminWrongId() {
+    public void testDeleteStudentWrongId() {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId() + 1;

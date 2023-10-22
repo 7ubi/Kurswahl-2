@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.service.admin;
+package com.x7ubi.kurswahl.service.admin.user;
 
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
@@ -7,8 +7,8 @@ import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
-import com.x7ubi.kurswahl.response.admin.TeacherResponse;
-import com.x7ubi.kurswahl.response.admin.TeacherResponses;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
 import org.slf4j.Logger;

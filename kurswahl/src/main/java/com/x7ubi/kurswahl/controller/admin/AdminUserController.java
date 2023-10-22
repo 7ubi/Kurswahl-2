@@ -1,15 +1,15 @@
-package com.x7ubi.kurswahl.controller;
+package com.x7ubi.kurswahl.controller.admin;
 
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
-import com.x7ubi.kurswahl.response.admin.AdminResponses;
-import com.x7ubi.kurswahl.response.admin.StudentResponses;
-import com.x7ubi.kurswahl.response.admin.TeacherResponses;
+import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
+import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.AdminCreationService;
-import com.x7ubi.kurswahl.service.admin.StudentCreationService;
-import com.x7ubi.kurswahl.service.admin.TeacherCreationService;
+import com.x7ubi.kurswahl.service.admin.user.AdminCreationService;
+import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
+import com.x7ubi.kurswahl.service.admin.user.TeacherCreationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+public class AdminUserController {
 
-    Logger logger = LoggerFactory.getLogger(AdminController.class);
+    Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
     private final AdminCreationService adminCreationService;
 
@@ -27,7 +27,7 @@ public class AdminController {
 
     private final TeacherCreationService teacherCreationService;
 
-    public AdminController(
+    public AdminUserController(
             AdminCreationService adminCreationService,
             StudentCreationService studentCreationService,
             TeacherCreationService teacherCreationService) {
