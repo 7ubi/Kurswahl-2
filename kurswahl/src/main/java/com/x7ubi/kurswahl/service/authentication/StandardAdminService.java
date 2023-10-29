@@ -54,5 +54,7 @@ public class StandardAdminService {
         adminRepo.save(admin);
 
         logger.info(adminRepo.existsAdminByUser_Username(username).toString());
+        Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
+        logger.info(formerAdmin.getUser().getPassword());
     }
 }
