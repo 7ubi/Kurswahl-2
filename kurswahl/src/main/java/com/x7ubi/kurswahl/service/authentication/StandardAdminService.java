@@ -50,7 +50,6 @@ public class StandardAdminService {
         user.setPassword(passwordEncoder.encode(standardPassword));
         admin.setUser(user);
 
-        userRepo.save(user);
         adminRepo.save(admin);
 
         logger.info(adminRepo.existsAdminByUser_Username(username).toString());
