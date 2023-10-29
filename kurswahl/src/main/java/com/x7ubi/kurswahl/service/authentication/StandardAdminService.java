@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ public class StandardAdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void createStandardAdmin(String standardPassword) {
         String username = "admin";
         if (userRepo.existsByUsername(username)) {
