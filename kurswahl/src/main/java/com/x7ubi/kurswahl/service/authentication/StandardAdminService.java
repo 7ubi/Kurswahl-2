@@ -33,7 +33,7 @@ public class StandardAdminService {
         String username = "admin";
         String password = PasswordGenerator.generatePassword();
         if (userRepo.existsByUsername(username)) {
-            logger.warn("Standard Admin already exists, creating again");
+            logger.warn("Standard Admin already exists! Deleting old Standard Admin and creating a new one");
 
             if (adminRepo.existsAdminByUser_Username(username)) {
                 Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
@@ -50,6 +50,7 @@ public class StandardAdminService {
         user.setUsername(username);
         user.setFirstname("Admin");
         user.setSurname("Admin");
+        user.setGeneratedPassword(password);
         user.setPassword(passwordEncoder.encode(password));
         admin.setUser(user);
 
