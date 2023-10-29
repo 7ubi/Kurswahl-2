@@ -23,7 +23,7 @@ services:
       SPRING_DATASOURCE_USERNAME: 'root'
       SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
       BEZKODER_APP_JWTSECRET: '${JWT_SECRET}'
-      PASSWORD: '${PASSWORD}'
+      PASSWORD: '${STANDARD_PASSWORD}'
     volumes:
       - './kurswahl:/usr/src/app'
     ports:
