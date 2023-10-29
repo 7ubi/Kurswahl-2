@@ -36,9 +36,10 @@ public class StandardAdminService {
             if (adminRepo.existsAdminByUser_Username(username)) {
                 Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
                 adminRepo.delete(formerAdmin);
+            } else {
+                User user = userRepo.findByUsername(username).get();
+                userRepo.delete(user);
             }
-            User user = userRepo.findByUsername(username).get();
-            userRepo.delete(user);
         }
 
 
