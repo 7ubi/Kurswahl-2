@@ -77,6 +77,25 @@ public class AuthRestController {
 
             userRepo.save(user);
             adminRepo.save(admin);
+
+            logger.info(adminRepo.existsAdminByUser_Username(username).toString());
+        } else {
+            logger.warn("Standard Admin already exists, creating again");
+
+            Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
+            adminRepo.delete(formerAdmin);
+            userRepo.delete(formerAdmin.getUser());
+
+            Admin admin = new Admin();
+            User user = new User();
+            user.setUsername(username);
+            user.setFirstname("Admin");
+            user.setSurname("Admin");
+            user.setPassword(passwordEncoder.encode(standardPassword));
+            admin.setUser(user);
+
+            userRepo.save(user);
+            logger.info(adminRepo.existsAdminByUser_Username(username).toString());
         }
         return ResponseEntity.ok().build();
     }
