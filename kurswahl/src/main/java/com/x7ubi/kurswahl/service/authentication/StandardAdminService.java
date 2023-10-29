@@ -33,9 +33,12 @@ public class StandardAdminService {
         if (userRepo.existsByUsername(username)) {
             logger.warn("Standard Admin already exists, creating again");
 
-            Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
-            adminRepo.delete(formerAdmin);
-            userRepo.delete(formerAdmin.getUser());
+            if (adminRepo.existsAdminByUser_Username(username)) {
+                Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
+                adminRepo.delete(formerAdmin);
+            }
+            User user = userRepo.findByUsername(username).get();
+            userRepo.delete(user);
         }
 
 
