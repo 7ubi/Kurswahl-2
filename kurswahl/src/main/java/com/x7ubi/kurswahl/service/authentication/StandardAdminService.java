@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
+import com.x7ubi.kurswahl.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,9 @@ public class StandardAdminService {
     }
 
     @Transactional
-    public void createStandardAdmin(String standardPassword) {
+    public void createStandardAdmin() {
         String username = "admin";
+        String password = PasswordGenerator.generatePassword();
         if (userRepo.existsByUsername(username)) {
             logger.warn("Standard Admin already exists, creating again");
 
@@ -48,14 +50,11 @@ public class StandardAdminService {
         user.setUsername(username);
         user.setFirstname("Admin");
         user.setSurname("Admin");
-        user.setPassword(passwordEncoder.encode(standardPassword));
+        user.setPassword(passwordEncoder.encode(password));
         admin.setUser(user);
 
         adminRepo.save(admin);
 
-        logger.info(adminRepo.existsAdminByUser_Username(username).toString());
-        Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
-        logger.info(formerAdmin.getUser().getPassword());
-        logger.info(standardPassword);
+        logger.info(String.format("Standard Admin with password %s was created!", password));
     }
 }
