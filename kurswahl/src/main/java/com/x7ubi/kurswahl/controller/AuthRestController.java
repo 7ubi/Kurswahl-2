@@ -8,6 +8,7 @@ import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.auth.LoginRequest;
 import com.x7ubi.kurswahl.response.common.JwtResponse;
 import com.x7ubi.kurswahl.response.common.Role;
+import com.x7ubi.kurswahl.service.authentication.StandardAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,26 @@ public class AuthRestController {
 
     private final StudentRepo studentRepo;
 
-    public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo, TeacherRepo teacherRepo, StudentRepo studentRepo) {
+    private final StandardAdminService standardAdminService;
+
+    public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo,
+                              TeacherRepo teacherRepo, StudentRepo studentRepo,
+                              StandardAdminService standardAdminService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.adminRepo = adminRepo;
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
+        this.standardAdminService = standardAdminService;
+    }
+
+    @PostMapping("/standardAdmin")
+    public ResponseEntity<?> createStandardAdmin() {
+        logger.info("Creating standard Admin");
+
+        standardAdminService.createStandardAdmin();
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")

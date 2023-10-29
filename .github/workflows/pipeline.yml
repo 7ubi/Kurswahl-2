@@ -20,3 +20,22 @@ jobs:
           cache: maven
       - name: Build and Test with Maven
         run: mvn -B package --file kurswahl/pom.xml
+  deploy:
+    name: Deployment
+    runs-on: self-hosted
+    needs:
+      - build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        if: github.event_name != 'pull_request'
+      - name: Start docker-compose
+        env:
+          DB_PASSWORD_KURSWAHL: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          export DB_PASSWORD_KURSWAHL="$env:DB_PASSWORD_KURSWAHL"
+          export JWT_SECRET="$env:JWT_SECRET"
+          docker-compose down
+          docker-compose up --build -d
+        if: github.event_name != 'pull_request'
