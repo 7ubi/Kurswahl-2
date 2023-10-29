@@ -31,7 +31,6 @@ services:
     networks:
       - springmysql-net
       - backend
-      - nginx_backend
     restart: always
     depends_on:
       - mysqldb
@@ -45,15 +44,12 @@ services:
       - backend
     networks:
       - backend
-      - nginx_backend
     ports:
       - '4300:80'
 
 networks:
   springmysql-net:
   backend:
-  nginx_backend:
-    external: true
 
 
 volumes:
