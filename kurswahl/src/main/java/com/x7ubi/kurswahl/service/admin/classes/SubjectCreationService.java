@@ -9,7 +9,9 @@ import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,19 +20,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SubjectCreationService extends AbstractClassesCreationService {
+public class SubjectCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(SubjectCreationService.class);
-    protected SubjectCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo) {
-        super(subjectAreaRepo, subjectRepo);
+
+    private final AdminErrorService adminErrorService;
+
+    private final SubjectAreaRepo subjectAreaRepo;
+
+    private final SubjectRepo subjectRepo;
+
+    private final ModelMapper modelMapper = new ModelMapper();
+
+    protected SubjectCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo,
+                                     SubjectRepo subjectRepo) {
+        this.adminErrorService = adminErrorService;
+        this.subjectAreaRepo = subjectAreaRepo;
+        this.subjectRepo = subjectRepo;
     }
 
     @Transactional
     public ResultResponse createSubject(SubjectCreationRequest subjectCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.findSubjectCreationError(subjectCreationRequest));
-        resultResponse.getErrorMessages().addAll(this.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId()));
+        resultResponse.setErrorMessages(this.adminErrorService.findSubjectCreationError(subjectCreationRequest));
+        resultResponse.getErrorMessages().addAll(
+                this.adminErrorService.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId()));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -67,7 +82,7 @@ public class SubjectCreationService extends AbstractClassesCreationService {
 
     public ResultResponse deleteSubject(Long subjectId) {
         ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setErrorMessages(this.getSubjectNotFound(subjectId));
+        resultResponse.setErrorMessages(this.adminErrorService.getSubjectNotFound(subjectId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;

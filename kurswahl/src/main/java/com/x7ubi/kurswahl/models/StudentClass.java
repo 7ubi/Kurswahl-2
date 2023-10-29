@@ -13,6 +13,9 @@ public class StudentClass {
     @Column(nullable = false, updatable = false)
     private Long studentClassId;
 
+    @Column(nullable = false)
+    private String name;
+
     @OneToMany
     private Set<Student> students;
 
@@ -65,5 +68,13 @@ public class StudentClass {
 
     public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
