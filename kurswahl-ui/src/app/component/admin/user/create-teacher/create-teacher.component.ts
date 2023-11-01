@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -21,6 +21,7 @@ export class CreateTeacherComponent {
       firstname: ['', Validators.required],
       surname: ['', Validators.required],
       username: ['', Validators.required],
+      abbreviation: ['', Validators.required],
     });
   }
 
@@ -35,6 +36,7 @@ export class CreateTeacherComponent {
       username: this.createTeacherForm.get('username')?.value,
       firstname: this.createTeacherForm.get('firstname')?.value,
       surname: this.createTeacherForm.get('surname')?.value,
+      abbreviation: this.createTeacherForm.get('abbreviation')?.value,
     }
   }
 }

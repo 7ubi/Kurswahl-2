@@ -76,6 +76,7 @@ public class StudentClassCreationService {
             StudentClassResponse studentClassResponse = this.modelMapper.map(studentClass, StudentClassResponse.class);
             studentClassResponse.setTeacher(this.modelMapper.map(studentClass.getTeacher().getUser(), TeacherResponse.class));
             studentClassResponse.getTeacher().setTeacherId(studentClass.getTeacher().getTeacherId());
+            studentClassResponse.getTeacher().setAbbreviation(studentClass.getTeacher().getAbbreviation());
             studentClassResponses.getStudentClassResponses().add(studentClassResponse);
         }
 

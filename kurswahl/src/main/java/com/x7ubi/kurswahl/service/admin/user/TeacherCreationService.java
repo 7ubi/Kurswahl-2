@@ -53,6 +53,7 @@ public class TeacherCreationService {
 
         Teacher teacher = new Teacher();
         teacher.setUser(this.mapper.map(teacherSignupRequest, User.class));
+        teacher.setAbbreviation(teacherSignupRequest.getAbbreviation());
         teacher.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         teacher.getUser().setPassword(passwordEncoder.encode(teacher.getUser().getGeneratedPassword()));
 
@@ -71,6 +72,7 @@ public class TeacherCreationService {
         for(Teacher teacher: teachers) {
             TeacherResponse teacherResponse = this.mapper.map(teacher.getUser(), TeacherResponse.class);
             teacherResponse.setTeacherId(teacher.getTeacherId());
+            teacherResponse.setAbbreviation(teacher.getAbbreviation());
             teacherResponses.getTeacherResponses().add(teacherResponse);
         }
 

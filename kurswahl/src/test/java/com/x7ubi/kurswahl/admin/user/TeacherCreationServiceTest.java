@@ -45,6 +45,7 @@ public class TeacherCreationServiceTest {
         user.setSurname("User");
         user.setPassword("Password");
         teacher = new Teacher();
+        teacher.setAbbreviation("NN");
         teacher.setUser(user);
 
         this.teacherRepo.save(teacher);
@@ -57,6 +58,7 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setFirstname("Firstname");
         teacherSignupRequest.setSurname("Surname");
         teacherSignupRequest.setUsername("Username");
+        teacherSignupRequest.setAbbreviation("NN");
 
         // When
         ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
@@ -67,6 +69,7 @@ public class TeacherCreationServiceTest {
         Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacherSignupRequest.getFirstname());
         Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacherSignupRequest.getSurname());
         Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacherSignupRequest.getUsername());
+        Assertions.assertEquals(createdTeacher.getAbbreviation(), teacherSignupRequest.getAbbreviation());
     }
 
     @Test
@@ -76,6 +79,7 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setFirstname("Firstname");
         teacherSignupRequest.setSurname("Surname");
         teacherSignupRequest.setUsername("test");
+        teacherSignupRequest.setAbbreviation("EN");
 
         // When
         ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
@@ -87,6 +91,7 @@ public class TeacherCreationServiceTest {
         Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
         Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacher.getUser().getSurname());
         Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacher.getUser().getUsername());
+        Assertions.assertEquals(createdTeacher.getAbbreviation(), teacher.getAbbreviation());
     }
 
     @Test
