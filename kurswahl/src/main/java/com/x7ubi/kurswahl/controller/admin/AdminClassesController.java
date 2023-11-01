@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
@@ -126,6 +127,15 @@ public class AdminClassesController {
         }
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/studentClasses")
+    public ResponseEntity<?> getAllStudentClasses() {
+        logger.info("Getting all Student Classes");
+
+        StudentClassResponses response = this.studentClassCreationService.getAllStudentClasses();
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/tape")

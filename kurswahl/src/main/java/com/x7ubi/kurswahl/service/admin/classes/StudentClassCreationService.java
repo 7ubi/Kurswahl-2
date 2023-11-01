@@ -5,6 +5,9 @@ import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponse;
+import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import jakarta.transaction.Transactional;
@@ -14,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class StudentClassCreationService {
@@ -60,5 +65,20 @@ public class StudentClassCreationService {
                 teacher.getUser().getUsername()));
 
         return response;
+    }
+
+    public StudentClassResponses getAllStudentClasses() {
+        List<StudentClass> studentClasses = this.studentClassRepo.findAll();
+        StudentClassResponses studentClassResponses = new StudentClassResponses();
+        studentClassResponses.setStudentClassResponses(new ArrayList<>());
+
+        for (StudentClass studentClass : studentClasses) {
+            StudentClassResponse studentClassResponse = this.modelMapper.map(studentClass, StudentClassResponse.class);
+            studentClassResponse.setTeacher(this.modelMapper.map(studentClass.getTeacher().getUser(), TeacherResponse.class));
+            studentClassResponse.getTeacher().setTeacherId(studentClass.getTeacher().getTeacherId());
+            studentClassResponses.getStudentClassResponses().add(studentClassResponse);
+        }
+
+        return studentClassResponses;
     }
 }
