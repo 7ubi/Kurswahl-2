@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {mapToCanActivate, RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./component/auth/login/login.component";
 import {ShowAdminsComponent} from "./component/admin/user/show-admins/show-admins.component";
@@ -13,6 +13,9 @@ import {ShowSubjectAreasComponent} from "./component/admin/classes/show-subject-
 import {CreateSubjectAreaComponent} from "./component/admin/classes/create-subject-area/create-subject-area.component";
 import {ShowSubjectsComponent} from "./component/admin/classes/show-subjects/show-subjects.component";
 import {CreateSubjectComponent} from "./component/admin/classes/create-subject/create-subject.component";
+import {
+  ShowStudentClassesComponent
+} from "./component/admin/classes/show-student-classes/show-student-classes.component";
 
 const routes: Routes = [
   {
@@ -67,6 +70,11 @@ const routes: Routes = [
   {
     path: 'admin/subjects/create',
     component: CreateSubjectComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/studentClasses',
+    component: ShowStudentClassesComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];

@@ -64,6 +64,19 @@ export interface SubjectResponses {
   readonly subjectResponses: SubjectResponse[];
 }
 
+export interface StudentClassResponse {
+  readonly studentClassId: number;
+  readonly name: string;
+  readonly students: StudentResponse[];
+  readonly teacher: TeacherResponse;
+  readonly year: number;
+  readonly releaseYear: number;
+}
+
+export interface StudentClassResponses {
+  readonly studentClassResponses: StudentClassResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

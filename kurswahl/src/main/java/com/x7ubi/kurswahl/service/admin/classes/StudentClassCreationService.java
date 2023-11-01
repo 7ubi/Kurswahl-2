@@ -53,12 +53,11 @@ public class StudentClassCreationService {
 
         Teacher teacher = this.teacherRepo.findTeacherByTeacherId(studentClassCreationRequest.getTeacherId()).get();
         StudentClass studentClass = this.modelMapper.map(studentClassCreationRequest, StudentClass.class);
+        studentClass.setStudentClassId(null);
         studentClass.setTeacher(teacher);
         studentClass.setReleaseYear(Year.now().getValue());
-
-        teacher.getStudentClasses().add(studentClass);
-
         this.studentClassRepo.save(studentClass);
+        teacher.getStudentClasses().add(studentClass);
         this.teacherRepo.save(teacher);
 
         logger.info(String.format("Student class %s with teacher %s was created", studentClass.getName(),

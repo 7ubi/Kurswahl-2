@@ -10,3 +10,11 @@
 .side-nav-item:hover {
     background-color: #f5f5f5;
 }
+
+.side-nav-icon {
+  padding-right: 10px;
+}
+
+.side-nav-header {
+  padding-left: 5px;
+}
