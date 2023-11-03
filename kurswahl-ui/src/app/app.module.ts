@@ -34,6 +34,9 @@ import {MatSortModule} from "@angular/material/sort";
 import {
   ShowStudentClassesComponent
 } from './component/admin/classes/show-student-classes/show-student-classes.component';
+import {
+  CreateStudentClassComponent
+} from './component/admin/classes/create-student-class/create-student-class.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,8 @@ import {
     CreateSubjectAreaComponent,
     ShowSubjectsComponent,
     CreateSubjectComponent,
-    ShowStudentClassesComponent
+    ShowStudentClassesComponent,
+    CreateStudentClassComponent
   ],
     imports: [
         BrowserModule,

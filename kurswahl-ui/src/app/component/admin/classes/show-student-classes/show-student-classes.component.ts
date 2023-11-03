@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ResultResponse, StudentClassResponse, StudentClassResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
@@ -11,7 +11,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   templateUrl: './show-student-classes.component.html',
   styleUrls: ['./show-student-classes.component.css']
 })
-export class ShowStudentClassesComponent {
+export class ShowStudentClassesComponent implements OnInit {
   studentClassResponses!: StudentClassResponses;
   dataSource!: MatTableDataSource<StudentClassResponse>;
   displayedColumns: string[];
@@ -24,19 +24,19 @@ export class ShowStudentClassesComponent {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Name', 'Lehrer', 'Aktionen'];
+    this.displayedColumns = ['Name', 'Lehrer', 'Jahrgang', 'Aktionen'];
   }
 
 
   ngOnInit(): void {
-    this.loadSubjectAreas();
+    this.loadStudentClasses();
   }
 
-  private loadSubjectAreas() {
+  private loadStudentClasses() {
     this.httpService.get<StudentClassResponses>('/api/admin/studentClasses', response => {
       this.studentClassResponses = response;
       this.dataSource = new MatTableDataSource(this.studentClassResponses.studentClassResponses);
-      console.log(this.dataSource)
+
       if (this.lastSort) {
         this.sortData(this.lastSort);
       } else {
@@ -51,13 +51,9 @@ export class ShowStudentClassesComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  createSubjectArea() {
-    this.router.navigate(['create'], {relativeTo: this.route});
-  }
-
   deleteSubjectArea(subjectAreaId: number) {
     this.httpService.delete<ResultResponse>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
-      this.loadSubjectAreas();
+      this.loadStudentClasses();
       this.snackBar.open('Fachbereich wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -80,6 +76,8 @@ export class ShowStudentClassesComponent {
           return this.compare(a.name, b.name, isAsc);
         case 'teacher':
           return this.compare(a.teacher.abbreviation, b.teacher.abbreviation, isAsc);
+        case 'year':
+          return this.compare(a.year, b.year, isAsc);
         default:
           return 0;
       }
@@ -88,5 +86,9 @@ export class ShowStudentClassesComponent {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  createStudentClass() {
+    this.router.navigate(['create'], {relativeTo: this.route});
   }
 }

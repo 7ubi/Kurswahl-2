@@ -16,6 +16,9 @@ import {CreateSubjectComponent} from "./component/admin/classes/create-subject/c
 import {
   ShowStudentClassesComponent
 } from "./component/admin/classes/show-student-classes/show-student-classes.component";
+import {
+  CreateStudentClassComponent
+} from "./component/admin/classes/create-student-class/create-student-class.component";
 
 const routes: Routes = [
   {
@@ -75,6 +78,11 @@ const routes: Routes = [
   {
     path: 'admin/studentClasses',
     component: ShowStudentClassesComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/studentClasses/create',
+    component: CreateStudentClassComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];
