@@ -39,6 +39,7 @@ export interface StudentResponses {
 
 export interface TeacherResponse extends UserResponse {
   readonly teacherId: number;
+  readonly abbreviation: string;
 }
 
 export interface TeacherResponses {
