@@ -26,6 +26,10 @@
         <td mat-cell *matCellDef="let element"> {{element.surname}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="Kürzel">
+        <th mat-header-cell *matHeaderCellDef> Kürzel</th>
+        <td mat-cell *matCellDef="let element"> {{element.abbreviation}} </td>
+      </ng-container>
 
       <ng-container matColumnDef="Generiertes Passwort">
         <th mat-header-cell *matHeaderCellDef> Generiertes Passwort </th>

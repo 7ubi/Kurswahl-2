@@ -5,11 +5,14 @@
 </mat-toolbar>
 
 <div *ngIf="getRole() === 'ADMIN'">
-    <span><h2>Benutzerverwaltung</h2></span>
-    <span (click)="navigateTo('/admin/admins')" class="side-nav-item"><mat-icon>person</mat-icon>Administratoren</span>
-    <span (click)="navigateTo('/admin/students')" class="side-nav-item"><mat-icon>school</mat-icon>Schüler</span>
-    <span (click)="navigateTo('/admin/teachers')" class="side-nav-item"><mat-icon>grade</mat-icon>Lehrer</span>
-    <span><h2>Kursverwaltung</h2></span>
-  <span (click)="navigateTo('/admin/subjectAreas')" class="side-nav-item"><mat-icon>school</mat-icon>Fachbereiche</span>
-  <span (click)="navigateTo('/admin/subjects')" class="side-nav-item"><mat-icon>book</mat-icon>Fächer</span>
+  <span><h2 class="side-nav-header">Benutzerverwaltung</h2></span>
+  <span (click)="navigateTo('/admin/admins')" class="side-nav-item"><mat-icon class="side-nav-icon">person</mat-icon> Administratoren</span>
+  <span (click)="navigateTo('/admin/students')" class="side-nav-item"><mat-icon class="side-nav-icon">school</mat-icon> Schüler</span>
+  <span (click)="navigateTo('/admin/teachers')" class="side-nav-item"><mat-icon class="side-nav-icon">grade</mat-icon> Lehrer</span>
+  <span><h2 class="side-nav-header">Kursverwaltung</h2></span>
+  <span (click)="navigateTo('/admin/subjectAreas')" class="side-nav-item"><mat-icon
+    class="side-nav-icon">school</mat-icon> Fachbereiche</span>
+  <span (click)="navigateTo('/admin/subjects')" class="side-nav-item"><mat-icon class="side-nav-icon">book</mat-icon> Fächer</span>
+  <span (click)="navigateTo('/admin/studentClasses')" class="side-nav-item"><mat-icon
+    class="side-nav-icon">looks_one</mat-icon> Klassen</span>
 </div>

@@ -1,0 +1,43 @@
+<app-hero title="Klassen"></app-hero>
+
+<div class="container">
+  <div class="center">
+    <div class="header">
+      <mat-form-field>
+        <mat-label>Suche</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="createStudentClass()">Klasse erstellen</button>
+    </div>
+
+    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
+           matSort (matSortChange)="sortData($event)">
+
+      <ng-container matColumnDef="Name">
+        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Lehrer">
+        <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
+        <td mat-cell *matCellDef="let element"> {{element.teacher.abbreviation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Jahrgang">
+        <th mat-sort-header="year" mat-header-cell *matHeaderCellDef> Jahrgang</th>
+        <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Aktionen">
+        <th mat-header-cell *matHeaderCellDef> Aktionen</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon>delete</mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+

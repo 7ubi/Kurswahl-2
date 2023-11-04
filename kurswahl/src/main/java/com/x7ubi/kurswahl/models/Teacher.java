@@ -21,6 +21,9 @@ public class Teacher {
     @OneToMany
     private Set<StudentClass> studentClasses;
 
+    @Column(nullable = false)
+    private String abbreviation;
+
     public Teacher() {
     }
 
@@ -43,5 +46,29 @@ public class Teacher {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(Set<Class> classes) {
+        this.classes = classes;
+    }
+
+    public Set<StudentClass> getStudentClasses() {
+        return studentClasses;
+    }
+
+    public void setStudentClasses(Set<StudentClass> studentClasses) {
+        this.studentClasses = studentClasses;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

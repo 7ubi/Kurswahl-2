@@ -2,11 +2,12 @@ package com.x7ubi.kurswahl.service.admin.classes;
 
 import com.x7ubi.kurswahl.models.SubjectArea;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
-import com.x7ubi.kurswahl.repository.SubjectRepo;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.AdminErrorService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SubjectAreaCreationService extends AbstractClassesCreationService {
+public class SubjectAreaCreationService {
     private final Logger logger = LoggerFactory.getLogger(SubjectAreaCreationService.class);
 
-    public SubjectAreaCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo) {
-        super(subjectAreaRepo, subjectRepo);
+    private final AdminErrorService adminErrorService;
+
+    private final SubjectAreaRepo subjectAreaRepo;
+
+    private final ModelMapper modelMapper = new ModelMapper();
+
+    public SubjectAreaCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo) {
+        this.adminErrorService = adminErrorService;
+        this.subjectAreaRepo = subjectAreaRepo;
     }
 
     public ResultResponse createSubjectArea(SubjectAreaCreationRequest subjectAreaCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.findSubjectAreaCreationError(subjectAreaCreationRequest));
+        resultResponse.setErrorMessages(this.adminErrorService.findSubjectAreaCreationError(subjectAreaCreationRequest));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -54,7 +62,7 @@ public class SubjectAreaCreationService extends AbstractClassesCreationService {
 
     public ResultResponse deleteSubjectArea(Long subjectAreaId) {
         ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setErrorMessages(this.getSubjectAreaNotFound(subjectAreaId));
+        resultResponse.setErrorMessages(this.adminErrorService.getSubjectAreaNotFound(subjectAreaId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;

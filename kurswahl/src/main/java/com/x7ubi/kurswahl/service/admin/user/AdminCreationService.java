@@ -3,14 +3,14 @@ package com.x7ubi.kurswahl.service.admin.user;
 import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
-import com.x7ubi.kurswahl.repository.StudentRepo;
-import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.AdminResponse;
 import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,19 +20,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AdminCreationService extends AbstractUserCreationService {
+public class AdminCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(AdminCreationService.class);
 
-    protected AdminCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
-                                   TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo, studentRepo, teacherRepo, passwordEncoder);
+    private final AdminErrorService adminErrorService;
+
+    private final AdminRepo adminRepo;
+
+    private final UserRepo userRepo;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper mapper = new ModelMapper();
+
+    protected AdminCreationService(AdminErrorService adminErrorService, AdminRepo adminRepo, UserRepo userRepo,
+                                   PasswordEncoder passwordEncoder) {
+        this.adminErrorService = adminErrorService;
+        this.adminRepo = adminRepo;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ResultResponse registerAdmin(AdminSignupRequest signupRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.findRegisterErrors(signupRequest));
+        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(signupRequest));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -67,7 +80,7 @@ public class AdminCreationService extends AbstractUserCreationService {
     public ResultResponse deleteAdmin(Long adminId) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.getAdminNotFound(adminId));
+        resultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;

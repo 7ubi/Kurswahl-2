@@ -1,11 +1,14 @@
 package com.x7ubi.kurswahl.controller.admin;
 
+import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.classes.StudentClassCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.TapeCreationService;
@@ -24,15 +27,17 @@ public class AdminClassesController {
 
     private final SubjectCreationService subjectCreationService;
 
+    private final StudentClassCreationService studentClassCreationService;
+
     private final TapeCreationService tapeCreationService;
 
     public AdminClassesController(
-            SubjectAreaCreationService subjectAreaCreationService,
-            SubjectCreationService subjectCreationService,
-            TapeCreationService tapeCreationService
+            SubjectAreaCreationService subjectAreaCreationService, SubjectCreationService subjectCreationService,
+            StudentClassCreationService studentClassCreationService, TapeCreationService tapeCreationService
     ) {
         this.subjectAreaCreationService = subjectAreaCreationService;
         this.subjectCreationService = subjectCreationService;
+        this.studentClassCreationService = studentClassCreationService;
         this.tapeCreationService = tapeCreationService;
     }
 
@@ -106,6 +111,29 @@ public class AdminClassesController {
     public ResponseEntity<?> getSubjects() {
 
         SubjectResponses response = this.subjectCreationService.getAllSubjects();
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/studentClass")
+    public ResponseEntity<?> createStudentClass(@RequestBody StudentClassCreationRequest studentClassCreationRequest) {
+
+        logger.info("Creating new Student Class");
+
+        ResultResponse response = this.studentClassCreationService.createStudentClass(studentClassCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/studentClasses")
+    public ResponseEntity<?> getAllStudentClasses() {
+        logger.info("Getting all Student Classes");
+
+        StudentClassResponses response = this.studentClassCreationService.getAllStudentClasses();
 
         return ResponseEntity.ok().body(response);
     }

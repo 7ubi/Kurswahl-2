@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.admin.user;
 
+import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
@@ -10,23 +11,9 @@ import com.x7ubi.kurswahl.service.admin.user.TeacherCreationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest()
-@TestPropertySource(properties = {
-        "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.url=jdbc:h2:mem:kurswahlTestdb;NON_KEYWORDS=user",
-        "spring.jpa.properties.hibernate.globally_quoted_identifiers=true"
-})
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@KurswahlServiceTest
 public class TeacherCreationServiceTest {
 
     @Autowired
@@ -45,6 +32,7 @@ public class TeacherCreationServiceTest {
         user.setSurname("User");
         user.setPassword("Password");
         teacher = new Teacher();
+        teacher.setAbbreviation("NN");
         teacher.setUser(user);
 
         this.teacherRepo.save(teacher);
@@ -57,6 +45,7 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setFirstname("Firstname");
         teacherSignupRequest.setSurname("Surname");
         teacherSignupRequest.setUsername("Username");
+        teacherSignupRequest.setAbbreviation("NN");
 
         // When
         ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
@@ -67,6 +56,7 @@ public class TeacherCreationServiceTest {
         Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacherSignupRequest.getFirstname());
         Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacherSignupRequest.getSurname());
         Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacherSignupRequest.getUsername());
+        Assertions.assertEquals(createdTeacher.getAbbreviation(), teacherSignupRequest.getAbbreviation());
     }
 
     @Test
@@ -76,6 +66,7 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setFirstname("Firstname");
         teacherSignupRequest.setSurname("Surname");
         teacherSignupRequest.setUsername("test");
+        teacherSignupRequest.setAbbreviation("EN");
 
         // When
         ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
@@ -87,6 +78,7 @@ public class TeacherCreationServiceTest {
         Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
         Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacher.getUser().getSurname());
         Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacher.getUser().getUsername());
+        Assertions.assertEquals(createdTeacher.getAbbreviation(), teacher.getAbbreviation());
     }
 
     @Test

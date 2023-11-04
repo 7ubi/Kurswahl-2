@@ -2,15 +2,15 @@ package com.x7ubi.kurswahl.service.admin.user;
 
 import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.User;
-import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
-import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.StudentResponse;
 import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,19 +20,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class StudentCreationService extends AbstractUserCreationService {
+public class StudentCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(StudentCreationService.class);
 
-    protected StudentCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
-                                     TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo, studentRepo, teacherRepo, passwordEncoder);
+    private final AdminErrorService adminErrorService;
+
+    private final StudentRepo studentRepo;
+
+    private final UserRepo userRepo;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper mapper = new ModelMapper();
+
+    protected StudentCreationService(AdminErrorService adminErrorService, StudentRepo studentRepo, UserRepo userRepo,
+                                     PasswordEncoder passwordEncoder) {
+        this.adminErrorService = adminErrorService;
+        this.studentRepo = studentRepo;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ResultResponse registerStudent(StudentSignupRequest studentSignupRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.findRegisterErrors(studentSignupRequest));
+        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(studentSignupRequest));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -67,7 +80,7 @@ public class StudentCreationService extends AbstractUserCreationService {
     public ResultResponse deleteStudent(Long studentId) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.getStudentNotFound(studentId));
+        resultResponse.setErrorMessages(this.adminErrorService.getStudentNotFound(studentId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;

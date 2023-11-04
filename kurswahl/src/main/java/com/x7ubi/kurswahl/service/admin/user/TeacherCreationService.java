@@ -2,15 +2,15 @@ package com.x7ubi.kurswahl.service.admin.user;
 
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
-import com.x7ubi.kurswahl.repository.AdminRepo;
-import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,19 +20,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TeacherCreationService extends AbstractUserCreationService {
+public class TeacherCreationService {
 
     Logger logger = LoggerFactory.getLogger(TeacherCreationService.class);
 
-    protected TeacherCreationService(UserRepo userRepo, AdminRepo adminRepo, StudentRepo studentRepo,
-                                     TeacherRepo teacherRepo, PasswordEncoder passwordEncoder) {
-        super(userRepo, adminRepo, studentRepo, teacherRepo, passwordEncoder);
+    private final AdminErrorService adminErrorService;
+
+    private final TeacherRepo teacherRepo;
+
+    private final UserRepo userRepo;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper mapper = new ModelMapper();
+
+    public TeacherCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo, UserRepo userRepo,
+                                  PasswordEncoder passwordEncoder) {
+        this.adminErrorService = adminErrorService;
+        this.teacherRepo = teacherRepo;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ResultResponse registerTeacher(TeacherSignupRequest teacherSignupRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.findRegisterErrors(teacherSignupRequest));
+        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(teacherSignupRequest));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -40,6 +53,7 @@ public class TeacherCreationService extends AbstractUserCreationService {
 
         Teacher teacher = new Teacher();
         teacher.setUser(this.mapper.map(teacherSignupRequest, User.class));
+        teacher.setAbbreviation(teacherSignupRequest.getAbbreviation());
         teacher.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         teacher.getUser().setPassword(passwordEncoder.encode(teacher.getUser().getGeneratedPassword()));
 
@@ -58,6 +72,7 @@ public class TeacherCreationService extends AbstractUserCreationService {
         for(Teacher teacher: teachers) {
             TeacherResponse teacherResponse = this.mapper.map(teacher.getUser(), TeacherResponse.class);
             teacherResponse.setTeacherId(teacher.getTeacherId());
+            teacherResponse.setAbbreviation(teacher.getAbbreviation());
             teacherResponses.getTeacherResponses().add(teacherResponse);
         }
 
@@ -67,7 +82,7 @@ public class TeacherCreationService extends AbstractUserCreationService {
     public ResultResponse deleteTeacher(Long teacherId) {
         ResultResponse resultResponse = new ResultResponse();
 
-        resultResponse.setErrorMessages(this.getTeacherNotFound(teacherId));
+        resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;

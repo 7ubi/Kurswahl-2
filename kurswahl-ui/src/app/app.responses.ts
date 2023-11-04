@@ -39,6 +39,7 @@ export interface StudentResponses {
 
 export interface TeacherResponse extends UserResponse {
   readonly teacherId: number;
+  readonly abbreviation: string;
 }
 
 export interface TeacherResponses {
@@ -62,6 +63,19 @@ export interface SubjectResponse {
 
 export interface SubjectResponses {
   readonly subjectResponses: SubjectResponse[];
+}
+
+export interface StudentClassResponse {
+  readonly studentClassId: number;
+  readonly name: string;
+  readonly students: StudentResponse[];
+  readonly teacher: TeacherResponse;
+  readonly year: number;
+  readonly releaseYear: number;
+}
+
+export interface StudentClassResponses {
+  readonly studentClassResponses: StudentClassResponse[];
 }
 
 export enum Role {
