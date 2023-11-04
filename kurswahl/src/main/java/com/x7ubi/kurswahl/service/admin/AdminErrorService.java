@@ -150,4 +150,15 @@ public class AdminErrorService {
 
         return errors;
     }
+
+    public List<MessageResponse> getStudentClassNotFound(Long studentClassId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if (!studentClassRepo.existsStudentClassAreaByStudentClassId(studentClassId)) {
+            logger.error(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND));
+        }
+
+        return errors;
+    }
 }

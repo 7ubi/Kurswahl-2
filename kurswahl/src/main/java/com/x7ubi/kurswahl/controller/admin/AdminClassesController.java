@@ -96,7 +96,7 @@ public class AdminClassesController {
     public ResponseEntity<?> deleteSubject(
             @RequestParam Long subjectId
     ) {
-        logger.info("Creating new Subject area");
+        logger.info("Deleting Subject area");
 
         ResultResponse response = this.subjectCreationService.deleteSubject(subjectId);
 
@@ -121,6 +121,19 @@ public class AdminClassesController {
         logger.info("Creating new Student Class");
 
         ResultResponse response = this.studentClassCreationService.createStudentClass(studentClassCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("/studentClass")
+    public ResponseEntity<?> deleteStudentClass(@RequestParam Long studentClassId) {
+        logger.info("Deleting Student Class");
+
+        ResultResponse response = this.studentClassCreationService.deleteStudentClass(studentClassId);
 
         if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);

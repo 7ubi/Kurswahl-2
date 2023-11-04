@@ -21,5 +21,7 @@ public class ErrorMessage {
         public static String SUBJECT_NOT_FOUND = "Fach konnte nicht gefunden werden!";
 
         public static String STUDENT_CLASS_ALREADY_EXISTS = "Eine Klasse mit diesem existiert bereits in diesem Jahr";
+
+        public static String STUDENT_CLASS_NOT_FOUND = "Die Klasse konnte nicht gefunden werden!";
     }
 }

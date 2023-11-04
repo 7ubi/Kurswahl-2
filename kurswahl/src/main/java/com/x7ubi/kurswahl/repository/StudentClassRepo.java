@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface StudentClassRepo extends JpaRepository<StudentClass, Long> {
     Optional<StudentClass> findStudentClassByStudentClassId(Long studentClassId);
 
-    Optional<StudentClass> findStudentClassAreaByName(String name);
+    Optional<StudentClass> findStudentClassByName(String name);
 
     Boolean existsStudentClassByNameAndReleaseYear(String name, Integer releaseYear);
 
-    Boolean existsStudentClassAreaByName(String name);
+    Boolean existsStudentClassByName(String name);
 
     Boolean existsStudentClassAreaByStudentClassId(Long studentClassId);
 }

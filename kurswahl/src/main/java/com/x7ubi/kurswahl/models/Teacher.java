@@ -18,7 +18,7 @@ public class Teacher {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Class> classes;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<StudentClass> studentClasses;
 
     @Column(nullable = false)
