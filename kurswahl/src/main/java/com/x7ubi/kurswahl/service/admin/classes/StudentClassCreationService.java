@@ -81,4 +81,23 @@ public class StudentClassCreationService {
 
         return studentClassResponses;
     }
+
+    @Transactional
+    public ResultResponse deleteStudentClass(Long studentClassId) {
+        ResultResponse response = new ResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getStudentClassNotFound(studentClassId));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        StudentClass studentClass = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId).get();
+        studentClass.getTeacher().getStudentClasses().remove(studentClass);
+        this.studentClassRepo.delete(studentClass);
+
+        logger.info(String.format("Student Class %s was deleted", studentClass.getName()));
+
+        return response;
+    }
 }

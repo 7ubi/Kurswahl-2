@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.HashSet;
 
 @KurswahlServiceTest
 public class StudentClassCreationServiceTest {
@@ -60,6 +61,10 @@ public class StudentClassCreationServiceTest {
         studentClass.setYear(12);
 
         this.studentClassRepo.save(studentClass);
+
+        teacher.setStudentClasses(new HashSet<>());
+        teacher.getStudentClasses().add(studentClass);
+        this.teacherRepo.save(teacher);
     }
 
     @Test
@@ -77,7 +82,7 @@ public class StudentClassCreationServiceTest {
         Assertions.assertTrue(response.getErrorMessages().isEmpty());
 
         StudentClass createdStudentClass
-                = this.studentClassRepo.findStudentClassAreaByName(studentClassCreationRequest.getName()).get();
+                = this.studentClassRepo.findStudentClassByName(studentClassCreationRequest.getName()).get();
         Assertions.assertEquals(createdStudentClass.getName(), studentClassCreationRequest.getName());
         Assertions.assertEquals(createdStudentClass.getYear(), studentClassCreationRequest.getYear());
         Assertions.assertEquals(createdStudentClass.getTeacher().getTeacherId(), studentClassCreationRequest.getTeacherId());
@@ -102,7 +107,7 @@ public class StudentClassCreationServiceTest {
                 ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
 
         StudentClass createdStudentClass
-                = this.studentClassRepo.findStudentClassAreaByName(studentClassCreationRequest.getName()).get();
+                = this.studentClassRepo.findStudentClassByName(studentClassCreationRequest.getName()).get();
         Assertions.assertEquals(createdStudentClass.getName(), studentClass.getName());
         Assertions.assertEquals(createdStudentClass.getYear(), studentClass.getYear());
         Assertions.assertEquals(createdStudentClass.getTeacher().getTeacherId(), studentClass.getTeacher().getTeacherId());
@@ -126,6 +131,39 @@ public class StudentClassCreationServiceTest {
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
                 ErrorMessage.Administration.TEACHER_NOT_FOUND);
 
-        Assertions.assertFalse(this.studentClassRepo.existsStudentClassAreaByName(studentClassCreationRequest.getName()));
+        Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClassCreationRequest.getName()));
+    }
+
+    @Test
+    public void testDeleteStudentClass() {
+        // Given
+        studentClass = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
+
+        // When
+        ResultResponse response = this.studentClassCreationService.deleteStudentClass(studentClass.getStudentClassId());
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClass.getName()));
+
+        teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
+        Assertions.assertTrue(teacher.getStudentClasses().isEmpty());
+    }
+
+    @Test
+    public void testDeleteStudentClassWrongId() {
+        // Given
+        studentClass = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
+
+        // When
+        ResultResponse response = this.studentClassCreationService.deleteStudentClass(studentClass.getStudentClassId() + 1);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+        Assertions.assertTrue(this.studentClassRepo.existsStudentClassByName(studentClass.getName()));
+
+        teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
+        Assertions.assertEquals(teacher.getStudentClasses().size(), 1);
     }
 }

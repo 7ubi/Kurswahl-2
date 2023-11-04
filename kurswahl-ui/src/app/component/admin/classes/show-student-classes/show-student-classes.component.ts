@@ -51,10 +51,10 @@ export class ShowStudentClassesComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  deleteSubjectArea(subjectAreaId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
+  deleteStudentClass(studentClassId: number) {
+    this.httpService.delete<ResultResponse>(`api/admin/studentClass?studentClassId=${studentClassId}`, response => {
       this.loadStudentClasses();
-      this.snackBar.open('Fachbereich wurde erfolgreich gelöscht.', 'Verstanden', {
+      this.snackBar.open('Klasse wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
         duration: 5000
