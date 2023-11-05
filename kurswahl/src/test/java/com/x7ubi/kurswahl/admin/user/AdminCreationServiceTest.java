@@ -43,37 +43,17 @@ public class AdminCreationServiceTest {
         AdminSignupRequest adminSignupRequest = new AdminSignupRequest();
         adminSignupRequest.setFirstname("Firstname");
         adminSignupRequest.setSurname("Surname");
-        adminSignupRequest.setUsername("Username");
 
         // When
-        ResultResponse response = this.adminCreationService.registerAdmin(adminSignupRequest);
+        this.adminCreationService.registerAdmin(adminSignupRequest);
 
         // Then
-        Admin createdAdmin = this.adminRepo.findAdminByUser_Username("Username").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Admin createdAdmin = this.adminRepo.findAdminByUser_Username("firstname.surname").get();
         Assertions.assertEquals(createdAdmin.getUser().getFirstname(), adminSignupRequest.getFirstname());
         Assertions.assertEquals(createdAdmin.getUser().getSurname(), adminSignupRequest.getSurname());
-        Assertions.assertEquals(createdAdmin.getUser().getUsername(), adminSignupRequest.getUsername());
-    }
-
-    @Test
-    public void testCreateAdminUsernameExists() {
-        // Given
-        AdminSignupRequest adminSignupRequest = new AdminSignupRequest();
-        adminSignupRequest.setFirstname("Firstname");
-        adminSignupRequest.setSurname("Surname");
-        adminSignupRequest.setUsername("test");
-
-        // When
-        ResultResponse response = this.adminCreationService.registerAdmin(adminSignupRequest);
-
-        // Then
-        Admin createdAdmin = this.adminRepo.findAdminByUser_Username("test").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Authentication.USERNAME_EXITS);
-        Assertions.assertEquals(createdAdmin.getUser().getFirstname(), admin.getUser().getFirstname());
-        Assertions.assertEquals(createdAdmin.getUser().getSurname(), admin.getUser().getSurname());
-        Assertions.assertEquals(createdAdmin.getUser().getUsername(), admin.getUser().getUsername());
+        Assertions.assertEquals(createdAdmin.getUser().getUsername(),
+                String.format("%s.%s", adminSignupRequest.getFirstname().toLowerCase(),
+                        adminSignupRequest.getSurname().toLowerCase()));
     }
 
     @Test

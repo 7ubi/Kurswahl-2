@@ -44,41 +44,19 @@ public class TeacherCreationServiceTest {
         TeacherSignupRequest teacherSignupRequest = new TeacherSignupRequest();
         teacherSignupRequest.setFirstname("Firstname");
         teacherSignupRequest.setSurname("Surname");
-        teacherSignupRequest.setUsername("Username");
         teacherSignupRequest.setAbbreviation("NN");
 
         // When
-        ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
+        this.teacherCreationService.registerTeacher(teacherSignupRequest);
 
         // Then
-        Teacher createdTeacher = this.teacherRepo.findTeacherByUser_Username("Username").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Teacher createdTeacher = this.teacherRepo.findTeacherByUser_Username("firstname.surname").get();
         Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacherSignupRequest.getFirstname());
         Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacherSignupRequest.getSurname());
-        Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacherSignupRequest.getUsername());
         Assertions.assertEquals(createdTeacher.getAbbreviation(), teacherSignupRequest.getAbbreviation());
-    }
-
-    @Test
-    public void testCreateTeacherUsernameExists() {
-        // Given
-        TeacherSignupRequest teacherSignupRequest = new TeacherSignupRequest();
-        teacherSignupRequest.setFirstname("Firstname");
-        teacherSignupRequest.setSurname("Surname");
-        teacherSignupRequest.setUsername("test");
-        teacherSignupRequest.setAbbreviation("EN");
-
-        // When
-        ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
-
-        // Then
-        Teacher createdTeacher = this.teacherRepo.findTeacherByUser_Username("test").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Authentication.USERNAME_EXITS);
-        Assertions.assertEquals(createdTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
-        Assertions.assertEquals(createdTeacher.getUser().getSurname(), teacher.getUser().getSurname());
-        Assertions.assertEquals(createdTeacher.getUser().getUsername(), teacher.getUser().getUsername());
-        Assertions.assertEquals(createdTeacher.getAbbreviation(), teacher.getAbbreviation());
+        Assertions.assertEquals(createdTeacher.getUser().getUsername(),
+                String.format("%s.%s", teacherSignupRequest.getFirstname().toLowerCase(),
+                        teacherSignupRequest.getSurname().toLowerCase()));
     }
 
     @Test

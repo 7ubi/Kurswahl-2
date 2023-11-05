@@ -32,35 +32,30 @@ public class AdminCreationService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UsernameService usernameService;
+
     private final ModelMapper mapper = new ModelMapper();
 
     protected AdminCreationService(AdminErrorService adminErrorService, AdminRepo adminRepo, UserRepo userRepo,
-                                   PasswordEncoder passwordEncoder) {
+                                   PasswordEncoder passwordEncoder, UsernameService usernameService) {
         this.adminErrorService = adminErrorService;
         this.adminRepo = adminRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.usernameService = usernameService;
     }
 
-    public ResultResponse registerAdmin(AdminSignupRequest signupRequest) {
-        ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(signupRequest));
-
-        if(!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
-        }
+    public void registerAdmin(AdminSignupRequest signupRequest) {
 
         Admin admin = new Admin();
         admin.setUser(this.mapper.map(signupRequest, User.class));
+        admin.getUser().setUsername(this.usernameService.generateUsernameFromName(signupRequest));
         admin.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         admin.getUser().setPassword(passwordEncoder.encode(admin.getUser().getGeneratedPassword()));
 
         this.adminRepo.save(admin);
 
         logger.info(String.format("Admin %s was created", admin.getUser().getUsername()));
-
-        return resultResponse;
     }
 
     public AdminResponses getAllAdmins() {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ResultResponse} from "../../../../app.responses";
@@ -20,7 +20,6 @@ export class CreateAdminComponent {
     this.createAdminForm = this.formBuilder.group({
       firstname: ['', Validators.required],
       surname: ['', Validators.required],
-      username: ['', Validators.required],
     })
   }
 
@@ -32,7 +31,6 @@ export class CreateAdminComponent {
 
   private getCreateAdminRequest() {
     return {
-      username: this.createAdminForm.get('username')?.value,
       firstname: this.createAdminForm.get('firstname')?.value,
       surname: this.createAdminForm.get('surname')?.value,
     }

@@ -5,7 +5,6 @@ import com.x7ubi.kurswahl.repository.*;
 import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
-import com.x7ubi.kurswahl.request.auth.SignupRequest;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,18 +99,6 @@ public class AdminErrorService {
                 studentClassCreationRequest.getName(), currentYear)) {
             logger.error(ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
             errors.add(new MessageResponse(ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS));
-        }
-
-        return errors;
-    }
-
-
-    public List<MessageResponse> findRegisterErrors(SignupRequest signupRequest) {
-        List<MessageResponse> errors = new ArrayList<>();
-
-        if (userRepo.existsByUsername(signupRequest.getUsername())) {
-            logger.error(ErrorMessage.Authentication.USERNAME_EXITS);
-            errors.add(new MessageResponse(ErrorMessage.Authentication.USERNAME_EXITS));
         }
 
         return errors;

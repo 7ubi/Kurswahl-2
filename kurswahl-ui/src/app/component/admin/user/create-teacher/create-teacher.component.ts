@@ -20,7 +20,6 @@ export class CreateTeacherComponent {
     this.createTeacherForm = this.formBuilder.group({
       firstname: ['', Validators.required],
       surname: ['', Validators.required],
-      username: ['', Validators.required],
       abbreviation: ['', Validators.required],
     });
   }
@@ -33,7 +32,6 @@ export class CreateTeacherComponent {
 
   private getCreateTeacherRequest() {
     return {
-      username: this.createTeacherForm.get('username')?.value,
       firstname: this.createTeacherForm.get('firstname')?.value,
       surname: this.createTeacherForm.get('surname')?.value,
       abbreviation: this.createTeacherForm.get('abbreviation')?.value,

@@ -42,13 +42,9 @@ public class AdminUserController {
     ) {
         logger.info("Signing up new Admin");
 
-        ResultResponse response = adminCreationService.registerAdmin(signupRequest);
+        adminCreationService.registerAdmin(signupRequest);
 
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/admin")
@@ -79,13 +75,9 @@ public class AdminUserController {
     ) {
         logger.info("Signing up new Student");
 
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
+        this.studentCreationService.registerStudent(studentSignupRequest);
 
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/student")
@@ -116,13 +108,9 @@ public class AdminUserController {
     ) {
         logger.info("Signing up new Teacher");
 
-        ResultResponse response = this.teacherCreationService.registerTeacher(teacherSignupRequest);
+        this.teacherCreationService.registerTeacher(teacherSignupRequest);
 
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/teacher")

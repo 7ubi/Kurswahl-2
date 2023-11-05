@@ -43,37 +43,17 @@ public class StudentCreationServiceTest {
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
         studentSignupRequest.setSurname("Surname");
-        studentSignupRequest.setUsername("Username");
 
         // When
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
+        this.studentCreationService.registerStudent(studentSignupRequest);
 
         // Then
-        Student createdStudent = this.studentRepo.findStudentByUser_Username("Username").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Student createdStudent = this.studentRepo.findStudentByUser_Username("firstname.surname").get();
         Assertions.assertEquals(createdStudent.getUser().getFirstname(), studentSignupRequest.getFirstname());
         Assertions.assertEquals(createdStudent.getUser().getSurname(), studentSignupRequest.getSurname());
-        Assertions.assertEquals(createdStudent.getUser().getUsername(), studentSignupRequest.getUsername());
-    }
-
-    @Test
-    public void testCreateStudentUsernameExists() {
-        // Given
-        StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
-        studentSignupRequest.setFirstname("Firstname");
-        studentSignupRequest.setSurname("Surname");
-        studentSignupRequest.setUsername("test");
-
-        // When
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
-
-        // Then
-        Student createdStudent = this.studentRepo.findStudentByUser_Username("test").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Authentication.USERNAME_EXITS);
-        Assertions.assertEquals(createdStudent.getUser().getFirstname(), student.getUser().getFirstname());
-        Assertions.assertEquals(createdStudent.getUser().getSurname(), student.getUser().getSurname());
-        Assertions.assertEquals(createdStudent.getUser().getUsername(), student.getUser().getUsername());
+        Assertions.assertEquals(createdStudent.getUser().getUsername(),
+                String.format("%s.%s", studentSignupRequest.getFirstname().toLowerCase(),
+                        studentSignupRequest.getSurname().toLowerCase()));
     }
 
     @Test

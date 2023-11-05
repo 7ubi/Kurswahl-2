@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -20,7 +20,6 @@ export class CreateStudentComponent {
     this.createStudentForm = this.formBuilder.group({
       firstname: ['', Validators.required],
       surname: ['', Validators.required],
-      username: ['', Validators.required],
     });
   }
 
@@ -32,7 +31,6 @@ export class CreateStudentComponent {
 
   private getCreateStudentRequest() {
     return {
-      username: this.createStudentForm.get('username')?.value,
       firstname: this.createStudentForm.get('firstname')?.value,
       surname: this.createStudentForm.get('surname')?.value,
     }
