@@ -10,6 +10,7 @@ import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.user.AdminCreationService;
 import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
 import com.x7ubi.kurswahl.service.admin.user.TeacherCreationService;
+import com.x7ubi.kurswahl.service.authentication.admin.AdminRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/admin")
+    @AdminRequired
     public ResponseEntity<?> createAdmin(
             @RequestBody AdminSignupRequest signupRequest
     ) {
@@ -48,6 +50,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/admin")
+    @AdminRequired
     public ResponseEntity<?> deleteAdmin(
             @RequestParam Long adminId
     ) {
@@ -61,6 +64,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/admins")
+    @AdminRequired
     public ResponseEntity<?> getAdmins() {
         logger.info("Getting all Admins");
 
@@ -70,6 +74,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/student")
+    @AdminRequired
     public ResponseEntity<?> createStudent(
             @RequestBody StudentSignupRequest studentSignupRequest
     ) {
@@ -81,6 +86,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/student")
+    @AdminRequired
     public ResponseEntity<?> deleteStudent(
             @RequestParam Long studentId
     ) {
@@ -94,6 +100,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/students")
+    @AdminRequired
     public ResponseEntity<?> getStudents() {
         logger.info("Getting all Students");
 
@@ -103,6 +110,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/teacher")
+    @AdminRequired
     public ResponseEntity<?> createTeacher(
             @RequestBody TeacherSignupRequest teacherSignupRequest
     ) {
@@ -114,6 +122,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/teacher")
+    @AdminRequired
     public ResponseEntity<?> deleteTeacher(@RequestParam Long teacherId) {
         logger.info("Deleting Teacher");
 
@@ -127,6 +136,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/teachers")
+    @AdminRequired
     public ResponseEntity<?> getTeacher() {
         logger.info("Getting all Teachers");
 

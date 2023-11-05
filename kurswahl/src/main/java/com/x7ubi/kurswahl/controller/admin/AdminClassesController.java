@@ -12,6 +12,7 @@ import com.x7ubi.kurswahl.service.admin.classes.StudentClassCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.TapeCreationService;
+import com.x7ubi.kurswahl.service.authentication.admin.AdminRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class AdminClassesController {
     }
 
     @PostMapping("/subjectArea")
+    @AdminRequired
     public ResponseEntity<?> createSubjectArea(
             @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
     ) {
@@ -57,6 +59,7 @@ public class AdminClassesController {
     }
 
     @DeleteMapping("/subjectArea")
+    @AdminRequired
     public ResponseEntity<?> deleteSubjectArea(@RequestParam Long subjectAreaId) {
         logger.info("Deleting Subject area");
 
@@ -78,6 +81,7 @@ public class AdminClassesController {
     }
 
     @PostMapping("/subject")
+    @AdminRequired
     public ResponseEntity<?> createSubject(
             @RequestBody SubjectCreationRequest subjectCreationRequest
     ) {
@@ -93,6 +97,7 @@ public class AdminClassesController {
     }
 
     @DeleteMapping("/subject")
+    @AdminRequired
     public ResponseEntity<?> deleteSubject(
             @RequestParam Long subjectId
     ) {
@@ -116,6 +121,7 @@ public class AdminClassesController {
     }
 
     @PostMapping("/studentClass")
+    @AdminRequired
     public ResponseEntity<?> createStudentClass(@RequestBody StudentClassCreationRequest studentClassCreationRequest) {
 
         logger.info("Creating new Student Class");
@@ -130,6 +136,7 @@ public class AdminClassesController {
     }
 
     @DeleteMapping("/studentClass")
+    @AdminRequired
     public ResponseEntity<?> deleteStudentClass(@RequestParam Long studentClassId) {
         logger.info("Deleting Student Class");
 
@@ -152,6 +159,7 @@ public class AdminClassesController {
     }
 
     @PostMapping("/tape")
+    @AdminRequired
     public ResponseEntity<?> createTape(
             @RequestBody TapeCreationRequest tapeCreationRequest
     ) {
