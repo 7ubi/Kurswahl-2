@@ -2,8 +2,10 @@ package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.error.ErrorMessage;
+import com.x7ubi.kurswahl.models.StudentClass;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
+import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
@@ -12,6 +14,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.Year;
+import java.util.HashSet;
 
 @KurswahlServiceTest
 public class TeacherCreationServiceTest {
@@ -22,7 +27,12 @@ public class TeacherCreationServiceTest {
     @Autowired
     private TeacherRepo teacherRepo;
 
+    @Autowired
+    private StudentClassRepo studentClassRepo;
+
     private Teacher teacher;
+
+    private StudentClass studentClass;
 
     @BeforeEach
     public void setupTests() {
@@ -35,6 +45,21 @@ public class TeacherCreationServiceTest {
         teacher.setAbbreviation("NN");
         teacher.setUser(user);
 
+        this.teacherRepo.save(teacher);
+        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
+    }
+
+    private void setupStudentClass() {
+        studentClass = new StudentClass();
+        studentClass.setTeacher(teacher);
+        studentClass.setName("Q2a");
+        studentClass.setReleaseYear(Year.now().getValue());
+        studentClass.setYear(12);
+
+        this.studentClassRepo.save(studentClass);
+
+        teacher.setStudentClasses(new HashSet<>());
+        teacher.getStudentClasses().add(studentClass);
         this.teacherRepo.save(teacher);
     }
 
@@ -85,6 +110,22 @@ public class TeacherCreationServiceTest {
         // Then
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
+    }
+
+    @Test
+    public void testDeleteTeacherStudentClass() {
+        // Given
+        this.setupStudentClass();
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId();
+
+        // When
+        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 }

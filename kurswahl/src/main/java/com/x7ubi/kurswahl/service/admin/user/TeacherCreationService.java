@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.service.admin.user;
 
+import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
@@ -7,6 +8,7 @@ import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
+import com.x7ubi.kurswahl.response.common.MessageResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeacherCreationService {
@@ -78,6 +81,7 @@ public class TeacherCreationService {
         ResultResponse resultResponse = new ResultResponse();
 
         resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
+        resultResponse.getErrorMessages().addAll(getStudentClassesTeacher(teacherId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -92,5 +96,23 @@ public class TeacherCreationService {
         this.userRepo.delete(teacherUser);
 
         return resultResponse;
+    }
+
+    private List<MessageResponse> getStudentClassesTeacher(Long teacherId) {
+        List<MessageResponse> error = new ArrayList<>();
+
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
+
+        if (teacherOptional.isEmpty()) {
+            return error;
+        }
+        Teacher teacher = teacherOptional.get();
+
+        if (!teacher.getStudentClasses().isEmpty()) {
+            logger.error(ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+            error.add(new MessageResponse(ErrorMessage.Administration.TEACHER_STUDENT_CLASS));
+        }
+
+        return error;
     }
 }
