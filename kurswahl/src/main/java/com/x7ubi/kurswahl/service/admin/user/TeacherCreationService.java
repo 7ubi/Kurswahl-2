@@ -32,27 +32,24 @@ public class TeacherCreationService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UsernameService usernameService;
+
     private final ModelMapper mapper = new ModelMapper();
 
     public TeacherCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo, UserRepo userRepo,
-                                  PasswordEncoder passwordEncoder) {
+                                  PasswordEncoder passwordEncoder, UsernameService usernameService) {
         this.adminErrorService = adminErrorService;
         this.teacherRepo = teacherRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.usernameService = usernameService;
     }
 
-    public ResultResponse registerTeacher(TeacherSignupRequest teacherSignupRequest) {
-        ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(teacherSignupRequest));
-
-        if(!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
-        }
+    public void registerTeacher(TeacherSignupRequest teacherSignupRequest) {
 
         Teacher teacher = new Teacher();
         teacher.setUser(this.mapper.map(teacherSignupRequest, User.class));
+        teacher.getUser().setUsername(this.usernameService.generateUsernameFromName(teacherSignupRequest));
         teacher.setAbbreviation(teacherSignupRequest.getAbbreviation());
         teacher.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         teacher.getUser().setPassword(passwordEncoder.encode(teacher.getUser().getGeneratedPassword()));
@@ -60,8 +57,6 @@ public class TeacherCreationService {
         this.teacherRepo.save(teacher);
 
         logger.info(String.format("Teacher %s was created", teacher.getUser().getUsername()));
-
-        return resultResponse;
     }
 
     public TeacherResponses getAllTeachers() {

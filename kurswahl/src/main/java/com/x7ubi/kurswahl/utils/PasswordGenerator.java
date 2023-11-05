@@ -12,12 +12,9 @@ public class PasswordGenerator {
         final String lowerLetters = "abcdefghikmnpqrstuvwxyz";
         final String upperLetters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
         final String digits = "0123456789";
-        final String extraCharacters = "!#$%";
 
-        // Collect the categories to use.
-        List<String> charCategories = new ArrayList<>(List.of(lowerLetters, upperLetters, digits, extraCharacters));
+        List<String> charCategories = new ArrayList<>(List.of(lowerLetters, upperLetters, digits));
 
-        // Build the password.
         for (int i = 0; i < length; i++) {
             String charCategory = charCategories.get(random.nextInt(charCategories.size()));
             int position = random.nextInt(charCategory.length());

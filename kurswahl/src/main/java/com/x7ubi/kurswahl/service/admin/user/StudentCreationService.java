@@ -32,35 +32,29 @@ public class StudentCreationService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UsernameService usernameService;
+
     private final ModelMapper mapper = new ModelMapper();
 
     protected StudentCreationService(AdminErrorService adminErrorService, StudentRepo studentRepo, UserRepo userRepo,
-                                     PasswordEncoder passwordEncoder) {
+                                     PasswordEncoder passwordEncoder, UsernameService usernameService) {
         this.adminErrorService = adminErrorService;
         this.studentRepo = studentRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.usernameService = usernameService;
     }
 
-    public ResultResponse registerStudent(StudentSignupRequest studentSignupRequest) {
-        ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(this.adminErrorService.findRegisterErrors(studentSignupRequest));
-
-        if(!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
-        }
-
+    public void registerStudent(StudentSignupRequest studentSignupRequest) {
         Student student = new Student();
         student.setUser(this.mapper.map(studentSignupRequest, User.class));
+        student.getUser().setUsername(this.usernameService.generateUsernameFromName(studentSignupRequest));
         student.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         student.getUser().setPassword(passwordEncoder.encode(student.getUser().getGeneratedPassword()));
 
         this.studentRepo.save(student);
 
         logger.info(String.format("Student %s was created", student.getUser().getUsername()));
-
-        return resultResponse;
     }
 
     public StudentResponses getAllStudents() {
