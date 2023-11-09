@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -23,6 +23,10 @@ export class CreateSubjectAreaComponent {
   }
 
   createSubjectArea() {
+    if (!this.createSubjectAreaForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/subjectArea', this.getCreateSubjectAreaRequest(), response => {
       this.router.navigate(['admin', 'subjectAreas']);
     });

@@ -24,6 +24,10 @@ export class CreateAdminComponent {
   }
 
   createAdmin() {
+    if (!this.createAdminForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/admin', this.getCreateAdminRequest(), response => {
       this.router.navigate(['admin', 'admins']);
     });

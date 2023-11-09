@@ -24,6 +24,10 @@ export class CreateStudentComponent {
   }
 
   createStudent() {
+    if (!this.createStudentForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/student', this.getCreateStudentRequest(), response => {
       this.router.navigate(['admin', 'students']);
     });

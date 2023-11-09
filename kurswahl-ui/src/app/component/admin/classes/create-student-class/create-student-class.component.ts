@@ -34,6 +34,10 @@ export class CreateStudentClassComponent implements OnInit {
   }
 
   createStudentClass() {
+    if (!this.createStudentClassForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/studentClass', this.getStudentClassRequest(), response => {
       this.router.navigate(['admin', 'studentClasses']);
     });
