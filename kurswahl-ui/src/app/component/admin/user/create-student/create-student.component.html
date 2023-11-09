@@ -10,6 +10,13 @@
         <mat-label>Nachname</mat-label>
         <input matInput formControlName="surname" name="surname" id="surname" type="text">
       </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Klasse</mat-label>
+        <mat-select formControlName="studentClass">
+          <mat-option *ngFor="let studentClass of studentClasses?.studentClassResponses"
+                      value="{{studentClass.studentClassId}}"> {{ studentClass.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Schüler erstellen</button>
     </div>
   </div>

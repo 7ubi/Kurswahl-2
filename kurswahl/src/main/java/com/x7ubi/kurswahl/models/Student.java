@@ -13,7 +13,7 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private StudentClass studentClass;
 
     public Student() {
@@ -38,5 +38,13 @@ public class Student {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public StudentClass getStudentClass() {
+        return studentClass;
+    }
+
+    public void setStudentClass(StudentClass studentClass) {
+        this.studentClass = studentClass;
     }
 }
