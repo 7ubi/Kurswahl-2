@@ -25,6 +25,10 @@ export class CreateTeacherComponent {
   }
 
   createTeacher() {
+    if (!this.createTeacherForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/teacher', this.getCreateTeacherRequest(), response => {
       this.router.navigate(['admin', 'teachers']);
     });

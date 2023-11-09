@@ -32,6 +32,10 @@ export class CreateSubjectComponent implements OnInit{
   }
 
   createSubject() {
+    if (!this.createSubjectForm.valid) {
+      return;
+    }
+
     this.httpService.post<ResultResponse>('/api/admin/subject', this.getCreateSubjectRequest(), response => {
       this.router.navigate(['admin', 'subjects']);
     });
