@@ -72,6 +72,12 @@ public class AdminCreationService {
         return adminResultResponses;
     }
 
+    public ResultResponse editAdmin(Long adminId, AdminSignupRequest signupRequest) {
+        ResultResponse response = new ResultResponse();
+
+        return response;
+    }
+
     public ResultResponse deleteAdmin(Long adminId) {
         ResultResponse resultResponse = new ResultResponse();
 
