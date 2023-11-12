@@ -16,7 +16,7 @@ public class StudentClass {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Student> students;
 
     @ManyToOne

@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ public class StudentCreationService {
         this.usernameService = usernameService;
     }
 
+    @Transactional
     public ResultResponse registerStudent(StudentSignupRequest studentSignupRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
@@ -109,6 +111,10 @@ public class StudentCreationService {
 
         Student student = this.studentRepo.findStudentByStudentId(studentId).get();
         User studentUser = student.getUser();
+        if (null != student.getStudentClass()) {
+            student.getStudentClass().getStudents().remove(student);
+            this.studentClassRepo.save(student.getStudentClass());
+        }
 
         logger.info(String.format("Deleted Student %s", studentUser.getUsername()));
 

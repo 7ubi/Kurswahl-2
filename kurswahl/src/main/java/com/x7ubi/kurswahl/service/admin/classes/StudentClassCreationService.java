@@ -1,8 +1,10 @@
 package com.x7ubi.kurswahl.service.admin.classes;
 
+import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.StudentClass;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.repository.StudentClassRepo;
+import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponse;
@@ -31,12 +33,16 @@ public class StudentClassCreationService {
 
     private final StudentClassRepo studentClassRepo;
 
+    private final StudentRepo studentRepo;
+
     private final ModelMapper modelMapper = new ModelMapper();
 
-    protected StudentClassCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo, StudentClassRepo studentClassRepo) {
+    protected StudentClassCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo,
+                                          StudentClassRepo studentClassRepo, StudentRepo studentRepo) {
         this.adminErrorService = adminErrorService;
         this.teacherRepo = teacherRepo;
         this.studentClassRepo = studentClassRepo;
+        this.studentRepo = studentRepo;
     }
 
     @Transactional
@@ -94,6 +100,10 @@ public class StudentClassCreationService {
 
         StudentClass studentClass = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId).get();
         studentClass.getTeacher().getStudentClasses().remove(studentClass);
+        for (Student student : studentClass.getStudents()) {
+            student.setStudentClass(null);
+            this.studentRepo.save(student);
+        }
         this.studentClassRepo.delete(studentClass);
 
         logger.info(String.format("Student Class %s was deleted", studentClass.getName()));
