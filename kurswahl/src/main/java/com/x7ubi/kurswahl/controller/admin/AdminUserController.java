@@ -66,6 +66,22 @@ public class AdminUserController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @GetMapping("/admin")
+    @AdminRequired
+    public ResponseEntity<?> getAdmin(
+            @RequestParam Long adminId
+    ) {
+        logger.info("Getting Admin");
+
+        ResultResponse response = adminCreationService.getAdmin(adminId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/admin")
     @AdminRequired
     public ResponseEntity<?> deleteAdmin(

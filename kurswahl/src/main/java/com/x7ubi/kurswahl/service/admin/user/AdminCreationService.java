@@ -7,10 +7,10 @@ import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
+import com.x7ubi.kurswahl.response.admin.user.AdminResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,8 +32,6 @@ public class AdminCreationService {
     private final PasswordEncoder passwordEncoder;
 
     private final UsernameService usernameService;
-
-    private final ModelMapper mapper = new ModelMapper();
 
     private final AdminMapper adminMapper;
 
@@ -102,5 +100,20 @@ public class AdminCreationService {
         this.userRepo.delete(adminUser);
 
         return resultResponse;
+    }
+
+    public AdminResultResponse getAdmin(Long adminId) {
+        AdminResultResponse adminResultResponse = new AdminResultResponse();
+
+        adminResultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
+
+        if (!adminResultResponse.getErrorMessages().isEmpty()) {
+            return adminResultResponse;
+        }
+
+        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
+        adminResultResponse.setAdminResponse(this.adminMapper.adminToAdminResponse(admin));
+
+        return adminResultResponse;
     }
 }
