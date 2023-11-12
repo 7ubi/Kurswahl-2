@@ -1,11 +1,11 @@
 package com.x7ubi.kurswahl.service.admin.user;
 
+import com.x7ubi.kurswahl.mapper.AdminMapper;
 import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
-import com.x7ubi.kurswahl.response.admin.user.AdminResponse;
 import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,19 +35,22 @@ public class AdminCreationService {
 
     private final ModelMapper mapper = new ModelMapper();
 
+    private final AdminMapper adminMapper;
+
     protected AdminCreationService(AdminErrorService adminErrorService, AdminRepo adminRepo, UserRepo userRepo,
-                                   PasswordEncoder passwordEncoder, UsernameService usernameService) {
+                                   PasswordEncoder passwordEncoder, UsernameService usernameService,
+                                   AdminMapper adminMapper) {
         this.adminErrorService = adminErrorService;
         this.adminRepo = adminRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
+        this.adminMapper = adminMapper;
     }
 
     public void registerAdmin(AdminSignupRequest signupRequest) {
 
-        Admin admin = new Admin();
-        admin.setUser(this.mapper.map(signupRequest, User.class));
+        Admin admin = this.adminMapper.adminRequestToAdmin(signupRequest);
         admin.getUser().setUsername(this.usernameService.generateUsernameFromName(signupRequest));
         admin.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         admin.getUser().setPassword(passwordEncoder.encode(admin.getUser().getGeneratedPassword()));
@@ -59,23 +61,27 @@ public class AdminCreationService {
     }
 
     public AdminResponses getAllAdmins() {
-        AdminResponses adminResultResponses = new AdminResponses();
-        adminResultResponses.setAdminResponses(new ArrayList<>());
-
         List<Admin> admins = this.adminRepo.findAll();
-        for(Admin admin: admins) {
-            AdminResponse adminResponse = this.mapper.map(admin.getUser(), AdminResponse.class);
-            adminResponse.setAdminId(admin.getAdminId());
-            adminResultResponses.getAdminResponses().add(adminResponse);
-        }
 
-        return adminResultResponses;
+        return this.adminMapper.adminsToAdminResponses(admins);
     }
 
     public ResultResponse editAdmin(Long adminId, AdminSignupRequest signupRequest) {
-        ResultResponse response = new ResultResponse();
+        ResultResponse resultResponse = new ResultResponse();
 
-        return response;
+        resultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
+
+        this.adminMapper.adminRequestToAdmin(signupRequest, admin);
+
+        this.adminRepo.save(admin);
+
+        return resultResponse;
     }
 
     public ResultResponse deleteAdmin(Long adminId) {

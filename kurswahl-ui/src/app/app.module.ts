@@ -37,6 +37,7 @@ import {
 import {
   CreateStudentClassComponent
 } from './component/admin/classes/create-student-class/create-student-class.component';
+import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import {
     ShowSubjectsComponent,
     CreateSubjectComponent,
     ShowStudentClassesComponent,
-    CreateStudentClassComponent
+    CreateStudentClassComponent,
+    EditAdminComponent
   ],
     imports: [
         BrowserModule,
