@@ -80,9 +80,13 @@ public class AdminUserController {
     ) {
         logger.info("Signing up new Student");
 
-        this.studentCreationService.registerStudent(studentSignupRequest);
+        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
 
-        return ResponseEntity.ok().build();
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
     }
 
     @DeleteMapping("/student")

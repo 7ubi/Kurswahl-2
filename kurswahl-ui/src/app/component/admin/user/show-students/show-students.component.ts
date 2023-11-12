@@ -1,9 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  ResultResponse,
-  StudentResponse,
-  StudentResponses
-} from "../../../../app.responses";
+import {ResultResponse, StudentResponse, StudentResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -25,7 +21,7 @@ export class ShowStudentsComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
+    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
   }
 
   ngOnInit(): void {

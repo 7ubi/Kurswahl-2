@@ -31,6 +31,7 @@ export interface AdminResponses {
 
 export interface StudentResponse extends UserResponse {
   readonly studentId: number;
+  readonly studentClass: StudentClassResponse;
 }
 
 export interface StudentResponses {
