@@ -57,6 +57,6 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   editAdmin(adminId: number) {
-    this.router.navigate([adminId], {relativeTo: this.route});
+    this.router.navigate(['edit', adminId], {relativeTo: this.route});
   }
 }
