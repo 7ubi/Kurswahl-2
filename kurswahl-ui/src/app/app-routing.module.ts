@@ -32,7 +32,7 @@ const routes: Routes = [
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {
-    path: 'admin/admins/:id',
+    path: 'admin/admins/edit/:id',
     component: EditAdminComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
