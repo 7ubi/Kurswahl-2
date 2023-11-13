@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StudentCreationService {
@@ -85,6 +86,7 @@ public class StudentCreationService {
         return this.studentMapper.studentsToStudentResponses(students);
     }
 
+    @Transactional
     public ResultResponse editStudent(Long studentId, StudentSignupRequest studentSignupRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
@@ -96,6 +98,29 @@ public class StudentCreationService {
             return resultResponse;
         }
 
+        Student student = this.studentRepo.findStudentByStudentId(studentId).get();
+        this.studentMapper.studentRequestToStudent(studentSignupRequest, student);
+
+        if (null == student.getStudentClass()) {
+            StudentClass studentClass = this.studentClassRepo
+                    .findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId()).get();
+            studentClass.getStudents().add(student);
+            student.setStudentClass(studentClass);
+            this.studentClassRepo.save(studentClass);
+        }
+
+        if (!Objects.equals(student.getStudentClass().getStudentClassId(), studentSignupRequest.getStudentClassId())) {
+            student.getStudentClass().getStudents().remove(student);
+            this.studentClassRepo.save(student.getStudentClass());
+
+            StudentClass studentClass = this.studentClassRepo
+                    .findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId()).get();
+            studentClass.getStudents().add(student);
+            student.setStudentClass(studentClass);
+            this.studentClassRepo.save(studentClass);
+        }
+
+        this.studentRepo.save(student);
 
         return resultResponse;
     }
