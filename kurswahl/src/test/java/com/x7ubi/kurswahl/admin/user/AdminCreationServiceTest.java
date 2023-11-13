@@ -6,6 +6,9 @@ import com.x7ubi.kurswahl.models.Admin;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
+import com.x7ubi.kurswahl.response.admin.user.AdminResponse;
+import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
+import com.x7ubi.kurswahl.response.admin.user.AdminResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.user.AdminCreationService;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +30,7 @@ public class AdminCreationServiceTest {
     @BeforeEach
     public void setupTests() {
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("test.user");
         user.setFirstname("Test");
         user.setSurname("User");
         user.setPassword("Password");
@@ -83,5 +86,96 @@ public class AdminCreationServiceTest {
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
         Assertions.assertTrue(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
+    }
+
+    @Test
+    public void testEditAdmin() {
+        // Given
+        this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
+        Long id = this.admin.getAdminId();
+        AdminSignupRequest adminSignupRequest = new AdminSignupRequest();
+        adminSignupRequest.setFirstname("Firstname");
+        adminSignupRequest.setSurname("Surname");
+
+        // When
+        ResultResponse response = this.adminCreationService.editAdmin(id, adminSignupRequest);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Admin editedAdmin = this.adminRepo.findAdminByUser_Username("test.user").get();
+        Assertions.assertEquals(editedAdmin.getUser().getFirstname(), adminSignupRequest.getFirstname());
+        Assertions.assertEquals(editedAdmin.getUser().getSurname(), adminSignupRequest.getSurname());
+    }
+
+    @Test
+    public void testEditAdminWrongId() {
+        // Given
+        this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
+        Long id = this.admin.getAdminId() + 1;
+        AdminSignupRequest adminSignupRequest = new AdminSignupRequest();
+        adminSignupRequest.setFirstname("Firstname");
+        adminSignupRequest.setSurname("Surname");
+
+        // When
+        ResultResponse response = this.adminCreationService.editAdmin(id, adminSignupRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Admin editedAdmin = this.adminRepo.findAdminByUser_Username("test.user").get();
+        Assertions.assertEquals(editedAdmin.getUser().getFirstname(), this.admin.getUser().getFirstname());
+        Assertions.assertEquals(editedAdmin.getUser().getSurname(), this.admin.getUser().getSurname());
+    }
+
+    @Test
+    public void testGetAdmin() {
+        // Given
+        this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
+        Long id = this.admin.getAdminId();
+
+        // When
+        AdminResultResponse response = this.adminCreationService.getAdmin(id);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Assertions.assertEquals(response.getAdminResponse().getAdminId(), this.admin.getAdminId());
+        Assertions.assertEquals(response.getAdminResponse().getFirstname(), this.admin.getUser().getFirstname());
+        Assertions.assertEquals(response.getAdminResponse().getSurname(), this.admin.getUser().getSurname());
+        Assertions.assertEquals(response.getAdminResponse().getUsername(), this.admin.getUser().getUsername());
+        Assertions.assertEquals(response.getAdminResponse().getGeneratedPassword(),
+                this.admin.getUser().getGeneratedPassword());
+    }
+
+    @Test
+    public void testGetAdminWrongId() {
+        // Given
+        this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
+        Long id = this.admin.getAdminId() + 1;
+
+        // When
+        AdminResultResponse response = this.adminCreationService.getAdmin(id);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.ADMIN_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetAllAdmins() {
+        // When
+        AdminResponses adminResponses = this.adminCreationService.getAllAdmins();
+
+        // Then
+        Assertions.assertEquals(adminResponses.getAdminResponses().size(), 1);
+
+        AdminResponse adminResponse = adminResponses.getAdminResponses().get(0);
+        Assertions.assertEquals(adminResponse.getAdminId(), this.admin.getAdminId());
+        Assertions.assertEquals(adminResponse.getFirstname(), this.admin.getUser().getFirstname());
+        Assertions.assertEquals(adminResponse.getSurname(), this.admin.getUser().getSurname());
+        Assertions.assertEquals(adminResponse.getUsername(), this.admin.getUser().getUsername());
+        Assertions.assertEquals(adminResponse.getGeneratedPassword(),
+                this.admin.getUser().getGeneratedPassword());
     }
 }
