@@ -49,6 +49,39 @@ public class AdminUserController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/admin")
+    @AdminRequired
+    public ResponseEntity<?> editAdmin(
+            @RequestParam Long adminId,
+            @RequestBody AdminSignupRequest signupRequest
+    ) {
+        logger.info("Editing Admin");
+
+        ResultResponse response = adminCreationService.editAdmin(adminId, signupRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/admin")
+    @AdminRequired
+    public ResponseEntity<?> getAdmin(
+            @RequestParam Long adminId
+    ) {
+        logger.info("Getting Admin");
+
+        ResultResponse response = adminCreationService.getAdmin(adminId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/admin")
     @AdminRequired
     public ResponseEntity<?> deleteAdmin(

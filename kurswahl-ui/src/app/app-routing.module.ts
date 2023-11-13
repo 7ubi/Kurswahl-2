@@ -19,6 +19,7 @@ import {
 import {
   CreateStudentClassComponent
 } from "./component/admin/classes/create-student-class/create-student-class.component";
+import {EditAdminComponent} from "./component/admin/user/edit-admin/edit-admin.component";
 
 const routes: Routes = [
   {
@@ -28,6 +29,11 @@ const routes: Routes = [
   {
     path: 'admin/admins',
     component: ShowAdminsComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/admins/:id',
+    component: EditAdminComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {

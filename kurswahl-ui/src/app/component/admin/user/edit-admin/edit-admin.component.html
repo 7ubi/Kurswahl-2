@@ -1,0 +1,16 @@
+<app-hero title="Admin editieren"></app-hero>
+<form [formGroup]="editAdminForm" (ngSubmit)="editAdmin()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstname" name="firstname" id="firstname" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Nachname</mat-label>
+        <input matInput formControlName="surname" name="surname" id="surname" type="text">
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Admin editieren</button>
+    </div>
+  </div>
+</form>
