@@ -122,6 +122,23 @@ public class AdminUserController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @PutMapping("/student")
+    @AdminRequired
+    public ResponseEntity<?> editStudent(
+            @RequestParam Long studentId,
+            @RequestBody StudentSignupRequest studentSignupRequest
+    ) {
+        logger.info("Signing up new Student");
+
+        ResultResponse response = this.studentCreationService.editStudent(studentId, studentSignupRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/student")
     @AdminRequired
     public ResponseEntity<?> deleteStudent(

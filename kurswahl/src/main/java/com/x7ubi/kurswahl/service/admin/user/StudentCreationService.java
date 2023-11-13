@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.service.admin.user;
 
+import com.x7ubi.kurswahl.mapper.StudentMapper;
 import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.StudentClass;
 import com.x7ubi.kurswahl.models.User;
@@ -7,20 +8,16 @@ import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
-import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponse;
-import com.x7ubi.kurswahl.response.admin.user.StudentResponse;
 import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,17 +37,18 @@ public class StudentCreationService {
 
     private final UsernameService usernameService;
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final StudentMapper studentMapper;
 
     protected StudentCreationService(AdminErrorService adminErrorService, StudentRepo studentRepo, UserRepo userRepo,
                                      StudentClassRepo studentClassRepo, PasswordEncoder passwordEncoder,
-                                     UsernameService usernameService) {
+                                     UsernameService usernameService, StudentMapper studentMapper) {
         this.adminErrorService = adminErrorService;
         this.studentRepo = studentRepo;
         this.userRepo = userRepo;
         this.studentClassRepo = studentClassRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
+        this.studentMapper = studentMapper;
     }
 
     @Transactional
@@ -64,8 +62,7 @@ public class StudentCreationService {
             return resultResponse;
         }
 
-        Student student = new Student();
-        student.setUser(this.mapper.map(studentSignupRequest, User.class));
+        Student student = this.studentMapper.studentRequestToStudent(studentSignupRequest);
         student.getUser().setUsername(this.usernameService.generateUsernameFromName(studentSignupRequest));
         student.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         student.getUser().setPassword(passwordEncoder.encode(student.getUser().getGeneratedPassword()));
@@ -83,21 +80,24 @@ public class StudentCreationService {
     }
 
     public StudentResponses getAllStudents() {
-        StudentResponses studentResponses = new StudentResponses();
-        studentResponses.setStudentResponses(new ArrayList<>());
-
         List<Student> students = this.studentRepo.findAll();
-        for(Student student: students) {
-            StudentResponse studentResponse = this.mapper.map(student.getUser(), StudentResponse.class);
-            studentResponse.setStudentId(student.getStudentId());
-            if (null != student.getStudentClass()) {
-                studentResponse.setStudentClassResponse(
-                        this.mapper.map(student.getStudentClass(), StudentClassResponse.class));
-            }
-            studentResponses.getStudentResponses().add(studentResponse);
+
+        return this.studentMapper.studentsToStudentResponses(students);
+    }
+
+    public ResultResponse editStudent(Long studentId, StudentSignupRequest studentSignupRequest) {
+        ResultResponse resultResponse = new ResultResponse();
+
+        resultResponse.setErrorMessages(this.adminErrorService.getStudentNotFound(studentId));
+        resultResponse.getErrorMessages().addAll(
+                this.adminErrorService.getStudentClassNotFound(studentSignupRequest.getStudentClassId()));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
         }
 
-        return studentResponses;
+
+        return resultResponse;
     }
 
     public ResultResponse deleteStudent(Long studentId) {
