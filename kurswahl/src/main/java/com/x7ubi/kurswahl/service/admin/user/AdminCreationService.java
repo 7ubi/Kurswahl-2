@@ -78,6 +78,7 @@ public class AdminCreationService {
         this.adminMapper.adminRequestToAdmin(signupRequest, admin);
 
         this.adminRepo.save(admin);
+        logger.info(String.format("Admin %s was edited", admin.getUser().getUsername()));
 
         return resultResponse;
     }
@@ -113,6 +114,8 @@ public class AdminCreationService {
 
         Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
         adminResultResponse.setAdminResponse(this.adminMapper.adminToAdminResponse(admin));
+
+        logger.info(String.format("Found Admin %s", admin.getUser().getUsername()));
 
         return adminResultResponse;
     }
