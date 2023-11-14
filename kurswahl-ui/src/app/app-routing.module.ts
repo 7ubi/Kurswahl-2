@@ -20,6 +20,7 @@ import {
   CreateStudentClassComponent
 } from "./component/admin/classes/create-student-class/create-student-class.component";
 import {EditAdminComponent} from "./component/admin/user/edit-admin/edit-admin.component";
+import {EditStudentComponent} from "./component/admin/user/edit-student/edit-student.component";
 
 const routes: Routes = [
   {
@@ -49,6 +50,11 @@ const routes: Routes = [
   {
     path: 'admin/students/create',
     component: CreateStudentComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/students/edit/:id',
+    component: EditStudentComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {

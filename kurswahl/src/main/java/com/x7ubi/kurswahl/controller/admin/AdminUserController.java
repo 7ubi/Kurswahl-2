@@ -3,9 +3,7 @@ package com.x7ubi.kurswahl.controller.admin;
 import com.x7ubi.kurswahl.request.admin.AdminSignupRequest;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
-import com.x7ubi.kurswahl.response.admin.user.AdminResponses;
-import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
-import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
+import com.x7ubi.kurswahl.response.admin.user.*;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.user.AdminCreationService;
 import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
@@ -73,7 +71,7 @@ public class AdminUserController {
     ) {
         logger.info("Getting Admin");
 
-        ResultResponse response = adminCreationService.getAdmin(adminId);
+        AdminResultResponse response = adminCreationService.getAdmin(adminId);
 
         if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);
@@ -131,6 +129,22 @@ public class AdminUserController {
         logger.info("Signing up new Student");
 
         ResultResponse response = this.studentCreationService.editStudent(studentId, studentSignupRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/student")
+    @AdminRequired
+    public ResponseEntity<?> getStudent(
+            @RequestParam Long studentId
+    ) {
+        logger.info("Getting Admin");
+
+        StudentResultResponse response = this.studentCreationService.getStudent(studentId);
 
         if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);

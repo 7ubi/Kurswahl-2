@@ -40,7 +40,10 @@
 
       <ng-container matColumnDef="Aktionen">
         <th mat-header-cell *matHeaderCellDef> Aktionen </th>
-        <td mat-cell *matCellDef="let element"> <mat-icon (click)="deleteStudent(element.studentId)">delete</mat-icon> </td>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon (click)="editStudent(element.studentId)">edit</mat-icon>
+          <mat-icon (click)="deleteStudent(element.studentId)">delete</mat-icon>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

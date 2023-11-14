@@ -35,7 +35,11 @@ export interface AdminResultResponse extends ResultResponse {
 
 export interface StudentResponse extends UserResponse {
   readonly studentId: number;
-  readonly studentClass: StudentClassResponse;
+  readonly studentClassResponse: StudentClassResponse;
+}
+
+export interface StudentResultResponse extends ResultResponse {
+  readonly studentResponse: StudentResponse;
 }
 
 export interface StudentResponses {

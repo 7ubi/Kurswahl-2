@@ -9,6 +9,7 @@ import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
+import com.x7ubi.kurswahl.response.admin.user.StudentResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
@@ -123,6 +124,21 @@ public class StudentCreationService {
         this.studentRepo.save(student);
 
         return resultResponse;
+    }
+
+    public StudentResultResponse getStudent(Long studentId) {
+        StudentResultResponse studentResultResponse = new StudentResultResponse();
+
+        studentResultResponse.setErrorMessages(this.adminErrorService.getStudentNotFound(studentId));
+
+        if (!studentResultResponse.getErrorMessages().isEmpty()) {
+            return studentResultResponse;
+        }
+
+        Student student = this.studentRepo.findStudentByStudentId(studentId).get();
+        studentResultResponse.setStudentResponse(this.studentMapper.studentToStudentResponse(student));
+
+        return studentResultResponse;
     }
 
     public ResultResponse deleteStudent(Long studentId) {
