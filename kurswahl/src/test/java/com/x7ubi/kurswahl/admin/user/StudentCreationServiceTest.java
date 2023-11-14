@@ -10,6 +10,9 @@ import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
+import com.x7ubi.kurswahl.response.admin.user.StudentResponse;
+import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
+import com.x7ubi.kurswahl.response.admin.user.StudentResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.Objects;
 
 @KurswahlServiceTest
 public class StudentCreationServiceTest {
@@ -44,7 +48,7 @@ public class StudentCreationServiceTest {
     @BeforeEach
     public void setupTests() {
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("test.user");
         user.setFirstname("Test");
         user.setSurname("User");
         user.setPassword("Password");
@@ -55,11 +59,13 @@ public class StudentCreationServiceTest {
         setupStudentClass();
         student.setStudentClass(studentClass);
         this.studentRepo.save(student);
+        studentClass.getStudents().add(student);
+        this.studentClassRepo.save(studentClass);
     }
 
     private void setupTeacher() {
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("test.teacher");
         user.setFirstname("Test");
         user.setSurname("User");
         user.setPassword("Password");
@@ -112,8 +118,9 @@ public class StudentCreationServiceTest {
                         studentSignupRequest.getSurname().toLowerCase()));
         Assertions.assertEquals(createdStudent.getStudentClass().getStudentClassId(),
                 updatedStudentClass.getStudentClassId());
-        Assertions.assertEquals(updatedStudentClass.getStudents().stream().findFirst().get().getStudentId(),
-                createdStudent.getStudentId());
+        Assertions.assertEquals(updatedStudentClass.getStudents()
+                .stream().filter(s -> Objects.equals(s.getStudentId(), createdStudent.getStudentId()))
+                .findFirst().get().getStudentId(), createdStudent.getStudentId());
     }
 
     @Test
@@ -131,6 +138,97 @@ public class StudentCreationServiceTest {
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
                 ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+    }
+
+    @Test
+    public void testEditStudent() {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId();
+        StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
+        studentSignupRequest.setFirstname("Firstname");
+        studentSignupRequest.setSurname("Surname");
+        studentSignupRequest.setStudentClassId(studentClass.getStudentClassId());
+
+        // When
+        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+
+        Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
+        StudentClass updatedStudentClass
+                = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
+
+        Assertions.assertEquals(editedStudent.getUser().getFirstname(), studentSignupRequest.getFirstname());
+        Assertions.assertEquals(editedStudent.getUser().getSurname(), studentSignupRequest.getSurname());
+        Assertions.assertEquals(editedStudent.getUser().getUsername(), "test.user");
+        Assertions.assertEquals(editedStudent.getStudentClass().getStudentClassId(),
+                updatedStudentClass.getStudentClassId());
+        Assertions.assertEquals(updatedStudentClass.getStudents().stream().findFirst().get().getStudentId(),
+                editedStudent.getStudentId());
+    }
+
+    @Test
+    public void testEditStudentWrongStudentId() {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId() + 1;
+        StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
+        studentSignupRequest.setFirstname("Firstname");
+        studentSignupRequest.setSurname("Surname");
+        studentSignupRequest.setStudentClassId(studentClass.getStudentClassId());
+
+        // When
+        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.STUDENT_NOT_FOUND);
+
+        Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
+        StudentClass updatedStudentClass
+                = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
+
+        Assertions.assertEquals(editedStudent.getUser().getFirstname(), student.getUser().getFirstname());
+        Assertions.assertEquals(editedStudent.getUser().getSurname(), student.getUser().getSurname());
+        Assertions.assertEquals(editedStudent.getUser().getUsername(), "test.user");
+        Assertions.assertEquals(editedStudent.getStudentClass().getStudentClassId(),
+                student.getStudentClass().getStudentClassId());
+        Assertions.assertEquals(updatedStudentClass.getStudents().stream().findFirst().get().getStudentId(),
+                editedStudent.getStudentId());
+    }
+
+    @Test
+    public void testEditStudentWrongStudentClassId() {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId();
+        StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
+        studentSignupRequest.setFirstname("Firstname");
+        studentSignupRequest.setSurname("Surname");
+        studentSignupRequest.setStudentClassId(studentClass.getStudentClassId() + 1);
+
+        // When
+        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+
+        Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
+        StudentClass updatedStudentClass
+                = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
+
+        Assertions.assertEquals(editedStudent.getUser().getFirstname(), student.getUser().getFirstname());
+        Assertions.assertEquals(editedStudent.getUser().getSurname(), student.getUser().getSurname());
+        Assertions.assertEquals(editedStudent.getUser().getUsername(), "test.user");
+        Assertions.assertEquals(editedStudent.getStudentClass().getStudentClassId(),
+                student.getStudentClass().getStudentClassId());
+        Assertions.assertEquals(updatedStudentClass.getStudents().stream().findFirst().get().getStudentId(),
+                editedStudent.getStudentId());
     }
 
     @Test
@@ -165,5 +263,59 @@ public class StudentCreationServiceTest {
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.STUDENT_NOT_FOUND);
         Assertions.assertTrue(this.studentRepo.existsStudentByUser_Username(this.student.getUser().getUsername()));
+    }
+
+    @Test
+    public void testGetStudent() {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId();
+
+        // When
+        StudentResultResponse studentResponses = this.studentCreationService.getStudent(id);
+
+        // Then
+        Assertions.assertTrue(studentResponses.getErrorMessages().isEmpty());
+
+        StudentResponse studentResponse = studentResponses.getStudentResponse();
+        Assertions.assertEquals(studentResponse.getFirstname(), student.getUser().getFirstname());
+        Assertions.assertEquals(studentResponse.getSurname(), student.getUser().getSurname());
+        Assertions.assertEquals(studentResponse.getUsername(), "test.user");
+        Assertions.assertEquals(studentResponse.getStudentClassResponse().getStudentClassId(),
+                student.getStudentClass().getStudentClassId());
+        Assertions.assertEquals(studentResponse.getStudentClassResponse().getName(),
+                student.getStudentClass().getName());
+    }
+
+    @Test
+    public void testGetStudentWrongId() {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId() + 1;
+
+        // When
+        StudentResultResponse studentResponses = this.studentCreationService.getStudent(id);
+
+        // Then
+        Assertions.assertEquals(studentResponses.getErrorMessages().size(), 1);
+        Assertions.assertEquals(studentResponses.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.STUDENT_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetAllStudents() {
+        // When
+        StudentResponses studentResponses = this.studentCreationService.getAllStudents();
+
+        // Then
+        Assertions.assertEquals(studentResponses.getStudentResponses().size(), 1);
+        StudentResponse studentResponse = studentResponses.getStudentResponses().get(0);
+        Assertions.assertEquals(studentResponse.getFirstname(), student.getUser().getFirstname());
+        Assertions.assertEquals(studentResponse.getSurname(), student.getUser().getSurname());
+        Assertions.assertEquals(studentResponse.getUsername(), "test.user");
+        Assertions.assertEquals(studentResponse.getStudentClassResponse().getStudentClassId(),
+                student.getStudentClass().getStudentClassId());
+        Assertions.assertEquals(studentResponse.getStudentClassResponse().getName(),
+                student.getStudentClass().getName());
     }
 }

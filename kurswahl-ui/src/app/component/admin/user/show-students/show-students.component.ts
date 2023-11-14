@@ -54,4 +54,8 @@ export class ShowStudentsComponent implements OnInit {
       });
     });
   }
+
+  editStudent(studentId: number) {
+    this.router.navigate(['edit', studentId], {relativeTo: this.route});
+  }
 }
