@@ -1,4 +1,4 @@
-<app-hero title="Schüler erstellen"></app-hero>
+<app-hero title="Schüler bearbeiten"></app-hero>
 <form [formGroup]="editStudentForm" (ngSubmit)="editStudent()">
   <div class="container">
     <div class="center">
@@ -17,7 +17,7 @@
                       value="{{studentClass.studentClassId}}"> {{ studentClass.name }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">Schüler erstellen</button>
+      <button mat-raised-button color="primary" type="submit">Schüler bearbeiten</button>
     </div>
   </div>
 </form>
