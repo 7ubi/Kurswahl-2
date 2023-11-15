@@ -8,6 +8,9 @@ import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.user.TeacherCreationService;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +40,7 @@ public class TeacherCreationServiceTest {
     @BeforeEach
     public void setupTests() {
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("test.user");
         user.setFirstname("Test");
         user.setSurname("User");
         user.setPassword("Password");
@@ -82,6 +85,105 @@ public class TeacherCreationServiceTest {
         Assertions.assertEquals(createdTeacher.getUser().getUsername(),
                 String.format("%s.%s", teacherSignupRequest.getFirstname().toLowerCase(),
                         teacherSignupRequest.getSurname().toLowerCase()));
+    }
+
+    @Test
+    public void testEditTeacher() {
+        // Given
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId();
+        TeacherSignupRequest teacherSignupRequest = new TeacherSignupRequest();
+        teacherSignupRequest.setFirstname("Firstname");
+        teacherSignupRequest.setSurname("Surname");
+        teacherSignupRequest.setAbbreviation("NE");
+
+        // When
+        ResultResponse response = this.teacherCreationService.editTeacher(id, teacherSignupRequest);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Teacher editedTeacher = this.teacherRepo.findTeacherByTeacherId(id).get();
+        Assertions.assertEquals(editedTeacher.getUser().getFirstname(), teacherSignupRequest.getFirstname());
+        Assertions.assertEquals(editedTeacher.getUser().getSurname(), teacherSignupRequest.getSurname());
+        Assertions.assertEquals(editedTeacher.getAbbreviation(), teacherSignupRequest.getAbbreviation());
+        Assertions.assertEquals(editedTeacher.getUser().getUsername(), "test.user");
+    }
+
+    @Test
+    public void testEditTeacherWrongId() {
+        // Given
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId() + 1;
+        TeacherSignupRequest teacherSignupRequest = new TeacherSignupRequest();
+        teacherSignupRequest.setFirstname("Firstname");
+        teacherSignupRequest.setSurname("Surname");
+        teacherSignupRequest.setAbbreviation("NE");
+
+        // When
+        ResultResponse response = this.teacherCreationService.editTeacher(id, teacherSignupRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+
+        Teacher editedTeacher = this.teacherRepo.findTeacherByTeacherId(this.teacher.getTeacherId()).get();
+        Assertions.assertEquals(editedTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
+        Assertions.assertEquals(editedTeacher.getUser().getSurname(), teacher.getUser().getSurname());
+        Assertions.assertEquals(editedTeacher.getAbbreviation(), teacher.getAbbreviation());
+        Assertions.assertEquals(editedTeacher.getUser().getUsername(), "test.user");
+    }
+
+    @Test
+    public void testGetTeacher() {
+        // Given
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId();
+
+        // When
+        TeacherResultResponse response = this.teacherCreationService.getTeacher(id);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+
+        TeacherResponse teacherResponse = response.getTeacherResponse();
+        Assertions.assertEquals(teacherResponse.getFirstname(), teacher.getUser().getFirstname());
+        Assertions.assertEquals(teacherResponse.getSurname(), teacher.getUser().getSurname());
+        Assertions.assertEquals(teacherResponse.getAbbreviation(), teacher.getAbbreviation());
+        Assertions.assertEquals(teacherResponse.getUsername(), "test.user");
+    }
+
+    @Test
+    public void testGetTeacherWrongId() {
+        // Given
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId() + 1;
+
+        // When
+        TeacherResultResponse response = this.teacherCreationService.getTeacher(id);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+
+        TeacherResponse teacherResponse = response.getTeacherResponse();
+        Assertions.assertNull(teacherResponse);
+    }
+
+    @Test
+    public void testGetAllTeachers() {
+        // When
+        TeacherResponses response = this.teacherCreationService.getAllTeachers();
+
+        // When
+        Assertions.assertEquals(response.getTeacherResponses().size(), 1);
+
+        TeacherResponse teacherResponse = response.getTeacherResponses().get(0);
+        Assertions.assertEquals(teacherResponse.getFirstname(), teacher.getUser().getFirstname());
+        Assertions.assertEquals(teacherResponse.getSurname(), teacher.getUser().getSurname());
+        Assertions.assertEquals(teacherResponse.getAbbreviation(), teacher.getAbbreviation());
+        Assertions.assertEquals(teacherResponse.getUsername(), "test.user");
     }
 
     @Test
