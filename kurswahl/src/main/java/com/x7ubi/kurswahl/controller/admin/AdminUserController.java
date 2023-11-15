@@ -189,6 +189,40 @@ public class AdminUserController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/teacher")
+    @AdminRequired
+    public ResponseEntity<?> editTeacher(
+            @RequestParam Long teacherId,
+            @RequestBody TeacherSignupRequest teacherSignupRequest
+    ) {
+        logger.info("Editing Teacher");
+
+        ResultResponse response = this.teacherCreationService.editTeacher(teacherId, teacherSignupRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+
+    @GetMapping("/teacher")
+    @AdminRequired
+    public ResponseEntity<?> getTeacher(
+            @RequestParam Long teacherId
+    ) {
+        logger.info("Getting Teacher");
+
+        TeacherResultResponse teacherResultResponse = this.teacherCreationService.getTeacher(teacherId);
+
+        if (teacherResultResponse.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(teacherResultResponse);
+        }
+
+        return ResponseEntity.badRequest().body(teacherResultResponse);
+    }
+
     @DeleteMapping("/teacher")
     @AdminRequired
     public ResponseEntity<?> deleteTeacher(@RequestParam Long teacherId) {

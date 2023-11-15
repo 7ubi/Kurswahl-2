@@ -56,4 +56,8 @@ export class ShowTeachersComponent implements OnInit {
   createTeacher() {
     this.router.navigate(['create'], {relativeTo: this.route});
   }
+
+  editTeacher(teacherId: number) {
+    this.router.navigate(['edit', teacherId], {relativeTo: this.route});
+  }
 }

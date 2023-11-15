@@ -8,6 +8,7 @@ import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
+import com.x7ubi.kurswahl.response.admin.user.TeacherResultResponse;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
@@ -53,13 +54,30 @@ public class TeacherCreationService {
 
         Teacher teacher = this.teacherMapper.teacherRequestToTeacher(teacherSignupRequest);
         teacher.getUser().setUsername(this.usernameService.generateUsernameFromName(teacherSignupRequest));
-        teacher.setAbbreviation(teacherSignupRequest.getAbbreviation());
         teacher.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         teacher.getUser().setPassword(passwordEncoder.encode(teacher.getUser().getGeneratedPassword()));
 
         this.teacherRepo.save(teacher);
 
         logger.info(String.format("Teacher %s was created", teacher.getUser().getUsername()));
+    }
+
+    public ResultResponse editTeacher(Long teacherId, TeacherSignupRequest teacherSignupRequest) {
+        ResultResponse resultResponse = new ResultResponse();
+
+        resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(teacherId).get();
+        this.teacherMapper.teacherRequestToTeacher(teacherSignupRequest, teacher);
+        this.teacherRepo.save(teacher);
+
+        logger.info(String.format("Edited Teacher %s", teacher.getUser().getUsername()));
+
+        return resultResponse;
     }
 
     public TeacherResponses getAllTeachers() {
@@ -105,5 +123,22 @@ public class TeacherCreationService {
         }
 
         return error;
+    }
+
+    public TeacherResultResponse getTeacher(Long teacherId) {
+        TeacherResultResponse teacherResultResponse = new TeacherResultResponse();
+
+        teacherResultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
+
+        if (!teacherResultResponse.getErrorMessages().isEmpty()) {
+            return teacherResultResponse;
+        }
+
+        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(teacherId).get();
+        teacherResultResponse.setTeacherResponse(this.teacherMapper.teacherToTeacherResponse(teacher));
+
+        logger.info(String.format("Got Teacher %s", teacher.getUser().getUsername()));
+
+        return teacherResultResponse;
     }
 }
