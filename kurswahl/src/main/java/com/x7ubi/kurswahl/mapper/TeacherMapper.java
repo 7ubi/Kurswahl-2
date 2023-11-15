@@ -19,13 +19,13 @@ public interface TeacherMapper {
 
     @Mapping(source = "surname", target = "user.surname")
     @Mapping(source = "firstname", target = "user.firstname")
-    Teacher studentRequestToStudent(TeacherSignupRequest teacherSignupRequest);
+    Teacher teacherRequestToTeacher(TeacherSignupRequest teacherSignupRequest);
 
     @Mapping(source = "surname", target = "user.surname")
     @Mapping(source = "firstname", target = "user.firstname")
-    void studentRequestToStudent(TeacherSignupRequest teacherSignupRequest, @MappingTarget Teacher teacher);
+    void teacherRequestToTeacher(TeacherSignupRequest teacherSignupRequest, @MappingTarget Teacher teacher);
 
-    default TeacherResponses studentsToStudentResponses(List<Teacher> teachers) {
+    default TeacherResponses teachersToTeacherResponses(List<Teacher> teachers) {
         TeacherResponses teacherResponses = new TeacherResponses();
         teacherResponses.setTeacherResponses(teachersToTeacherResponse(teachers));
         return teacherResponses;

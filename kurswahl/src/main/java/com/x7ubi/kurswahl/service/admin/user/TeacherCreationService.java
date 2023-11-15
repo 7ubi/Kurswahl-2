@@ -1,18 +1,17 @@
 package com.x7ubi.kurswahl.service.admin.user;
 
 import com.x7ubi.kurswahl.error.ErrorMessage;
+import com.x7ubi.kurswahl.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.repository.UserRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
-import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
 import com.x7ubi.kurswahl.response.admin.user.TeacherResponses;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import com.x7ubi.kurswahl.utils.PasswordGenerator;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,21 +36,22 @@ public class TeacherCreationService {
 
     private final UsernameService usernameService;
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final TeacherMapper teacherMapper;
 
     public TeacherCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo, UserRepo userRepo,
-                                  PasswordEncoder passwordEncoder, UsernameService usernameService) {
+                                  PasswordEncoder passwordEncoder, UsernameService usernameService,
+                                  TeacherMapper teacherMapper) {
         this.adminErrorService = adminErrorService;
         this.teacherRepo = teacherRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
+        this.teacherMapper = teacherMapper;
     }
 
     public void registerTeacher(TeacherSignupRequest teacherSignupRequest) {
 
-        Teacher teacher = new Teacher();
-        teacher.setUser(this.mapper.map(teacherSignupRequest, User.class));
+        Teacher teacher = this.teacherMapper.teacherRequestToTeacher(teacherSignupRequest);
         teacher.getUser().setUsername(this.usernameService.generateUsernameFromName(teacherSignupRequest));
         teacher.setAbbreviation(teacherSignupRequest.getAbbreviation());
         teacher.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
@@ -63,18 +63,9 @@ public class TeacherCreationService {
     }
 
     public TeacherResponses getAllTeachers() {
-        TeacherResponses teacherResponses = new TeacherResponses();
-        teacherResponses.setTeacherResponses(new ArrayList<>());
-
         List<Teacher> teachers = this.teacherRepo.findAll();
-        for(Teacher teacher: teachers) {
-            TeacherResponse teacherResponse = this.mapper.map(teacher.getUser(), TeacherResponse.class);
-            teacherResponse.setTeacherId(teacher.getTeacherId());
-            teacherResponse.setAbbreviation(teacher.getAbbreviation());
-            teacherResponses.getTeacherResponses().add(teacherResponse);
-        }
 
-        return teacherResponses;
+        return this.teacherMapper.teachersToTeacherResponses(teachers);
     }
 
     public ResultResponse deleteTeacher(Long teacherId) {
