@@ -39,6 +39,7 @@ import {
 } from './component/admin/classes/create-student-class/create-student-class.component';
 import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
+import {EditTeacherComponent} from './component/admin/user/edit-teacher/edit-teacher.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import {EditStudentComponent} from './component/admin/user/edit-student/edit-stu
     ShowStudentClassesComponent,
     CreateStudentClassComponent,
     EditAdminComponent,
-    EditStudentComponent
+    EditStudentComponent,
+    EditTeacherComponent
   ],
     imports: [
         BrowserModule,
