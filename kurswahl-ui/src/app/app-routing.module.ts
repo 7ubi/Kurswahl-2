@@ -22,11 +22,17 @@ import {
 import {EditAdminComponent} from "./component/admin/user/edit-admin/edit-admin.component";
 import {EditStudentComponent} from "./component/admin/user/edit-student/edit-student.component";
 import {EditTeacherComponent} from "./component/admin/user/edit-teacher/edit-teacher.component";
+import {ChangePasswordComponent} from "./component/auth/change-password/change-password.component";
 
 const routes: Routes = [
   {
     path: '',
     component: LoginComponent,
+  },
+  {
+    path: 'changePassword',
+    component: ChangePasswordComponent,
+    canActivate: mapToCanActivate([LoginRequired])
   },
   {
     path: 'admin/admins',

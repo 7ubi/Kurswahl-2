@@ -2,6 +2,10 @@ package com.x7ubi.kurswahl.error;
 
 public class ErrorMessage {
 
+    public static class General {
+        public static String WRONG_OLD_PASSWORD = "Altes Passwort ist falsch";
+    }
+
     public static class Administration {
         public static String ADMIN_NOT_FOUND = "Admin konnte nicht gefunden werden!";
 

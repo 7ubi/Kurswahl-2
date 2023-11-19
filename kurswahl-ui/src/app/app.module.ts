@@ -40,6 +40,7 @@ import {
 import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
 import {EditTeacherComponent} from './component/admin/user/edit-teacher/edit-teacher.component';
+import {ChangePasswordComponent} from './component/auth/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {EditTeacherComponent} from './component/admin/user/edit-teacher/edit-tea
     CreateStudentClassComponent,
     EditAdminComponent,
     EditStudentComponent,
-    EditTeacherComponent
+    EditTeacherComponent,
+    ChangePasswordComponent
   ],
     imports: [
         BrowserModule,
