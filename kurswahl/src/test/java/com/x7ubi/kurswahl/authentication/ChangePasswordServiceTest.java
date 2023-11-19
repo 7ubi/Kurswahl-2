@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.UserRepo;
+import com.x7ubi.kurswahl.request.admin.PasswordResetRequest;
 import com.x7ubi.kurswahl.request.auth.ChangePasswordRequest;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.authentication.ChangePasswordService;
@@ -68,6 +69,39 @@ public class ChangePasswordServiceTest {
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
         Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
                 ErrorMessage.General.WRONG_OLD_PASSWORD);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testResetPassword() {
+        // Given
+        PasswordResetRequest passwordResetRequest = new PasswordResetRequest();
+        passwordResetRequest.setUserId(this.userRepo.findByUsername(user.getUsername()).get().getUserId());
+
+        // When
+        ResultResponse response = this.changePasswordService.resetPassword(passwordResetRequest);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches(updatedUser.getGeneratedPassword(), updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testResetPasswordWrongId() {
+        // Given
+        PasswordResetRequest passwordResetRequest = new PasswordResetRequest();
+        passwordResetRequest.setUserId(this.userRepo.findByUsername(user.getUsername()).get().getUserId() + 1);
+
+        // When
+        ResultResponse response = this.changePasswordService.resetPassword(passwordResetRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.General.USER_NOT_FOUND);
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));

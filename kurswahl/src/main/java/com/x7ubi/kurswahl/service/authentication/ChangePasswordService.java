@@ -62,6 +62,7 @@ public class ChangePasswordService {
         return error;
     }
 
+    @Transactional
     public ResultResponse resetPassword(PasswordResetRequest passwordResetRequest) {
         ResultResponse response = new ResultResponse();
 
