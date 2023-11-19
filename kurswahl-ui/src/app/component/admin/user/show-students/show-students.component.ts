@@ -58,4 +58,14 @@ export class ShowStudentsComponent implements OnInit {
   editStudent(studentId: number) {
     this.router.navigate(['edit', studentId], {relativeTo: this.route});
   }
+
+  resetPassword(userId: number) {
+    this.httpService.put<ResultResponse>('api/auth/resetPassword', {userId: userId}, response => {
+      this.snackBar.open('Passwort wurde zurück gesetzt.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    });
+  }
 }

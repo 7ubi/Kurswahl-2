@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.response.admin.user;
 
 public class UserResponse {
 
+    private Long userId;
     private String username;
 
     private String firstname;
@@ -11,6 +12,14 @@ public class UserResponse {
     private String generatedPassword;
 
     public UserResponse() {}
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;

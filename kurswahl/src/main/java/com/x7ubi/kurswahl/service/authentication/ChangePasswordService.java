@@ -3,9 +3,11 @@ package com.x7ubi.kurswahl.service.authentication;
 import com.x7ubi.kurswahl.error.ErrorMessage;
 import com.x7ubi.kurswahl.models.User;
 import com.x7ubi.kurswahl.repository.UserRepo;
+import com.x7ubi.kurswahl.request.admin.PasswordResetRequest;
 import com.x7ubi.kurswahl.request.auth.ChangePasswordRequest;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
+import com.x7ubi.kurswahl.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,36 @@ public class ChangePasswordService {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             logger.error(ErrorMessage.General.WRONG_OLD_PASSWORD);
             error.add(new MessageResponse(ErrorMessage.General.WRONG_OLD_PASSWORD));
+        }
+
+        return error;
+    }
+
+    public ResultResponse resetPassword(PasswordResetRequest passwordResetRequest) {
+        ResultResponse response = new ResultResponse();
+
+        response.setErrorMessages(this.userNotFound(passwordResetRequest.getUserId()));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        User user = this.userRepo.findUserByUserId(passwordResetRequest.getUserId()).get();
+        if (null == user.getGeneratedPassword()) {
+            user.setGeneratedPassword(PasswordGenerator.generatePassword());
+        }
+        user.setPassword(this.passwordEncoder.encode(user.getGeneratedPassword()));
+        this.userRepo.save(user);
+
+        return response;
+    }
+
+    private List<MessageResponse> userNotFound(Long userId) {
+        List<MessageResponse> error = new ArrayList<>();
+
+        if (!this.userRepo.existsUserByUserId(userId)) {
+            logger.error(ErrorMessage.General.USER_NOT_FOUND);
+            error.add(new MessageResponse(ErrorMessage.General.USER_NOT_FOUND));
         }
 
         return error;

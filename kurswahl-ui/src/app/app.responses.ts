@@ -15,6 +15,7 @@ export interface LoginResponse {
 }
 
 export interface UserResponse {
+  readonly userId: number;
   readonly username: string;
   readonly firstname: string;
   readonly surname: string;
