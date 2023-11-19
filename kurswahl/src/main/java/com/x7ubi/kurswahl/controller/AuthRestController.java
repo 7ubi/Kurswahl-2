@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.models.SecurityUser;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
+import com.x7ubi.kurswahl.request.admin.PasswordResetRequest;
 import com.x7ubi.kurswahl.request.auth.ChangePasswordRequest;
 import com.x7ubi.kurswahl.request.auth.LoginRequest;
 import com.x7ubi.kurswahl.response.common.JwtResponse;
@@ -12,6 +13,7 @@ import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.response.common.Role;
 import com.x7ubi.kurswahl.service.authentication.ChangePasswordService;
 import com.x7ubi.kurswahl.service.authentication.StandardAdminService;
+import com.x7ubi.kurswahl.service.authentication.admin.AdminRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -81,7 +83,7 @@ public class AuthRestController {
             Role role =  getRoleUser(userDetails.getUsername());
 
             return ResponseEntity.ok(new JwtResponse(jwt,
-                    userDetails.getUser().getId(),
+                    userDetails.getUser().getUserId(),
                     userDetails.getUsername(), role));
         } catch (Exception e) {
             logger.error(String.valueOf(e));
@@ -105,6 +107,20 @@ public class AuthRestController {
         }
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/resetPassword")
+    @AdminRequired
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
+        logger.info("Reseting Password");
+
+        ResultResponse response = this.changePasswordService.resetPassword(passwordResetRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
     }
 
     private Role getRoleUser(String username) {

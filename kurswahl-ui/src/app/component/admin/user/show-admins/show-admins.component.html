@@ -36,6 +36,7 @@
         <th mat-header-cell *matHeaderCellDef> Aktionen </th>
         <td mat-cell *matCellDef="let element">
           <mat-icon (click)="editAdmin(element.adminId)">edit</mat-icon>
+          <mat-icon (click)="resetPassword(element.userId)">history</mat-icon>
           <mat-icon (click)="deleteAdmin(element.adminId)">delete</mat-icon>
         </td>
       </ng-container>

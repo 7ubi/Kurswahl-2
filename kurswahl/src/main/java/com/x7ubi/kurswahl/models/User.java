@@ -41,7 +41,7 @@ public class User implements Serializable {
         this.userId = userId;
     }
 
-    public Long getId() {
+    public Long getUserId() {
         return userId;
     }
 

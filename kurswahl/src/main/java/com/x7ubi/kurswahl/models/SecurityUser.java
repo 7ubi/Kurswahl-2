@@ -64,6 +64,6 @@ public class SecurityUser implements UserDetails {
         if (o == null || getClass() != o.getClass())
             return false;
         SecurityUser securityUser = (SecurityUser) o;
-        return Objects.equals(user.getId(), securityUser.getUser().getId());
+        return Objects.equals(user.getUserId(), securityUser.getUser().getUserId());
     }
 }

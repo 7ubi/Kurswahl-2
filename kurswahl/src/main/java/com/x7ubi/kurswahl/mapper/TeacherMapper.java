@@ -37,5 +37,6 @@ public interface TeacherMapper {
     @Mapping(source = "user.firstname", target = "firstname")
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "user.generatedPassword", target = "generatedPassword")
+    @Mapping(source = "user.userId", target = "userId")
     TeacherResponse teacherToTeacherResponse(Teacher teacher);
 }

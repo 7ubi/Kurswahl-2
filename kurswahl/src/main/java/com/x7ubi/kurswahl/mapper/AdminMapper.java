@@ -36,6 +36,7 @@ public interface AdminMapper {
     @Mapping(source = "user.firstname", target = "firstname")
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "user.generatedPassword", target = "generatedPassword")
+    @Mapping(source = "user.userId", target = "userId")
     AdminResponse adminToAdminResponse(Admin admin);
 
 

@@ -4,6 +4,8 @@ public class ErrorMessage {
 
     public static class General {
         public static String WRONG_OLD_PASSWORD = "Altes Passwort ist falsch";
+
+        public static String USER_NOT_FOUND = "Nutzer konnte nicht gefunden werden";
     }
 
     public static class Administration {
