@@ -5,9 +5,12 @@ import com.x7ubi.kurswahl.models.SecurityUser;
 import com.x7ubi.kurswahl.repository.AdminRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
+import com.x7ubi.kurswahl.request.auth.ChangePasswordRequest;
 import com.x7ubi.kurswahl.request.auth.LoginRequest;
 import com.x7ubi.kurswahl.response.common.JwtResponse;
+import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.response.common.Role;
+import com.x7ubi.kurswahl.service.authentication.ChangePasswordService;
 import com.x7ubi.kurswahl.service.authentication.StandardAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -40,15 +40,18 @@ public class AuthRestController {
 
     private final StandardAdminService standardAdminService;
 
+    private final ChangePasswordService changePasswordService;
+
     public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo,
                               TeacherRepo teacherRepo, StudentRepo studentRepo,
-                              StandardAdminService standardAdminService) {
+                              StandardAdminService standardAdminService, ChangePasswordService changePasswordService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.adminRepo = adminRepo;
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
         this.standardAdminService = standardAdminService;
+        this.changePasswordService = changePasswordService;
     }
 
     @PostMapping("/standardAdmin")
@@ -84,6 +87,24 @@ public class AuthRestController {
             logger.error(String.valueOf(e));
         }
         return (ResponseEntity<?>) ResponseEntity.badRequest();
+    }
+
+    @PutMapping("/changePassword")
+    public ResponseEntity<?> changePassword(
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody ChangePasswordRequest changePasswordRequest
+    ) {
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+
+        logger.info("Changing Password");
+
+        ResultResponse response = this.changePasswordService.changePassword(username, changePasswordRequest);
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        return ResponseEntity.ok().body(response);
     }
 
     private Role getRoleUser(String username) {

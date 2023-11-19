@@ -52,7 +52,6 @@ public class AdminCreationService {
         admin.getUser().setUsername(this.usernameService.generateUsernameFromName(signupRequest));
         admin.getUser().setGeneratedPassword(PasswordGenerator.generatePassword());
         admin.getUser().setPassword(passwordEncoder.encode(admin.getUser().getGeneratedPassword()));
-
         this.adminRepo.save(admin);
 
         logger.info(String.format("Admin %s was created", admin.getUser().getUsername()));
