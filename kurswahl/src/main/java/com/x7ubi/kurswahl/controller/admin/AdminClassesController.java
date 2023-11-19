@@ -96,6 +96,23 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @PutMapping("/subject")
+    @AdminRequired
+    public ResponseEntity<?> editSubject(
+            @RequestParam Long subjectId,
+            @RequestBody SubjectCreationRequest subjectCreationRequest
+    ) {
+        logger.info("Creating new Subject area");
+
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/subject")
     @AdminRequired
     public ResponseEntity<?> deleteSubject(
