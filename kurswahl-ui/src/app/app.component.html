@@ -1,21 +1,26 @@
-
-<mat-drawer-container class="example-container" autosize>
-  <mat-drawer style="min-width: 200px; width: 85vw; max-width: 400px;" #drawer class="example-sidenav" mode="side">
-    <app-sidenav></app-sidenav>
-  </mat-drawer>
-
-  <mat-toolbar color="primary">
-    <button mat-icon-button class="example-icon" (click)="drawer.toggle()">
-      <mat-icon>menu</mat-icon>
+<!-- https://stackblitz.com/edit/angular-ymkpvj-9jty2s?file=src%2Fapp%2Fsidenav-fixed-example.html,src%2Fapp%2Fsidenav-fixed-example.ts -->
+<mat-toolbar color="primary">
+  <button mat-icon-button class="example-icon" (click)="isOpen = !isOpen">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Kurswahl</span>
+  <span class="example-spacer"></span>
+  <span *ngIf="isLoggedIn()">
+    <button (click)="logout()" mat-icon-button class="example-icon">
+      <mat-icon>input</mat-icon>
     </button>
-    <span>Kurswahl</span>
-    <span class="example-spacer"></span>
-    <span *ngIf="isLoggedIn()">
-      <button  (click)="logout()" mat-icon-button class="example-icon">
-        <mat-icon>input</mat-icon>
-      </button>
-    </span>
-  </mat-toolbar>
+  </span>
+</mat-toolbar>
+<mat-sidenav-container style="height: calc(100% - 64px)">
+  <mat-sidenav
+    class="sidenav"
+    [opened]="isOpen"
+    mode="side"
+  >
+    <app-sidenav></app-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
-  <router-outlet></router-outlet>
-</mat-drawer-container>
