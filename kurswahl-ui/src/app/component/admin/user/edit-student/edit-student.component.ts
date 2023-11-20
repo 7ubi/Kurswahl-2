@@ -62,7 +62,7 @@ export class EditStudentComponent {
     }
   }
 
-  compareCategoryObjects(object1: number, object2: number) {
+  compareStudentClassObjects(object1: number, object2: number) {
     return object1 == object2;
   }
 }

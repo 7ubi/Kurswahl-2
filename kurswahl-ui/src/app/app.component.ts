@@ -8,7 +8,7 @@ import {AuthenticationService} from "./service/authentication.service";
 })
 export class AppComponent {
   title = 'Kurswahl';
-  isOpen = true;
+  isOpen = false;
 
   constructor(private authenticationService: AuthenticationService) {
   }

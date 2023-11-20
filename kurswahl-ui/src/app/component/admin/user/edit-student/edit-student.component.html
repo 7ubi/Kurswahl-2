@@ -12,7 +12,7 @@
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Klasse</mat-label>
-        <mat-select formControlName="studentClass" [compareWith]="compareCategoryObjects">
+        <mat-select formControlName="studentClass" [compareWith]="compareStudentClassObjects">
           <mat-option *ngFor="let studentClass of studentClasses?.studentClassResponses"
                       value="{{studentClass.studentClassId}}"> {{ studentClass.name }}</mat-option>
         </mat-select>

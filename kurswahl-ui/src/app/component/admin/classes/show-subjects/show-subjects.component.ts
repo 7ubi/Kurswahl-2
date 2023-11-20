@@ -1,10 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  ResultResponse,
-  SubjectAreaResponses,
-  SubjectResponse,
-  SubjectResponses
-} from "../../../../app.responses";
+import {ResultResponse, SubjectAreaResponses, SubjectResponse, SubjectResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -113,5 +108,9 @@ export class ShowSubjectsComponent implements OnInit {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  editSubject(subjectId: number) {
+    this.router.navigate(['edit', subjectId], {relativeTo: this.route});
   }
 }

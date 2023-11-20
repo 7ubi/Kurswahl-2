@@ -1,7 +1,9 @@
 package com.x7ubi.kurswahl.service.admin.classes;
 
+import com.x7ubi.kurswahl.models.Subject;
 import com.x7ubi.kurswahl.models.SubjectArea;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
+import com.x7ubi.kurswahl.repository.SubjectRepo;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
@@ -23,11 +25,15 @@ public class SubjectAreaCreationService {
 
     private final SubjectAreaRepo subjectAreaRepo;
 
+    private final SubjectRepo subjectRepo;
+
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public SubjectAreaCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo) {
+    public SubjectAreaCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo,
+                                      SubjectRepo subjectRepo) {
         this.adminErrorService = adminErrorService;
         this.subjectAreaRepo = subjectAreaRepo;
+        this.subjectRepo = subjectRepo;
     }
 
     public ResultResponse createSubjectArea(SubjectAreaCreationRequest subjectAreaCreationRequest) {
@@ -69,7 +75,15 @@ public class SubjectAreaCreationService {
         }
 
         SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
+
+        List<Subject> subjects = new ArrayList<>(subjectArea.getSubjects());
+
+        subjectArea.getSubjects().clear();
+        this.subjectAreaRepo.save(subjectArea);
+        this.subjectRepo.deleteAll(subjects);
         this.subjectAreaRepo.delete(subjectArea);
+
+        logger.info(String.format("Deleted subject area %s", subjectArea.getName()));
 
         return resultResponse;
     }
