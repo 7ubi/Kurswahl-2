@@ -7,6 +7,9 @@ import com.x7ubi.kurswahl.models.SubjectArea;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
 import com.x7ubi.kurswahl.repository.SubjectRepo;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectResponse;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +33,10 @@ public class SubjectCreationServiceTest {
 
     private Subject subject;
 
+    private SubjectArea subjectAreaOther;
+
+    private Subject subjectOther;
+
     @BeforeEach
     public void setupTests() {
         subjectArea = new SubjectArea();
@@ -44,10 +51,28 @@ public class SubjectCreationServiceTest {
         this.subjectRepo.save(subject);
         subjectArea.getSubjects().add(subject);
         this.subjectAreaRepo.save(subjectArea);
+
+        setupOtherSubject();
     }
 
+    public void setupOtherSubject() {
+        subjectAreaOther = new SubjectArea();
+        subjectAreaOther.setName("Subject Area Other");
+
+        this.subjectAreaRepo.save(subjectAreaOther);
+        subjectAreaOther = this.subjectAreaRepo.findSubjectAreaByName(subjectAreaOther.getName()).get();
+
+        subjectOther = new Subject();
+        subjectOther.setName("test other");
+        subjectOther.setSubjectArea(subjectAreaOther);
+        this.subjectRepo.save(subjectOther);
+        subjectAreaOther.getSubjects().add(subjectOther);
+        this.subjectAreaRepo.save(subjectAreaOther);
+    }
+
+
     @Test
-    public void createSubject() {
+    public void testCreateSubject() {
         // Given
         SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
         subjectCreationRequest.setName("Subject");
@@ -66,7 +91,7 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void createSubjectNameExists() {
+    public void testCreateSubjectNameExists() {
         // Given
         SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
         subjectCreationRequest.setName("test");
@@ -86,11 +111,11 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void createSubjectSubjectAreaNotFound() {
+    public void testCreateSubjectSubjectAreaNotFound() {
         // Given
         SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
         subjectCreationRequest.setName("Subject");
-        subjectCreationRequest.setSubjectAreaId(subjectArea.getSubjectAreaId() + 1);
+        subjectCreationRequest.setSubjectAreaId(subjectArea.getSubjectAreaId() + 3);
 
         // When
         ResultResponse response = this.subjectCreationService.createSubject(subjectCreationRequest);
@@ -103,7 +128,158 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void deleteSubject() {
+    public void testEditSubject() {
+        // Given
+        Long subjectId = this.subject.getSubjectId();
+        SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
+        subjectCreationRequest.setName("Subject");
+        subjectCreationRequest.setSubjectAreaId(subjectAreaOther.getSubjectAreaId());
+
+        // When
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+
+        Subject editedSubject = this.subjectRepo.findSubjectByName("Subject").get();
+        subjectArea = this.subjectAreaRepo.findSubjectAreaByName(subjectArea.getName()).get();
+        subjectAreaOther = this.subjectAreaRepo.findSubjectAreaByName(subjectAreaOther.getName()).get();
+
+        Assertions.assertEquals(editedSubject.getName(), subjectCreationRequest.getName());
+        Assertions.assertEquals(editedSubject.getSubjectArea().getName(), subjectAreaOther.getName());
+        Assertions.assertEquals(subjectArea.getSubjects().size(), 0);
+        Assertions.assertEquals(subjectAreaOther.getSubjects().size(), 2);
+    }
+
+    @Test
+    public void testEditSubjectNameExists() {
+        // Given
+        Long subjectId = this.subject.getSubjectId();
+        SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
+        subjectCreationRequest.setName("test other");
+        subjectCreationRequest.setSubjectAreaId(subjectArea.getSubjectAreaId());
+
+        // When
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS);
+
+        Subject editedSubject = this.subjectRepo.findSubjectByName("test other").get();
+        subjectArea = this.subjectAreaRepo.findSubjectAreaByName(subjectArea.getName()).get();
+        subjectAreaOther = this.subjectAreaRepo.findSubjectAreaByName(subjectAreaOther.getName()).get();
+
+        Assertions.assertEquals(editedSubject.getName(), subjectCreationRequest.getName());
+        Assertions.assertEquals(editedSubject.getSubjectArea().getName(), subjectAreaOther.getName());
+        Assertions.assertEquals(subjectArea.getSubjects().size(), 1);
+        Assertions.assertEquals(subjectAreaOther.getSubjects().size(), 1);
+    }
+
+    @Test
+    public void testEditSubjectWrongSubjectId() {
+        // Given
+        Long subjectId = this.subject.getSubjectId() + 3;
+        SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
+        subjectCreationRequest.setName("Subject");
+        subjectCreationRequest.setSubjectAreaId(subjectArea.getSubjectAreaId());
+
+        // When
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+
+        subjectArea = this.subjectAreaRepo.findSubjectAreaByName(subjectArea.getName()).get();
+        subjectAreaOther = this.subjectAreaRepo.findSubjectAreaByName(subjectAreaOther.getName()).get();
+
+        Assertions.assertFalse(this.subjectRepo.existsSubjectByName("Subject"));
+        Assertions.assertEquals(subjectArea.getSubjects().size(), 1);
+        Assertions.assertEquals(subjectAreaOther.getSubjects().size(), 1);
+    }
+
+    @Test
+    public void testEditSubjectWrongSubjectAreaId() {
+        // Given
+        Long subjectId = this.subject.getSubjectId();
+        SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
+        subjectCreationRequest.setName("Subject");
+        subjectCreationRequest.setSubjectAreaId(subjectArea.getSubjectAreaId() + 3);
+
+        // When
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+
+        subjectArea = this.subjectAreaRepo.findSubjectAreaByName(subjectArea.getName()).get();
+        subjectAreaOther = this.subjectAreaRepo.findSubjectAreaByName(subjectAreaOther.getName()).get();
+
+        Assertions.assertFalse(this.subjectRepo.existsSubjectByName("Subject"));
+        Assertions.assertEquals(subjectArea.getSubjects().size(), 1);
+        Assertions.assertEquals(subjectAreaOther.getSubjects().size(), 1);
+    }
+
+    @Test
+    public void testGetSubject() {
+        // Given
+        Long subjectId = this.subject.getSubjectId();
+
+        // When
+        SubjectResultResponse response = this.subjectCreationService.getSubject(subjectId);
+
+        // Then
+        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Assertions.assertEquals(response.getSubjectResponse().getSubjectId(), subjectId);
+        Assertions.assertEquals(response.getSubjectResponse().getName(), subject.getName());
+        Assertions.assertEquals(response.getSubjectResponse().getSubjectAreaResponse().getSubjectAreaId(),
+                subject.getSubjectArea().getSubjectAreaId());
+    }
+
+    @Test
+    public void testGetSubjectWrongId() {
+        // Given
+        Long subjectId = this.subject.getSubjectId() + 3;
+
+        // When
+        SubjectResultResponse response = this.subjectCreationService.getSubject(subjectId);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+
+        Assertions.assertNull(response.getSubjectResponse());
+    }
+
+    @Test
+    public void testGetAllSubjects() {
+        // When
+        SubjectResponses response = this.subjectCreationService.getAllSubjects();
+
+        // Then
+        Assertions.assertEquals(response.getSubjectResponses().size(), 2);
+
+        SubjectResponse subject1 = response.getSubjectResponses().get(0);
+        Assertions.assertEquals(subject1.getSubjectId(), subject.getSubjectId());
+        Assertions.assertEquals(subject1.getName(), subject.getName());
+        Assertions.assertEquals(subject1.getSubjectAreaResponse().getSubjectAreaId(),
+                subject.getSubjectArea().getSubjectAreaId());
+
+        SubjectResponse subject2 = response.getSubjectResponses().get(1);
+        Assertions.assertEquals(subject2.getSubjectId(), subjectOther.getSubjectId());
+        Assertions.assertEquals(subject2.getName(), subjectOther.getName());
+        Assertions.assertEquals(subject2.getSubjectAreaResponse().getSubjectAreaId(),
+                subjectOther.getSubjectArea().getSubjectAreaId());
+    }
+
+    @Test
+    public void testDeleteSubject() {
         // Given
         subject = this.subjectRepo.findSubjectByName(subject.getName()).get();
 
@@ -121,7 +297,7 @@ public class SubjectCreationServiceTest {
     public void testDeleteSubjectWrongId() {
         // Given
         this.subject = this.subjectRepo.findSubjectByName(this.subject.getName()).get();
-        Long id = this.subject.getSubjectId() + 1;
+        Long id = this.subject.getSubjectId() + 3;
 
         // When
         ResultResponse response = this.subjectCreationService.deleteSubject(id);
