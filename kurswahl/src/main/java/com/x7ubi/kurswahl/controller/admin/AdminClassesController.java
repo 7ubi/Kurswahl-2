@@ -7,6 +7,7 @@ import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
+import com.x7ubi.kurswahl.response.admin.classes.SubjectResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.classes.StudentClassCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
@@ -90,6 +91,37 @@ public class AdminClassesController {
         ResultResponse response = this.subjectCreationService.createSubject(subjectCreationRequest);
 
         if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PutMapping("/subject")
+    @AdminRequired
+    public ResponseEntity<?> editSubject(
+            @RequestParam Long subjectId,
+            @RequestBody SubjectCreationRequest subjectCreationRequest
+    ) {
+        logger.info("Creating new Subject area");
+
+        ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/subject")
+    @AdminRequired
+    public ResponseEntity<?> getSubject(@RequestParam Long subjectId) {
+        logger.info("Getting Subject");
+
+        SubjectResultResponse response = this.subjectCreationService.getSubject(subjectId);
+
+        if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);
         }
 

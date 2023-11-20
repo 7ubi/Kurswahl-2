@@ -23,6 +23,7 @@ import {EditAdminComponent} from "./component/admin/user/edit-admin/edit-admin.c
 import {EditStudentComponent} from "./component/admin/user/edit-student/edit-student.component";
 import {EditTeacherComponent} from "./component/admin/user/edit-teacher/edit-teacher.component";
 import {ChangePasswordComponent} from "./component/auth/change-password/change-password.component";
+import {EditSubjectComponent} from "./component/admin/classes/edit-subject/edit-subject.component";
 
 const routes: Routes = [
   {
@@ -97,6 +98,11 @@ const routes: Routes = [
   {
     path: 'admin/subjects/create',
     component: CreateSubjectComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/subjects/edit/:id',
+    component: EditSubjectComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {

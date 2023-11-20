@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthenticationService} from "./service/authentication.service";
 
 @Component({
@@ -8,6 +8,7 @@ import {AuthenticationService} from "./service/authentication.service";
 })
 export class AppComponent {
   title = 'Kurswahl';
+  isOpen = false;
 
   constructor(private authenticationService: AuthenticationService) {
   }

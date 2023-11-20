@@ -1,18 +1,21 @@
-<mat-toolbar color="primary">
-        <mat-toolbar-row *ngIf="getRole() === 'ADMIN'">
-            <span >Administration</span>
-        </mat-toolbar-row>
-</mat-toolbar>
+<mat-nav-list *ngIf="getRole() === 'ADMIN'">
+  <mat-list-item>
+    <mat-icon class="side-nav-icon">person</mat-icon>
+    <span style="padding: 0"><b>Benutzerverwaltung</b></span>
+  </mat-list-item>
+  <div class="submenu">
+    <mat-list-item (click)="navigateTo('/admin/admins')" class="side-nav-item">Administratoren</mat-list-item>
+    <mat-list-item (click)="navigateTo('/admin/students')" class="side-nav-item"> Schüler</mat-list-item>
+    <mat-list-item (click)="navigateTo('/admin/teachers')" class="side-nav-item"> Lehrer</mat-list-item>
+  </div>
+  <mat-list-item>
+    <mat-icon class="side-nav-icon">school</mat-icon>
+    <b>Kursverwaltung</b>
+  </mat-list-item>
+  <div class="submenu">
+    <mat-list-item (click)="navigateTo('/admin/subjectAreas')" class="side-nav-item"> Fachbereiche</mat-list-item>
+    <mat-list-item (click)="navigateTo('/admin/subjects')" class="side-nav-item"> Fächer</mat-list-item>
+    <mat-list-item (click)="navigateTo('/admin/studentClasses')" class="side-nav-item"> Klassen</mat-list-item>
+  </div>
+</mat-nav-list>
 
-<div *ngIf="getRole() === 'ADMIN'">
-  <span><h2 class="side-nav-header">Benutzerverwaltung</h2></span>
-  <span (click)="navigateTo('/admin/admins')" class="side-nav-item"><mat-icon class="side-nav-icon">person</mat-icon> Administratoren</span>
-  <span (click)="navigateTo('/admin/students')" class="side-nav-item"><mat-icon class="side-nav-icon">school</mat-icon> Schüler</span>
-  <span (click)="navigateTo('/admin/teachers')" class="side-nav-item"><mat-icon class="side-nav-icon">grade</mat-icon> Lehrer</span>
-  <span><h2 class="side-nav-header">Kursverwaltung</h2></span>
-  <span (click)="navigateTo('/admin/subjectAreas')" class="side-nav-item"><mat-icon
-    class="side-nav-icon">school</mat-icon> Fachbereiche</span>
-  <span (click)="navigateTo('/admin/subjects')" class="side-nav-item"><mat-icon class="side-nav-icon">book</mat-icon> Fächer</span>
-  <span (click)="navigateTo('/admin/studentClasses')" class="side-nav-item"><mat-icon
-    class="side-nav-icon">looks_one</mat-icon> Klassen</span>
-</div>

@@ -18,3 +18,15 @@
 .side-nav-header {
   padding-left: 5px;
 }
+
+.submenu {
+  padding-left: 40px;
+}
+
+.mat-icon {
+  vertical-align: middle;
+}
+
+b {
+  vertical-align: middle;
+}
