@@ -4,10 +4,7 @@ import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
-import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
-import com.x7ubi.kurswahl.response.admin.classes.SubjectAreaResponses;
-import com.x7ubi.kurswahl.response.admin.classes.SubjectResponses;
-import com.x7ubi.kurswahl.response.admin.classes.SubjectResultResponse;
+import com.x7ubi.kurswahl.response.admin.classes.*;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.classes.StudentClassCreationService;
 import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
@@ -53,6 +50,39 @@ public class AdminClassesController {
         ResultResponse response = this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
 
         if(response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PutMapping("/subjectArea")
+    @AdminRequired
+    public ResponseEntity<?> editSubjectArea(
+            @RequestParam Long subjectAreaId,
+            @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
+    ) {
+        logger.info("Editing Subject area");
+
+        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/subjectArea")
+    @AdminRequired
+    public ResponseEntity<?> getSubjectArea(
+            @RequestParam Long subjectAreaId
+    ) {
+        logger.info("Getting Subject area");
+
+        SubjectAreaResultResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
+
+        if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);
         }
 
