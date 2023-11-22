@@ -69,6 +69,10 @@ export interface SubjectAreaResponses {
   readonly subjectAreaResponses: SubjectAreaResponse[];
 }
 
+export interface SubjectAreaResultResponse extends ResultResponse {
+  readonly subjectAreaResponse: SubjectAreaResponse;
+}
+
 export interface SubjectResponse {
   readonly name: string;
   readonly subjectId: number;

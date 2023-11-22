@@ -86,4 +86,8 @@ export class ShowSubjectAreasComponent implements OnInit {
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
+
+  editSubjectArea(subjectAreaId: number) {
+    this.router.navigate(['edit', subjectAreaId], {relativeTo: this.route});
+  }
 }

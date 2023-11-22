@@ -24,6 +24,7 @@ import {EditStudentComponent} from "./component/admin/user/edit-student/edit-stu
 import {EditTeacherComponent} from "./component/admin/user/edit-teacher/edit-teacher.component";
 import {ChangePasswordComponent} from "./component/auth/change-password/change-password.component";
 import {EditSubjectComponent} from "./component/admin/classes/edit-subject/edit-subject.component";
+import {EditSubjectAreaComponent} from "./component/admin/classes/edit-subject-area/edit-subject-area.component";
 
 const routes: Routes = [
   {
@@ -88,6 +89,11 @@ const routes: Routes = [
   {
     path: 'admin/subjectAreas/create',
     component: CreateSubjectAreaComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/subjectAreas/edit/:id',
+    component: EditSubjectAreaComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {
