@@ -76,6 +76,8 @@ public class SubjectAreaCreationService {
         this.subjectAreaMapper.subjectAreaRequestToSubject(subjectAreaCreationRequest, subjectArea);
         this.subjectAreaRepo.save(subjectArea);
 
+        logger.info(String.format("Subject Area %s was edited", subjectArea.getName()));
+
         return resultResponse;
     }
 
@@ -118,6 +120,8 @@ public class SubjectAreaCreationService {
 
         SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
         response.setSubjectAreaResponse(this.subjectAreaMapper.subjectAreaToSubjectAreaResponse(subjectArea));
+
+        logger.info(String.format("Found Subject Area %s", subjectArea.getName()));
 
         return response;
     }
