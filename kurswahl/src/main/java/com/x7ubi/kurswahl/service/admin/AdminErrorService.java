@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.repository.*;
 import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
+import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.common.MessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,11 @@ public class AdminErrorService {
 
     private final TeacherRepo teacherRepo;
 
+    private final TapeRepo tapeRepo;
+
     public AdminErrorService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
                              StudentClassRepo studentClassRepo, UserRepo userRepo,
-                             AdminRepo adminRepo, StudentRepo studentRepo, TeacherRepo teacherRepo) {
+                             AdminRepo adminRepo, StudentRepo studentRepo, TeacherRepo teacherRepo, TapeRepo tapeRepo) {
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.studentClassRepo = studentClassRepo;
@@ -42,6 +45,7 @@ public class AdminErrorService {
         this.adminRepo = adminRepo;
         this.studentRepo = studentRepo;
         this.teacherRepo = teacherRepo;
+        this.tapeRepo = tapeRepo;
     }
 
     public List<MessageResponse> findSubjectAreaCreationError(
@@ -144,6 +148,17 @@ public class AdminErrorService {
         if (!studentClassRepo.existsStudentClassAreaByStudentClassId(studentClassId)) {
             logger.error(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
             errors.add(new MessageResponse(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND));
+        }
+
+        return errors;
+    }
+
+    public List<MessageResponse> findTapeCreationError(TapeCreationRequest tapeCreationRequest) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if (tapeRepo.existsTapeByName(tapeCreationRequest.getName())) {
+            logger.error(ErrorMessage.Administration.TAPE_ALREADY_EXISTS);
+            errors.add(new MessageResponse(ErrorMessage.Administration.TAPE_ALREADY_EXISTS));
         }
 
         return errors;
