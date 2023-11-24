@@ -1,5 +1,5 @@
-<app-hero title="Klasse erstellen"></app-hero>
-<form [formGroup]="createStudentClassForm" (ngSubmit)="createStudentClass()">
+<app-hero title="Klasse bearbeiten"></app-hero>
+<form [formGroup]="editStudentClassForm" (ngSubmit)="editStudentClass()">
   <div class="container">
     <div class="center">
       <mat-form-field class="example-full-width">
@@ -12,13 +12,13 @@
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Lehrer</mat-label>
-        <mat-select formControlName="teacher">
+        <mat-select formControlName="teacher" [compareWith]="compareSubjectAreaObjects">
           <mat-option *ngFor="let teacher of teachers?.teacherResponses"
                       value="{{teacher.teacherId}}"> {{ teacher.abbreviation }}
             - {{ teacher.firstname}} {{ teacher.surname }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">Klasse erstellen</button>
+      <button mat-raised-button color="primary" type="submit">Klasse bearbeiten</button>
     </div>
   </div>
 </form>

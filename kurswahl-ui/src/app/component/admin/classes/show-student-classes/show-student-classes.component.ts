@@ -91,4 +91,8 @@ export class ShowStudentClassesComponent implements OnInit {
   createStudentClass() {
     this.router.navigate(['create'], {relativeTo: this.route});
   }
+
+  editStudentClass(studentClassId: number) {
+    this.router.navigate(['edit', studentClassId], {relativeTo: this.route});
+  }
 }

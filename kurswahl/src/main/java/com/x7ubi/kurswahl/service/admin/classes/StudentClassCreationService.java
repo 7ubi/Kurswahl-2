@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.service.admin.classes;
 
+import com.x7ubi.kurswahl.mapper.StudentClassMapper;
 import com.x7ubi.kurswahl.models.Student;
 import com.x7ubi.kurswahl.models.StudentClass;
 import com.x7ubi.kurswahl.models.Teacher;
@@ -7,20 +8,18 @@ import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.StudentRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
-import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponse;
 import com.x7ubi.kurswahl.response.admin.classes.StudentClassResponses;
-import com.x7ubi.kurswahl.response.admin.user.TeacherResponse;
+import com.x7ubi.kurswahl.response.admin.classes.StudentClassResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StudentClassCreationService {
@@ -35,14 +34,16 @@ public class StudentClassCreationService {
 
     private final StudentRepo studentRepo;
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final StudentClassMapper studentClassMapper;
 
     protected StudentClassCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo,
-                                          StudentClassRepo studentClassRepo, StudentRepo studentRepo) {
+                                          StudentClassRepo studentClassRepo, StudentRepo studentRepo,
+                                          StudentClassMapper studentClassMapper) {
         this.adminErrorService = adminErrorService;
         this.teacherRepo = teacherRepo;
         this.studentClassRepo = studentClassRepo;
         this.studentRepo = studentRepo;
+        this.studentClassMapper = studentClassMapper;
     }
 
     @Transactional
@@ -58,8 +59,8 @@ public class StudentClassCreationService {
         }
 
         Teacher teacher = this.teacherRepo.findTeacherByTeacherId(studentClassCreationRequest.getTeacherId()).get();
-        StudentClass studentClass = this.modelMapper.map(studentClassCreationRequest, StudentClass.class);
-        studentClass.setStudentClassId(null);
+        StudentClass studentClass
+                = this.studentClassMapper.studentClassRequestToStudentClass(studentClassCreationRequest);
         studentClass.setTeacher(teacher);
         studentClass.setReleaseYear(Year.now().getValue());
         this.studentClassRepo.save(studentClass);
@@ -72,20 +73,67 @@ public class StudentClassCreationService {
         return response;
     }
 
-    public StudentClassResponses getAllStudentClasses() {
-        List<StudentClass> studentClasses = this.studentClassRepo.findAll();
-        StudentClassResponses studentClassResponses = new StudentClassResponses();
-        studentClassResponses.setStudentClassResponses(new ArrayList<>());
+    @Transactional
+    public ResultResponse editStudentClass(Long studentClassId, StudentClassCreationRequest studentClassCreationRequest) {
+        ResultResponse resultResponse = new ResultResponse();
 
-        for (StudentClass studentClass : studentClasses) {
-            StudentClassResponse studentClassResponse = this.modelMapper.map(studentClass, StudentClassResponse.class);
-            studentClassResponse.setTeacher(this.modelMapper.map(studentClass.getTeacher().getUser(), TeacherResponse.class));
-            studentClassResponse.getTeacher().setTeacherId(studentClass.getTeacher().getTeacherId());
-            studentClassResponse.getTeacher().setAbbreviation(studentClass.getTeacher().getAbbreviation());
-            studentClassResponses.getStudentClassResponses().add(studentClassResponse);
+        resultResponse.setErrorMessages(
+                this.adminErrorService.getTeacherNotFound(studentClassCreationRequest.getTeacherId()));
+        resultResponse.getErrorMessages().addAll(this.adminErrorService.getStudentClassNotFound(studentClassId));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+        StudentClass studentClass = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId).get();
+        if (!Objects.equals(studentClass.getName(), studentClassCreationRequest.getName())) {
+            resultResponse.setErrorMessages(this.adminErrorService.findStudentClassCreationError(studentClassCreationRequest));
         }
 
-        return studentClassResponses;
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        this.studentClassMapper.studentClassRequestToStudentClass(studentClassCreationRequest, studentClass);
+
+        if (!Objects.equals(studentClass.getTeacher().getTeacherId(), studentClassCreationRequest.getTeacherId())) {
+            studentClass.getTeacher().getStudentClasses().remove(studentClass);
+            this.teacherRepo.save(studentClass.getTeacher());
+
+            Teacher teacher = this.teacherRepo.findTeacherByTeacherId(studentClassCreationRequest.getTeacherId()).get();
+            teacher.getStudentClasses().add(studentClass);
+            this.teacherRepo.save(teacher);
+
+            studentClass.setTeacher(teacher);
+        }
+
+        this.studentClassRepo.save(studentClass);
+
+        logger.info(String.format("Edited student class %s", studentClass.getName()));
+
+        return resultResponse;
+    }
+
+    public StudentClassResultResponse getStudentClass(Long studentClassId) {
+        StudentClassResultResponse response = new StudentClassResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getStudentClassNotFound(studentClassId));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        StudentClass studentClass = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId).get();
+        response.setStudentClassResponse(this.studentClassMapper.studentClassToStudentClassResponse(studentClass));
+
+        logger.info(String.format("Got student class %s", studentClass.getName()));
+
+        return response;
+    }
+
+    public StudentClassResponses getAllStudentClasses() {
+        List<StudentClass> studentClasses = this.studentClassRepo.findAll();
+
+        return this.studentClassMapper.studentClassesToStudentClassResponses(studentClasses);
     }
 
     @Transactional

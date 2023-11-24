@@ -133,7 +133,7 @@ public class AdminClassesController {
             @RequestParam Long subjectId,
             @RequestBody SubjectCreationRequest subjectCreationRequest
     ) {
-        logger.info("Creating new Subject area");
+        logger.info("Editing Subject area");
 
         ResultResponse response = this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
 
@@ -197,12 +197,43 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @PutMapping("/studentClass")
+    @AdminRequired
+    public ResponseEntity<?> editStudentClass(
+            @RequestParam Long studentClassId,
+            @RequestBody StudentClassCreationRequest studentClassCreationRequest) {
+
+        logger.info("Editing Student Class");
+
+        ResultResponse response
+                = this.studentClassCreationService.editStudentClass(studentClassId, studentClassCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/studentClass")
     @AdminRequired
     public ResponseEntity<?> deleteStudentClass(@RequestParam Long studentClassId) {
         logger.info("Deleting Student Class");
 
         ResultResponse response = this.studentClassCreationService.deleteStudentClass(studentClassId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/studentClass")
+    public ResponseEntity<?> getStudentClass(@RequestParam Long studentClassId) {
+        logger.info("Getting Student Class");
+
+        StudentClassResultResponse response = this.studentClassCreationService.getStudentClass(studentClassId);
 
         if (response.getErrorMessages().isEmpty()) {
             return ResponseEntity.ok().body(response);

@@ -44,6 +44,7 @@ import {ChangePasswordComponent} from './component/auth/change-password/change-p
 import {MatListModule} from "@angular/material/list";
 import {EditSubjectComponent} from './component/admin/classes/edit-subject/edit-subject.component';
 import {EditSubjectAreaComponent} from './component/admin/classes/edit-subject-area/edit-subject-area.component';
+import {EditStudentClassComponent} from './component/admin/classes/edit-student-class/edit-student-class.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import {EditSubjectAreaComponent} from './component/admin/classes/edit-subject-a
     EditTeacherComponent,
     ChangePasswordComponent,
     EditSubjectComponent,
-    EditSubjectAreaComponent
+    EditSubjectAreaComponent,
+    EditStudentClassComponent
   ],
     imports: [
         BrowserModule,
