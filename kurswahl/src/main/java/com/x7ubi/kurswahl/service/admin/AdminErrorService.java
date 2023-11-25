@@ -156,7 +156,8 @@ public class AdminErrorService {
     public List<MessageResponse> findTapeCreationError(TapeCreationRequest tapeCreationRequest) {
         List<MessageResponse> errors = new ArrayList<>();
 
-        if (tapeRepo.existsTapeByName(tapeCreationRequest.getName())) {
+        if (tapeRepo.existsTapeByNameAndYearAndReleaseYear(tapeCreationRequest.getName(),
+                tapeCreationRequest.getYear(), Year.now().getValue())) {
             logger.error(ErrorMessage.Administration.TAPE_ALREADY_EXISTS);
             errors.add(new MessageResponse(ErrorMessage.Administration.TAPE_ALREADY_EXISTS));
         }

@@ -14,4 +14,6 @@ public interface TapeRepo extends JpaRepository<Tape, Long> {
     Boolean existsTapeByTapeId(Long tapeId);
 
     Boolean existsTapeByName(String name);
+
+    Boolean existsTapeByNameAndYearAndReleaseYear(String name, Integer year, Integer releaseYear);
 }

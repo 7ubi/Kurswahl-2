@@ -46,6 +46,8 @@ import {EditSubjectComponent} from './component/admin/classes/edit-subject/edit-
 import {EditSubjectAreaComponent} from './component/admin/classes/edit-subject-area/edit-subject-area.component';
 import {EditStudentClassComponent} from './component/admin/classes/edit-student-class/edit-student-class.component';
 import {ShowTapesComponent} from './component/admin/classes/show-tapes/show-tapes.component';
+import {CreateTapeComponent} from './component/admin/classes/create-tape/create-tape.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -72,26 +74,28 @@ import {ShowTapesComponent} from './component/admin/classes/show-tapes/show-tape
     EditSubjectComponent,
     EditSubjectAreaComponent,
     EditStudentClassComponent,
-    ShowTapesComponent
+    ShowTapesComponent,
+    CreateTapeComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatToolbarModule,
-        MatIconModule,
-        HttpClientModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatSidenavModule,
-        MatSelectModule,
-      MatSortModule,
-      MatListModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatToolbarModule,
+    MatIconModule,
+    HttpClientModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatSidenavModule,
+    MatSelectModule,
+    MatSortModule,
+    MatListModule,
+    MatCheckboxModule
+  ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]
 })

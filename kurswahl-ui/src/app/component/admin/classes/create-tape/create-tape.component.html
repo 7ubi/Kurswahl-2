@@ -1,0 +1,19 @@
+<app-hero title="Band erstellen"></app-hero>
+<form [formGroup]="createStudentClassForm" (ngSubmit)="createStudentClass()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" name="name" id="name" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Jahrgang</mat-label>
+        <input matInput formControlName="year" name="year" id="year" type="number">
+      </mat-form-field>
+      <mat-checkbox style="text-align: left; margin-bottom: 10px" formControlName="lk" name="lk" id="lk"
+                    labelPosition="after">LK
+      </mat-checkbox>
+      <button mat-raised-button color="primary" type="submit">Band erstellen</button>
+    </div>
+  </div>
+</form>

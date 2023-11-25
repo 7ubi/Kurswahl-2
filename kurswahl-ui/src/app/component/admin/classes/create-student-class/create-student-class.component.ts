@@ -44,7 +44,6 @@ export class CreateStudentClassComponent implements OnInit {
   }
 
   private getStudentClassRequest() {
-    console.log(this.createStudentClassForm.get('teacher')?.value)
     return {
       name: this.createStudentClassForm.get('name')?.value,
       year: this.createStudentClassForm.get('year')?.value,
