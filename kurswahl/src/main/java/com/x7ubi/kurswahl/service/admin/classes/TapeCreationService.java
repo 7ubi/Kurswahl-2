@@ -4,11 +4,13 @@ import com.x7ubi.kurswahl.mapper.TapeMapper;
 import com.x7ubi.kurswahl.models.Tape;
 import com.x7ubi.kurswahl.repository.TapeRepo;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
+import com.x7ubi.kurswahl.response.admin.classes.TapeResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.List;
 
 @Service
 public class TapeCreationService {
@@ -40,5 +42,11 @@ public class TapeCreationService {
         this.tapeRepo.save(tape);
 
         return response;
+    }
+
+    public TapeResponses getAllTapes() {
+        List<Tape> tapes = this.tapeRepo.findAll();
+
+        return this.tapeMapper.tapesToTapeResponses(tapes);
     }
 }

@@ -266,4 +266,13 @@ public class AdminClassesController {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @GetMapping("/tapes")
+    public ResponseEntity<?> getAllTapes() {
+        logger.info("Getting all Tapes");
+
+        TapeResponses tapeResponses = this.tapeCreationService.getAllTapes();
+
+        return ResponseEntity.ok().body(tapeResponses);
+    }
 }
