@@ -267,6 +267,20 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @DeleteMapping("/tape")
+    @AdminRequired
+    public ResponseEntity<?> deleteTape(@RequestParam Long tapeId) {
+        logger.info("Deleting Tape");
+
+        ResultResponse response = this.tapeCreationService.deleteTape(tapeId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @GetMapping("/tapes")
     public ResponseEntity<?> getAllTapes() {
         logger.info("Getting all Tapes");

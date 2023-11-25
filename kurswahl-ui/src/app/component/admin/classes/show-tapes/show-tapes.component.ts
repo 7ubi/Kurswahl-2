@@ -51,7 +51,7 @@ export class ShowTapesComponent implements OnInit {
   deleteTape(tapeId: number) {
     this.httpService.delete<ResultResponse>(`api/admin/tape?tapeId=${tapeId}`, response => {
       this.loadTapes();
-      this.snackBar.open('Fach wurde erfolgreich gelöscht.', 'Verstanden', {
+      this.snackBar.open('Band wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
         duration: 5000

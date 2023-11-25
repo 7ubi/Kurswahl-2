@@ -164,4 +164,15 @@ public class AdminErrorService {
 
         return errors;
     }
+
+    public List<MessageResponse> getTapeNotFound(Long tapeId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if (!tapeRepo.existsTapeByTapeId(tapeId)) {
+            logger.error(ErrorMessage.Administration.TAPE_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.TAPE_NOT_FOUND));
+        }
+
+        return errors;
+    }
 }

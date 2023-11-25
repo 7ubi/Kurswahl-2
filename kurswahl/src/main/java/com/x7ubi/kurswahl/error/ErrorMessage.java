@@ -10,6 +10,7 @@ public class ErrorMessage {
 
     public static class Administration {
         public static final String TAPE_ALREADY_EXISTS = "Ein Band mit diesem Namen existiert bereits";
+        public static final String TAPE_NOT_FOUND = "Band konnte nicht gefunden werden!";
         public static String ADMIN_NOT_FOUND = "Admin konnte nicht gefunden werden!";
 
         public static String STUDENT_NOT_FOUND = "Schüler konnte nicht gefunden werden!";
