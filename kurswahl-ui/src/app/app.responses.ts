@@ -104,6 +104,18 @@ export interface StudentClassResultResponse extends ResultResponse {
   readonly studentClassResponse: StudentClassResponse;
 }
 
+export interface TapeResponse {
+  readonly tapeId: number;
+  readonly name: string;
+  readonly isLk: boolean;
+  readonly year: number;
+  readonly releaseYear: number;
+}
+
+export interface TapeResponses {
+  readonly tapeResponses: TapeResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
