@@ -210,20 +210,16 @@ public class TapeCreationServiceTest {
     @Test
     public void getAllTapes() {
         // When
-        TapeResponses responses = this.tapeCreationService.getAllTapes();
+        TapeResponses responses = this.tapeCreationService.getAllTapes(11);
 
         // Then
+        Assertions.assertEquals(responses.getTapeResponses().size(), 1);
+
         TapeResponse tape1 = responses.getTapeResponses().get(0);
         Assertions.assertEquals(tape1.getName(), tape.getName());
         Assertions.assertEquals(tape1.getLk(), tape.getLk());
         Assertions.assertEquals(tape1.getYear(), tape.getYear());
         Assertions.assertEquals(tape1.getReleaseYear(), tape.getReleaseYear());
-
-        TapeResponse tape2 = responses.getTapeResponses().get(1);
-        Assertions.assertEquals(tape2.getName(), otherTape.getName());
-        Assertions.assertEquals(tape2.getLk(), otherTape.getLk());
-        Assertions.assertEquals(tape2.getYear(), otherTape.getYear());
-        Assertions.assertEquals(tape2.getReleaseYear(), otherTape.getReleaseYear());
     }
 
     @Test

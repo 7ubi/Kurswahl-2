@@ -2,46 +2,17 @@
 
 <div class="container">
   <div class="center">
-    <div class="header">
-      <mat-form-field>
-        <mat-label>Suche</mat-label>
-        <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" (click)="createTape()">Band erstellen</button>
+    <div style="margin-bottom: 15px">
+      <button style="float: right" mat-raised-button color="primary" (click)="createTape()">Band erstellen</button>
     </div>
-    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
-           matSort (matSortChange)="sortData($event)">
-
-      <ng-container matColumnDef="Name">
-        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Name</th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="LK">
-        <th mat-header-cell *matHeaderCellDef> LK</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-icon *ngIf="element.lk">check</mat-icon>
-          <mat-icon *ngIf="!element.lk">close</mat-icon>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Jahrgang">
-        <th mat-sort-header="year" mat-header-cell *matHeaderCellDef> Jahrgang</th>
-        <td mat-cell *matCellDef="let element"> {{element.year}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Aktionen">
-        <th mat-header-cell *matHeaderCellDef> Aktionen</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-icon (click)="editTape(element.tapeId)">edit</mat-icon>
-          <mat-icon (click)="deleteTape(element.tapeId)">delete</mat-icon>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+    <div class="table-container">
+      <div class="table">
+        <app-tape-table year="11"></app-tape-table>
+      </div>
+      <div class="table">
+        <app-tape-table year="12"></app-tape-table>
+      </div>
+    </div>
   </div>
 </div>
 

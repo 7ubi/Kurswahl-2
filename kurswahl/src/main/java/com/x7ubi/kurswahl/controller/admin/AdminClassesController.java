@@ -313,10 +313,10 @@ public class AdminClassesController {
     }
 
     @GetMapping("/tapes")
-    public ResponseEntity<?> getAllTapes() {
+    public ResponseEntity<?> getAllTapes(@RequestParam Integer year) {
         logger.info("Getting all Tapes");
 
-        TapeResponses tapeResponses = this.tapeCreationService.getAllTapes();
+        TapeResponses tapeResponses = this.tapeCreationService.getAllTapes(year);
 
         return ResponseEntity.ok().body(tapeResponses);
     }

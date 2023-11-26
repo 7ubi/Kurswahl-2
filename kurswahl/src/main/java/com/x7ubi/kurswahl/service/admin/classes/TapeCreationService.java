@@ -99,8 +99,8 @@ public class TapeCreationService {
         return response;
     }
 
-    public TapeResponses getAllTapes() {
-        List<Tape> tapes = this.tapeRepo.findAll();
+    public TapeResponses getAllTapes(Integer year) {
+        List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(year, Year.now().getValue()).get();
 
         return this.tapeMapper.tapesToTapeResponses(tapes);
     }
