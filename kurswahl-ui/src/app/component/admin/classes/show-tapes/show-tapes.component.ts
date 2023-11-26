@@ -10,7 +10,6 @@ export class ShowTapesComponent {
   constructor(private router: Router, private route: ActivatedRoute) {
   }
 
-
   createTape() {
     this.router.navigate(['create'], {relativeTo: this.route});
   }

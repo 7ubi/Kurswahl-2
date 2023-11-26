@@ -16,7 +16,7 @@ public class Subject {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Class> classes;
 
     @ManyToOne()

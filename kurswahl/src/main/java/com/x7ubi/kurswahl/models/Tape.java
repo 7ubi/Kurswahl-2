@@ -25,7 +25,7 @@ public class Tape {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Class> aClass;
 
     @OneToMany(cascade = CascadeType.ALL)

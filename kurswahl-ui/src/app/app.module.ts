@@ -32,10 +32,10 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSortModule} from "@angular/material/sort";
 import {
-  ShowStudentClassesComponent
+    ShowStudentClassesComponent
 } from './component/admin/classes/show-student-classes/show-student-classes.component';
 import {
-  CreateStudentClassComponent
+    CreateStudentClassComponent
 } from './component/admin/classes/create-student-class/create-student-class.component';
 import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
@@ -50,6 +50,9 @@ import {CreateTapeComponent} from './component/admin/classes/create-tape/create-
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {EditTapeComponent} from './component/admin/classes/edit-tape/edit-tape.component';
 import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-table/tape-table.component';
+import {ShowClassesComponent} from './component/admin/classes/show-classes/show-classes.component';
+import {ClassTableComponent} from './component/admin/classes/show-classes/class-table/class-table.component';
+import {CreateClassComponent} from './component/admin/classes/create-class/create-class.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +82,10 @@ import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-tabl
     ShowTapesComponent,
     CreateTapeComponent,
     EditTapeComponent,
-    TapeTableComponent
+      TapeTableComponent,
+      ShowClassesComponent,
+      ClassTableComponent,
+      CreateClassComponent
   ],
   imports: [
     BrowserModule,

@@ -29,6 +29,8 @@ import {EditStudentClassComponent} from "./component/admin/classes/edit-student-
 import {ShowTapesComponent} from "./component/admin/classes/show-tapes/show-tapes.component";
 import {CreateTapeComponent} from "./component/admin/classes/create-tape/create-tape.component";
 import {EditTapeComponent} from "./component/admin/classes/edit-tape/edit-tape.component";
+import {ShowClassesComponent} from "./component/admin/classes/show-classes/show-classes.component";
+import {CreateClassComponent} from "./component/admin/classes/create-class/create-class.component";
 
 const routes: Routes = [
   {
@@ -143,6 +145,16 @@ const routes: Routes = [
   {
     path: 'admin/tapes/edit/:id',
     component: EditTapeComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/classes',
+    component: ShowClassesComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/classes/create',
+    component: CreateClassComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];
