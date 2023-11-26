@@ -48,6 +48,7 @@ import {EditStudentClassComponent} from './component/admin/classes/edit-student-
 import {ShowTapesComponent} from './component/admin/classes/show-tapes/show-tapes.component';
 import {CreateTapeComponent} from './component/admin/classes/create-tape/create-tape.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {EditTapeComponent} from './component/admin/classes/edit-tape/edit-tape.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     EditSubjectAreaComponent,
     EditStudentClassComponent,
     ShowTapesComponent,
-    CreateTapeComponent
+    CreateTapeComponent,
+    EditTapeComponent
   ],
   imports: [
     BrowserModule,

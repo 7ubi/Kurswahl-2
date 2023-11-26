@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.models.Tape;
 import com.x7ubi.kurswahl.repository.TapeRepo;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.TapeResponses;
+import com.x7ubi.kurswahl.response.admin.classes.TapeResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TapeCreationService {
@@ -46,6 +48,50 @@ public class TapeCreationService {
         this.tapeRepo.save(tape);
 
         logger.info(String.format("Created tape %s", tape.getName()));
+
+        return response;
+    }
+
+    public ResultResponse editTape(Long tapeId, TapeCreationRequest tapeCreationRequest) {
+        ResultResponse response = new ResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getTapeNotFound(tapeId));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        Tape tape = this.tapeRepo.findTapeByTapeId(tapeId).get();
+
+        if (!Objects.equals(tape.getName(), tapeCreationRequest.getName())) {
+            response.setErrorMessages(this.adminErrorService.findTapeCreationError(tapeCreationRequest));
+        }
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        this.tapeMapper.tapeRequestToTape(tapeCreationRequest, tape);
+
+        this.tapeRepo.save(tape);
+
+        logger.info(String.format("Edited tape %s", tape.getName()));
+
+        return response;
+    }
+
+    public TapeResultResponse getTape(Long tapeId) {
+        TapeResultResponse response = new TapeResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getTapeNotFound(tapeId));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        Tape tape = this.tapeRepo.findTapeByTapeId(tapeId).get();
+        response.setTapeResponse(this.tapeMapper.tapeToTapeResponse(tape));
+        logger.info(String.format("Got tape %s", tape.getName()));
 
         return response;
     }
