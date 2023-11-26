@@ -1,8 +1,5 @@
-.table-container {
+.header {
   display: flex;
   justify-content: space-between;
-}
-
-.table {
-  width: 45%;
+  align-items: center;
 }
