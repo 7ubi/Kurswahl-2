@@ -14,13 +14,13 @@ public class Class {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     private Teacher teacher;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     private Subject subject;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     private Tape tape;
 
     public Class() {}

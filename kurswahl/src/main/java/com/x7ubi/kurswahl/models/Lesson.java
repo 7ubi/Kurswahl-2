@@ -20,10 +20,8 @@ public class Lesson {
     @Column(nullable = false)
     private int releaseYear;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     private Tape tape;
-
-
 
     public Lesson() {}
 

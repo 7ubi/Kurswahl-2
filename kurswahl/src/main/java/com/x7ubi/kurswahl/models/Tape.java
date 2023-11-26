@@ -25,8 +25,8 @@ public class Tape {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Class aClass;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Class> aClass;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Lesson> lessons;
@@ -73,11 +73,11 @@ public class Tape {
         this.releaseYear = releaseYear;
     }
 
-    public Class getaClass() {
+    public Set<Class> getaClass() {
         return aClass;
     }
 
-    public void setaClass(Class aClass) {
+    public void setaClass(Set<Class> aClass) {
         this.aClass = aClass;
     }
 

@@ -26,6 +26,9 @@ import {ChangePasswordComponent} from "./component/auth/change-password/change-p
 import {EditSubjectComponent} from "./component/admin/classes/edit-subject/edit-subject.component";
 import {EditSubjectAreaComponent} from "./component/admin/classes/edit-subject-area/edit-subject-area.component";
 import {EditStudentClassComponent} from "./component/admin/classes/edit-student-class/edit-student-class.component";
+import {ShowTapesComponent} from "./component/admin/classes/show-tapes/show-tapes.component";
+import {CreateTapeComponent} from "./component/admin/classes/create-tape/create-tape.component";
+import {EditTapeComponent} from "./component/admin/classes/edit-tape/edit-tape.component";
 
 const routes: Routes = [
   {
@@ -125,6 +128,21 @@ const routes: Routes = [
   {
     path: 'admin/studentClasses/edit/:id',
     component: EditStudentClassComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/tapes',
+    component: ShowTapesComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/tapes/create',
+    component: CreateTapeComponent,
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'admin/tapes/edit/:id',
+    component: EditTapeComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
 ];
