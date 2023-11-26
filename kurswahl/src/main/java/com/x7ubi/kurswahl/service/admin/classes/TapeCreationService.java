@@ -8,6 +8,7 @@ import com.x7ubi.kurswahl.response.admin.classes.TapeResponses;
 import com.x7ubi.kurswahl.response.admin.classes.TapeResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class TapeCreationService {
         this.tapeRepo = tapeRepo;
     }
 
+    @Transactional
     public ResultResponse createTape(TapeCreationRequest tapeCreationRequest) {
         ResultResponse response = new ResultResponse();
 
@@ -52,6 +54,7 @@ public class TapeCreationService {
         return response;
     }
 
+    @Transactional
     public ResultResponse editTape(Long tapeId, TapeCreationRequest tapeCreationRequest) {
         ResultResponse response = new ResultResponse();
 
@@ -102,6 +105,7 @@ public class TapeCreationService {
         return this.tapeMapper.tapesToTapeResponses(tapes);
     }
 
+    @Transactional
     public ResultResponse deleteTape(Long tapeId) {
         ResultResponse response = new ResultResponse();
 

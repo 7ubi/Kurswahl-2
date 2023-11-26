@@ -44,9 +44,8 @@ export class EditTapeComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/tape?tapeId=${this.id}`, this.getStudentClassRequest(), response => {
-      this.router.navigate(['admin', 'tapes']);
-    });
+    this.httpService.put<ResultResponse>(`/api/admin/tape?tapeId=${this.id}`, this.getStudentClassRequest(),
+      response => this.router.navigate(['admin', 'tapes']));
   }
 
   private getStudentClassRequest() {

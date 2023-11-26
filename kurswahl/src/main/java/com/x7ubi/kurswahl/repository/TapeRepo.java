@@ -9,7 +9,7 @@ public interface TapeRepo extends JpaRepository<Tape, Long> {
 
     Optional<Tape> findTapeByTapeId(Long tapeId);
 
-    Optional<Tape> findTapeByName(String name);
+    Optional<Tape> findTapeByNameAndYearAndReleaseYear(String name, Integer year, Integer releaseYear);
 
     Boolean existsTapeByTapeId(Long tapeId);
 
