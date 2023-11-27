@@ -1,15 +1,9 @@
 package com.x7ubi.kurswahl.controller.admin;
 
-import com.x7ubi.kurswahl.request.admin.StudentClassCreationRequest;
-import com.x7ubi.kurswahl.request.admin.SubjectAreaCreationRequest;
-import com.x7ubi.kurswahl.request.admin.SubjectCreationRequest;
-import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
+import com.x7ubi.kurswahl.request.admin.*;
 import com.x7ubi.kurswahl.response.admin.classes.*;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.classes.StudentClassCreationService;
-import com.x7ubi.kurswahl.service.admin.classes.SubjectAreaCreationService;
-import com.x7ubi.kurswahl.service.admin.classes.SubjectCreationService;
-import com.x7ubi.kurswahl.service.admin.classes.TapeCreationService;
+import com.x7ubi.kurswahl.service.admin.classes.*;
 import com.x7ubi.kurswahl.service.authentication.admin.AdminRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +24,17 @@ public class AdminClassesController {
 
     private final TapeCreationService tapeCreationService;
 
+    private final ClassCreationService classCreationService;
+
     public AdminClassesController(
             SubjectAreaCreationService subjectAreaCreationService, SubjectCreationService subjectCreationService,
-            StudentClassCreationService studentClassCreationService, TapeCreationService tapeCreationService
-    ) {
+            StudentClassCreationService studentClassCreationService, TapeCreationService tapeCreationService,
+            ClassCreationService classCreationService) {
         this.subjectAreaCreationService = subjectAreaCreationService;
         this.subjectCreationService = subjectCreationService;
         this.studentClassCreationService = studentClassCreationService;
         this.tapeCreationService = tapeCreationService;
+        this.classCreationService = classCreationService;
     }
 
     @PostMapping("/subjectArea")
@@ -319,5 +316,73 @@ public class AdminClassesController {
         TapeResponses tapeResponses = this.tapeCreationService.getAllTapes(year);
 
         return ResponseEntity.ok().body(tapeResponses);
+    }
+
+    @PostMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> createClass(@RequestBody ClassCreationRequest classCreationRequest) {
+        logger.info("Creating class");
+
+        ResultResponse response = this.classCreationService.createClass(classCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PutMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> editClass(@RequestParam Long classId,
+                                       @RequestBody ClassCreationRequest classCreationRequest) {
+        logger.info("Editing class");
+
+        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> getClass(@RequestParam Long classId) {
+
+        logger.info("Getting class");
+
+        ResultResponse response = this.classCreationService.getClassByClassId(classId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> deleteClass(@RequestParam Long classId) {
+
+        logger.info("Deleting class");
+
+        ResultResponse response = this.classCreationService.deleteClass(classId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("classes")
+    public ResponseEntity<?> getAllClasses(@RequestParam Integer year) {
+        logger.info("Getting all Classes");
+
+        ClassResponses classResponses = this.classCreationService.getAllClasses(year);
+
+        return ResponseEntity.ok().body(classResponses);
     }
 }

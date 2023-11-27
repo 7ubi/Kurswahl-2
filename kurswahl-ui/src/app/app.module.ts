@@ -50,6 +50,10 @@ import {CreateTapeComponent} from './component/admin/classes/create-tape/create-
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {EditTapeComponent} from './component/admin/classes/edit-tape/edit-tape.component';
 import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-table/tape-table.component';
+import {ShowClassesComponent} from './component/admin/classes/show-classes/show-classes.component';
+import {ClassTableComponent} from './component/admin/classes/show-classes/class-table/class-table.component';
+import {CreateClassComponent} from './component/admin/classes/create-class/create-class.component';
+import {EditClassComponent} from './component/admin/classes/edit-class/edit-class.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +83,11 @@ import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-tabl
     ShowTapesComponent,
     CreateTapeComponent,
     EditTapeComponent,
-    TapeTableComponent
+      TapeTableComponent,
+      ShowClassesComponent,
+      ClassTableComponent,
+    CreateClassComponent,
+    EditClassComponent
   ],
   imports: [
     BrowserModule,

@@ -15,7 +15,7 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Class> classes;
 
     @OneToMany(fetch = FetchType.EAGER)

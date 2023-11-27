@@ -14,13 +14,14 @@ public class Class {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     private Teacher teacher;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     private Subject subject;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(unique = false)
     private Tape tape;
 
     public Class() {}

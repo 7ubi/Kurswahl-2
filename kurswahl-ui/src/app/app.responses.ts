@@ -120,6 +120,22 @@ export interface TapeResultResponse extends ResultResponse {
   readonly tapeResponse: TapeResponse;
 }
 
+export interface ClassResponse {
+  readonly classId: number;
+  readonly name: string;
+  readonly teacherResponse: TeacherResponse;
+  readonly subjectResponse: SubjectResponse;
+  readonly tapeResponse: TapeResponse;
+}
+
+export interface ClassResponses {
+  readonly classResponses: ClassResponse[];
+}
+
+export interface ClassResultResponse extends ResultResponse {
+  readonly classResponse: ClassResponse;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
