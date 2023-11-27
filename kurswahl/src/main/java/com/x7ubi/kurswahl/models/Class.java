@@ -21,6 +21,7 @@ public class Class {
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(unique = false)
     private Tape tape;
 
     public Class() {}

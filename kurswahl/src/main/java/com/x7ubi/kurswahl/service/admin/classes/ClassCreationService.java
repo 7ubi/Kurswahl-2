@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.request.admin.ClassCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.ClassResponses;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class ClassCreationService {
         this.classMapper = classMapper;
     }
 
+    @Transactional
     public ResultResponse createClass(ClassCreationRequest classCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
@@ -62,18 +64,19 @@ public class ClassCreationService {
         Class aclass = this.classMapper.classRequestToClass(classCreationRequest);
 
         Teacher teacher = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId()).get();
-        teacher.getClasses().add(aclass);
         aclass.setTeacher(teacher);
 
         Subject subject = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId()).get();
-        subject.getClasses().add(aclass);
         aclass.setSubject(subject);
 
         Tape tape = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId()).get();
-        tape.getaClass().add(aclass);
         aclass.setTape(tape);
 
         this.classRepo.save(aclass);
+
+        tape.getaClass().add(aclass);
+        subject.getClasses().add(aclass);
+        teacher.getClasses().add(aclass);
         this.teacherRepo.save(teacher);
         this.subjectRepo.save(subject);
         this.tapeRepo.save(tape);

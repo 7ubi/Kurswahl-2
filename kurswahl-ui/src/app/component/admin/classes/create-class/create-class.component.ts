@@ -43,8 +43,7 @@ export class CreateClassComponent {
   }
 
   createClass() {
-    console.log(this.createClassForm);
-    if (!this.createClassForm.valid) {
+    if (!this.createClassForm.valid || !this.isTapeFormFieldActive()) {
       return;
     }
 
