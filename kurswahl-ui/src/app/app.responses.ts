@@ -132,6 +132,10 @@ export interface ClassResponses {
   readonly classResponses: ClassResponse[];
 }
 
+export interface ClassResultResponse extends ResultResponse {
+  readonly classResponse: ClassResponse;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

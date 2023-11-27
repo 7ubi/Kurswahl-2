@@ -11,6 +11,7 @@ import com.x7ubi.kurswahl.repository.TapeRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.ClassCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.ClassResponses;
+import com.x7ubi.kurswahl.response.admin.classes.ClassResultResponse;
 import com.x7ubi.kurswahl.response.common.ResultResponse;
 import com.x7ubi.kurswahl.service.admin.AdminErrorService;
 import jakarta.transaction.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClassCreationService {
@@ -84,6 +86,79 @@ public class ClassCreationService {
         logger.info(String.format("Created class %s", aclass.getName()));
 
         return resultResponse;
+    }
+
+    public ResultResponse editClass(Long classId, ClassCreationRequest classCreationRequest) {
+        ResultResponse resultResponse = new ResultResponse();
+
+        resultResponse.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
+        resultResponse.getErrorMessages().addAll(this.adminErrorService
+                .getTeacherNotFound(classCreationRequest.getTeacherId()));
+        resultResponse.getErrorMessages()
+                .addAll(this.adminErrorService.getTapeNotFound(classCreationRequest.getTapeId()));
+        resultResponse.getErrorMessages()
+                .addAll(this.adminErrorService.getSubjectNotFound(classCreationRequest.getSubjectId()));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        Class aclass = this.classRepo.findClassByClassId(classId).get();
+        this.classMapper.classRequestToClass(classCreationRequest, aclass);
+
+        if (!Objects.equals(aclass.getTeacher().getTeacherId(), classCreationRequest.getTeacherId())) {
+            aclass.getTeacher().getClasses().remove(aclass);
+            this.teacherRepo.save(aclass.getTeacher());
+
+            Teacher teacher = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId()).get();
+            aclass.setTeacher(teacher);
+            teacher.getClasses().add(aclass);
+            this.teacherRepo.save(teacher);
+        }
+
+        if (!Objects.equals(aclass.getSubject().getSubjectId(), classCreationRequest.getSubjectId())) {
+            aclass.getSubject().getClasses().remove(aclass);
+            this.subjectRepo.save(aclass.getSubject());
+
+            Subject subject = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId()).get();
+            aclass.setSubject(subject);
+            subject.getClasses().add(aclass);
+            this.subjectRepo.save(subject);
+        }
+
+        if (!Objects.equals(aclass.getTape().getTapeId(), classCreationRequest.getTapeId())) {
+            aclass.getTape().getaClass().remove(aclass);
+            this.tapeRepo.save(aclass.getTape());
+
+            Tape tape = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId()).get();
+            aclass.setTape(tape);
+            tape.getaClass().add(aclass);
+            this.tapeRepo.save(tape);
+        }
+
+        this.classRepo.save(aclass);
+
+
+        logger.info(String.format("Edited class %s", aclass.getName()));
+
+        return resultResponse;
+    }
+
+    public ClassResultResponse getClassByClassId(Long classId) {
+
+        ClassResultResponse response = new ClassResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        Class aclass = this.classRepo.findClassByClassId(classId).get();
+        response.setClassResponse(this.classMapper.classToClassResponse(aclass));
+        logger.info(String.format("Got class %s", aclass.getName()));
+
+        return response;
     }
 
     public ClassResponses getAllClasses(Integer year) {

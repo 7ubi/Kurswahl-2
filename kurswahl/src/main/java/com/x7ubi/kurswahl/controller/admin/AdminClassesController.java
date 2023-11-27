@@ -332,6 +332,36 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @PutMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> editClass(@RequestParam Long classId,
+                                       @RequestBody ClassCreationRequest classCreationRequest) {
+        logger.info("Editing class");
+
+        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> getClass(@RequestParam Long classId) {
+
+        logger.info("Getting class");
+
+        ResultResponse response = this.classCreationService.getClassByClassId(classId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @DeleteMapping("/class")
     @AdminRequired
     public ResponseEntity<?> deleteClass(@RequestParam Long classId) {

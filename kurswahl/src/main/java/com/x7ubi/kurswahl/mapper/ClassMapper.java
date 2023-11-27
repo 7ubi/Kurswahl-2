@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.response.admin.classes.ClassResponse;
 import com.x7ubi.kurswahl.response.admin.classes.ClassResponses;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.List;
 )
 public interface ClassMapper {
     Class classRequestToClass(ClassCreationRequest classCreationRequest);
+
+    void classRequestToClass(ClassCreationRequest classCreationRequest, @MappingTarget Class aclass);
 
     default ClassResponses classesToClassResponses(List<Class> classes) {
         ClassResponses classResponses = new ClassResponses();

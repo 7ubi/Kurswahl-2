@@ -32,10 +32,10 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSortModule} from "@angular/material/sort";
 import {
-    ShowStudentClassesComponent
+  ShowStudentClassesComponent
 } from './component/admin/classes/show-student-classes/show-student-classes.component';
 import {
-    CreateStudentClassComponent
+  CreateStudentClassComponent
 } from './component/admin/classes/create-student-class/create-student-class.component';
 import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
@@ -53,6 +53,7 @@ import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-tabl
 import {ShowClassesComponent} from './component/admin/classes/show-classes/show-classes.component';
 import {ClassTableComponent} from './component/admin/classes/show-classes/class-table/class-table.component';
 import {CreateClassComponent} from './component/admin/classes/create-class/create-class.component';
+import {EditClassComponent} from './component/admin/classes/edit-class/edit-class.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import {CreateClassComponent} from './component/admin/classes/create-class/creat
       TapeTableComponent,
       ShowClassesComponent,
       ClassTableComponent,
-      CreateClassComponent
+    CreateClassComponent,
+    EditClassComponent
   ],
   imports: [
     BrowserModule,
