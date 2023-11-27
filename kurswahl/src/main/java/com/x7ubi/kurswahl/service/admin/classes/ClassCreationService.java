@@ -90,4 +90,31 @@ public class ClassCreationService {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue()).get();
         return this.classMapper.classesToClassResponses(classes);
     }
+
+    public ResultResponse deleteClass(Long classId) {
+        ResultResponse response = new ResultResponse();
+
+        response.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
+
+
+        if (!response.getErrorMessages().isEmpty()) {
+            return response;
+        }
+
+        Class aclass = this.classRepo.findClassByClassId(classId).get();
+
+        aclass.getTeacher().getClasses().remove(aclass);
+        this.teacherRepo.save(aclass.getTeacher());
+
+        aclass.getSubject().getClasses().remove(aclass);
+        this.subjectRepo.save(aclass.getSubject());
+
+        aclass.getTape().getaClass().remove(aclass);
+        this.tapeRepo.save(aclass.getTape());
+
+        this.classRepo.delete(aclass);
+        logger.info(String.format("Deleted class %s", aclass.getName()));
+
+        return response;
+    }
 }

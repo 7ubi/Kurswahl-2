@@ -332,6 +332,21 @@ public class AdminClassesController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @DeleteMapping("/class")
+    @AdminRequired
+    public ResponseEntity<?> deleteClass(@RequestParam Long classId) {
+
+        logger.info("Deleting class");
+
+        ResultResponse response = this.classCreationService.deleteClass(classId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @GetMapping("classes")
     public ResponseEntity<?> getAllClasses(@RequestParam Integer year) {
         logger.info("Getting all Classes");

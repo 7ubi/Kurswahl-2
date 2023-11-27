@@ -48,10 +48,10 @@ export class ClassTableComponent {
     });
   }
 
-  deleteTape(tapeId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/tape?tapeId=${tapeId}`, response => {
+  deleteClass(classId: number) {
+    this.httpService.delete<ResultResponse>(`api/admin/class?classId=${classId}`, response => {
       this.loadClasses();
-      this.snackBar.open('Band wurde erfolgreich gelöscht.', 'Verstanden', {
+      this.snackBar.open('Kurs wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
         duration: 5000
