@@ -33,12 +33,15 @@ public class TapeCreationService {
 
     private final ClassRepo classRepo;
 
+    private final ClassCreationService classCreationService;
+
     public TapeCreationService(AdminErrorService adminErrorService, TapeMapper tapeMapper, TapeRepo tapeRepo,
-                               ClassRepo classRepo) {
+                               ClassRepo classRepo, ClassCreationService classCreationService) {
         this.adminErrorService = adminErrorService;
         this.tapeMapper = tapeMapper;
         this.tapeRepo = tapeRepo;
         this.classRepo = classRepo;
+        this.classCreationService = classCreationService;
     }
 
     @Transactional
@@ -127,8 +130,7 @@ public class TapeCreationService {
         tape.getaClass().clear();
         this.tapeRepo.save(tape);
         for (Class aclass : classes) {
-            aclass.setTape(null);
-            this.classRepo.save(aclass);
+            classCreationService.deleteClass(aclass.getClassId());
         }
         this.classRepo.deleteAll(tape.getaClass());
 

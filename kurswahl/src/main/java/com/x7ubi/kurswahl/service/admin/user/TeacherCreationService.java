@@ -91,6 +91,7 @@ public class TeacherCreationService {
 
         resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
         resultResponse.getErrorMessages().addAll(getStudentClassesTeacher(teacherId));
+        resultResponse.getErrorMessages().addAll(getClassesTeacher(teacherId));
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -120,6 +121,24 @@ public class TeacherCreationService {
         if (!teacher.getStudentClasses().isEmpty()) {
             logger.error(ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
             error.add(new MessageResponse(ErrorMessage.Administration.TEACHER_STUDENT_CLASS));
+        }
+
+        return error;
+    }
+
+    private List<MessageResponse> getClassesTeacher(Long teacherId) {
+        List<MessageResponse> error = new ArrayList<>();
+
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
+
+        if (teacherOptional.isEmpty()) {
+            return error;
+        }
+        Teacher teacher = teacherOptional.get();
+
+        if (!teacher.getClasses().isEmpty()) {
+            logger.error(ErrorMessage.Administration.TEACHER_CLASS);
+            error.add(new MessageResponse(ErrorMessage.Administration.TEACHER_CLASS));
         }
 
         return error;

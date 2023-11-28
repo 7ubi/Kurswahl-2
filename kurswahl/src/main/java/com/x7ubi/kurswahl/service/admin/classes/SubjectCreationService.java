@@ -1,6 +1,7 @@
 package com.x7ubi.kurswahl.service.admin.classes;
 
 import com.x7ubi.kurswahl.mapper.SubjectMapper;
+import com.x7ubi.kurswahl.models.Class;
 import com.x7ubi.kurswahl.models.Subject;
 import com.x7ubi.kurswahl.models.SubjectArea;
 import com.x7ubi.kurswahl.repository.SubjectAreaRepo;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,12 +33,16 @@ public class SubjectCreationService {
 
     private final SubjectMapper subjectMapper;
 
+    private final ClassCreationService classCreationService;
+
     protected SubjectCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo,
-                                     SubjectRepo subjectRepo, SubjectMapper subjectMapper) {
+                                     SubjectRepo subjectRepo, SubjectMapper subjectMapper,
+                                     ClassCreationService classCreationService) {
         this.adminErrorService = adminErrorService;
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.subjectMapper = subjectMapper;
+        this.classCreationService = classCreationService;
     }
 
     @Transactional
@@ -121,6 +127,12 @@ public class SubjectCreationService {
         Subject subject = this.subjectRepo.findSubjectBySubjectId(subjectId).get();
         subject.getSubjectArea().getSubjects().remove(subject);
         this.subjectAreaRepo.save(subject.getSubjectArea());
+        List<Class> classes = new ArrayList<>(subject.getClasses());
+        subject.getClasses().clear();
+        this.subjectRepo.save(subject);
+        for (Class aclass : classes) {
+            classCreationService.deleteClass(aclass.getClassId());
+        }
         this.subjectRepo.delete(subject);
 
         logger.info(String.format("Deleted subject %s", subject.getName()));
