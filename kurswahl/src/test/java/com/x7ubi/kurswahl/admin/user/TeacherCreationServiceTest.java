@@ -2,9 +2,11 @@ package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.error.ErrorMessage;
+import com.x7ubi.kurswahl.models.Class;
 import com.x7ubi.kurswahl.models.StudentClass;
 import com.x7ubi.kurswahl.models.Teacher;
 import com.x7ubi.kurswahl.models.User;
+import com.x7ubi.kurswahl.repository.ClassRepo;
 import com.x7ubi.kurswahl.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.repository.TeacherRepo;
 import com.x7ubi.kurswahl.request.admin.TeacherSignupRequest;
@@ -33,9 +35,14 @@ public class TeacherCreationServiceTest {
     @Autowired
     private StudentClassRepo studentClassRepo;
 
+    @Autowired
+    private ClassRepo classRepo;
+
     private Teacher teacher;
 
     private StudentClass studentClass;
+
+    private Class aClass;
 
     @BeforeEach
     public void setupTests() {
@@ -63,6 +70,18 @@ public class TeacherCreationServiceTest {
 
         teacher.setStudentClasses(new HashSet<>());
         teacher.getStudentClasses().add(studentClass);
+        this.teacherRepo.save(teacher);
+    }
+
+    private void setupClass() {
+        aClass = new Class();
+        aClass.setName("class");
+        aClass.setTeacher(teacher);
+
+        this.classRepo.save(aClass);
+
+        teacher.setStudentClasses(new HashSet<>());
+        teacher.getClasses().add(aClass);
         this.teacherRepo.save(teacher);
     }
 
@@ -211,12 +230,13 @@ public class TeacherCreationServiceTest {
 
         // Then
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TEACHER_NOT_FOUND);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
     @Test
-    public void testDeleteTeacherStudentClass() {
+    public void testDeleteTeacherPartOfStudentClass() {
         // Given
         this.setupStudentClass();
         this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
@@ -227,7 +247,25 @@ public class TeacherCreationServiceTest {
 
         // Then
         Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+        Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
+    }
+
+    @Test
+    public void testDeleteTeacherPartOfClass() {
+        // Given
+        this.setupClass();
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId();
+
+        // When
+        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TEACHER_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 }
