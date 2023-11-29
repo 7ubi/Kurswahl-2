@@ -31,10 +31,9 @@ jobs:
         if: github.event_name != 'pull_request'
       - name: Start docker-compose
         env:
-          DB_PASSWORD_KURSWAHL: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          export DB_PASSWORD_KURSWAHL="$env:DB_PASSWORD_KURSWAHL"
+          export DB_PASSWORD_KURSWAHL=${{ secrets.DB_PASSWORD }}
           export JWT_SECRET="$env:JWT_SECRET"
           docker-compose down
           docker-compose up --build -d
