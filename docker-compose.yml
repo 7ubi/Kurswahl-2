@@ -3,7 +3,7 @@ version: '3'
 services:
   mysqldb:
     container_name: kurswahl_dbcontainer
-    image: mysql:8.0
+    image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'kurswahldb'
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
@@ -22,7 +22,6 @@ services:
       SPRING_DATASOURCE_USERNAME: 'root'
       SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
       BEZKODER_APP_JWTSECRET: '${JWT_SECRET}'
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECt: 'org.hibernate.dialect.MySQLDialect'
     volumes:
       - './kurswahl:/usr/src/app'
     ports:
