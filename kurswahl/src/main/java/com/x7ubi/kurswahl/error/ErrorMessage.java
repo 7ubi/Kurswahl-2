@@ -13,6 +13,7 @@ public class ErrorMessage {
         public static final String TAPE_NOT_FOUND = "Band konnte nicht gefunden werden!";
         public static final String CLASS_NOT_FOUND = "Kurs konnte nicht gefunden werden!";
         public static final String TEACHER_CLASS = "Lehrer unterrichtet eine(r) Klasse(n)";
+        public static final String LESSON_NOT_AVAILABLE = "Zu dieser Zeit ist bereits ein anderes Band";
         public static String ADMIN_NOT_FOUND = "Admin konnte nicht gefunden werden!";
 
         public static String STUDENT_NOT_FOUND = "Schüler konnte nicht gefunden werden!";

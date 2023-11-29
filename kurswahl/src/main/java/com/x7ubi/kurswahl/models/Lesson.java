@@ -12,13 +12,10 @@ public class Lesson {
     private Long lessonId;
 
     @Column(nullable = false)
-    private int day;
+    private Integer day;
 
     @Column(nullable = false)
-    private int hour;
-
-    @Column(nullable = false)
-    private int releaseYear;
+    private Integer hour;
 
     @ManyToOne()
     private Tape tape;
@@ -33,28 +30,20 @@ public class Lesson {
         this.lessonId = lessonId;
     }
 
-    public int getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
-    public int getHour() {
+    public Integer getHour() {
         return hour;
     }
 
-    public void setHour(int hour) {
+    public void setHour(Integer hour) {
         this.hour = hour;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
     }
 
     public Tape getTape() {

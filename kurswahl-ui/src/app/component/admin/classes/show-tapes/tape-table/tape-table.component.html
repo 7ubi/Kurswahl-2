@@ -6,6 +6,7 @@
     <mat-label>Suche</mat-label>
     <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>
   </mat-form-field>
+  <button mat-raised-button color="primary" (click)="assignLesson()">Zuweisen</button>
 </div>
 <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
        matSort (matSortChange)="sortData($event)">
