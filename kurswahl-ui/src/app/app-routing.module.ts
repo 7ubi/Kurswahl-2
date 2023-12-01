@@ -165,7 +165,7 @@ const routes: Routes = [
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   },
   {
-    path: 'admin/lessons/:id',
+    path: 'admin/lessons/:year',
     component: ShowLessonsComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
   }
