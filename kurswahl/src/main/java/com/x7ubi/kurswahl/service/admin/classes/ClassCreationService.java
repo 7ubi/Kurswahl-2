@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class ClassCreationService {
@@ -162,8 +163,13 @@ public class ClassCreationService {
     }
 
     public ClassResponses getAllClasses(Integer year) {
-        List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue()).get();
-        return this.classMapper.classesToClassResponses(classes);
+        Optional<List<Class>> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
+
+        if (classes.isPresent()) {
+            return this.classMapper.classesToClassResponses(classes.get());
+        }
+
+        return new ClassResponses();
     }
 
     public ResultResponse deleteClass(Long classId) {

@@ -36,7 +36,6 @@ export class ClassTableComponent {
   private loadClasses() {
     this.httpService.get<ClassResponses>(`/api/admin/classes?year=${this.year}`, response => {
       this.classResponses = response;
-      this.classResponses.classResponses.filter(aclass => aclass.tapeResponse.year == this.year);
 
       this.dataSource = new MatTableDataSource(this.classResponses.classResponses);
       if (this.lastSort) {

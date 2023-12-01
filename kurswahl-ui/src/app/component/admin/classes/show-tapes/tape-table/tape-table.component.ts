@@ -36,7 +36,6 @@ export class TapeTableComponent implements OnInit {
   private loadTapes() {
     this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${this.year}`, response => {
       this.tapeResponses = response;
-      this.tapeResponses.tapeResponses.filter(tape => tape.year == this.year);
 
       this.dataSource = new MatTableDataSource(this.tapeResponses.tapeResponses);
       if (this.lastSort) {
