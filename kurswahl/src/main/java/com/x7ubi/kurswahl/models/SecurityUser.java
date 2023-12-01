@@ -66,4 +66,13 @@ public class SecurityUser implements UserDetails {
         SecurityUser securityUser = (SecurityUser) o;
         return Objects.equals(user.getUserId(), securityUser.getUser().getUserId());
     }
+
+    @Override
+    public int hashCode() {
+        int result = 149;
+        result += (int) (31 * user.getUserId());
+        result += 31 * user.hashCode();
+
+        return result;
+    }
 }
