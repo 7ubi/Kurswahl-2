@@ -29,6 +29,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Set up JDK 20
+        uses: actions/setup-java@v3
+        with:
+          java-version: '20'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and Test with Maven
+        run: mvn -B package --file kurswahl/pom.xml -DskipTests
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
