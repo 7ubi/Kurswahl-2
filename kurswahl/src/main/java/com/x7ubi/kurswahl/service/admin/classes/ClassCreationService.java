@@ -184,11 +184,15 @@ public class ClassCreationService {
 
         Class aclass = this.classRepo.findClassByClassId(classId).get();
 
-        aclass.getTeacher().getClasses().remove(aclass);
-        this.teacherRepo.save(aclass.getTeacher());
+        if (null != aclass.getTeacher()) {
+            aclass.getTeacher().getClasses().remove(aclass);
+            this.teacherRepo.save(aclass.getTeacher());
+        }
 
-        aclass.getSubject().getClasses().remove(aclass);
-        this.subjectRepo.save(aclass.getSubject());
+        if (null != aclass.getSubject()) {
+            aclass.getSubject().getClasses().remove(aclass);
+            this.subjectRepo.save(aclass.getSubject());
+        }
 
         aclass.getTape().getaClass().remove(aclass);
         this.tapeRepo.save(aclass.getTape());
