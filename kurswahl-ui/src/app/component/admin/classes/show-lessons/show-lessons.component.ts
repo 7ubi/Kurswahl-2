@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {TapeResponse, TapeResponses} from "../../../../app.responses";
+import {ResultResponse, TapeResponse, TapeResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
-import {Lesson, LessonsTable} from "./lessons-table";
+import {LessonsTable} from "./lessons-table";
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-show-lessons',
@@ -17,9 +18,12 @@ export class ShowLessonsComponent implements OnInit {
   displayedColumns: string[];
 
   selectedTape?: TapeResponse;
-  selectedLessons: Lesson[] = [];
 
   readonly maxHours = 15;
+
+  tapeFormGroup: FormGroup = new FormGroup({
+    tapeOptions: new FormControl<Number | undefined>(undefined)
+  });
 
   constructor(
     private httpService: HttpService,
@@ -35,10 +39,16 @@ export class ShowLessonsComponent implements OnInit {
     this.loadTapes();
   }
 
-  private loadTapes() {
+  private loadTapes(tapeId?: number) {
     this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${this.year}`, response => {
       this.tapeResponses = response;
       this.generateTable();
+
+      if (tapeId) {
+        this.selectedTape = this.tapeResponses.tapeResponses.find(tape => tape.tapeId === tapeId);
+        this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.tapeId);
+      }
+      console.log(this.tapeFormGroup.controls['tapeOptions']);
     });
   }
 
@@ -96,41 +106,48 @@ export class ShowLessonsComponent implements OnInit {
       elementClass += 'day';
     }
 
-    if (element) {
+    if (element && element == this.selectedTape) {
+      elementClass += ' selected-tape'
+    } else if (element) {
       elementClass += ' taken';
     }
-
-    this.selectedLessons.forEach(lesson => {
-      if (lesson.day === day && lesson.hour === hour) {
-        elementClass += ' selected';
-      }
-    });
 
     return elementClass;
   }
 
   selectLesson(day: number, hour: number) {
     if (this.selectedTape) {
+      const tapeId = this.selectedTape.tapeId;
+      let deletedLesson = false;
 
-      let alreadySelected = false
-
-      this.selectedLessons.forEach(lesson => {
-        if (lesson.day === day && lesson.hour === hour) {
-          alreadySelected = true;
-          const index = this.selectedLessons.indexOf(lesson, 0);
-          if (index > -1) {
-            this.selectedLessons.splice(index, 1);
-          }
+      this.selectedTape.lessonResponses.forEach(lesson => {
+        if (lesson.day === day && lesson.hour === hour - 1) {
+          this.httpService.delete<ResultResponse>(`/api/admin/lesson?lessonId=${lesson.lessonId}`,
+            response => {
+              this.loadTapes(tapeId);
+            });
+          deletedLesson = true;
         }
       });
 
-      if (!alreadySelected) {
-        this.selectedLessons.push({day: day, hour: hour});
+      if (!deletedLesson) {
+        this.httpService.post<ResultResponse>('/api/admin/lesson', this.getLessonRequest(day, hour - 1),
+          response => {
+            this.loadTapes(tapeId);
+          });
       }
     }
   }
 
-  saveSelectedLessons() {
+  private getLessonRequest(day: number, hour: number) {
+    return {
+      tapeId: this.selectedTape?.tapeId,
+      day: day,
+      hour: hour,
+    };
+  }
 
+  compareTapeObjects(object1: any, object2: any) {
+    return Number(object1) === Number(object2);
   }
 }

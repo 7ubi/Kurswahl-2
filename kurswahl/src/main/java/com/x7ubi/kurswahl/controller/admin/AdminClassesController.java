@@ -403,4 +403,19 @@ public class AdminClassesController {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @DeleteMapping("lesson")
+    @AdminRequired
+    public ResponseEntity<?> deleteLesson(@RequestParam Long lessonId) {
+
+        logger.info("Deleting Lesson");
+
+        ResultResponse response = this.lessonCreationService.deleteLesson(lessonId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
 }

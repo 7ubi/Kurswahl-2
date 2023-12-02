@@ -37,10 +37,12 @@ public class AdminErrorService {
 
     private final ClassRepo classRepo;
 
+    private final LessonRepo lessonRepo;
+
     public AdminErrorService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
                              StudentClassRepo studentClassRepo, UserRepo userRepo,
                              AdminRepo adminRepo, StudentRepo studentRepo, TeacherRepo teacherRepo, TapeRepo tapeRepo,
-                             ClassRepo classRepo) {
+                             ClassRepo classRepo, LessonRepo lessonRepo) {
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.studentClassRepo = studentClassRepo;
@@ -50,6 +52,7 @@ public class AdminErrorService {
         this.teacherRepo = teacherRepo;
         this.tapeRepo = tapeRepo;
         this.classRepo = classRepo;
+        this.lessonRepo = lessonRepo;
     }
 
     public List<MessageResponse> findSubjectAreaCreationError(
@@ -186,6 +189,17 @@ public class AdminErrorService {
         if (!classRepo.existsClassByClassId(classId)) {
             logger.error(ErrorMessage.Administration.CLASS_NOT_FOUND);
             errors.add(new MessageResponse(ErrorMessage.Administration.CLASS_NOT_FOUND));
+        }
+
+        return errors;
+    }
+
+    public List<MessageResponse> getLessonNotFound(Long lessonId) {
+        List<MessageResponse> errors = new ArrayList<>();
+
+        if (!lessonRepo.existsByLessonId(lessonId)) {
+            logger.error(ErrorMessage.Administration.LESSON_NOT_FOUND);
+            errors.add(new MessageResponse(ErrorMessage.Administration.LESSON_NOT_FOUND));
         }
 
         return errors;

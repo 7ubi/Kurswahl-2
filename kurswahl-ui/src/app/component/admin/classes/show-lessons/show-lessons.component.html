@@ -8,14 +8,16 @@
       </h3>
     </div>
     <div class="header">
-      <mat-chip-listbox aria-label="Tape selection">
-        <mat-chip-option (selectionChange)="selected(tape)"
-                         *ngFor="let tape of tapeResponses?.tapeResponses">{{ tape.name }}</mat-chip-option>
-      </mat-chip-listbox>
-
-      <button mat-raised-button style="" color="primary" (click)="saveSelectedLessons()">
-        Speichern
-      </button>
+      <form [formGroup]="tapeFormGroup">
+        <mat-chip-listbox formControlName="tapeOptions" [compareWith]="compareTapeObjects">
+          <mat-chip-option
+            (selectionChange)="selected(tape)"
+            *ngFor="let tape of tapeResponses?.tapeResponses"
+            value="{{ tape.tapeId }}">
+            {{ tape.name }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </form>
     </div>
     <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
 

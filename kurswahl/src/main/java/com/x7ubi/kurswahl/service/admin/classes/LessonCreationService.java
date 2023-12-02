@@ -61,6 +61,22 @@ public class LessonCreationService {
         return resultResponse;
     }
 
+    public ResultResponse deleteLesson(Long lessonId) {
+        ResultResponse resultResponse = new ResultResponse();
+        resultResponse.setErrorMessages(this.adminErrorService.getLessonNotFound(lessonId));
+
+        if (!resultResponse.getErrorMessages().isEmpty()) {
+            return resultResponse;
+        }
+
+        Lesson lesson = this.lessonRepo.findLessonByLessonId(lessonId).get();
+        lesson.getTape().getLessons().remove(lesson);
+        tapeRepo.save(lesson.getTape());
+        lessonRepo.delete(lesson);
+
+        return resultResponse;
+    }
+
     private List<MessageResponse> isLessonAvailable(LessonCreationRequest lessonCreationRequest) {
         List<MessageResponse> errors = new ArrayList<>();
         Optional<Tape> tapeOptional = tapeRepo.findTapeByTapeId(lessonCreationRequest.getTapeId());
