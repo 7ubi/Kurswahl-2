@@ -8,3 +8,8 @@ export interface LessonsTable {
   thursday?: TapeResponse | null;
   friday?: TapeResponse | null;
 }
+
+export interface Lesson {
+  day: number,
+  hour: number
+}

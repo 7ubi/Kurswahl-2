@@ -42,6 +42,7 @@ public class LessonCreationService {
     public ResultResponse createLesson(LessonCreationRequest lessonCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
+
         resultResponse.setErrorMessages(this.adminErrorService.getTapeNotFound(lessonCreationRequest.getTapeId()));
         resultResponse.getErrorMessages().addAll(isLessonAvailable(lessonCreationRequest));
 

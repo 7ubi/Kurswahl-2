@@ -104,12 +104,19 @@ export interface StudentClassResultResponse extends ResultResponse {
   readonly studentClassResponse: StudentClassResponse;
 }
 
+export interface LessonResponse {
+  readonly lessonId: number;
+  readonly day: number;
+  readonly hour: number;
+}
+
 export interface TapeResponse {
   readonly tapeId: number;
   readonly name: string;
   readonly lk: boolean;
   readonly year: number;
   readonly releaseYear: number;
+  readonly lessonResponses: LessonResponse[];
 }
 
 export interface TapeResponses {

@@ -55,6 +55,7 @@ import {ClassTableComponent} from './component/admin/classes/show-classes/class-
 import {CreateClassComponent} from './component/admin/classes/create-class/create-class.component';
 import {EditClassComponent} from './component/admin/classes/edit-class/edit-class.component';
 import {ShowLessonsComponent} from './component/admin/classes/show-lessons/show-lessons.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import {ShowLessonsComponent} from './component/admin/classes/show-lessons/show-
     MatSelectModule,
     MatSortModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatChipsModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired],
   bootstrap: [AppComponent]
