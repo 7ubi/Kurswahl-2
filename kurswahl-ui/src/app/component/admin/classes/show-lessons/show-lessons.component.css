@@ -20,6 +20,7 @@
 
 .day:hover {
   filter: brightness(70%);
+  cursor: pointer;
 }
 
 .selected {

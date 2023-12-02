@@ -22,7 +22,7 @@ export class ShowLessonsComponent implements OnInit {
   readonly maxHours = 15;
 
   tapeFormGroup: FormGroup = new FormGroup({
-    tapeOptions: new FormControl<Number | undefined>(undefined)
+    tapeOptions: new FormControl()
   });
 
   constructor(
@@ -45,10 +45,8 @@ export class ShowLessonsComponent implements OnInit {
       this.generateTable();
 
       if (tapeId) {
-        this.selectedTape = this.tapeResponses.tapeResponses.find(tape => tape.tapeId === tapeId);
-        this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.tapeId);
+        this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.name);
       }
-      console.log(this.tapeFormGroup.controls['tapeOptions']);
     });
   }
 
@@ -148,6 +146,10 @@ export class ShowLessonsComponent implements OnInit {
   }
 
   compareTapeObjects(object1: any, object2: any) {
-    return Number(object1) === Number(object2);
+    return object1 === object2;
+  }
+
+  getIsSelectedTape(tape: TapeResponse) {
+    return tape.name === this.selectedTape?.name;
   }
 }

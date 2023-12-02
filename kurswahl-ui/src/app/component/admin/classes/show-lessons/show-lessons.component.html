@@ -11,9 +11,10 @@
       <form [formGroup]="tapeFormGroup">
         <mat-chip-listbox formControlName="tapeOptions" [compareWith]="compareTapeObjects">
           <mat-chip-option
+            [selected]="getIsSelectedTape(tape)"
             (selectionChange)="selected(tape)"
             *ngFor="let tape of tapeResponses?.tapeResponses"
-            value="{{ tape.tapeId }}">
+            value="{{ tape.name }}">
             {{ tape.name }}
           </mat-chip-option>
         </mat-chip-listbox>
