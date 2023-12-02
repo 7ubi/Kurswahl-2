@@ -1,5 +1,7 @@
 package com.x7ubi.kurswahl.response.admin.classes;
 
+import java.util.List;
+
 public class TapeResponse {
     private Long tapeId;
 
@@ -11,6 +13,8 @@ public class TapeResponse {
     private Integer year;
 
     private Integer releaseYear;
+
+    private List<LessonResponse> lessonResponses;
 
     public TapeResponse() {
     }
@@ -53,5 +57,13 @@ public class TapeResponse {
 
     public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public List<LessonResponse> getLessonResponses() {
+        return lessonResponses;
+    }
+
+    public void setLessonResponses(List<LessonResponse> lessonResponses) {
+        this.lessonResponses = lessonResponses;
     }
 }

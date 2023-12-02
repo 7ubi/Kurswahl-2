@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.TapeResponse;
 import com.x7ubi.kurswahl.response.admin.classes.TapeResponses;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
@@ -12,7 +13,8 @@ import java.util.List;
 
 @Mapper(
         componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {LessonMapper.class}
 )
 public interface TapeMapper {
     Tape tapeRequestToTape(TapeCreationRequest tapeCreationRequest);
@@ -27,5 +29,6 @@ public interface TapeMapper {
 
     List<TapeResponse> tapesToTapeResponseList(List<Tape> tapes);
 
+    @Mapping(source = "lessons", target = "lessonResponses")
     TapeResponse tapeToTapeResponse(Tape tape);
 }

@@ -31,7 +31,7 @@ jobs:
     needs:
       - build
     steps:
-      - name: Checkout compiled arifact
+      - name: Checkout compiled artifact
         uses: actions/download-artifact@master
         with:
           name: CompiledProject

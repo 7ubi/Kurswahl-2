@@ -2,7 +2,11 @@ package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.error.ErrorMessage;
+import com.x7ubi.kurswahl.models.Class;
+import com.x7ubi.kurswahl.models.Lesson;
 import com.x7ubi.kurswahl.models.Tape;
+import com.x7ubi.kurswahl.repository.ClassRepo;
+import com.x7ubi.kurswahl.repository.LessonRepo;
 import com.x7ubi.kurswahl.repository.TapeRepo;
 import com.x7ubi.kurswahl.request.admin.TapeCreationRequest;
 import com.x7ubi.kurswahl.response.admin.classes.TapeResponse;
@@ -16,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.HashSet;
 
 @KurswahlServiceTest
 public class TapeCreationServiceTest {
@@ -26,9 +31,19 @@ public class TapeCreationServiceTest {
     @Autowired
     private TapeRepo tapeRepo;
 
+    @Autowired
+    private LessonRepo lessonRepo;
+
+    @Autowired
+    private ClassRepo classRepo;
+
     private Tape tape;
 
     private Tape otherTape;
+
+    private Lesson lesson;
+
+    private Class aClass;
 
     @BeforeEach
     public void setupTest() {
@@ -47,6 +62,28 @@ public class TapeCreationServiceTest {
         otherTape.setLk(true);
 
         tapeRepo.save(otherTape);
+    }
+
+    private void setupLesson() {
+        lesson = new Lesson();
+        lesson.setDay(0);
+        lesson.setHour(0);
+        lesson.setTape(tape);
+        lessonRepo.save(lesson);
+        tape.setLessons(new HashSet<>());
+        tape.getLessons().add(lesson);
+        tapeRepo.save(tape);
+    }
+
+    private void setupClass() {
+        aClass = new Class();
+        aClass.setName("name");
+        aClass.setTape(tape);
+        classRepo.save(aClass);
+
+        tape.setaClass(new HashSet<>());
+        tape.getaClass().add(aClass);
+        tapeRepo.save(tape);
     }
 
     @Test
@@ -177,6 +214,7 @@ public class TapeCreationServiceTest {
     @Test
     public void testGetTape() {
         // Given
+        setupLesson();
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
 
         // When
@@ -189,6 +227,10 @@ public class TapeCreationServiceTest {
         Assertions.assertEquals(response.getTapeResponse().getLk(), tape.getLk());
         Assertions.assertEquals(response.getTapeResponse().getYear(), tape.getYear());
         Assertions.assertEquals(response.getTapeResponse().getReleaseYear(), tape.getReleaseYear());
+
+        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().size(), 1);
+        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().get(0).getDay(), lesson.getDay());
+        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().get(0).getHour(), lesson.getHour());
     }
 
     @Test
@@ -209,6 +251,9 @@ public class TapeCreationServiceTest {
 
     @Test
     public void getAllTapes() {
+        // Given
+        setupLesson();
+
         // When
         TapeResponses responses = this.tapeCreationService.getAllTapes(11);
 
@@ -220,12 +265,19 @@ public class TapeCreationServiceTest {
         Assertions.assertEquals(tape1.getLk(), tape.getLk());
         Assertions.assertEquals(tape1.getYear(), tape.getYear());
         Assertions.assertEquals(tape1.getReleaseYear(), tape.getReleaseYear());
+
+        Assertions.assertEquals(tape1.getLessonResponses().size(), 1);
+        Assertions.assertEquals(tape1.getLessonResponses().get(0).getDay(), lesson.getDay());
+        Assertions.assertEquals(tape1.getLessonResponses().get(0).getHour(), lesson.getHour());
     }
 
     @Test
     public void deleteTape() {
         // Given
+        setupLesson();
+        setupClass();
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
 
         // When
         ResultResponse response = this.tapeCreationService.deleteTape(tape.getTapeId());
@@ -235,12 +287,17 @@ public class TapeCreationServiceTest {
 
         Assertions.assertFalse(
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
+        Assertions.assertFalse(lessonRepo.existsByLessonId(lesson.getLessonId()));
+        Assertions.assertFalse(classRepo.existsClassByName(aClass.getName()));
     }
 
     @Test
     public void deleteTapeWrongId() {
         // Given
+        setupLesson();
+        setupClass();
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
 
         // When
         ResultResponse response = this.tapeCreationService.deleteTape(tape.getTapeId() + 3);
@@ -252,5 +309,7 @@ public class TapeCreationServiceTest {
 
         Assertions.assertTrue(
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
+        Assertions.assertTrue(lessonRepo.existsByLessonId(lesson.getLessonId()));
+        Assertions.assertTrue(classRepo.existsClassByName(aClass.getName()));
     }
 }

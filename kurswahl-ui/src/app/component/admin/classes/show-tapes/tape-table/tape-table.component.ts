@@ -90,4 +90,8 @@ export class TapeTableComponent implements OnInit {
   editTape(subjectId: number) {
     this.router.navigate(['edit', subjectId], {relativeTo: this.route});
   }
+
+  assignLesson() {
+    this.router.navigate(['admin', 'lessons', this.year]);
+  }
 }

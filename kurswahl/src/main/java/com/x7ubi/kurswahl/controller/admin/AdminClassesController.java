@@ -26,15 +26,18 @@ public class AdminClassesController {
 
     private final ClassCreationService classCreationService;
 
+    private final LessonCreationService lessonCreationService;
+
     public AdminClassesController(
             SubjectAreaCreationService subjectAreaCreationService, SubjectCreationService subjectCreationService,
             StudentClassCreationService studentClassCreationService, TapeCreationService tapeCreationService,
-            ClassCreationService classCreationService) {
+            ClassCreationService classCreationService, LessonCreationService lessonCreationService) {
         this.subjectAreaCreationService = subjectAreaCreationService;
         this.subjectCreationService = subjectCreationService;
         this.studentClassCreationService = studentClassCreationService;
         this.tapeCreationService = tapeCreationService;
         this.classCreationService = classCreationService;
+        this.lessonCreationService = lessonCreationService;
     }
 
     @PostMapping("/subjectArea")
@@ -384,5 +387,35 @@ public class AdminClassesController {
         ClassResponses classResponses = this.classCreationService.getAllClasses(year);
 
         return ResponseEntity.ok().body(classResponses);
+    }
+
+    @PostMapping("lesson")
+    @AdminRequired
+    public ResponseEntity<?> createLesson(@RequestBody LessonCreationRequest lessonCreationRequest) {
+
+        logger.info("Creating new Lesson");
+
+        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("lesson")
+    @AdminRequired
+    public ResponseEntity<?> deleteLesson(@RequestParam Long lessonId) {
+
+        logger.info("Deleting Lesson");
+
+        ResultResponse response = this.lessonCreationService.deleteLesson(lessonId);
+
+        if (response.getErrorMessages().isEmpty()) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.badRequest().body(response);
     }
 }
