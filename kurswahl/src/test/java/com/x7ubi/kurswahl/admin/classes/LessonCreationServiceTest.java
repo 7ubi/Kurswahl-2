@@ -105,6 +105,30 @@ public class LessonCreationServiceTest {
     }
 
     @Test
+    public void createLessonWrongTapeId() {
+        // Given
+        tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        LessonCreationRequest lessonCreationRequest = new LessonCreationRequest();
+        lessonCreationRequest.setDay(0);
+        lessonCreationRequest.setHour(0);
+        lessonCreationRequest.setTapeId(tape.getTapeId() + 3);
+
+        // When
+        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
+
+        // Then
+        Assertions.assertEquals(response.getErrorMessages().size(), 1);
+        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
+                ErrorMessage.Administration.TAPE_NOT_FOUND);
+
+        Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
+                lessonCreationRequest.getDay(), lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear()));
+
+        tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        Assertions.assertEquals(tape.getLessons().size(), 1);
+    }
+
+    @Test
     public void deleteLesson() {
         // Given
         lesson = this.lessonRepo.findLessonByDayAndHour(lesson.getDay(), lesson.getHour()).get();
