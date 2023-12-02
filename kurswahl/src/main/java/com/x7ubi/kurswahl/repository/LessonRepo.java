@@ -9,6 +9,8 @@ public interface LessonRepo extends JpaRepository<Lesson, Long> {
 
     Optional<Lesson> findLessonByLessonId(Long lessonId);
 
+    Optional<Lesson> findLessonByTape_TapeId(Long tapeId);
+
     Boolean existsByDayAndHourAndTape_YearAndTape_ReleaseYear(Integer day, Integer hour, Integer year, Integer releaseYear);
 
     Boolean existsByLessonId(Long lessonId);
