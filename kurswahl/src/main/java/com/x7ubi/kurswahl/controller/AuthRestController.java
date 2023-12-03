@@ -82,9 +82,12 @@ public class AuthRestController {
 
             Role role =  getRoleUser(userDetails.getUsername());
 
+            String name = String.format("%s %s", userDetails.getUser().getFirstname(),
+                    userDetails.getUser().getSurname());
+
             return ResponseEntity.ok(new JwtResponse(jwt,
                     userDetails.getUser().getUserId(),
-                    userDetails.getUsername(), role));
+                    userDetails.getUsername(), role, name));
         } catch (Exception e) {
             logger.error(String.valueOf(e));
         }
