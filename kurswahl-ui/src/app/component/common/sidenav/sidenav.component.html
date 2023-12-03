@@ -21,3 +21,13 @@
   </div>
 </mat-nav-list>
 
+<mat-nav-list *ngIf="getRole() === 'STUDENT'">
+  <mat-list-item>
+    <mat-icon class="side-nav-icon">school</mat-icon>
+    <span style="padding: 0"><b>Kurswahlen</b></span>
+  </mat-list-item>
+  <div class="submenu">
+    <mat-list-item (click)="navigateTo('/admin/subjectAreas')" class="side-nav-item"> Wahl tätigen</mat-list-item>
+  </div>
+</mat-nav-list>
+

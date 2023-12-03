@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
 import {LoginResponse, Role} from "../app.responses";
 import {StorageService} from "./storage.service";
@@ -35,6 +35,14 @@ export class AuthenticationService {
 
   public saveRole(role: Role) {
     StorageService.saveData('role', role.toString());
+  }
+
+  public saveName(name: string) {
+    StorageService.saveData('name', name);
+  }
+
+  public getName(): string | null {
+    return StorageService.getData('name');
   }
 
   public getRole(): string | null {

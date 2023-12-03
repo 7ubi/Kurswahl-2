@@ -33,6 +33,8 @@ import {ShowClassesComponent} from "./component/admin/classes/show-classes/show-
 import {CreateClassComponent} from "./component/admin/classes/create-class/create-class.component";
 import {EditClassComponent} from "./component/admin/classes/edit-class/edit-class.component";
 import {ShowLessonsComponent} from "./component/admin/classes/show-lessons/show-lessons.component";
+import {HomePageComponent} from "./component/student/home-page/home-page.component";
+import {StudentRequired} from "./student-required";
 
 const routes: Routes = [
   {
@@ -168,6 +170,11 @@ const routes: Routes = [
     path: 'admin/lessons/:year',
     component: ShowLessonsComponent,
     canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+  },
+  {
+    path: 'student',
+    component: HomePageComponent,
+    canActivate: mapToCanActivate([LoginRequired, StudentRequired])
   }
 ];
 

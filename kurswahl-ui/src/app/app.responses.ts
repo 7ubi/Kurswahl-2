@@ -12,6 +12,7 @@ export interface LoginResponse {
   readonly id: string;
   readonly username: string;
   readonly role: Role;
+  readonly name: string;
 }
 
 export interface UserResponse {

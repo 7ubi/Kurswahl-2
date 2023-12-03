@@ -56,6 +56,8 @@ import {CreateClassComponent} from './component/admin/classes/create-class/creat
 import {EditClassComponent} from './component/admin/classes/edit-class/edit-class.component';
 import {ShowLessonsComponent} from './component/admin/classes/show-lessons/show-lessons.component';
 import {MatChipsModule} from "@angular/material/chips";
+import {HomePageComponent} from './component/student/home-page/home-page.component';
+import {StudentRequired} from "./student-required";
 
 @NgModule({
   declarations: [
@@ -90,7 +92,8 @@ import {MatChipsModule} from "@angular/material/chips";
       ClassTableComponent,
     CreateClassComponent,
     EditClassComponent,
-    ShowLessonsComponent
+    ShowLessonsComponent,
+    HomePageComponent
   ],
   imports: [
     BrowserModule,
@@ -112,7 +115,7 @@ import {MatChipsModule} from "@angular/material/chips";
     MatCheckboxModule,
     MatChipsModule
   ],
-  providers: [MatSnackBarModule, LoginRequired, AdminRequired],
+  providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

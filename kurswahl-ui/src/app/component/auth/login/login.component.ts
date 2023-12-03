@@ -38,9 +38,12 @@ export class LoginComponent {
         response => {
           this.authenticationService.saveBearer(response);
           this.authenticationService.saveRole(response.role);
+          this.authenticationService.saveName(response.name);
 
           if(response.role.toString() === Role.ADMIN.toString()) {
             this.router.navigate(['admin', 'admins']);
+          } else if (response.role.toString() === Role.STUDENT.toString()) {
+            this.router.navigate(['student']);
           }
         }, error => {
           if(error.status === 401){
