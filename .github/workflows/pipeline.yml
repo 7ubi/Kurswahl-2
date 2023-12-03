@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build and Test with Maven
-        run: mvn -B package --file kurswahl/pom.xml -Pcoverage
+        run: mvn -B package --file kurswahl/pom.xml jacoco:prepare-agent jacoco:report
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
