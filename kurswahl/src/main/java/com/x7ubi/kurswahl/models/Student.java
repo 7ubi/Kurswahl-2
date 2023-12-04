@@ -2,6 +2,8 @@ package com.x7ubi.kurswahl.models;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "STUDENT")
 public class Student {
@@ -15,6 +17,9 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private StudentClass studentClass;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Choice> choices;
 
     public Student() {
     }
@@ -46,5 +51,13 @@ public class Student {
 
     public void setStudentClass(StudentClass studentClass) {
         this.studentClass = studentClass;
+    }
+
+    public Set<Choice> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(Set<Choice> choices) {
+        this.choices = choices;
     }
 }

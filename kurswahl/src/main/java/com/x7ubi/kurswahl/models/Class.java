@@ -2,6 +2,8 @@ package com.x7ubi.kurswahl.models;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "CLASS")
 public class Class {
@@ -23,6 +25,10 @@ public class Class {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(unique = false)
     private Tape tape;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn()
+    private Set<Choice> choices;
 
     public Class() {}
 
@@ -64,5 +70,13 @@ public class Class {
 
     public void setTape(Tape tape) {
         this.tape = tape;
+    }
+
+    public Set<Choice> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(Set<Choice> choices) {
+        this.choices = choices;
     }
 }
