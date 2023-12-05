@@ -20,7 +20,7 @@ public class Choice {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
     private Student student;
 
