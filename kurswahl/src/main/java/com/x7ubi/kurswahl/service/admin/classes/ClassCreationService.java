@@ -89,6 +89,7 @@ public class ClassCreationService {
         return resultResponse;
     }
 
+    @Transactional
     public ResultResponse editClass(Long classId, ClassCreationRequest classCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
 
@@ -145,6 +146,7 @@ public class ClassCreationService {
         return resultResponse;
     }
 
+    @Transactional
     public ClassResultResponse getClassByClassId(Long classId) {
 
         ClassResultResponse response = new ClassResultResponse();
@@ -162,6 +164,7 @@ public class ClassCreationService {
         return response;
     }
 
+    @Transactional
     public ClassResponses getAllClasses(Integer year) {
         Optional<List<Class>> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
 
@@ -172,6 +175,7 @@ public class ClassCreationService {
         return new ClassResponses();
     }
 
+    @Transactional
     public ResultResponse deleteClass(Long classId) {
         ResultResponse response = new ResultResponse();
 
