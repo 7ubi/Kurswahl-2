@@ -1,16 +1,16 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.error.ErrorMessage;
-import com.x7ubi.kurswahl.models.Class;
-import com.x7ubi.kurswahl.models.*;
-import com.x7ubi.kurswahl.repository.*;
-import com.x7ubi.kurswahl.request.admin.ClassCreationRequest;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResponse;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResponses;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResultResponse;
-import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.classes.ClassCreationService;
+import com.x7ubi.kurswahl.admin.request.ClassCreationRequest;
+import com.x7ubi.kurswahl.admin.response.classes.ClassResponse;
+import com.x7ubi.kurswahl.admin.response.classes.ClassResponses;
+import com.x7ubi.kurswahl.admin.response.classes.ClassResultResponse;
+import com.x7ubi.kurswahl.admin.service.classes.ClassCreationService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
+import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
