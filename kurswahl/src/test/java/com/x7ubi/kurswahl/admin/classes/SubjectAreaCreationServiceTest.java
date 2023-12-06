@@ -6,8 +6,8 @@ import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.admin.service.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
-import com.x7ubi.kurswahl.common.exception.CreationException;
-import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
 import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
 import org.junit.Assert;
@@ -63,11 +63,11 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test");
 
         // When
-        CreationException creationException = Assert.assertThrows(CreationException.class, () ->
+        EntityCreationException entityCreationException = Assert.assertThrows(EntityCreationException.class, () ->
                 this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest));
 
         // Then
-        Assertions.assertEquals(creationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         SubjectArea createdSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
         Assertions.assertEquals(createdSubjectArea.getName(), subjectArea.getName());
     }
@@ -113,11 +113,11 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test other");
 
         // When
-        CreationException creationException = Assert.assertThrows(CreationException.class, () ->
+        EntityCreationException entityCreationException = Assert.assertThrows(EntityCreationException.class, () ->
                 this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest));
 
         // Then
-        Assertions.assertEquals(creationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
         otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test other").get();
         Assertions.assertEquals(subjectArea.getName(), "test");
@@ -132,12 +132,12 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test");
 
         // When
-        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
                 this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId() + 5,
                         subjectAreaCreationRequest));
 
         // Then
-        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
 
         subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
         otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test other").get();
@@ -181,11 +181,11 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectAreaRepo.findSubjectAreaByName("test").get().getSubjectAreaId() + 3;
 
         // When
-        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
                 this.subjectAreaCreationService.getSubjectArea(id));
 
         // Then
-        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
     }
 
     @Test
@@ -208,11 +208,11 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectArea.getSubjectAreaId() + 3;
 
         // When
-        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
                 this.subjectAreaCreationService.deleteSubjectArea(id));
 
         // Then
-        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
         Assertions.assertTrue(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
     }
 }

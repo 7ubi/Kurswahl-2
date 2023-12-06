@@ -34,4 +34,8 @@ public class ErrorMessage {
         public static final String STUDENT_CLASS_NOT_FOUND = "Die Klasse konnte nicht gefunden werden!";
         public static final String TEACHER_STUDENT_CLASS = "Lehrer ist noch Leiter eine(r) Klasse(n)";
     }
+
+    public static class Common {
+        public static final String INTERNAL_SERVER_ERROR = "Server Fehler";
+    }
 }

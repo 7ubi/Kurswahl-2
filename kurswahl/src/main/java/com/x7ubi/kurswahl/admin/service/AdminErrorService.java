@@ -1,12 +1,10 @@
 package com.x7ubi.kurswahl.admin.service;
 
 import com.x7ubi.kurswahl.admin.request.StudentClassCreationRequest;
-import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
-import com.x7ubi.kurswahl.common.exception.CreationException;
-import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.response.MessageResponse;
 import org.slf4j.Logger;
@@ -57,17 +55,9 @@ public class AdminErrorService {
         this.lessonRepo = lessonRepo;
     }
 
-    public void findSubjectAreaCreationError(SubjectAreaCreationRequest subjectAreaCreationRequest)
-            throws CreationException {
-
-        if (this.subjectAreaRepo.existsSubjectAreaByName(subjectAreaCreationRequest.getName())) {
-            throw new CreationException(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
-        }
-    }
-
-    public void getSubjectAreaNotFound(Long subjectAreaId) throws ObjectNotFoundException {
+    public void getSubjectAreaNotFound(Long subjectAreaId) throws EntityNotFoundException {
         if (!this.subjectAreaRepo.existsSubjectAreaBySubjectAreaId(subjectAreaId)) {
-            throw new ObjectNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
         }
     }
 

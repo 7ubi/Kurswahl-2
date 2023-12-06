@@ -3,9 +3,9 @@ package com.x7ubi.kurswahl.admin.service.classes;
 import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
-import com.x7ubi.kurswahl.admin.service.AdminErrorService;
-import com.x7ubi.kurswahl.common.exception.CreationException;
-import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.mapper.SubjectAreaMapper;
 import com.x7ubi.kurswahl.common.models.Subject;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class SubjectAreaCreationService {
     private final Logger logger = LoggerFactory.getLogger(SubjectAreaCreationService.class);
-
-    private final AdminErrorService adminErrorService;
 
     private final SubjectAreaRepo subjectAreaRepo;
 
@@ -31,17 +30,16 @@ public class SubjectAreaCreationService {
 
     private final SubjectAreaMapper subjectAreaMapper;
 
-    public SubjectAreaCreationService(AdminErrorService adminErrorService, SubjectAreaRepo subjectAreaRepo,
-                                      SubjectRepo subjectRepo, SubjectAreaMapper subjectAreaMapper) {
-        this.adminErrorService = adminErrorService;
+    public SubjectAreaCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
+                                      SubjectAreaMapper subjectAreaMapper) {
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.subjectAreaMapper = subjectAreaMapper;
     }
 
     public void createSubjectArea(SubjectAreaCreationRequest subjectAreaCreationRequest)
-            throws CreationException {
-        this.adminErrorService.findSubjectAreaCreationError(subjectAreaCreationRequest);
+            throws EntityCreationException {
+        this.findSubjectAreaCreationError(subjectAreaCreationRequest);
 
         SubjectArea subjectArea = this.subjectAreaMapper.subjectAreaRequestToSubject(subjectAreaCreationRequest);
         this.subjectAreaRepo.save(subjectArea);
@@ -50,12 +48,17 @@ public class SubjectAreaCreationService {
     }
 
     public void editSubjectArea(Long subjectAreaId, SubjectAreaCreationRequest subjectAreaCreationRequest)
-            throws CreationException, ObjectNotFoundException {
-        this.adminErrorService.getSubjectAreaNotFound(subjectAreaId);
+            throws EntityCreationException, EntityNotFoundException {
+        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
-        SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
+        if (subjectAreaOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        }
+
+        SubjectArea subjectArea = subjectAreaOptional.get();
+
         if (!Objects.equals(subjectArea.getName(), subjectAreaCreationRequest.getName())) {
-            this.adminErrorService.findSubjectAreaCreationError(subjectAreaCreationRequest);
+            this.findSubjectAreaCreationError(subjectAreaCreationRequest);
         }
 
         this.subjectAreaMapper.subjectAreaRequestToSubject(subjectAreaCreationRequest, subjectArea);
@@ -71,10 +74,14 @@ public class SubjectAreaCreationService {
         return this.subjectAreaMapper.subjectAreasToSubjectAreaResponses(subjectAreas);
     }
 
-    public void deleteSubjectArea(Long subjectAreaId) throws ObjectNotFoundException {
-        this.adminErrorService.getSubjectAreaNotFound(subjectAreaId);
+    public void deleteSubjectArea(Long subjectAreaId) throws EntityNotFoundException {
+        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
-        SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
+        if (subjectAreaOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        }
+
+        SubjectArea subjectArea = subjectAreaOptional.get();
 
         List<Subject> subjects = new ArrayList<>(subjectArea.getSubjects());
 
@@ -86,13 +93,25 @@ public class SubjectAreaCreationService {
         logger.info(String.format("Deleted subject area %s", subjectArea.getName()));
     }
 
-    public SubjectAreaResponse getSubjectArea(Long subjectAreaId) throws ObjectNotFoundException {
-        this.adminErrorService.getSubjectAreaNotFound(subjectAreaId);
+    public SubjectAreaResponse getSubjectArea(Long subjectAreaId) throws EntityNotFoundException {
+        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
-        SubjectArea subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId).get();
+        if (subjectAreaOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        }
+
+        SubjectArea subjectArea = subjectAreaOptional.get();
 
         logger.info(String.format("Found Subject Area %s", subjectArea.getName()));
 
         return this.subjectAreaMapper.subjectAreaToSubjectAreaResponse(subjectArea);
+    }
+
+    private void findSubjectAreaCreationError(SubjectAreaCreationRequest subjectAreaCreationRequest)
+            throws EntityCreationException {
+
+        if (this.subjectAreaRepo.existsSubjectAreaByName(subjectAreaCreationRequest.getName())) {
+            throw new EntityCreationException(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
+        }
     }
 }

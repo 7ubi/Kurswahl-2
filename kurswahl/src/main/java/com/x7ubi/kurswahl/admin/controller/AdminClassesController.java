@@ -4,8 +4,9 @@ import com.x7ubi.kurswahl.admin.request.*;
 import com.x7ubi.kurswahl.admin.response.classes.*;
 import com.x7ubi.kurswahl.admin.service.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.service.classes.*;
-import com.x7ubi.kurswahl.common.exception.CreationException;
-import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class AdminClassesController {
         try {
             this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CreationException e) {
+        } catch (EntityCreationException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -70,12 +71,15 @@ public class AdminClassesController {
         try {
             this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CreationException e) {
+        } catch (EntityCreationException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (ObjectNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -88,9 +92,12 @@ public class AdminClassesController {
         try {
             SubjectAreaResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (ObjectNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -102,18 +109,25 @@ public class AdminClassesController {
         try {
             this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (ObjectNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/subjectAreas")
     public ResponseEntity<?> getSubjectAreas() {
+        try {
+            SubjectAreaResponses response = this.subjectAreaCreationService.getAllSubjectAreas();
 
-        SubjectAreaResponses response = this.subjectAreaCreationService.getAllSubjectAreas();
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/subject")
