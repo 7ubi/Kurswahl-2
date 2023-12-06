@@ -5,6 +5,8 @@ import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.CreationException;
+import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.response.MessageResponse;
 import org.slf4j.Logger;
@@ -55,27 +57,18 @@ public class AdminErrorService {
         this.lessonRepo = lessonRepo;
     }
 
-    public List<MessageResponse> findSubjectAreaCreationError(
-            SubjectAreaCreationRequest subjectAreaCreationRequest) {
-        List<MessageResponse> errors = new ArrayList<>();
+    public void findSubjectAreaCreationError(SubjectAreaCreationRequest subjectAreaCreationRequest)
+            throws CreationException {
 
         if (this.subjectAreaRepo.existsSubjectAreaByName(subjectAreaCreationRequest.getName())) {
-            logger.error(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
-            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS));
+            throw new CreationException(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         }
-
-        return errors;
     }
 
-    public List<MessageResponse> getSubjectAreaNotFound(Long subjectAreaId) {
-        List<MessageResponse> errors = new ArrayList<>();
-
+    public void getSubjectAreaNotFound(Long subjectAreaId) throws ObjectNotFoundException {
         if (!this.subjectAreaRepo.existsSubjectAreaBySubjectAreaId(subjectAreaId)) {
-            logger.error(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
-            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND));
+            throw new ObjectNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
         }
-
-        return errors;
     }
 
     public List<MessageResponse> findSubjectCreationError(SubjectCreationRequest subjectCreationRequest) {

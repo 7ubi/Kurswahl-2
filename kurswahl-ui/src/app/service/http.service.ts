@@ -40,7 +40,11 @@ export class HttpService {
           });
           this.authenticationService.logout();
         }
-
+        this.snackBar.open(err.error, 'Verstanden', {
+          horizontalPosition: "center",
+          verticalPosition: "bottom",
+          duration: 5000
+        });
         this.error(err.error);
         if (error) {
           error();

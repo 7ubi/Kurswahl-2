@@ -4,12 +4,13 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
 import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResultResponse;
 import com.x7ubi.kurswahl.admin.service.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.CreationException;
+import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
 import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,11 +49,10 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("subject area");
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
+        this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
 
         // Then
         SubjectArea createdSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("subject area").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertEquals(createdSubjectArea.getName(), subjectAreaCreationRequest.getName());
     }
 
@@ -63,12 +63,12 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test");
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
+        CreationException creationException = Assert.assertThrows(CreationException.class, () ->
+                this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest));
 
         // Then
+        Assertions.assertEquals(creationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         SubjectArea createdSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         Assertions.assertEquals(createdSubjectArea.getName(), subjectArea.getName());
     }
 
@@ -80,12 +80,10 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("subject area");
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId(),
-                subjectAreaCreationRequest);
+        this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId(), subjectAreaCreationRequest);
 
         // Then
         SubjectArea editedSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("subject area").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertEquals(editedSubjectArea.getSubjectAreaId(), subjectArea.getSubjectAreaId());
         Assertions.assertEquals(editedSubjectArea.getName(), subjectAreaCreationRequest.getName());
         Assertions.assertFalse(this.subjectAreaRepo.existsSubjectAreaByName("test"));
@@ -99,12 +97,10 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test");
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId(),
-                subjectAreaCreationRequest);
+        this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId(), subjectAreaCreationRequest);
 
         // Then
         SubjectArea editedSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertEquals(editedSubjectArea.getSubjectAreaId(), subjectArea.getSubjectAreaId());
         Assertions.assertEquals(editedSubjectArea.getName(), subjectAreaCreationRequest.getName());
     }
@@ -117,14 +113,34 @@ public class SubjectAreaCreationServiceTest {
         subjectAreaCreationRequest.setName("test other");
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId(),
-                subjectAreaCreationRequest);
+        CreationException creationException = Assert.assertThrows(CreationException.class, () ->
+                this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest));
 
         // Then
+        Assertions.assertEquals(creationException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
         subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
         otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test other").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
+        Assertions.assertEquals(subjectArea.getName(), "test");
+        Assertions.assertEquals(otherSubjectArea.getName(), "test other");
+    }
+
+    @Test
+    public void testEditSubjectAreaWrongId() {
+        // Given
+        subjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
+        SubjectAreaCreationRequest subjectAreaCreationRequest = new SubjectAreaCreationRequest();
+        subjectAreaCreationRequest.setName("test");
+
+        // When
+        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+                this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId() + 5,
+                        subjectAreaCreationRequest));
+
+        // Then
+        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+
+        subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
+        otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test other").get();
         Assertions.assertEquals(subjectArea.getName(), "test");
         Assertions.assertEquals(otherSubjectArea.getName(), "test other");
     }
@@ -152,13 +168,11 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectAreaRepo.findSubjectAreaByName("test").get().getSubjectAreaId();
 
         // When
-        SubjectAreaResultResponse subjectAreaResponse = this.subjectAreaCreationService.getSubjectArea(id);
+        SubjectAreaResponse subjectAreaResponse = this.subjectAreaCreationService.getSubjectArea(id);
 
         // Then
-        Assertions.assertTrue(subjectAreaResponse.getErrorMessages().isEmpty());
-
-        Assertions.assertEquals(subjectAreaResponse.getSubjectAreaResponse().getSubjectAreaId(), subjectArea.getSubjectAreaId());
-        Assertions.assertEquals(subjectAreaResponse.getSubjectAreaResponse().getName(), subjectArea.getName());
+        Assertions.assertEquals(subjectAreaResponse.getSubjectAreaId(), subjectArea.getSubjectAreaId());
+        Assertions.assertEquals(subjectAreaResponse.getName(), subjectArea.getName());
     }
 
     @Test
@@ -167,35 +181,11 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectAreaRepo.findSubjectAreaByName("test").get().getSubjectAreaId() + 3;
 
         // When
-        SubjectAreaResultResponse subjectAreaResponse = this.subjectAreaCreationService.getSubjectArea(id);
+        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+                this.subjectAreaCreationService.getSubjectArea(id));
 
         // Then
-        Assertions.assertEquals(subjectAreaResponse.getErrorMessages().size(), 1);
-        Assertions.assertEquals(subjectAreaResponse.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
-
-        Assertions.assertNull(subjectAreaResponse.getSubjectAreaResponse());
-    }
-
-    @Test
-    public void testEditSubjectAreaWrongId() {
-        // Given
-        subjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
-        SubjectAreaCreationRequest subjectAreaCreationRequest = new SubjectAreaCreationRequest();
-        subjectAreaCreationRequest.setName("test");
-
-        // When
-        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectArea.getSubjectAreaId() + 3,
-                subjectAreaCreationRequest);
-
-        // Then
-        subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
-        otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName("test other").get();
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
-        Assertions.assertEquals(subjectArea.getName(), "test");
-        Assertions.assertEquals(otherSubjectArea.getName(), "test other");
+        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
     }
 
     @Test
@@ -205,10 +195,9 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectArea.getSubjectAreaId();
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.deleteSubjectArea(id);
+        this.subjectAreaCreationService.deleteSubjectArea(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertFalse(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
     }
 
@@ -219,11 +208,11 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectArea.getSubjectAreaId() + 3;
 
         // When
-        ResultResponse response = this.subjectAreaCreationService.deleteSubjectArea(id);
+        ObjectNotFoundException objectNotFoundException = Assert.assertThrows(ObjectNotFoundException.class, () ->
+                this.subjectAreaCreationService.deleteSubjectArea(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+        Assertions.assertEquals(objectNotFoundException.getMessage(), ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
         Assertions.assertTrue(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
     }
 }

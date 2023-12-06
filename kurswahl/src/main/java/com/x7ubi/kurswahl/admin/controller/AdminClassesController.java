@@ -4,9 +4,12 @@ import com.x7ubi.kurswahl.admin.request.*;
 import com.x7ubi.kurswahl.admin.response.classes.*;
 import com.x7ubi.kurswahl.admin.service.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.service.classes.*;
+import com.x7ubi.kurswahl.common.exception.CreationException;
+import com.x7ubi.kurswahl.common.exception.ObjectNotFoundException;
 import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,13 +50,13 @@ public class AdminClassesController {
     ) {
         logger.info("Creating new Subject area");
 
-        ResultResponse response = this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
-
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
+        try {
+            this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CreationException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     @PutMapping("/subjectArea")
@@ -64,13 +67,16 @@ public class AdminClassesController {
     ) {
         logger.info("Editing Subject area");
 
-        ResultResponse response = this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
+        try {
+            this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CreationException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("/subjectArea")
@@ -79,14 +85,13 @@ public class AdminClassesController {
             @RequestParam Long subjectAreaId
     ) {
         logger.info("Getting Subject area");
-
-        SubjectAreaResultResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
+        try {
+            SubjectAreaResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (ObjectNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     @DeleteMapping("/subjectArea")
@@ -94,13 +99,13 @@ public class AdminClassesController {
     public ResponseEntity<?> deleteSubjectArea(@RequestParam Long subjectAreaId) {
         logger.info("Deleting Subject area");
 
-        ResultResponse response = this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
-
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
+        try {
+            this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ObjectNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("/subjectAreas")
@@ -108,7 +113,7 @@ public class AdminClassesController {
 
         SubjectAreaResponses response = this.subjectAreaCreationService.getAllSubjectAreas();
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/subject")

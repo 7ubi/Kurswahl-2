@@ -50,8 +50,7 @@ public class SubjectCreationService {
         ResultResponse resultResponse = new ResultResponse();
 
         resultResponse.setErrorMessages(this.adminErrorService.findSubjectCreationError(subjectCreationRequest));
-        resultResponse.getErrorMessages().addAll(
-                this.adminErrorService.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId()));
+        this.adminErrorService.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId());
 
         if(!resultResponse.getErrorMessages().isEmpty()) {
             return resultResponse;
@@ -73,9 +72,7 @@ public class SubjectCreationService {
     @Transactional
     public ResultResponse editSubject(Long subjectId, SubjectCreationRequest subjectCreationRequest) {
         ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(
-                this.adminErrorService.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId()));
+        this.adminErrorService.getSubjectAreaNotFound(subjectCreationRequest.getSubjectAreaId());
         resultResponse.getErrorMessages().addAll(this.adminErrorService.getSubjectNotFound(subjectId));
 
         if (!resultResponse.getErrorMessages().isEmpty()) {
