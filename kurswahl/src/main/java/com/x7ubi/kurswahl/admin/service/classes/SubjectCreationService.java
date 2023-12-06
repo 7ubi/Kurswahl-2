@@ -43,7 +43,8 @@ public class SubjectCreationService {
     }
 
     @Transactional
-    public void createSubject(SubjectCreationRequest subjectCreationRequest) throws EntityCreationException {
+    public void createSubject(SubjectCreationRequest subjectCreationRequest) throws EntityCreationException,
+            EntityNotFoundException {
 
         this.findSubjectCreationError(subjectCreationRequest);
 
@@ -65,7 +66,8 @@ public class SubjectCreationService {
         logger.info(String.format("Subject %s was created", subjectArea.getName()));
     }
 
-    public void editSubject(Long subjectId, SubjectCreationRequest subjectCreationRequest) {
+    public void editSubject(Long subjectId, SubjectCreationRequest subjectCreationRequest)
+            throws EntityNotFoundException, EntityCreationException {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(
                 subjectCreationRequest.getSubjectAreaId());
         if (subjectAreaOptional.isEmpty()) {
@@ -104,7 +106,7 @@ public class SubjectCreationService {
         return this.subjectMapper.subjectsToSubjectResponses(subjects);
     }
 
-    public void deleteSubject(Long subjectId) {
+    public void deleteSubject(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
@@ -124,7 +126,7 @@ public class SubjectCreationService {
         logger.info(String.format("Deleted subject %s", subject.getName()));
     }
 
-    public SubjectResponse getSubject(Long subjectId) {
+    public SubjectResponse getSubject(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_NOT_FOUND);

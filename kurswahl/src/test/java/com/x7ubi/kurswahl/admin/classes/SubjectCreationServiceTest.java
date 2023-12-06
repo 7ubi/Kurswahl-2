@@ -73,7 +73,7 @@ public class SubjectCreationServiceTest {
 
 
     @Test
-    public void testCreateSubject() {
+    public void testCreateSubject() throws EntityCreationException, EntityNotFoundException {
         // Given
         SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
         subjectCreationRequest.setName("Subject");
@@ -130,7 +130,7 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void testEditSubject() {
+    public void testEditSubject() throws EntityNotFoundException, EntityCreationException {
         // Given
         Long subjectId = this.subject.getSubjectId();
         SubjectCreationRequest subjectCreationRequest = new SubjectCreationRequest();
@@ -223,7 +223,7 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void testGetSubject() {
+    public void testGetSubject() throws EntityNotFoundException {
         // Given
         Long subjectId = this.subject.getSubjectId();
 
@@ -272,7 +272,7 @@ public class SubjectCreationServiceTest {
     }
 
     @Test
-    public void testDeleteSubject() {
+    public void testDeleteSubject() throws EntityNotFoundException {
         // Given
         subject = this.subjectRepo.findSubjectByName(subject.getName()).get();
 

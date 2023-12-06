@@ -1,15 +1,15 @@
 package com.x7ubi.kurswahl.admin.service.user;
 
 import com.x7ubi.kurswahl.admin.request.AdminSignupRequest;
+import com.x7ubi.kurswahl.admin.response.user.AdminResponse;
 import com.x7ubi.kurswahl.admin.response.user.AdminResponses;
-import com.x7ubi.kurswahl.admin.response.user.AdminResultResponse;
-import com.x7ubi.kurswahl.admin.service.AdminErrorService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.mapper.AdminMapper;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(AdminCreationService.class);
-
-    private final AdminErrorService adminErrorService;
 
     private final AdminRepo adminRepo;
 
@@ -35,10 +34,8 @@ public class AdminCreationService {
 
     private final AdminMapper adminMapper;
 
-    protected AdminCreationService(AdminErrorService adminErrorService, AdminRepo adminRepo, UserRepo userRepo,
-                                   PasswordEncoder passwordEncoder, UsernameService usernameService,
-                                   AdminMapper adminMapper) {
-        this.adminErrorService = adminErrorService;
+    protected AdminCreationService(AdminRepo adminRepo, UserRepo userRepo, PasswordEncoder passwordEncoder,
+                                   UsernameService usernameService, AdminMapper adminMapper) {
         this.adminRepo = adminRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
@@ -63,59 +60,47 @@ public class AdminCreationService {
         return this.adminMapper.adminsToAdminResponses(admins);
     }
 
-    public ResultResponse editAdmin(Long adminId, AdminSignupRequest signupRequest) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void editAdmin(Long adminId, AdminSignupRequest signupRequest) throws EntityNotFoundException {
+        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
-        resultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
-
-        if (!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
+        if (adminOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
         }
 
-        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
+        Admin admin = adminOptional.get();
 
         this.adminMapper.adminRequestToAdmin(signupRequest, admin);
 
         this.adminRepo.save(admin);
         logger.info(String.format("Admin %s was edited", admin.getUser().getUsername()));
-
-        return resultResponse;
     }
 
-    public ResultResponse deleteAdmin(Long adminId) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void deleteAdmin(Long adminId) throws EntityNotFoundException {
+        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
-        resultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
-
-        if(!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
+        if (adminOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
         }
 
-        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
+        Admin admin = adminOptional.get();
         User adminUser = admin.getUser();
 
         logger.info(String.format("Deleted Admin %s", adminUser.getUsername()));
 
         this.adminRepo.delete(admin);
         this.userRepo.delete(adminUser);
-
-        return resultResponse;
     }
 
-    public AdminResultResponse getAdmin(Long adminId) {
-        AdminResultResponse adminResultResponse = new AdminResultResponse();
+    public AdminResponse getAdmin(Long adminId) throws EntityNotFoundException {
+        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
-        adminResultResponse.setErrorMessages(this.adminErrorService.getAdminNotFound(adminId));
-
-        if (!adminResultResponse.getErrorMessages().isEmpty()) {
-            return adminResultResponse;
+        if (adminOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
         }
 
-        Admin admin = this.adminRepo.findAdminByAdminId(adminId).get();
-        adminResultResponse.setAdminResponse(this.adminMapper.adminToAdminResponse(admin));
-
+        Admin admin = adminOptional.get();
         logger.info(String.format("Found Admin %s", admin.getUser().getUsername()));
 
-        return adminResultResponse;
+        return this.adminMapper.adminToAdminResponse(admin);
     }
 }

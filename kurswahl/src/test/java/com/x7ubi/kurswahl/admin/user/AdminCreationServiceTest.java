@@ -4,13 +4,13 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.response.user.AdminResponse;
 import com.x7ubi.kurswahl.admin.response.user.AdminResponses;
-import com.x7ubi.kurswahl.admin.response.user.AdminResultResponse;
 import com.x7ubi.kurswahl.admin.service.user.AdminCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,16 +60,15 @@ public class AdminCreationServiceTest {
     }
 
     @Test
-    public void testDeleteAdmin() {
+    public void testDeleteAdmin() throws EntityNotFoundException {
         // Given
         this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
         Long id = this.admin.getAdminId();
 
         // When
-        ResultResponse response = this.adminCreationService.deleteAdmin(id);
+        this.adminCreationService.deleteAdmin(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertFalse(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
     }
 
@@ -80,16 +79,16 @@ public class AdminCreationServiceTest {
         Long id = this.admin.getAdminId() + 1;
 
         // When
-        ResultResponse response = this.adminCreationService.deleteAdmin(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.adminCreationService.deleteAdmin(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
         Assertions.assertTrue(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
     }
 
     @Test
-    public void testEditAdmin() {
+    public void testEditAdmin() throws EntityNotFoundException {
         // Given
         this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
         Long id = this.admin.getAdminId();
@@ -98,10 +97,9 @@ public class AdminCreationServiceTest {
         adminSignupRequest.setSurname("Surname");
 
         // When
-        ResultResponse response = this.adminCreationService.editAdmin(id, adminSignupRequest);
+        this.adminCreationService.editAdmin(id, adminSignupRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Admin editedAdmin = this.adminRepo.findAdminByUser_Username("test.user").get();
         Assertions.assertEquals(editedAdmin.getUser().getFirstname(), adminSignupRequest.getFirstname());
         Assertions.assertEquals(editedAdmin.getUser().getSurname(), adminSignupRequest.getSurname());
@@ -117,34 +115,32 @@ public class AdminCreationServiceTest {
         adminSignupRequest.setSurname("Surname");
 
         // When
-        ResultResponse response = this.adminCreationService.editAdmin(id, adminSignupRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.adminCreationService.editAdmin(id, adminSignupRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
+
         Admin editedAdmin = this.adminRepo.findAdminByUser_Username("test.user").get();
         Assertions.assertEquals(editedAdmin.getUser().getFirstname(), this.admin.getUser().getFirstname());
         Assertions.assertEquals(editedAdmin.getUser().getSurname(), this.admin.getUser().getSurname());
     }
 
     @Test
-    public void testGetAdmin() {
+    public void testGetAdmin() throws EntityNotFoundException {
         // Given
         this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
         Long id = this.admin.getAdminId();
 
         // When
-        AdminResultResponse response = this.adminCreationService.getAdmin(id);
+        AdminResponse response = this.adminCreationService.getAdmin(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-        Assertions.assertEquals(response.getAdminResponse().getAdminId(), this.admin.getAdminId());
-        Assertions.assertEquals(response.getAdminResponse().getFirstname(), this.admin.getUser().getFirstname());
-        Assertions.assertEquals(response.getAdminResponse().getSurname(), this.admin.getUser().getSurname());
-        Assertions.assertEquals(response.getAdminResponse().getUsername(), this.admin.getUser().getUsername());
-        Assertions.assertEquals(response.getAdminResponse().getGeneratedPassword(),
-                this.admin.getUser().getGeneratedPassword());
+        Assertions.assertEquals(response.getAdminId(), this.admin.getAdminId());
+        Assertions.assertEquals(response.getFirstname(), this.admin.getUser().getFirstname());
+        Assertions.assertEquals(response.getSurname(), this.admin.getUser().getSurname());
+        Assertions.assertEquals(response.getUsername(), this.admin.getUser().getUsername());
+        Assertions.assertEquals(response.getGeneratedPassword(), this.admin.getUser().getGeneratedPassword());
     }
 
     @Test
@@ -154,12 +150,11 @@ public class AdminCreationServiceTest {
         Long id = this.admin.getAdminId() + 1;
 
         // When
-        AdminResultResponse response = this.adminCreationService.getAdmin(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.adminCreationService.getAdmin(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
     }
 
     @Test

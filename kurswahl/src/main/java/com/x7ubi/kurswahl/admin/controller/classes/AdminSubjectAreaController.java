@@ -1,10 +1,10 @@
-package com.x7ubi.kurswahl.admin.controller;
+package com.x7ubi.kurswahl.admin.controller.classes;
 
-import com.x7ubi.kurswahl.admin.request.SubjectCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectResponse;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectResponses;
+import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
+import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
+import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
 import com.x7ubi.kurswahl.admin.service.authentication.AdminRequired;
-import com.x7ubi.kurswahl.admin.service.classes.SubjectCreationService;
+import com.x7ubi.kurswahl.admin.service.classes.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -16,24 +16,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminSubjectController {
-    Logger logger = LoggerFactory.getLogger(AdminSubjectController.class);
+public class AdminSubjectAreaController {
+    Logger logger = LoggerFactory.getLogger(AdminSubjectAreaController.class);
 
-    private final SubjectCreationService subjectCreationService;
+    private final SubjectAreaCreationService subjectAreaCreationService;
 
-    public AdminSubjectController(SubjectCreationService subjectCreationService) {
-        this.subjectCreationService = subjectCreationService;
+    public AdminSubjectAreaController(SubjectAreaCreationService subjectAreaCreationService) {
+        this.subjectAreaCreationService = subjectAreaCreationService;
     }
 
-    @PostMapping("/subject")
+    @PostMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> createSubject(
-            @RequestBody SubjectCreationRequest subjectCreationRequest
+    public ResponseEntity<?> createSubjectArea(
+            @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
     ) {
-        logger.info("Creating new Subject");
+        logger.info("Creating new Subject area");
 
         try {
-            this.subjectCreationService.createSubject(subjectCreationRequest);
+            this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityCreationException e) {
             logger.error(e.getMessage());
@@ -44,16 +44,16 @@ public class AdminSubjectController {
         }
     }
 
-    @PutMapping("/subject")
+    @PutMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> editSubject(
-            @RequestParam Long subjectId,
-            @RequestBody SubjectCreationRequest subjectCreationRequest
+    public ResponseEntity<?> editSubjectArea(
+            @RequestParam Long subjectAreaId,
+            @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
     ) {
-        logger.info("Editing Subject");
+        logger.info("Editing Subject area");
 
         try {
-            this.subjectCreationService.editSubject(subjectId, subjectCreationRequest);
+            this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityCreationException e) {
             logger.error(e.getMessage());
@@ -67,13 +67,14 @@ public class AdminSubjectController {
         }
     }
 
-    @GetMapping("/subject")
+    @GetMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> getSubject(@RequestParam Long subjectId) {
-        logger.info("Getting Subject");
-
+    public ResponseEntity<?> getSubjectArea(
+            @RequestParam Long subjectAreaId
+    ) {
+        logger.info("Getting Subject area");
         try {
-            SubjectResponse response = this.subjectCreationService.getSubject(subjectId);
+            SubjectAreaResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
@@ -84,15 +85,13 @@ public class AdminSubjectController {
         }
     }
 
-    @DeleteMapping("/subject")
+    @DeleteMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> deleteSubject(
-            @RequestParam Long subjectId
-    ) {
-        logger.info("Deleting Subject");
+    public ResponseEntity<?> deleteSubjectArea(@RequestParam Long subjectAreaId) {
+        logger.info("Deleting Subject area");
 
         try {
-            this.subjectCreationService.deleteSubject(subjectId);
+            this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
@@ -103,10 +102,11 @@ public class AdminSubjectController {
         }
     }
 
-    @GetMapping("/subjects")
-    public ResponseEntity<?> getSubjects() {
+    @GetMapping("/subjectAreas")
+    public ResponseEntity<?> getSubjectAreas() {
+        logger.info("Getting all Subject areas");
         try {
-            SubjectResponses response = this.subjectCreationService.getAllSubjects();
+            SubjectAreaResponses response = this.subjectAreaCreationService.getAllSubjectAreas();
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

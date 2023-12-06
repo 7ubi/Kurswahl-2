@@ -31,10 +31,6 @@ export interface AdminResponses {
   readonly adminResponses: AdminResponse[];
 }
 
-export interface AdminResultResponse extends ResultResponse {
-  readonly adminResponse: AdminResponse;
-}
-
 export interface StudentResponse extends UserResponse {
   readonly studentId: number;
   readonly studentClassResponse: StudentClassResponse;

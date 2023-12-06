@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.admin.controller;
+package com.x7ubi.kurswahl.admin.controller.classes;
 
 import com.x7ubi.kurswahl.admin.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.request.LessonCreationRequest;

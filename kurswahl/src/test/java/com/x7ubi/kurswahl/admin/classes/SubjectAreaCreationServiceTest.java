@@ -43,7 +43,7 @@ public class SubjectAreaCreationServiceTest {
     }
 
     @Test
-    public void testCreateSubjectArea() {
+    public void testCreateSubjectArea() throws EntityCreationException {
         // Given
         SubjectAreaCreationRequest subjectAreaCreationRequest = new SubjectAreaCreationRequest();
         subjectAreaCreationRequest.setName("subject area");
@@ -73,7 +73,7 @@ public class SubjectAreaCreationServiceTest {
     }
 
     @Test
-    public void testEditSubjectArea() {
+    public void testEditSubjectArea() throws EntityCreationException, EntityNotFoundException {
         // Given
         subjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
         SubjectAreaCreationRequest subjectAreaCreationRequest = new SubjectAreaCreationRequest();
@@ -90,7 +90,7 @@ public class SubjectAreaCreationServiceTest {
     }
 
     @Test
-    public void testEditSubjectAreaSameName() {
+    public void testEditSubjectAreaSameName() throws EntityCreationException, EntityNotFoundException {
         // Given
         subjectArea = this.subjectAreaRepo.findSubjectAreaByName("test").get();
         SubjectAreaCreationRequest subjectAreaCreationRequest = new SubjectAreaCreationRequest();
@@ -163,7 +163,7 @@ public class SubjectAreaCreationServiceTest {
     }
 
     @Test
-    public void testGetSubjectArea() {
+    public void testGetSubjectArea() throws EntityNotFoundException {
         // Given
         Long id = this.subjectAreaRepo.findSubjectAreaByName("test").get().getSubjectAreaId();
 
@@ -189,7 +189,7 @@ public class SubjectAreaCreationServiceTest {
     }
 
     @Test
-    public void testDeleteSubjectArea() {
+    public void testDeleteSubjectArea() throws EntityNotFoundException {
         // Given
         this.subjectArea = this.subjectAreaRepo.findSubjectAreaByName(this.subjectArea.getName()).get();
         Long id = this.subjectArea.getSubjectAreaId();
