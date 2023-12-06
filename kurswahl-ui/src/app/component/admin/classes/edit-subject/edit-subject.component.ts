@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, SubjectAreaResponses, SubjectResultResponse} from "../../../../app.responses";
+import {ResultResponse, SubjectAreaResponses, SubjectResponse} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -13,7 +13,7 @@ export class EditSubjectComponent {
   editSubjectForm: FormGroup;
   subjectAreaResponses?: SubjectAreaResponses;
   id: string | null;
-  subject?: SubjectResultResponse
+  subject?: SubjectResponse
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,11 +30,11 @@ export class EditSubjectComponent {
   }
 
   ngOnInit(): void {
-    this.httpService.get<SubjectResultResponse>(`/api/admin/subject?subjectId=${this.id}`, response => {
+    this.httpService.get<SubjectResponse>(`/api/admin/subject?subjectId=${this.id}`, response => {
       this.subject = response;
-      this.editSubjectForm.controls['name'].setValue(this.subject.subjectResponse.name);
+      this.editSubjectForm.controls['name'].setValue(this.subject.name);
       this.editSubjectForm.controls['subjectArea']
-        .setValue(this.subject.subjectResponse.subjectAreaResponse.subjectAreaId);
+        .setValue(this.subject.subjectAreaResponse.subjectAreaId);
     }, () => this.router.navigate(['admin', 'subjects']));
 
     this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {

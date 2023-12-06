@@ -36,6 +36,6 @@ public class ErrorMessage {
     }
 
     public static class Common {
-        public static final String INTERNAL_SERVER_ERROR = "Server Fehler";
+        public static final String INTERNAL_SERVER_ERROR = "Interner Server Fehler";
     }
 }

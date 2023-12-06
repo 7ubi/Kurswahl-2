@@ -1,10 +1,8 @@
 package com.x7ubi.kurswahl.admin.service;
 
 import com.x7ubi.kurswahl.admin.request.StudentClassCreationRequest;
-import com.x7ubi.kurswahl.admin.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
-import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.response.MessageResponse;
 import org.slf4j.Logger;
@@ -19,13 +17,9 @@ import java.util.List;
 public class AdminErrorService {
     private final Logger logger = LoggerFactory.getLogger(AdminErrorService.class);
 
-    private final SubjectAreaRepo subjectAreaRepo;
-
     private final SubjectRepo subjectRepo;
 
     private final StudentClassRepo studentClassRepo;
-
-    private final UserRepo userRepo;
 
     private final AdminRepo adminRepo;
 
@@ -39,37 +33,17 @@ public class AdminErrorService {
 
     private final LessonRepo lessonRepo;
 
-    public AdminErrorService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
-                             StudentClassRepo studentClassRepo, UserRepo userRepo,
+    public AdminErrorService(SubjectRepo subjectRepo, StudentClassRepo studentClassRepo,
                              AdminRepo adminRepo, StudentRepo studentRepo, TeacherRepo teacherRepo, TapeRepo tapeRepo,
                              ClassRepo classRepo, LessonRepo lessonRepo) {
-        this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.studentClassRepo = studentClassRepo;
-        this.userRepo = userRepo;
         this.adminRepo = adminRepo;
         this.studentRepo = studentRepo;
         this.teacherRepo = teacherRepo;
         this.tapeRepo = tapeRepo;
         this.classRepo = classRepo;
         this.lessonRepo = lessonRepo;
-    }
-
-    public void getSubjectAreaNotFound(Long subjectAreaId) throws EntityNotFoundException {
-        if (!this.subjectAreaRepo.existsSubjectAreaBySubjectAreaId(subjectAreaId)) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
-        }
-    }
-
-    public List<MessageResponse> findSubjectCreationError(SubjectCreationRequest subjectCreationRequest) {
-        List<MessageResponse> errors = new ArrayList<>();
-
-        if (this.subjectRepo.existsSubjectByName(subjectCreationRequest.getName())) {
-            logger.error(ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS);
-            errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS));
-        }
-
-        return errors;
     }
 
     public List<MessageResponse> getSubjectNotFound(Long subjectId) {

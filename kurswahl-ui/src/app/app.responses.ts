@@ -80,10 +80,6 @@ export interface SubjectResponses {
   readonly subjectResponses: SubjectResponse[];
 }
 
-export interface SubjectResultResponse extends ResultResponse {
-  readonly subjectResponse: SubjectResponse;
-}
-
 export interface StudentClassResponse {
   readonly studentClassId: number;
   readonly name: string;
