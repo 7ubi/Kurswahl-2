@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.common.controller;
 
-import com.x7ubi.kurswahl.admin.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.admin.service.authentication.AdminRequired;
+import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
+import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.models.SecurityUser;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;

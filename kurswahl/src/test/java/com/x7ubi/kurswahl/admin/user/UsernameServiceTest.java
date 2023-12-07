@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.service.user.UsernameService;
+import com.x7ubi.kurswahl.admin.user.service.UsernameService;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import com.x7ubi.kurswahl.common.request.SignupRequest;

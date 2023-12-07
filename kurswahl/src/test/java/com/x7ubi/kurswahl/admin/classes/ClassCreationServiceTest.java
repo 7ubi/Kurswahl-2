@@ -1,11 +1,11 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.request.ClassCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.ClassResponse;
-import com.x7ubi.kurswahl.admin.response.classes.ClassResponses;
-import com.x7ubi.kurswahl.admin.response.classes.ClassResultResponse;
-import com.x7ubi.kurswahl.admin.service.classes.ClassCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResultResponse;
+import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;

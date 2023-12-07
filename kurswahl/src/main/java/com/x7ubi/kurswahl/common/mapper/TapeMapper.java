@@ -1,8 +1,8 @@
 package com.x7ubi.kurswahl.common.mapper;
 
-import com.x7ubi.kurswahl.admin.request.TapeCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.TapeResponse;
-import com.x7ubi.kurswahl.admin.response.classes.TapeResponses;
+import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.common.models.Tape;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

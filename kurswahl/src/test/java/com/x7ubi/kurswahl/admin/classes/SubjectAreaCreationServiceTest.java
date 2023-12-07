@@ -1,10 +1,10 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
-import com.x7ubi.kurswahl.admin.service.classes.SubjectAreaCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.SubjectAreaCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponse;
+import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponses;
+import com.x7ubi.kurswahl.admin.classes.service.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;

@@ -1,8 +1,8 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.request.LessonCreationRequest;
-import com.x7ubi.kurswahl.admin.service.classes.LessonCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.models.Lesson;
 import com.x7ubi.kurswahl.common.models.Tape;

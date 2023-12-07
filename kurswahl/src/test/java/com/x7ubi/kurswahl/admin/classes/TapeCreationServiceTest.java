@@ -1,11 +1,11 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.request.TapeCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.TapeResponse;
-import com.x7ubi.kurswahl.admin.response.classes.TapeResponses;
-import com.x7ubi.kurswahl.admin.response.classes.TapeResultResponse;
-import com.x7ubi.kurswahl.admin.service.classes.TapeCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResultResponse;
+import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Lesson;

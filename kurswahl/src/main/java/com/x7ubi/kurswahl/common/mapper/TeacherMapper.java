@@ -1,8 +1,8 @@
 package com.x7ubi.kurswahl.common.mapper;
 
-import com.x7ubi.kurswahl.admin.request.TeacherSignupRequest;
-import com.x7ubi.kurswahl.admin.response.user.TeacherResponse;
-import com.x7ubi.kurswahl.admin.response.user.TeacherResponses;
+import com.x7ubi.kurswahl.admin.user.request.TeacherSignupRequest;
+import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
+import com.x7ubi.kurswahl.admin.user.response.TeacherResponses;
 import com.x7ubi.kurswahl.common.models.Teacher;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

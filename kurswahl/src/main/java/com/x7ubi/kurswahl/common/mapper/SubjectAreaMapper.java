@@ -1,8 +1,8 @@
 package com.x7ubi.kurswahl.common.mapper;
 
-import com.x7ubi.kurswahl.admin.request.SubjectAreaCreationRequest;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponse;
-import com.x7ubi.kurswahl.admin.response.classes.SubjectAreaResponses;
+import com.x7ubi.kurswahl.admin.classes.request.SubjectAreaCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponse;
+import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponses;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
