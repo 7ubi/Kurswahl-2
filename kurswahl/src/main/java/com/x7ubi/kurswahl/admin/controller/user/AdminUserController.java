@@ -1,13 +1,9 @@
 package com.x7ubi.kurswahl.admin.controller.user;
 
-import com.x7ubi.kurswahl.admin.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.request.TeacherSignupRequest;
-import com.x7ubi.kurswahl.admin.response.user.StudentResponses;
-import com.x7ubi.kurswahl.admin.response.user.StudentResultResponse;
 import com.x7ubi.kurswahl.admin.response.user.TeacherResponses;
 import com.x7ubi.kurswahl.admin.response.user.TeacherResultResponse;
 import com.x7ubi.kurswahl.admin.service.authentication.AdminRequired;
-import com.x7ubi.kurswahl.admin.service.user.StudentCreationService;
 import com.x7ubi.kurswahl.admin.service.user.TeacherCreationService;
 import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.slf4j.Logger;
@@ -21,87 +17,10 @@ public class AdminUserController {
 
     Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
-    private final StudentCreationService studentCreationService;
-
     private final TeacherCreationService teacherCreationService;
 
-    public AdminUserController(StudentCreationService studentCreationService,
-                               TeacherCreationService teacherCreationService) {
-        this.studentCreationService = studentCreationService;
+    public AdminUserController(TeacherCreationService teacherCreationService) {
         this.teacherCreationService = teacherCreationService;
-    }
-
-    @PostMapping("/student")
-    @AdminRequired
-    public ResponseEntity<?> createStudent(
-            @RequestBody StudentSignupRequest studentSignupRequest
-    ) {
-        logger.info("Signing up new Student");
-
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @PutMapping("/student")
-    @AdminRequired
-    public ResponseEntity<?> editStudent(
-            @RequestParam Long studentId,
-            @RequestBody StudentSignupRequest studentSignupRequest
-    ) {
-        logger.info("Signing up new Student");
-
-        ResultResponse response = this.studentCreationService.editStudent(studentId, studentSignupRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @GetMapping("/student")
-    @AdminRequired
-    public ResponseEntity<?> getStudent(
-            @RequestParam Long studentId
-    ) {
-        logger.info("Getting Admin");
-
-        StudentResultResponse response = this.studentCreationService.getStudent(studentId);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @DeleteMapping("/student")
-    @AdminRequired
-    public ResponseEntity<?> deleteStudent(
-            @RequestParam Long studentId
-    ) {
-        ResultResponse response = this.studentCreationService.deleteStudent(studentId);
-
-        if(response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @GetMapping("/students")
-    @AdminRequired
-    public ResponseEntity<?> getStudents() {
-        logger.info("Getting all Students");
-
-        StudentResponses response = this.studentCreationService.getAllStudents();
-
-        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/teacher")

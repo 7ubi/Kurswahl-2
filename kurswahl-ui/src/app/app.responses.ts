@@ -36,10 +36,6 @@ export interface StudentResponse extends UserResponse {
   readonly studentClassResponse: StudentClassResponse;
 }
 
-export interface StudentResultResponse extends ResultResponse {
-  readonly studentResponse: StudentResponse;
-}
-
 export interface StudentResponses {
   readonly studentResponses: StudentResponse[];
 }

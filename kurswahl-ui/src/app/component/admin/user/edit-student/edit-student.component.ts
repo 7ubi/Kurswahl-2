@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, StudentClassResponses, StudentResultResponse} from "../../../../app.responses";
+import {ResultResponse, StudentClassResponses, StudentResponse} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -9,10 +9,10 @@ import {ActivatedRoute, Router} from "@angular/router";
   templateUrl: './edit-student.component.html',
   styleUrls: ['./edit-student.component.css']
 })
-export class EditStudentComponent {
+export class EditStudentComponent implements OnInit {
   editStudentForm: FormGroup;
   studentClasses?: StudentClassResponses;
-  student?: StudentResultResponse;
+  student?: StudentResponse;
   id: string | null;
 
   constructor(
@@ -35,12 +35,12 @@ export class EditStudentComponent {
       this.studentClasses = response;
     });
 
-    this.httpService.get<StudentResultResponse>(`/api/admin/student?studentId=${this.id}`, response => {
+    this.httpService.get<StudentResponse>(`/api/admin/student?studentId=${this.id}`, response => {
       this.student = response;
-      this.editStudentForm.controls['firstname'].setValue(this.student.studentResponse.firstname);
-      this.editStudentForm.controls['surname'].setValue(this.student.studentResponse.surname);
+      this.editStudentForm.controls['firstname'].setValue(this.student.firstname);
+      this.editStudentForm.controls['surname'].setValue(this.student.surname);
       this.editStudentForm.controls['studentClass']
-        .setValue(this.student.studentResponse.studentClassResponse.studentClassId);
+        .setValue(this.student.studentClassResponse.studentClassId);
     }, () => this.router.navigate(['admin', 'students']));
   }
 
