@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ResultResponse, TeacherResultResponse} from "../../../../app.responses";
+import {ResultResponse, TeacherResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-teacher',
@@ -12,7 +12,7 @@ import {ResultResponse, TeacherResultResponse} from "../../../../app.responses";
 export class EditTeacherComponent implements OnInit {
   editTeacherForm: FormGroup;
   id: string | null;
-  teacher?: TeacherResultResponse;
+  teacher?: TeacherResponse;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -31,11 +31,11 @@ export class EditTeacherComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.httpService.get<TeacherResultResponse>(`/api/admin/teacher?teacherId=${this.id}`, response => {
+    this.httpService.get<TeacherResponse>(`/api/admin/teacher?teacherId=${this.id}`, response => {
       this.teacher = response;
-      this.editTeacherForm.controls['firstname'].setValue(this.teacher.teacherResponse.firstname);
-      this.editTeacherForm.controls['surname'].setValue(this.teacher.teacherResponse.surname);
-      this.editTeacherForm.controls['abbreviation'].setValue(this.teacher.teacherResponse.abbreviation);
+      this.editTeacherForm.controls['firstname'].setValue(this.teacher.firstname);
+      this.editTeacherForm.controls['surname'].setValue(this.teacher.surname);
+      this.editTeacherForm.controls['abbreviation'].setValue(this.teacher.abbreviation);
     }, () => this.router.navigate(['admin', 'teachers']));
   }
 

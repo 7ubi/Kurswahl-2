@@ -49,10 +49,6 @@ export interface TeacherResponses {
   readonly teacherResponses: TeacherResponse[];
 }
 
-export interface TeacherResultResponse extends ResultResponse {
-  readonly teacherResponse: TeacherResponse;
-}
-
 export interface SubjectAreaResponse {
   readonly subjectAreaId: number;
   readonly name: string;

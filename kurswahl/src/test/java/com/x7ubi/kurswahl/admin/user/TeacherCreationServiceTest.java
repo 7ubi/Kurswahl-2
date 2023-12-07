@@ -4,9 +4,10 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.request.TeacherSignupRequest;
 import com.x7ubi.kurswahl.admin.response.user.TeacherResponse;
 import com.x7ubi.kurswahl.admin.response.user.TeacherResponses;
-import com.x7ubi.kurswahl.admin.response.user.TeacherResultResponse;
 import com.x7ubi.kurswahl.admin.service.user.TeacherCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.StudentClass;
 import com.x7ubi.kurswahl.common.models.Teacher;
@@ -14,7 +15,7 @@ import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,7 @@ public class TeacherCreationServiceTest {
     }
 
     @Test
-    public void testEditTeacher() {
+    public void testEditTeacher() throws EntityNotFoundException {
         // Given
         this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
         Long id = this.teacher.getTeacherId();
@@ -117,10 +118,9 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setAbbreviation("NE");
 
         // When
-        ResultResponse response = this.teacherCreationService.editTeacher(id, teacherSignupRequest);
+        this.teacherCreationService.editTeacher(id, teacherSignupRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Teacher editedTeacher = this.teacherRepo.findTeacherByTeacherId(id).get();
         Assertions.assertEquals(editedTeacher.getUser().getFirstname(), teacherSignupRequest.getFirstname());
         Assertions.assertEquals(editedTeacher.getUser().getSurname(), teacherSignupRequest.getSurname());
@@ -139,12 +139,11 @@ public class TeacherCreationServiceTest {
         teacherSignupRequest.setAbbreviation("NE");
 
         // When
-        ResultResponse response = this.teacherCreationService.editTeacher(id, teacherSignupRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.teacherCreationService.editTeacher(id, teacherSignupRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
 
         Teacher editedTeacher = this.teacherRepo.findTeacherByTeacherId(this.teacher.getTeacherId()).get();
         Assertions.assertEquals(editedTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
@@ -154,18 +153,15 @@ public class TeacherCreationServiceTest {
     }
 
     @Test
-    public void testGetTeacher() {
+    public void testGetTeacher() throws EntityNotFoundException {
         // Given
         this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
         Long id = this.teacher.getTeacherId();
 
         // When
-        TeacherResultResponse response = this.teacherCreationService.getTeacher(id);
+        TeacherResponse teacherResponse = this.teacherCreationService.getTeacher(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
-        TeacherResponse teacherResponse = response.getTeacherResponse();
         Assertions.assertEquals(teacherResponse.getFirstname(), teacher.getUser().getFirstname());
         Assertions.assertEquals(teacherResponse.getSurname(), teacher.getUser().getSurname());
         Assertions.assertEquals(teacherResponse.getAbbreviation(), teacher.getAbbreviation());
@@ -179,15 +175,11 @@ public class TeacherCreationServiceTest {
         Long id = this.teacher.getTeacherId() + 1;
 
         // When
-        TeacherResultResponse response = this.teacherCreationService.getTeacher(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.teacherCreationService.getTeacher(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_NOT_FOUND);
-
-        TeacherResponse teacherResponse = response.getTeacherResponse();
-        Assertions.assertNull(teacherResponse);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
     }
 
     @Test
@@ -206,16 +198,15 @@ public class TeacherCreationServiceTest {
     }
 
     @Test
-    public void testDeleteTeacher() {
+    public void testDeleteTeacher() throws EntityDependencyException, EntityNotFoundException {
         // Given
         this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
         Long id = this.teacher.getTeacherId();
 
         // When
-        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+        this.teacherCreationService.deleteTeacher(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertFalse(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
@@ -226,12 +217,11 @@ public class TeacherCreationServiceTest {
         Long id = this.teacher.getTeacherId() + 1;
 
         // When
-        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
@@ -243,12 +233,11 @@ public class TeacherCreationServiceTest {
         Long id = this.teacher.getTeacherId();
 
         // When
-        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+        EntityDependencyException entityDependencyException = Assert.assertThrows(EntityDependencyException.class, () ->
+                this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
@@ -260,12 +249,11 @@ public class TeacherCreationServiceTest {
         Long id = this.teacher.getTeacherId();
 
         // When
-        ResultResponse response = this.teacherCreationService.deleteTeacher(id);
+        EntityDependencyException entityDependencyException = Assert.assertThrows(EntityDependencyException.class, () ->
+                this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_CLASS);
+        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.Administration.TEACHER_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 }

@@ -1,24 +1,22 @@
 package com.x7ubi.kurswahl.admin.service.user;
 
 import com.x7ubi.kurswahl.admin.request.TeacherSignupRequest;
+import com.x7ubi.kurswahl.admin.response.user.TeacherResponse;
 import com.x7ubi.kurswahl.admin.response.user.TeacherResponses;
-import com.x7ubi.kurswahl.admin.response.user.TeacherResultResponse;
-import com.x7ubi.kurswahl.admin.service.AdminErrorService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.Teacher;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.response.MessageResponse;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +24,6 @@ import java.util.Optional;
 public class TeacherCreationService {
 
     Logger logger = LoggerFactory.getLogger(TeacherCreationService.class);
-
-    private final AdminErrorService adminErrorService;
 
     private final TeacherRepo teacherRepo;
 
@@ -39,10 +35,8 @@ public class TeacherCreationService {
 
     private final TeacherMapper teacherMapper;
 
-    public TeacherCreationService(AdminErrorService adminErrorService, TeacherRepo teacherRepo, UserRepo userRepo,
-                                  PasswordEncoder passwordEncoder, UsernameService usernameService,
-                                  TeacherMapper teacherMapper) {
-        this.adminErrorService = adminErrorService;
+    public TeacherCreationService(TeacherRepo teacherRepo, UserRepo userRepo, PasswordEncoder passwordEncoder,
+                                  UsernameService usernameService, TeacherMapper teacherMapper) {
         this.teacherRepo = teacherRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
@@ -62,22 +56,18 @@ public class TeacherCreationService {
         logger.info(String.format("Teacher %s was created", teacher.getUser().getUsername()));
     }
 
-    public ResultResponse editTeacher(Long teacherId, TeacherSignupRequest teacherSignupRequest) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void editTeacher(Long teacherId, TeacherSignupRequest teacherSignupRequest) throws EntityNotFoundException {
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
 
-        resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
-
-        if (!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
+        if(teacherOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
         }
 
-        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(teacherId).get();
+        Teacher teacher = teacherOptional.get();
         this.teacherMapper.teacherRequestToTeacher(teacherSignupRequest, teacher);
         this.teacherRepo.save(teacher);
 
         logger.info(String.format("Edited Teacher %s", teacher.getUser().getUsername()));
-
-        return resultResponse;
     }
 
     public TeacherResponses getAllTeachers() {
@@ -86,78 +76,47 @@ public class TeacherCreationService {
         return this.teacherMapper.teachersToTeacherResponses(teachers);
     }
 
-    public ResultResponse deleteTeacher(Long teacherId) {
-        ResultResponse resultResponse = new ResultResponse();
+    public TeacherResponse getTeacher(Long teacherId) throws EntityNotFoundException {
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
 
-        resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
-        resultResponse.getErrorMessages().addAll(getStudentClassesTeacher(teacherId));
-        resultResponse.getErrorMessages().addAll(getClassesTeacher(teacherId));
-
-        if(!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
+        if(teacherOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
         }
 
-        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(teacherId).get();
+        Teacher teacher = teacherOptional.get();
+
+        logger.info(String.format("Got Teacher %s", teacher.getUser().getUsername()));
+
+        return this.teacherMapper.teacherToTeacherResponse(teacher);
+    }
+
+    public void deleteTeacher(Long teacherId) throws EntityNotFoundException, EntityDependencyException {
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
+
+        if(teacherOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        }
+
+        Teacher teacher = teacherOptional.get();
+        getStudentClassesTeacher(teacher);
+        getClassesTeacher(teacher);
         User teacherUser = teacher.getUser();
 
         logger.info(String.format("Deleted Teacher %s", teacherUser.getUsername()));
 
         this.teacherRepo.delete(teacher);
         this.userRepo.delete(teacherUser);
-
-        return resultResponse;
     }
 
-    private List<MessageResponse> getStudentClassesTeacher(Long teacherId) {
-        List<MessageResponse> error = new ArrayList<>();
-
-        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
-
-        if (teacherOptional.isEmpty()) {
-            return error;
-        }
-        Teacher teacher = teacherOptional.get();
-
+    private void getStudentClassesTeacher(Teacher teacher) throws EntityDependencyException {
         if (!teacher.getStudentClasses().isEmpty()) {
-            logger.error(ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
-            error.add(new MessageResponse(ErrorMessage.Administration.TEACHER_STUDENT_CLASS));
+            throw new EntityDependencyException(ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
         }
-
-        return error;
     }
 
-    private List<MessageResponse> getClassesTeacher(Long teacherId) {
-        List<MessageResponse> error = new ArrayList<>();
-
-        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
-
-        if (teacherOptional.isEmpty()) {
-            return error;
-        }
-        Teacher teacher = teacherOptional.get();
-
+    private void getClassesTeacher(Teacher teacher) throws EntityDependencyException {
         if (!teacher.getClasses().isEmpty()) {
-            logger.error(ErrorMessage.Administration.TEACHER_CLASS);
-            error.add(new MessageResponse(ErrorMessage.Administration.TEACHER_CLASS));
+            throw new EntityDependencyException(ErrorMessage.Administration.TEACHER_CLASS);
         }
-
-        return error;
-    }
-
-    public TeacherResultResponse getTeacher(Long teacherId) {
-        TeacherResultResponse teacherResultResponse = new TeacherResultResponse();
-
-        teacherResultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(teacherId));
-
-        if (!teacherResultResponse.getErrorMessages().isEmpty()) {
-            return teacherResultResponse;
-        }
-
-        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(teacherId).get();
-        teacherResultResponse.setTeacherResponse(this.teacherMapper.teacherToTeacherResponse(teacher));
-
-        logger.info(String.format("Got Teacher %s", teacher.getUser().getUsername()));
-
-        return teacherResultResponse;
     }
 }
