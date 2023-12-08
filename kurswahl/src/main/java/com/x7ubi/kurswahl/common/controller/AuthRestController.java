@@ -1,5 +1,8 @@
 package com.x7ubi.kurswahl.common.controller;
 
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
@@ -10,14 +13,15 @@ import com.x7ubi.kurswahl.common.repository.TeacherRepo;
 import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
 import com.x7ubi.kurswahl.common.request.LoginRequest;
 import com.x7ubi.kurswahl.common.response.JwtResponse;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
 import com.x7ubi.kurswahl.common.response.Role;
 import com.x7ubi.kurswahl.common.service.ChangePasswordService;
 import com.x7ubi.kurswahl.common.service.StandardAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -84,14 +88,16 @@ public class AuthRestController {
 
             String name = String.format("%s %s", userDetails.getUser().getFirstname(),
                     userDetails.getUser().getSurname());
-
-            return ResponseEntity.ok(new JwtResponse(jwt,
-                    userDetails.getUser().getUserId(),
-                    userDetails.getUsername(), role, name));
+            JwtResponse jwtResponse = new JwtResponse(jwt, userDetails.getUser().getUserId(), userDetails.getUsername(),
+                    role, name);
+            return ResponseEntity.status(HttpStatus.OK).body(jwtResponse);
+        } catch (BadCredentialsException e) {
+            logger.error(String.valueOf(e));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessage.Common.UNAUTHORIZED);
         } catch (Exception e) {
             logger.error(String.valueOf(e));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
-        return (ResponseEntity<?>) ResponseEntity.badRequest();
     }
 
     @PutMapping("/changePassword")
@@ -99,17 +105,24 @@ public class AuthRestController {
             @RequestHeader("Authorization") String authorization,
             @RequestBody ChangePasswordRequest changePasswordRequest
     ) {
-        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
 
         logger.info("Changing Password");
 
-        ResultResponse response = this.changePasswordService.changePassword(username, changePasswordRequest);
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+            this.changePasswordService.changePassword(username, changePasswordRequest);
 
-        if (!response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (PasswordNotMatchingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
-
-        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/resetPassword")
@@ -117,13 +130,17 @@ public class AuthRestController {
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
         logger.info("Reseting Password");
 
-        ResultResponse response = this.changePasswordService.resetPassword(passwordResetRequest);
+        try {
+            this.changePasswordService.resetPassword(passwordResetRequest);
 
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
         }
-
-        return ResponseEntity.badRequest().body(response);
     }
 
     private Role getRoleUser(String username) {

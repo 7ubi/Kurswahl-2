@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../../service/authentication.service";
 import {LoginResponse, Role} from "../../../app.responses";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpService} from "../../../service/http.service";
 
 @Component({
   selector: 'app-login',
@@ -16,11 +15,10 @@ export class LoginComponent {
   hide = true;
 
   constructor(
-    private http: HttpClient,
+    private httpService: HttpService,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private formBuilder: FormBuilder
   ) {
     this.loginFormGroup = this.formBuilder.group({
       username: ['', Validators.required],
@@ -33,28 +31,17 @@ export class LoginComponent {
       return;
     }
 
-    this.http.post<LoginResponse>('/api/auth/login', this.getLoginRequestParameter())
-      .subscribe(
-        response => {
-          this.authenticationService.saveBearer(response);
-          this.authenticationService.saveRole(response.role);
-          this.authenticationService.saveName(response.name);
+    this.httpService.post<LoginResponse>('/api/auth/login', this.getLoginRequestParameter(), response => {
+      this.authenticationService.saveBearer(response);
+      this.authenticationService.saveRole(response.role);
+      this.authenticationService.saveName(response.name);
 
-          if(response.role.toString() === Role.ADMIN.toString()) {
-            this.router.navigate(['admin', 'admins']);
-          } else if (response.role.toString() === Role.STUDENT.toString()) {
-            this.router.navigate(['student']);
-          }
-        }, error => {
-          if(error.status === 401){
-            this.snackBar.open('Nutzername oder Passwort ist falsch', 'Verstanden', {
-              horizontalPosition: "center",
-              verticalPosition: "bottom",
-              duration: 5000
-            });
-          }
-        }
-      );
+      if(response.role.toString() === Role.ADMIN.toString()) {
+        this.router.navigate(['admin', 'admins']);
+      } else if (response.role.toString() === Role.STUDENT.toString()) {
+        this.router.navigate(['student']);
+      }
+    });
   }
 
   getLoginRequestParameter() {

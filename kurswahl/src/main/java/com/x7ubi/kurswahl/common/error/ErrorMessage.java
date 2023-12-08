@@ -37,5 +37,6 @@ public class ErrorMessage {
 
     public static class Common {
         public static final String INTERNAL_SERVER_ERROR = "Interner Server Fehler";
+        public static final Object UNAUTHORIZED = "Nutzername oder Passwort ist falsch";
     }
 }
