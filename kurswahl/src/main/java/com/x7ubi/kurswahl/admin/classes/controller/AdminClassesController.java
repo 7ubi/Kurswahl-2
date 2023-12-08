@@ -1,14 +1,14 @@
 package com.x7ubi.kurswahl.admin.classes.controller;
 
+import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
-import com.x7ubi.kurswahl.admin.classes.request.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
-import com.x7ubi.kurswahl.admin.classes.response.*;
-import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResultResponse;
 import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
 import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
-import com.x7ubi.kurswahl.admin.classes.service.StudentClassCreationService;
 import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.slf4j.Logger;
@@ -22,90 +22,17 @@ public class AdminClassesController {
 
     private final Logger logger = LoggerFactory.getLogger(AdminClassesController.class);
 
-    private final StudentClassCreationService studentClassCreationService;
-
     private final TapeCreationService tapeCreationService;
 
     private final ClassCreationService classCreationService;
 
     private final LessonCreationService lessonCreationService;
 
-    public AdminClassesController(StudentClassCreationService studentClassCreationService,
-                                  TapeCreationService tapeCreationService, ClassCreationService classCreationService,
+    public AdminClassesController(TapeCreationService tapeCreationService, ClassCreationService classCreationService,
                                   LessonCreationService lessonCreationService) {
-        this.studentClassCreationService = studentClassCreationService;
         this.tapeCreationService = tapeCreationService;
         this.classCreationService = classCreationService;
         this.lessonCreationService = lessonCreationService;
-    }
-
-    @PostMapping("/studentClass")
-    @AdminRequired
-    public ResponseEntity<?> createStudentClass(@RequestBody StudentClassCreationRequest studentClassCreationRequest) {
-
-        logger.info("Creating new Student Class");
-
-        ResultResponse response = this.studentClassCreationService.createStudentClass(studentClassCreationRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @PutMapping("/studentClass")
-    @AdminRequired
-    public ResponseEntity<?> editStudentClass(
-            @RequestParam Long studentClassId,
-            @RequestBody StudentClassCreationRequest studentClassCreationRequest) {
-
-        logger.info("Editing Student Class");
-
-        ResultResponse response
-                = this.studentClassCreationService.editStudentClass(studentClassId, studentClassCreationRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @DeleteMapping("/studentClass")
-    @AdminRequired
-    public ResponseEntity<?> deleteStudentClass(@RequestParam Long studentClassId) {
-        logger.info("Deleting Student Class");
-
-        ResultResponse response = this.studentClassCreationService.deleteStudentClass(studentClassId);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @GetMapping("/studentClass")
-    public ResponseEntity<?> getStudentClass(@RequestParam Long studentClassId) {
-        logger.info("Getting Student Class");
-
-        StudentClassResultResponse response = this.studentClassCreationService.getStudentClass(studentClassId);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @GetMapping("/studentClasses")
-    public ResponseEntity<?> getAllStudentClasses() {
-        logger.info("Getting all Student Classes");
-
-        StudentClassResponses response = this.studentClassCreationService.getAllStudentClasses();
-
-        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/tape")

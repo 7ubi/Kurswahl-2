@@ -1,6 +1,5 @@
 package com.x7ubi.kurswahl.admin.user.service;
 
-import com.x7ubi.kurswahl.admin.classes.request.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.repository.*;
@@ -52,21 +51,6 @@ public class AdminErrorService {
         if (!this.subjectRepo.existsSubjectAreaBySubjectId(subjectId)) {
             logger.error(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
             errors.add(new MessageResponse(ErrorMessage.Administration.SUBJECT_NOT_FOUND));
-        }
-
-        return errors;
-    }
-
-    public List<MessageResponse> findStudentClassCreationError(
-            StudentClassCreationRequest studentClassCreationRequest) {
-        List<MessageResponse> errors = new ArrayList<>();
-
-        Integer currentYear = Year.now().getValue();
-
-        if (this.studentClassRepo.existsStudentClassByNameAndReleaseYear(
-                studentClassCreationRequest.getName(), currentYear)) {
-            logger.error(ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
-            errors.add(new MessageResponse(ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS));
         }
 
         return errors;

@@ -81,10 +81,6 @@ export interface StudentClassResponses {
   readonly studentClassResponses: StudentClassResponse[];
 }
 
-export interface StudentClassResultResponse extends ResultResponse {
-  readonly studentClassResponse: StudentClassResponse;
-}
-
 export interface LessonResponse {
   readonly lessonId: number;
   readonly day: number;
