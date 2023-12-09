@@ -2,13 +2,11 @@ package com.x7ubi.kurswahl.admin.classes.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
-import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResultResponse;
 import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
-import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
 import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.response.ResultResponse;
 import org.slf4j.Logger;
@@ -26,13 +24,9 @@ public class AdminClassesController {
 
     private final ClassCreationService classCreationService;
 
-    private final LessonCreationService lessonCreationService;
-
-    public AdminClassesController(TapeCreationService tapeCreationService, ClassCreationService classCreationService,
-                                  LessonCreationService lessonCreationService) {
+    public AdminClassesController(TapeCreationService tapeCreationService, ClassCreationService classCreationService) {
         this.tapeCreationService = tapeCreationService;
         this.classCreationService = classCreationService;
-        this.lessonCreationService = lessonCreationService;
     }
 
     @PostMapping("/tape")
@@ -171,35 +165,5 @@ public class AdminClassesController {
         ClassResponses classResponses = this.classCreationService.getAllClasses(year);
 
         return ResponseEntity.ok().body(classResponses);
-    }
-
-    @PostMapping("lesson")
-    @AdminRequired
-    public ResponseEntity<?> createLesson(@RequestBody LessonCreationRequest lessonCreationRequest) {
-
-        logger.info("Creating new Lesson");
-
-        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @DeleteMapping("lesson")
-    @AdminRequired
-    public ResponseEntity<?> deleteLesson(@RequestParam Long lessonId) {
-
-        logger.info("Deleting Lesson");
-
-        ResultResponse response = this.lessonCreationService.deleteLesson(lessonId);
-
-        if (response.getErrorMessages().isEmpty()) {
-            return ResponseEntity.ok().body(response);
-        }
-
-        return ResponseEntity.badRequest().body(response);
     }
 }
