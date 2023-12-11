@@ -32,6 +32,9 @@ export class HttpService {
           verticalPosition: "bottom",
           duration: 5000
         });
+        if (error) {
+          error();
+        }
       }
     );
   }
