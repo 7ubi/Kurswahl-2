@@ -1,11 +1,3 @@
-export interface MessageResponse {
-  readonly message: string;
-}
-
-export interface ResultResponse {
-  readonly errorMessages: MessageResponse[];
-}
-
 export interface LoginResponse {
   readonly token: string;
   readonly type: string;
@@ -31,17 +23,9 @@ export interface AdminResponses {
   readonly adminResponses: AdminResponse[];
 }
 
-export interface AdminResultResponse extends ResultResponse {
-  readonly adminResponse: AdminResponse;
-}
-
 export interface StudentResponse extends UserResponse {
   readonly studentId: number;
   readonly studentClassResponse: StudentClassResponse;
-}
-
-export interface StudentResultResponse extends ResultResponse {
-  readonly studentResponse: StudentResponse;
 }
 
 export interface StudentResponses {
@@ -57,10 +41,6 @@ export interface TeacherResponses {
   readonly teacherResponses: TeacherResponse[];
 }
 
-export interface TeacherResultResponse extends ResultResponse {
-  readonly teacherResponse: TeacherResponse;
-}
-
 export interface SubjectAreaResponse {
   readonly subjectAreaId: number;
   readonly name: string;
@@ -68,10 +48,6 @@ export interface SubjectAreaResponse {
 
 export interface SubjectAreaResponses {
   readonly subjectAreaResponses: SubjectAreaResponse[];
-}
-
-export interface SubjectAreaResultResponse extends ResultResponse {
-  readonly subjectAreaResponse: SubjectAreaResponse;
 }
 
 export interface SubjectResponse {
@@ -82,10 +58,6 @@ export interface SubjectResponse {
 
 export interface SubjectResponses {
   readonly subjectResponses: SubjectResponse[];
-}
-
-export interface SubjectResultResponse extends ResultResponse {
-  readonly subjectResponse: SubjectResponse;
 }
 
 export interface StudentClassResponse {
@@ -99,10 +71,6 @@ export interface StudentClassResponse {
 
 export interface StudentClassResponses {
   readonly studentClassResponses: StudentClassResponse[];
-}
-
-export interface StudentClassResultResponse extends ResultResponse {
-  readonly studentClassResponse: StudentClassResponse;
 }
 
 export interface LessonResponse {
@@ -124,10 +92,6 @@ export interface TapeResponses {
   readonly tapeResponses: TapeResponse[];
 }
 
-export interface TapeResultResponse extends ResultResponse {
-  readonly tapeResponse: TapeResponse;
-}
-
 export interface ClassResponse {
   readonly classId: number;
   readonly name: string;
@@ -138,10 +102,6 @@ export interface ClassResponse {
 
 export interface ClassResponses {
   readonly classResponses: ClassResponse[];
-}
-
-export interface ClassResultResponse extends ResultResponse {
-  readonly classResponse: ClassResponse;
 }
 
 export enum Role {

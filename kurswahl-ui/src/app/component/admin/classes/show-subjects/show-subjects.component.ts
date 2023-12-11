@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ResultResponse, SubjectAreaResponses, SubjectResponse, SubjectResponses} from "../../../../app.responses";
+import {SubjectAreaResponses, SubjectResponse, SubjectResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -71,7 +71,7 @@ export class ShowSubjectsComponent implements OnInit {
   }
 
   deleteSubject(subjectId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/subject?subjectId=${subjectId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/subject?subjectId=${subjectId}`, response => {
       this.loadSubjectAreas();
       this.snackBar.open('Fach wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",

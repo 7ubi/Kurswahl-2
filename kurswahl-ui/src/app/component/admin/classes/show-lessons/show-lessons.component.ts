@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ResultResponse, TapeResponse, TapeResponses} from "../../../../app.responses";
+import {TapeResponse, TapeResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {LessonsTable} from "./lessons-table";
 import {FormControl, FormGroup} from "@angular/forms";
@@ -120,7 +120,7 @@ export class ShowLessonsComponent implements OnInit {
 
       this.selectedTape.lessonResponses.forEach(lesson => {
         if (lesson.day === day && lesson.hour === hour - 1) {
-          this.httpService.delete<ResultResponse>(`/api/admin/lesson?lessonId=${lesson.lessonId}`,
+          this.httpService.delete<undefined>(`/api/admin/lesson?lessonId=${lesson.lessonId}`,
             response => {
               this.loadTapes(tapeId);
             });
@@ -129,7 +129,7 @@ export class ShowLessonsComponent implements OnInit {
       });
 
       if (!deletedLesson) {
-        this.httpService.post<ResultResponse>('/api/admin/lesson', this.getLessonRequest(day, hour - 1),
+        this.httpService.post<undefined>('/api/admin/lesson', this.getLessonRequest(day, hour - 1),
           response => {
             this.loadTapes(tapeId);
           });

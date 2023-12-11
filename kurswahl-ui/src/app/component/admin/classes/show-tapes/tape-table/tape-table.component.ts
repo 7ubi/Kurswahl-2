@@ -1,5 +1,5 @@
 import {Component, Input, numberAttribute, OnInit} from '@angular/core';
-import {ResultResponse, TapeResponse, TapeResponses} from "../../../../../app.responses";
+import {TapeResponse, TapeResponses} from "../../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
@@ -48,7 +48,7 @@ export class TapeTableComponent implements OnInit {
   }
 
   deleteTape(tapeId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/tape?tapeId=${tapeId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/tape?tapeId=${tapeId}`, response => {
       this.loadTapes();
       this.snackBar.open('Band wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",

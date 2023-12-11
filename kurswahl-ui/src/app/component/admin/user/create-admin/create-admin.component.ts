@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
-import {ResultResponse} from "../../../../app.responses";
 import {Router} from "@angular/router";
 
 @Component({
@@ -28,7 +27,7 @@ export class CreateAdminComponent {
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/admin', this.getCreateAdminRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/admin', this.getCreateAdminRequest(), response => {
       this.router.navigate(['admin', 'admins']);
     });
   }

@@ -1,16 +1,16 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.error.ErrorMessage;
-import com.x7ubi.kurswahl.models.Class;
-import com.x7ubi.kurswahl.models.*;
-import com.x7ubi.kurswahl.repository.*;
-import com.x7ubi.kurswahl.request.admin.ClassCreationRequest;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResponse;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResponses;
-import com.x7ubi.kurswahl.response.admin.classes.ClassResultResponse;
-import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.classes.ClassCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
+import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -143,7 +143,7 @@ public class ClassCreationServiceTest {
     }
 
     @Test
-    public void testCreateClass() {
+    public void testCreateClass() throws EntityNotFoundException {
         // Given
         ClassCreationRequest classCreationRequest = new ClassCreationRequest();
         classCreationRequest.setName("test");
@@ -152,11 +152,9 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subject.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.createClass(classCreationRequest);
+        this.classCreationService.createClass(classCreationRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         List<Class> createdClasses = this.classRepo.findAll();
 
         Assertions.assertEquals(createdClasses.size(), 2);
@@ -179,12 +177,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subject.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.createClass(classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.createClass(classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -201,12 +198,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subject.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.createClass(classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.createClass(classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -223,12 +219,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subject.getSubjectId() + 3);
 
         // When
-        ResultResponse response = this.classCreationService.createClass(classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.createClass(classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.SUBJECT_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -236,7 +231,7 @@ public class ClassCreationServiceTest {
     }
 
     @Test
-    public void testEditClass() {
+    public void testEditClass() throws EntityNotFoundException {
         // Given
         Long classId = this.classRepo.findClassByName("test").get().getClassId();
         ClassCreationRequest classCreationRequest = new ClassCreationRequest();
@@ -246,11 +241,9 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subjectOther.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+        this.classCreationService.editClass(classId, classCreationRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         List<Class> createdClasses = this.classRepo.findAll();
 
         Assertions.assertEquals(createdClasses.size(), 1);
@@ -274,12 +267,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subjectOther.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.editClass(classId, classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.CLASS_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -304,12 +296,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subjectOther.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.editClass(classId, classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -334,12 +325,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subjectOther.getSubjectId());
 
         // When
-        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.editClass(classId, classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -364,12 +354,11 @@ public class ClassCreationServiceTest {
         classCreationRequest.setSubjectId(subjectOther.getSubjectId() + 3);
 
         // When
-        ResultResponse response = this.classCreationService.editClass(classId, classCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.editClass(classId, classCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.SUBJECT_NOT_FOUND);
 
         List<Class> createdClasses = this.classRepo.findAll();
 
@@ -384,18 +373,15 @@ public class ClassCreationServiceTest {
     }
 
     @Test
-    public void testGetClass() {
+    public void testGetClass() throws EntityNotFoundException {
         // Given
         aClass = this.classRepo.findClassByName("test").get();
         Long classId = aClass.getClassId();
 
         // When
-        ClassResultResponse response = this.classCreationService.getClassByClassId(classId);
+        ClassResponse classResponse = this.classCreationService.getClassByClassId(classId);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
-        ClassResponse classResponse = response.getClassResponse();
         Assertions.assertEquals(classResponse.getClassId(), aClass.getClassId());
         Assertions.assertEquals(classResponse.getName(), aClass.getName());
         Assertions.assertEquals(classResponse.getTapeResponse().getTapeId(), aClass.getTape().getTapeId());
@@ -410,14 +396,11 @@ public class ClassCreationServiceTest {
         Long classId = aClass.getClassId() + 3;
 
         // When
-        ClassResultResponse response = this.classCreationService.getClassByClassId(classId);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.getClassByClassId(classId));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.CLASS_NOT_FOUND);
-
-        Assertions.assertNull(response.getClassResponse());
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_FOUND);
     }
 
     @Test
@@ -440,17 +423,15 @@ public class ClassCreationServiceTest {
     }
 
     @Test
-    public void testDeleteClass() {
+    public void testDeleteClass() throws EntityNotFoundException {
         // Given
         aClass = this.classRepo.findClassByName("test").get();
         Long classId = aClass.getClassId();
 
         // When
-        ResultResponse response = this.classCreationService.deleteClass(classId);
+        this.classCreationService.deleteClass(classId);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Assertions.assertFalse(this.classRepo.existsClassByClassId(classId));
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
         Assertions.assertTrue(teacher.getClasses().isEmpty());
@@ -467,12 +448,11 @@ public class ClassCreationServiceTest {
         Long classId = aClass.getClassId() + 3;
 
         // When
-        ResultResponse response = this.classCreationService.deleteClass(classId);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.classCreationService.deleteClass(classId));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.CLASS_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_FOUND);
 
         Assertions.assertTrue(this.classRepo.existsClassByClassId(aClass.getClassId()));
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();

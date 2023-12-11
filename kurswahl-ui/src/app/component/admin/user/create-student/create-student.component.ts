@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
-import {ResultResponse, StudentClassResponses} from "../../../../app.responses";
+import {StudentClassResponses} from "../../../../app.responses";
 
 @Component({
   selector: 'app-create-student',
@@ -36,7 +36,7 @@ export class CreateStudentComponent implements OnInit {
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/student', this.getCreateStudentRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/student', this.getCreateStudentRequest(), response => {
       this.router.navigate(['admin', 'students']);
     });
   }

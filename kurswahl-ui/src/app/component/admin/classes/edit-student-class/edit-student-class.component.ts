@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, StudentClassResultResponse, TeacherResponses} from "../../../../app.responses";
+import {StudentClassResponse, TeacherResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -12,7 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class EditStudentClassComponent implements OnInit {
   editStudentClassForm: FormGroup;
   teachers?: TeacherResponses;
-  studentClass?: StudentClassResultResponse;
+  studentClass?: StudentClassResponse;
   id: string | null;
 
   constructor(
@@ -31,12 +31,12 @@ export class EditStudentClassComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.httpService.get<StudentClassResultResponse>(`/api/admin/studentClass?studentClassId=${this.id}`,
+    this.httpService.get<StudentClassResponse>(`/api/admin/studentClass?studentClassId=${this.id}`,
       response => {
         this.studentClass = response;
-        this.editStudentClassForm.controls['name'].setValue(this.studentClass.studentClassResponse.name);
-        this.editStudentClassForm.controls['year'].setValue(this.studentClass.studentClassResponse.year);
-        this.editStudentClassForm.controls['teacher'].setValue(this.studentClass.studentClassResponse.teacher.teacherId);
+        this.editStudentClassForm.controls['name'].setValue(this.studentClass.name);
+        this.editStudentClassForm.controls['year'].setValue(this.studentClass.year);
+        this.editStudentClassForm.controls['teacher'].setValue(this.studentClass.teacher.teacherId);
       }, () => this.router.navigate(['admin', 'studentClasses']));
 
     this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
@@ -51,7 +51,7 @@ export class EditStudentClassComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/studentClass?studentClassId=${this.id}`,
+    this.httpService.put<undefined>(`/api/admin/studentClass?studentClassId=${this.id}`,
       this.getStudentClassRequest(), response =>
         this.router.navigate(['admin', 'studentClasses']));
   }

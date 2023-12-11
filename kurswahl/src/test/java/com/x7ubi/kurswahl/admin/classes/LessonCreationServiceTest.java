@@ -1,14 +1,16 @@
 package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.error.ErrorMessage;
-import com.x7ubi.kurswahl.models.Lesson;
-import com.x7ubi.kurswahl.models.Tape;
-import com.x7ubi.kurswahl.repository.LessonRepo;
-import com.x7ubi.kurswahl.repository.TapeRepo;
-import com.x7ubi.kurswahl.request.admin.LessonCreationRequest;
-import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.classes.LessonCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.models.Lesson;
+import com.x7ubi.kurswahl.common.models.Tape;
+import com.x7ubi.kurswahl.common.repository.LessonRepo;
+import com.x7ubi.kurswahl.common.repository.TapeRepo;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +56,7 @@ public class LessonCreationServiceTest {
     }
 
     @Test
-    public void createLesson() {
+    public void createLesson() throws EntityNotFoundException, EntityCreationException {
         // Given
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
         LessonCreationRequest lessonCreationRequest = new LessonCreationRequest();
@@ -63,11 +65,9 @@ public class LessonCreationServiceTest {
         lessonCreationRequest.setTapeId(tape.getTapeId());
 
         // When
-        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
+        this.lessonCreationService.createLesson(lessonCreationRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Lesson createdLesson = this.lessonRepo.findLessonByDayAndHour(lessonCreationRequest.getDay(),
                 lessonCreationRequest.getHour()).get();
         Assertions.assertEquals(createdLesson.getTape().getTapeId(), tape.getTapeId());
@@ -90,12 +90,11 @@ public class LessonCreationServiceTest {
         lessonCreationRequest.setTapeId(tape.getTapeId());
 
         // When
-        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
+        EntityCreationException entityCreationException = Assert.assertThrows(EntityCreationException.class, () ->
+                this.lessonCreationService.createLesson(lessonCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.LESSON_NOT_AVAILABLE);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.LESSON_NOT_AVAILABLE);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lessonCreationRequest.getDay(), lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear()));
@@ -114,12 +113,11 @@ public class LessonCreationServiceTest {
         lessonCreationRequest.setTapeId(tape.getTapeId() + 3);
 
         // When
-        ResultResponse response = this.lessonCreationService.createLesson(lessonCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.lessonCreationService.createLesson(lessonCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lessonCreationRequest.getDay(), lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear()));
@@ -129,16 +127,14 @@ public class LessonCreationServiceTest {
     }
 
     @Test
-    public void deleteLesson() {
+    public void deleteLesson() throws EntityNotFoundException {
         // Given
         lesson = this.lessonRepo.findLessonByDayAndHour(lesson.getDay(), lesson.getHour()).get();
 
         // When
-        ResultResponse response = this.lessonCreationService.deleteLesson(lesson.getLessonId());
+        this.lessonCreationService.deleteLesson(lesson.getLessonId());
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Assertions.assertFalse(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lesson.getDay(), lesson.getHour(), tape.getYear(), tape.getReleaseYear()));
 
@@ -152,12 +148,11 @@ public class LessonCreationServiceTest {
         lesson = this.lessonRepo.findLessonByDayAndHour(lesson.getDay(), lesson.getHour()).get();
 
         // When
-        ResultResponse response = this.lessonCreationService.deleteLesson(lesson.getLessonId() + 3);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.lessonCreationService.deleteLesson(lesson.getLessonId() + 3));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.LESSON_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.LESSON_NOT_FOUND);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lesson.getDay(), lesson.getHour(), tape.getYear(), tape.getReleaseYear()));

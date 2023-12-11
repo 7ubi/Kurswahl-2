@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ResultResponse} from "../../../app.responses";
 import {HttpService} from "../../../service/http.service";
 
 @Component({
@@ -42,7 +41,7 @@ export class ChangePasswordComponent {
       return;
     }
 
-    this.httpService.put<ResultResponse>('/api/auth/changePassword', this.getPasswordChangeParameter(), response => {
+    this.httpService.put<undefined>('/api/auth/changePassword', this.getPasswordChangeParameter(), response => {
       this.snackBar.open('Passwort wurde geändert', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",

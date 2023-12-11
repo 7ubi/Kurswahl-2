@@ -1,12 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {
-  ClassResultResponse,
-  ResultResponse,
-  SubjectResponses,
-  TapeResponses,
-  TeacherResponses
-} from "../../../../app.responses";
+import {ClassResponse, SubjectResponses, TapeResponses, TeacherResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -20,7 +14,7 @@ export class EditClassComponent implements OnInit {
   subjectResponses?: SubjectResponses;
   teacherResponses?: TeacherResponses;
   tapeResponses!: TapeResponses;
-  classResultResponse?: ClassResultResponse;
+  classResultResponse?: ClassResponse;
   id: string | null;
 
   constructor(
@@ -53,17 +47,17 @@ export class EditClassComponent implements OnInit {
       this.teacherResponses = response;
     });
 
-    this.httpService.get<ClassResultResponse>(`/api/admin/class?classId=${this.id}`, response => {
+    this.httpService.get<ClassResponse>(`/api/admin/class?classId=${this.id}`, response => {
       this.classResultResponse = response;
 
-      this.editClassForm.controls['name'].setValue(this.classResultResponse.classResponse.name);
-      this.editClassForm.controls['year'].setValue(this.classResultResponse.classResponse.tapeResponse.year);
-      this.editClassForm.controls['teacher'].setValue(this.classResultResponse.classResponse.teacherResponse.teacherId);
-      this.editClassForm.controls['tape'].setValue(this.classResultResponse.classResponse.tapeResponse.tapeId);
-      this.editClassForm.controls['subject'].setValue(this.classResultResponse.classResponse.subjectResponse.subjectId);
+      this.editClassForm.controls['name'].setValue(this.classResultResponse.name);
+      this.editClassForm.controls['year'].setValue(this.classResultResponse.tapeResponse.year);
+      this.editClassForm.controls['teacher'].setValue(this.classResultResponse.teacherResponse.teacherId);
+      this.editClassForm.controls['tape'].setValue(this.classResultResponse.tapeResponse.tapeId);
+      this.editClassForm.controls['subject'].setValue(this.classResultResponse.subjectResponse.subjectId);
 
       this.httpService.get<TapeResponses>(
-        `/api/admin/tapes?year=${this.classResultResponse?.classResponse.tapeResponse.year}`, response => {
+          `/api/admin/tapes?year=${this.classResultResponse?.tapeResponse.year}`, response => {
           response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
           this.tapeResponses = response;
         });
@@ -76,7 +70,7 @@ export class EditClassComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/class?classId=${this.id}`, this.getCreateClassRequest(), response => {
+    this.httpService.put<undefined>(`/api/admin/class?classId=${this.id}`, this.getCreateClassRequest(), response => {
       this.router.navigate(['admin', 'classes']);
     });
   }

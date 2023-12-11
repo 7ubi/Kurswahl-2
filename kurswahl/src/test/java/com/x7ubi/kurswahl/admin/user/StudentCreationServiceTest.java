@@ -1,20 +1,20 @@
 package com.x7ubi.kurswahl.admin.user;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.error.ErrorMessage;
-import com.x7ubi.kurswahl.models.Student;
-import com.x7ubi.kurswahl.models.StudentClass;
-import com.x7ubi.kurswahl.models.Teacher;
-import com.x7ubi.kurswahl.models.User;
-import com.x7ubi.kurswahl.repository.StudentClassRepo;
-import com.x7ubi.kurswahl.repository.StudentRepo;
-import com.x7ubi.kurswahl.repository.TeacherRepo;
-import com.x7ubi.kurswahl.request.admin.StudentSignupRequest;
-import com.x7ubi.kurswahl.response.admin.user.StudentResponse;
-import com.x7ubi.kurswahl.response.admin.user.StudentResponses;
-import com.x7ubi.kurswahl.response.admin.user.StudentResultResponse;
-import com.x7ubi.kurswahl.response.common.ResultResponse;
-import com.x7ubi.kurswahl.service.admin.user.StudentCreationService;
+import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
+import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
+import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
+import com.x7ubi.kurswahl.admin.user.service.StudentCreationService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.models.Student;
+import com.x7ubi.kurswahl.common.models.StudentClass;
+import com.x7ubi.kurswahl.common.models.Teacher;
+import com.x7ubi.kurswahl.common.models.User;
+import com.x7ubi.kurswahl.common.repository.StudentClassRepo;
+import com.x7ubi.kurswahl.common.repository.StudentRepo;
+import com.x7ubi.kurswahl.common.repository.TeacherRepo;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,7 +94,7 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testCreateStudent() {
+    public void testCreateStudent() throws EntityNotFoundException {
         // Given
         StudentSignupRequest studentSignupRequest = new StudentSignupRequest();
         studentSignupRequest.setFirstname("Firstname");
@@ -102,11 +102,9 @@ public class StudentCreationServiceTest {
         studentSignupRequest.setStudentClassId(studentClass.getStudentClassId());
 
         // When
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
+        this.studentCreationService.registerStudent(studentSignupRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Student createdStudent = this.studentRepo.findStudentByUser_Username("firstname.surname").get();
         StudentClass updatedStudentClass
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
@@ -132,16 +130,16 @@ public class StudentCreationServiceTest {
         studentSignupRequest.setStudentClassId(studentClass.getStudentClassId() + 1);
 
         // When
-        ResultResponse response = this.studentCreationService.registerStudent(studentSignupRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentCreationService.registerStudent(studentSignupRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(),
+                ErrorMessage.STUDENT_CLASS_NOT_FOUND);
     }
 
     @Test
-    public void testEditStudent() {
+    public void testEditStudent() throws EntityNotFoundException {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId();
@@ -151,11 +149,9 @@ public class StudentCreationServiceTest {
         studentSignupRequest.setStudentClassId(studentClass.getStudentClassId());
 
         // When
-        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+        this.studentCreationService.editStudent(id, studentSignupRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
         StudentClass updatedStudentClass
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
@@ -180,12 +176,11 @@ public class StudentCreationServiceTest {
         studentSignupRequest.setStudentClassId(studentClass.getStudentClassId());
 
         // When
-        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentCreationService.editStudent(id, studentSignupRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.STUDENT_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
 
         Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
         StudentClass updatedStudentClass
@@ -211,12 +206,12 @@ public class StudentCreationServiceTest {
         studentSignupRequest.setStudentClassId(studentClass.getStudentClassId() + 1);
 
         // When
-        ResultResponse response = this.studentCreationService.editStudent(id, studentSignupRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentCreationService.editStudent(id, studentSignupRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(),
+                ErrorMessage.STUDENT_CLASS_NOT_FOUND);
 
         Student editedStudent = this.studentRepo.findStudentByUser_Username("test.user").get();
         StudentClass updatedStudentClass
@@ -232,16 +227,15 @@ public class StudentCreationServiceTest {
     }
 
     @Test
-    public void testDeleteStudent() {
+    public void testDeleteStudent() throws EntityNotFoundException {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId();
 
         // When
-        ResultResponse response = this.studentCreationService.deleteStudent(id);
+        this.studentCreationService.deleteStudent(id);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
         Assertions.assertFalse(this.studentRepo.existsStudentByUser_Username(this.student.getUser().getUsername()));
 
         StudentClass updatedStudentClass
@@ -257,27 +251,24 @@ public class StudentCreationServiceTest {
         Long id = this.student.getStudentId() + 1;
 
         // When
-        ResultResponse response = this.studentCreationService.deleteStudent(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentCreationService.deleteStudent(id));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(), ErrorMessage.Administration.STUDENT_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
         Assertions.assertTrue(this.studentRepo.existsStudentByUser_Username(this.student.getUser().getUsername()));
     }
 
     @Test
-    public void testGetStudent() {
+    public void testGetStudent() throws EntityNotFoundException {
         // Given
         this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
         Long id = this.student.getStudentId();
 
         // When
-        StudentResultResponse studentResponses = this.studentCreationService.getStudent(id);
+        StudentResponse studentResponse = this.studentCreationService.getStudent(id);
 
         // Then
-        Assertions.assertTrue(studentResponses.getErrorMessages().isEmpty());
-
-        StudentResponse studentResponse = studentResponses.getStudentResponse();
         Assertions.assertEquals(studentResponse.getFirstname(), student.getUser().getFirstname());
         Assertions.assertEquals(studentResponse.getSurname(), student.getUser().getSurname());
         Assertions.assertEquals(studentResponse.getUsername(), "test.user");
@@ -294,12 +285,12 @@ public class StudentCreationServiceTest {
         Long id = this.student.getStudentId() + 1;
 
         // When
-        StudentResultResponse studentResponses = this.studentCreationService.getStudent(id);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentCreationService.getStudent(id));
 
         // Then
-        Assertions.assertEquals(studentResponses.getErrorMessages().size(), 1);
-        Assertions.assertEquals(studentResponses.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.STUDENT_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(),
+                ErrorMessage.STUDENT_NOT_FOUND);
     }
 
     @Test

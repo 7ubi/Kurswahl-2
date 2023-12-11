@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ResultResponse, TapeResultResponse} from "../../../../app.responses";
+import {TapeResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-tape',
@@ -12,7 +12,7 @@ import {ResultResponse, TapeResultResponse} from "../../../../app.responses";
 export class EditTapeComponent implements OnInit {
   editStudentClassForm: FormGroup;
   id: string | null;
-  tape?: TapeResultResponse;
+  tape?: TapeResponse;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,13 +30,13 @@ export class EditTapeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.httpService.get<TapeResultResponse>(`/api/admin/tape?tapeId=${this.id}`,
+    this.httpService.get<TapeResponse>(`/api/admin/tape?tapeId=${this.id}`,
       response => {
         this.tape = response;
-        this.editStudentClassForm.controls['name'].setValue(this.tape.tapeResponse.name);
-        this.editStudentClassForm.controls['year'].setValue(this.tape.tapeResponse.year);
-        this.editStudentClassForm.controls['lk'].setValue(this.tape.tapeResponse.lk);
-      }, () => this.router.navigate(['admin', 'studentClasses']));
+        this.editStudentClassForm.controls['name'].setValue(this.tape.name);
+        this.editStudentClassForm.controls['year'].setValue(this.tape.year);
+        this.editStudentClassForm.controls['lk'].setValue(this.tape.lk);
+      }, () => this.router.navigate(['admin', 'tapes']));
   }
 
   editStudentClass() {
@@ -44,7 +44,7 @@ export class EditTapeComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/tape?tapeId=${this.id}`, this.getStudentClassRequest(),
+    this.httpService.put<undefined>(`/api/admin/tape?tapeId=${this.id}`, this.getStudentClassRequest(),
       response => this.router.navigate(['admin', 'tapes']));
   }
 

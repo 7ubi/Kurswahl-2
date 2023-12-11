@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -29,7 +28,7 @@ export class CreateTapeComponent {
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/tape', this.getStudentClassRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/tape', this.getStudentClassRequest(), response => {
       this.router.navigate(['admin', 'tapes']);
     });
   }

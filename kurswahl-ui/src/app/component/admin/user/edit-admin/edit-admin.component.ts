@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AdminResultResponse, ResultResponse} from "../../../../app.responses";
+import {AdminResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-admin',
@@ -11,7 +11,7 @@ import {AdminResultResponse, ResultResponse} from "../../../../app.responses";
 })
 export class EditAdminComponent implements OnInit {
   editAdminForm: FormGroup;
-  admin?: AdminResultResponse;
+  admin?: AdminResponse;
   id?: string | null;
 
   constructor(
@@ -29,10 +29,10 @@ export class EditAdminComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
 
-    this.httpService.get<AdminResultResponse>(`/api/admin/admin?adminId=${this.id}`, response => {
+    this.httpService.get<AdminResponse>(`/api/admin/admin?adminId=${this.id}`, response => {
       this.admin = response;
-      this.editAdminForm.controls['firstname'].setValue(this.admin.adminResponse.firstname);
-      this.editAdminForm.controls['surname'].setValue(this.admin.adminResponse.surname);
+      this.editAdminForm.controls['firstname'].setValue(this.admin.firstname);
+      this.editAdminForm.controls['surname'].setValue(this.admin.surname);
     }, () => this.router.navigate(['admin', 'admins']));
   }
 
@@ -41,7 +41,7 @@ export class EditAdminComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/admin?adminId=${this.id}`, this.getCreateAdminRequest(), response => {
+    this.httpService.put<undefined>(`/api/admin/admin?adminId=${this.id}`, this.getCreateAdminRequest(), response => {
       this.router.navigate(['admin', 'admins']);
     });
   }
