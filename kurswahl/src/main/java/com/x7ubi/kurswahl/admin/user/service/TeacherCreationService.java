@@ -60,7 +60,7 @@ public class TeacherCreationService {
         Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
 
         if(teacherOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
         }
 
         Teacher teacher = teacherOptional.get();
@@ -80,7 +80,7 @@ public class TeacherCreationService {
         Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
 
         if(teacherOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
         }
 
         Teacher teacher = teacherOptional.get();
@@ -94,7 +94,7 @@ public class TeacherCreationService {
         Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(teacherId);
 
         if(teacherOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
         }
 
         Teacher teacher = teacherOptional.get();
@@ -110,13 +110,13 @@ public class TeacherCreationService {
 
     private void getStudentClassesTeacher(Teacher teacher) throws EntityDependencyException {
         if (!teacher.getStudentClasses().isEmpty()) {
-            throw new EntityDependencyException(ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+            throw new EntityDependencyException(ErrorMessage.TEACHER_STUDENT_CLASS);
         }
     }
 
     private void getClassesTeacher(Teacher teacher) throws EntityDependencyException {
         if (!teacher.getClasses().isEmpty()) {
-            throw new EntityDependencyException(ErrorMessage.Administration.TEACHER_CLASS);
+            throw new EntityDependencyException(ErrorMessage.TEACHER_CLASS);
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.x7ubi.kurswahl.authentication;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
+import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.service.ChangePasswordService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -67,7 +67,7 @@ public class ChangePasswordServiceTest {
                 this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
 
         // Then
-        Assertions.assertEquals(exception.getMessage(), ErrorMessage.General.WRONG_OLD_PASSWORD);
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.WRONG_OLD_PASSWORD);
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
@@ -85,7 +85,7 @@ public class ChangePasswordServiceTest {
                 this.changePasswordService.changePassword("wrong", changePasswordRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.General.USER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.USER_NOT_FOUND);
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
@@ -116,7 +116,7 @@ public class ChangePasswordServiceTest {
                 this.changePasswordService.resetPassword(passwordResetRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.General.USER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.USER_NOT_FOUND);
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));

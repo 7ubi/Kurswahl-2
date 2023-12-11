@@ -1,15 +1,16 @@
 package com.x7ubi.kurswahl.admin.classes.service;
 
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResultResponse;
-import com.x7ubi.kurswahl.admin.user.service.AdminErrorService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.mapper.TapeMapper;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Tape;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.TapeRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +20,12 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class TapeCreationService {
 
     private final Logger logger = LoggerFactory.getLogger(TapeCreationService.class);
-
-    private final AdminErrorService adminErrorService;
 
     private final TapeMapper tapeMapper;
 
@@ -35,9 +35,8 @@ public class TapeCreationService {
 
     private final ClassCreationService classCreationService;
 
-    public TapeCreationService(AdminErrorService adminErrorService, TapeMapper tapeMapper, TapeRepo tapeRepo,
-                               ClassRepo classRepo, ClassCreationService classCreationService) {
-        this.adminErrorService = adminErrorService;
+    public TapeCreationService(TapeMapper tapeMapper, TapeRepo tapeRepo, ClassRepo classRepo,
+                               ClassCreationService classCreationService) {
         this.tapeMapper = tapeMapper;
         this.tapeRepo = tapeRepo;
         this.classRepo = classRepo;
@@ -45,14 +44,8 @@ public class TapeCreationService {
     }
 
     @Transactional
-    public ResultResponse createTape(TapeCreationRequest tapeCreationRequest) {
-        ResultResponse response = new ResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.findTapeCreationError(tapeCreationRequest));
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
-        }
+    public void createTape(TapeCreationRequest tapeCreationRequest) throws EntityCreationException {
+        this.findTapeCreationError(tapeCreationRequest);
 
         Tape tape = this.tapeMapper.tapeRequestToTape(tapeCreationRequest);
         tape.setReleaseYear(Year.now().getValue());
@@ -60,28 +53,19 @@ public class TapeCreationService {
         this.tapeRepo.save(tape);
 
         logger.info(String.format("Created tape %s", tape.getName()));
-
-        return response;
     }
 
     @Transactional
-    public ResultResponse editTape(Long tapeId, TapeCreationRequest tapeCreationRequest) {
-        ResultResponse response = new ResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.getTapeNotFound(tapeId));
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+    public void editTape(Long tapeId, TapeCreationRequest tapeCreationRequest)
+            throws EntityCreationException, EntityNotFoundException {
+        Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(tapeId);
+        if (tapeOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
         }
-
-        Tape tape = this.tapeRepo.findTapeByTapeId(tapeId).get();
+        Tape tape = tapeOptional.get();
 
         if (!Objects.equals(tape.getName(), tapeCreationRequest.getName())) {
-            response.setErrorMessages(this.adminErrorService.findTapeCreationError(tapeCreationRequest));
-        }
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+            this.findTapeCreationError(tapeCreationRequest);
         }
 
         this.tapeMapper.tapeRequestToTape(tapeCreationRequest, tape);
@@ -89,24 +73,18 @@ public class TapeCreationService {
         this.tapeRepo.save(tape);
 
         logger.info(String.format("Edited tape %s", tape.getName()));
-
-        return response;
     }
 
-    public TapeResultResponse getTape(Long tapeId) {
-        TapeResultResponse response = new TapeResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.getTapeNotFound(tapeId));
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+    public TapeResponse getTape(Long tapeId) throws EntityNotFoundException {
+        Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(tapeId);
+        if (tapeOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
         }
+        Tape tape = tapeOptional.get();
 
-        Tape tape = this.tapeRepo.findTapeByTapeId(tapeId).get();
-        response.setTapeResponse(this.tapeMapper.tapeToTapeResponse(tape));
         logger.info(String.format("Got tape %s", tape.getName()));
 
-        return response;
+        return this.tapeMapper.tapeToTapeResponse(tape);
     }
 
     public TapeResponses getAllTapes(Integer year) {
@@ -116,16 +94,13 @@ public class TapeCreationService {
     }
 
     @Transactional
-    public ResultResponse deleteTape(Long tapeId) {
-        ResultResponse response = new ResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.getTapeNotFound(tapeId));
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+    public void deleteTape(Long tapeId) throws EntityNotFoundException {
+        Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(tapeId);
+        if (tapeOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
         }
+        Tape tape = tapeOptional.get();
 
-        Tape tape = this.tapeRepo.findTapeByTapeId(tapeId).get();
         List<Class> classes = new ArrayList<>(tape.getaClass());
         tape.getaClass().clear();
         this.tapeRepo.save(tape);
@@ -136,7 +111,12 @@ public class TapeCreationService {
 
         this.tapeRepo.delete(tape);
         logger.info(String.format("Deleted tape %s", tape.getName()));
+    }
 
-        return response;
+    public void findTapeCreationError(TapeCreationRequest tapeCreationRequest) throws EntityCreationException {
+        if (tapeRepo.existsTapeByNameAndYearAndReleaseYear(tapeCreationRequest.getName(),
+                tapeCreationRequest.getYear(), Year.now().getValue())) {
+            throw new EntityCreationException(ErrorMessage.TAPE_ALREADY_EXISTS);
+        }
     }
 }

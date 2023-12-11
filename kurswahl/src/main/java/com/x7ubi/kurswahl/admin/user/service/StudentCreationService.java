@@ -58,7 +58,7 @@ public class StudentCreationService {
                 this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
 
         if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         }
 
         StudentClass studentClass = studentClassOptional.get();
@@ -89,7 +89,7 @@ public class StudentCreationService {
                 this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
 
         if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         }
 
         StudentClass studentClass = studentClassOptional.get();
@@ -97,7 +97,7 @@ public class StudentCreationService {
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
         if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
         }
 
         Student student = studentOptional.get();
@@ -128,7 +128,7 @@ public class StudentCreationService {
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
         if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
         }
 
         Student student = studentOptional.get();
@@ -141,7 +141,7 @@ public class StudentCreationService {
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
         if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
         }
 
         Student student = studentOptional.get();

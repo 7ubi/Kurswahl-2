@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
-import {ResultResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-create-teacher',
@@ -29,7 +28,7 @@ export class CreateTeacherComponent {
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/teacher', this.getCreateTeacherRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/teacher', this.getCreateTeacherRequest(), response => {
       this.router.navigate(['admin', 'teachers']);
     });
   }

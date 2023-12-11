@@ -1,12 +1,12 @@
-package com.x7ubi.kurswahl.admin.user.controller;
+package com.x7ubi.kurswahl.admin.classes.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
-import com.x7ubi.kurswahl.admin.user.request.TeacherSignupRequest;
-import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
-import com.x7ubi.kurswahl.admin.user.response.TeacherResponses;
-import com.x7ubi.kurswahl.admin.user.service.TeacherCreationService;
+import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
+import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
-import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,62 +16,65 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminTeacherController {
+public class AdminTapeController {
 
-    Logger logger = LoggerFactory.getLogger(AdminTeacherController.class);
+    private final Logger logger = LoggerFactory.getLogger(AdminTapeController.class);
 
-    private final TeacherCreationService teacherCreationService;
+    private final TapeCreationService tapeCreationService;
 
-    public AdminTeacherController(TeacherCreationService teacherCreationService) {
-        this.teacherCreationService = teacherCreationService;
+    public AdminTapeController(TapeCreationService tapeCreationService) {
+        this.tapeCreationService = tapeCreationService;
     }
 
-    @PostMapping("/teacher")
+    @PostMapping("/tape")
     @AdminRequired
-    public ResponseEntity<?> createTeacher(
-            @RequestBody TeacherSignupRequest teacherSignupRequest
+    public ResponseEntity<?> createTape(
+            @RequestBody TapeCreationRequest tapeCreationRequest
     ) {
-        logger.info("Signing up new Teacher");
+        logger.info("Creating new Tape");
 
         try {
-            this.teacherCreationService.registerTeacher(teacherSignupRequest);
+            this.tapeCreationService.createTape(tapeCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityCreationException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/teacher")
+    @PutMapping("/tape")
     @AdminRequired
-    public ResponseEntity<?> editTeacher(
-            @RequestParam Long teacherId,
-            @RequestBody TeacherSignupRequest teacherSignupRequest
+    public ResponseEntity<?> editTape(
+            @RequestParam Long tapeId,
+            @RequestBody TapeCreationRequest tapeCreationRequest
     ) {
-        logger.info("Editing Teacher");
+        logger.info("Editing Tape");
 
         try {
-            this.teacherCreationService.editTeacher(teacherId, teacherSignupRequest);
+            this.tapeCreationService.editTape(tapeId, tapeCreationRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (EntityCreationException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    @GetMapping("/teacher")
+    @GetMapping("/tape")
     @AdminRequired
-    public ResponseEntity<?> getTeacher(
-            @RequestParam Long teacherId
-    ) {
-        logger.info("Getting Teacher");
+    public ResponseEntity<?> getTape(@RequestParam Long tapeId) {
+        logger.info("Getting Tape");
 
         try {
-            TeacherResponse response = this.teacherCreationService.getTeacher(teacherId);
+            TapeResponse response = this.tapeCreationService.getTape(tapeId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
@@ -82,34 +85,30 @@ public class AdminTeacherController {
         }
     }
 
-    @DeleteMapping("/teacher")
+    @DeleteMapping("/tape")
     @AdminRequired
-    public ResponseEntity<?> deleteTeacher(@RequestParam Long teacherId) {
-        logger.info("Deleting Teacher");
+    public ResponseEntity<?> deleteTape(@RequestParam Long tapeId) {
+        logger.info("Deleting Tape");
 
         try {
-            this.teacherCreationService.deleteTeacher(teacherId);
+            this.tapeCreationService.deleteTape(tapeId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityDependencyException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/teachers")
-    @AdminRequired
-    public ResponseEntity<?> getTeacher() {
-        logger.info("Getting all Teachers");
+    @GetMapping("/tapes")
+    public ResponseEntity<?> getAllTapes(@RequestParam Integer year) {
+        logger.info("Getting all Tapes");
 
         try {
-            TeacherResponses responses = this.teacherCreationService.getAllTeachers();
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
+            TapeResponses tapeResponses = this.tapeCreationService.getAllTapes(year);
+            return ResponseEntity.status(HttpStatus.OK).body(tapeResponses);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

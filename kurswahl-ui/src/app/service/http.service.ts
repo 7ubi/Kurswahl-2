@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {AuthenticationService} from "./authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ResultResponse} from "../app.responses";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -15,18 +14,6 @@ export class HttpService {
     private authenticationService: AuthenticationService,
     private snackBar: MatSnackBar
   ) {}
-
-  private async error(error: ResultResponse) {
-    if (error.errorMessages) {
-      error.errorMessages.forEach(error => {
-        this.snackBar.open(error.message, 'Verstanden', {
-          horizontalPosition: "center",
-          verticalPosition: "bottom",
-          duration: 5000
-        });
-      });
-    }
-  }
 
   private subscribe<Type>(observable: Observable<Type>, subscribe: (response: Type) => void, error?: () => void) {
     observable.subscribe(
@@ -45,10 +32,6 @@ export class HttpService {
           verticalPosition: "bottom",
           duration: 5000
         });
-        this.error(err.error);
-        if (error) {
-          error();
-        }
       }
     );
   }

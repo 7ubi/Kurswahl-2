@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
-import {ResultResponse, SubjectAreaResponses} from "../../../../app.responses";
+import {SubjectAreaResponses} from "../../../../app.responses";
 
 @Component({
   selector: 'app-create-subject',
@@ -36,7 +36,7 @@ export class CreateSubjectComponent implements OnInit{
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/subject', this.getCreateSubjectRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/subject', this.getCreateSubjectRequest(), response => {
       this.router.navigate(['admin', 'subjects']);
     });
   }

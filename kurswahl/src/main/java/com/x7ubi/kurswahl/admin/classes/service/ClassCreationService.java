@@ -1,9 +1,10 @@
 package com.x7ubi.kurswahl.admin.classes.service;
 
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
-import com.x7ubi.kurswahl.admin.classes.response.ClassResultResponse;
-import com.x7ubi.kurswahl.admin.user.service.AdminErrorService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.mapper.ClassMapper;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Subject;
@@ -13,7 +14,6 @@ import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectRepo;
 import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +28,6 @@ import java.util.Optional;
 public class ClassCreationService {
     private final Logger logger = LoggerFactory.getLogger(ClassCreationService.class);
 
-    private final AdminErrorService adminErrorService;
-
     private final ClassRepo classRepo;
 
     private final TapeRepo tapeRepo;
@@ -40,9 +38,8 @@ public class ClassCreationService {
 
     private final ClassMapper classMapper;
 
-    public ClassCreationService(AdminErrorService adminErrorService, ClassRepo classRepo, TapeRepo tapeRepo,
-                                TeacherRepo teacherRepo, SubjectRepo subjectRepo, ClassMapper classMapper) {
-        this.adminErrorService = adminErrorService;
+    public ClassCreationService(ClassRepo classRepo, TapeRepo tapeRepo, TeacherRepo teacherRepo,
+                                SubjectRepo subjectRepo, ClassMapper classMapper) {
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
         this.teacherRepo = teacherRepo;
@@ -51,28 +48,26 @@ public class ClassCreationService {
     }
 
     @Transactional
-    public ResultResponse createClass(ClassCreationRequest classCreationRequest) {
-        ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(this.adminErrorService.getTeacherNotFound(classCreationRequest.getTeacherId()));
-        resultResponse.getErrorMessages()
-                .addAll(this.adminErrorService.getTapeNotFound(classCreationRequest.getTapeId()));
-        resultResponse.getErrorMessages()
-                .addAll(this.adminErrorService.getSubjectNotFound(classCreationRequest.getSubjectId()));
-
-        if (!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
-        }
+    public void createClass(ClassCreationRequest classCreationRequest) throws EntityNotFoundException {
 
         Class aclass = this.classMapper.classRequestToClass(classCreationRequest);
-
-        Teacher teacher = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId()).get();
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId());
+        if (teacherOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
+        }
+        Teacher teacher = teacherOptional.get();
         aclass.setTeacher(teacher);
-
-        Subject subject = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId()).get();
+        Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId());
+        if (subjectOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
+        }
+        Subject subject = subjectOptional.get();
         aclass.setSubject(subject);
-
-        Tape tape = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId()).get();
+        Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId());
+        if (tapeOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
+        }
+        Tape tape = tapeOptional.get();
         aclass.setTape(tape);
 
         this.classRepo.save(aclass);
@@ -85,83 +80,75 @@ public class ClassCreationService {
         this.tapeRepo.save(tape);
 
         logger.info(String.format("Created class %s", aclass.getName()));
-
-        return resultResponse;
     }
 
-    @Transactional
-    public ResultResponse editClass(Long classId, ClassCreationRequest classCreationRequest) {
-        ResultResponse resultResponse = new ResultResponse();
-
-        resultResponse.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
-        resultResponse.getErrorMessages().addAll(this.adminErrorService
-                .getTeacherNotFound(classCreationRequest.getTeacherId()));
-        resultResponse.getErrorMessages()
-                .addAll(this.adminErrorService.getTapeNotFound(classCreationRequest.getTapeId()));
-        resultResponse.getErrorMessages()
-                .addAll(this.adminErrorService.getSubjectNotFound(classCreationRequest.getSubjectId()));
-
-        if (!resultResponse.getErrorMessages().isEmpty()) {
-            return resultResponse;
+    @Transactional()
+    public void editClass(Long classId, ClassCreationRequest classCreationRequest) throws EntityNotFoundException {
+        Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
+        if (classOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
         }
-
-        Class aclass = this.classRepo.findClassByClassId(classId).get();
+        Class aclass = classOptional.get();
+        Optional<Teacher> teacherOptional = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId());
+        if (teacherOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
+        }
+        Teacher teacher = teacherOptional.get();
+        Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId());
+        if (subjectOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
+        }
+        Subject subject = subjectOptional.get();
+        Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId());
+        if (tapeOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
+        }
+        Tape tape = tapeOptional.get();
         this.classMapper.classRequestToClass(classCreationRequest, aclass);
 
         if (!Objects.equals(aclass.getTeacher().getTeacherId(), classCreationRequest.getTeacherId())) {
             aclass.getTeacher().getClasses().remove(aclass);
-            this.teacherRepo.save(aclass.getTeacher());
+            this.teacherRepo.saveAndFlush(aclass.getTeacher());
 
-            Teacher teacher = this.teacherRepo.findTeacherByTeacherId(classCreationRequest.getTeacherId()).get();
             aclass.setTeacher(teacher);
             teacher.getClasses().add(aclass);
-            this.teacherRepo.save(teacher);
+            this.teacherRepo.saveAndFlush(teacher);
         }
 
         if (!Objects.equals(aclass.getSubject().getSubjectId(), classCreationRequest.getSubjectId())) {
             aclass.getSubject().getClasses().remove(aclass);
-            this.subjectRepo.save(aclass.getSubject());
+            this.subjectRepo.saveAndFlush(aclass.getSubject());
 
-            Subject subject = this.subjectRepo.findSubjectBySubjectId(classCreationRequest.getSubjectId()).get();
             aclass.setSubject(subject);
             subject.getClasses().add(aclass);
-            this.subjectRepo.save(subject);
+            this.subjectRepo.saveAndFlush(subject);
         }
 
         if (!Objects.equals(aclass.getTape().getTapeId(), classCreationRequest.getTapeId())) {
             aclass.getTape().getaClass().remove(aclass);
-            this.tapeRepo.save(aclass.getTape());
+            this.tapeRepo.saveAndFlush(aclass.getTape());
 
-            Tape tape = this.tapeRepo.findTapeByTapeId(classCreationRequest.getTapeId()).get();
             aclass.setTape(tape);
             tape.getaClass().add(aclass);
-            this.tapeRepo.save(tape);
+            this.tapeRepo.saveAndFlush(tape);
         }
 
-        this.classRepo.save(aclass);
+        this.classRepo.saveAndFlush(aclass);
 
 
         logger.info(String.format("Edited class %s", aclass.getName()));
-
-        return resultResponse;
     }
 
     @Transactional
-    public ClassResultResponse getClassByClassId(Long classId) {
-
-        ClassResultResponse response = new ClassResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+    public ClassResponse getClassByClassId(Long classId) throws EntityNotFoundException {
+        Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
+        if (classOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
         }
-
-        Class aclass = this.classRepo.findClassByClassId(classId).get();
-        response.setClassResponse(this.classMapper.classToClassResponse(aclass));
+        Class aclass = classOptional.get();
         logger.info(String.format("Got class %s", aclass.getName()));
 
-        return response;
+        return this.classMapper.classToClassResponse(aclass);
     }
 
     @Transactional
@@ -176,17 +163,12 @@ public class ClassCreationService {
     }
 
     @Transactional
-    public ResultResponse deleteClass(Long classId) {
-        ResultResponse response = new ResultResponse();
-
-        response.setErrorMessages(this.adminErrorService.getClassNotFound(classId));
-
-
-        if (!response.getErrorMessages().isEmpty()) {
-            return response;
+    public void deleteClass(Long classId) throws EntityNotFoundException {
+        Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
+        if (classOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
         }
-
-        Class aclass = this.classRepo.findClassByClassId(classId).get();
+        Class aclass = classOptional.get();
 
         if (null != aclass.getTeacher()) {
             aclass.getTeacher().getClasses().remove(aclass);
@@ -203,7 +185,5 @@ public class ClassCreationService {
 
         this.classRepo.delete(aclass);
         logger.info(String.format("Deleted class %s", aclass.getName()));
-
-        return response;
     }
 }

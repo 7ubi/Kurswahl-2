@@ -94,7 +94,7 @@ public class LessonCreationServiceTest {
                 this.lessonCreationService.createLesson(lessonCreationRequest));
 
         // Then
-        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.Administration.LESSON_NOT_AVAILABLE);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.LESSON_NOT_AVAILABLE);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lessonCreationRequest.getDay(), lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear()));
@@ -117,7 +117,7 @@ public class LessonCreationServiceTest {
                 this.lessonCreationService.createLesson(lessonCreationRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lessonCreationRequest.getDay(), lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear()));
@@ -152,7 +152,7 @@ public class LessonCreationServiceTest {
                 this.lessonCreationService.deleteLesson(lesson.getLessonId() + 3));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.LESSON_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.LESSON_NOT_FOUND);
 
         Assertions.assertTrue(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lesson.getDay(), lesson.getHour(), tape.getYear(), tape.getReleaseYear()));

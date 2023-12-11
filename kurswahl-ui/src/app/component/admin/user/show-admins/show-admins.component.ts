@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
-import {AdminResponse, AdminResponses, ResultResponse} from "../../../../app.responses";
+import {AdminResponse, AdminResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -46,7 +46,7 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   deleteAdmin(adminId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/admin?adminId=${adminId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/admin?adminId=${adminId}`, response => {
       this.loadAdmins();
       this.snackBar.open('Admin wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
@@ -61,7 +61,7 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   resetPassword(userId: number) {
-    this.httpService.put<ResultResponse>('api/auth/resetPassword', {userId: userId}, response => {
+    this.httpService.put<undefined>('api/auth/resetPassword', {userId: userId}, response => {
       this.snackBar.open('Passwort wurde zurück gesetzt.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",

@@ -141,7 +141,7 @@ public class StudentClassCreationServiceTest {
 
         // Then
         Assertions.assertEquals(entityCreationException.getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
+                ErrorMessage.STUDENT_CLASS_ALREADY_EXISTS);
 
         StudentClass createdStudentClass
                 = this.studentClassRepo.findStudentClassByName(studentClassCreationRequest.getName()).get();
@@ -166,7 +166,7 @@ public class StudentClassCreationServiceTest {
                 this.studentClassCreationService.createStudentClass(studentClassCreationRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
 
         Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClassCreationRequest.getName()));
     }
@@ -240,7 +240,7 @@ public class StudentClassCreationServiceTest {
 
         // Then
         Assertions.assertEquals(entityCreationException.getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
+                ErrorMessage.STUDENT_CLASS_ALREADY_EXISTS);
 
         StudentClass editedStudentClass
                 = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
@@ -272,7 +272,7 @@ public class StudentClassCreationServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+                ErrorMessage.STUDENT_CLASS_NOT_FOUND);
 
         StudentClass editedStudentClass
                 = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
@@ -303,7 +303,7 @@ public class StudentClassCreationServiceTest {
                         studentClassCreationRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
 
         StudentClass editedStudentClass
                 = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
@@ -373,7 +373,7 @@ public class StudentClassCreationServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+                ErrorMessage.STUDENT_CLASS_NOT_FOUND);
     }
 
     @Test
@@ -402,7 +402,7 @@ public class StudentClassCreationServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(),
-                ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+                ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         Assertions.assertTrue(this.studentClassRepo.existsStudentClassByName(studentClass.getName()));
 
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();

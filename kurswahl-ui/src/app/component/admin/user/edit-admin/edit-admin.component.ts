@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AdminResponse, ResultResponse} from "../../../../app.responses";
+import {AdminResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-admin',
@@ -41,7 +41,7 @@ export class EditAdminComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/admin?adminId=${this.id}`, this.getCreateAdminRequest(), response => {
+    this.httpService.put<undefined>(`/api/admin/admin?adminId=${this.id}`, this.getCreateAdminRequest(), response => {
       this.router.navigate(['admin', 'admins']);
     });
   }

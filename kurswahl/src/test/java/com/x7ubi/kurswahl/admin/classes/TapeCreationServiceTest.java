@@ -4,16 +4,17 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResultResponse;
 import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Lesson;
 import com.x7ubi.kurswahl.common.models.Tape;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.LessonRepo;
 import com.x7ubi.kurswahl.common.repository.TapeRepo;
-import com.x7ubi.kurswahl.common.response.ResultResponse;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,7 @@ public class TapeCreationServiceTest {
     }
 
     @Test
-    public void testCreateTape() {
+    public void testCreateTape() throws EntityCreationException {
         // Given
         TapeCreationRequest tapeCreationRequest = new TapeCreationRequest();
         tapeCreationRequest.setName("LK 1");
@@ -95,11 +96,9 @@ public class TapeCreationServiceTest {
         tapeCreationRequest.setYear(11);
 
         // When
-        ResultResponse response = this.tapeCreationService.createTape(tapeCreationRequest);
+        this.tapeCreationService.createTape(tapeCreationRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Tape createdTape = this.tapeRepo.
                 findTapeByNameAndYearAndReleaseYear("LK 1", 11, Year.now().getValue()).get();
         Assertions.assertEquals(createdTape.getName(), tapeCreationRequest.getName());
@@ -117,16 +116,15 @@ public class TapeCreationServiceTest {
         tapeCreationRequest.setYear(12);
 
         // When
-        ResultResponse response = this.tapeCreationService.createTape(tapeCreationRequest);
+        EntityCreationException entityCreationException = Assert.assertThrows(EntityCreationException.class, () ->
+                this.tapeCreationService.createTape(tapeCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_ALREADY_EXISTS);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.TAPE_ALREADY_EXISTS);
     }
 
     @Test
-    public void testEditTape() {
+    public void testEditTape() throws EntityCreationException, EntityNotFoundException {
         // Given
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
         TapeCreationRequest tapeCreationRequest = new TapeCreationRequest();
@@ -135,11 +133,9 @@ public class TapeCreationServiceTest {
         tapeCreationRequest.setYear(11);
 
         // When
-        ResultResponse response = this.tapeCreationService.editTape(tape.getTapeId(), tapeCreationRequest);
+        this.tapeCreationService.editTape(tape.getTapeId(), tapeCreationRequest);
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Tape editedTape = this.tapeRepo.
                 findTapeByNameAndYearAndReleaseYear("LK 1", 11, Year.now().getValue()).get();
         Assertions.assertEquals(editedTape.getName(), tapeCreationRequest.getName());
@@ -161,12 +157,11 @@ public class TapeCreationServiceTest {
         tapeCreationRequest.setYear(11);
 
         // When
-        ResultResponse response = this.tapeCreationService.editTape(tape.getTapeId() + 3, tapeCreationRequest);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.tapeCreationService.editTape(tape.getTapeId() + 3, tapeCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         Tape editedTape = this.tapeRepo.
                 findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
@@ -189,12 +184,11 @@ public class TapeCreationServiceTest {
         tapeCreationRequest.setYear(12);
 
         // When
-        ResultResponse response = this.tapeCreationService.editTape(tape.getTapeId(), tapeCreationRequest);
+        EntityCreationException entityCreationException = Assert.assertThrows(EntityCreationException.class, () ->
+                this.tapeCreationService.editTape(tape.getTapeId(), tapeCreationRequest));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_ALREADY_EXISTS);
+        Assertions.assertEquals(entityCreationException.getMessage(), ErrorMessage.TAPE_ALREADY_EXISTS);
 
         Tape editedTape = this.tapeRepo.
                 findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
@@ -212,25 +206,23 @@ public class TapeCreationServiceTest {
     }
 
     @Test
-    public void testGetTape() {
+    public void testGetTape() throws EntityNotFoundException {
         // Given
         setupLesson();
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
 
         // When
-        TapeResultResponse response = this.tapeCreationService.getTape(tape.getTapeId());
+        TapeResponse response = this.tapeCreationService.getTape(tape.getTapeId());
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
+        Assertions.assertEquals(response.getName(), tape.getName());
+        Assertions.assertEquals(response.getLk(), tape.getLk());
+        Assertions.assertEquals(response.getYear(), tape.getYear());
+        Assertions.assertEquals(response.getReleaseYear(), tape.getReleaseYear());
 
-        Assertions.assertEquals(response.getTapeResponse().getName(), tape.getName());
-        Assertions.assertEquals(response.getTapeResponse().getLk(), tape.getLk());
-        Assertions.assertEquals(response.getTapeResponse().getYear(), tape.getYear());
-        Assertions.assertEquals(response.getTapeResponse().getReleaseYear(), tape.getReleaseYear());
-
-        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().size(), 1);
-        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().get(0).getDay(), lesson.getDay());
-        Assertions.assertEquals(response.getTapeResponse().getLessonResponses().get(0).getHour(), lesson.getHour());
+        Assertions.assertEquals(response.getLessonResponses().size(), 1);
+        Assertions.assertEquals(response.getLessonResponses().get(0).getDay(), lesson.getDay());
+        Assertions.assertEquals(response.getLessonResponses().get(0).getHour(), lesson.getHour());
     }
 
     @Test
@@ -239,14 +231,11 @@ public class TapeCreationServiceTest {
         tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
 
         // When
-        TapeResultResponse response = this.tapeCreationService.getTape(tape.getTapeId() + 3);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.tapeCreationService.getTape(tape.getTapeId() + 3));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
-
-        Assertions.assertNull(response.getTapeResponse());
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
     }
 
     @Test
@@ -272,7 +261,7 @@ public class TapeCreationServiceTest {
     }
 
     @Test
-    public void deleteTape() {
+    public void deleteTape() throws EntityNotFoundException {
         // Given
         setupLesson();
         setupClass();
@@ -280,11 +269,9 @@ public class TapeCreationServiceTest {
         lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
 
         // When
-        ResultResponse response = this.tapeCreationService.deleteTape(tape.getTapeId());
+        this.tapeCreationService.deleteTape(tape.getTapeId());
 
         // Then
-        Assertions.assertTrue(response.getErrorMessages().isEmpty());
-
         Assertions.assertFalse(
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
         Assertions.assertFalse(lessonRepo.existsByLessonId(lesson.getLessonId()));
@@ -300,12 +287,11 @@ public class TapeCreationServiceTest {
         lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
 
         // When
-        ResultResponse response = this.tapeCreationService.deleteTape(tape.getTapeId() + 3);
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.tapeCreationService.deleteTape(tape.getTapeId() + 3));
 
         // Then
-        Assertions.assertEquals(response.getErrorMessages().size(), 1);
-        Assertions.assertEquals(response.getErrorMessages().get(0).getMessage(),
-                ErrorMessage.Administration.TAPE_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TAPE_NOT_FOUND);
 
         Assertions.assertTrue(
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));

@@ -143,7 +143,7 @@ public class TeacherCreationServiceTest {
                 this.teacherCreationService.editTeacher(id, teacherSignupRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
 
         Teacher editedTeacher = this.teacherRepo.findTeacherByTeacherId(this.teacher.getTeacherId()).get();
         Assertions.assertEquals(editedTeacher.getUser().getFirstname(), teacher.getUser().getFirstname());
@@ -179,7 +179,7 @@ public class TeacherCreationServiceTest {
                 this.teacherCreationService.getTeacher(id));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
     }
 
     @Test
@@ -221,7 +221,7 @@ public class TeacherCreationServiceTest {
                 this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.TEACHER_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.TEACHER_NOT_FOUND);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
@@ -237,7 +237,7 @@ public class TeacherCreationServiceTest {
                 this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.Administration.TEACHER_STUDENT_CLASS);
+        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.TEACHER_STUDENT_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 
@@ -253,7 +253,7 @@ public class TeacherCreationServiceTest {
                 this.teacherCreationService.deleteTeacher(id));
 
         // Then
-        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.Administration.TEACHER_CLASS);
+        Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.TEACHER_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
     }
 }

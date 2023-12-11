@@ -1,11 +1,3 @@
-export interface MessageResponse {
-  readonly message: string;
-}
-
-export interface ResultResponse {
-  readonly errorMessages: MessageResponse[];
-}
-
 export interface LoginResponse {
   readonly token: string;
   readonly type: string;
@@ -100,10 +92,6 @@ export interface TapeResponses {
   readonly tapeResponses: TapeResponse[];
 }
 
-export interface TapeResultResponse extends ResultResponse {
-  readonly tapeResponse: TapeResponse;
-}
-
 export interface ClassResponse {
   readonly classId: number;
   readonly name: string;
@@ -114,10 +102,6 @@ export interface ClassResponse {
 
 export interface ClassResponses {
   readonly classResponses: ClassResponse[];
-}
-
-export interface ClassResultResponse extends ResultResponse {
-  readonly classResponse: ClassResponse;
 }
 
 export enum Role {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, StudentClassResponses, StudentResponse} from "../../../../app.responses";
+import {StudentClassResponses, StudentResponse} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -49,7 +49,7 @@ export class EditStudentComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/student?studentId=${this.id}`, this.getCreateStudentRequest(), response => {
+    this.httpService.put<undefined>(`/api/admin/student?studentId=${this.id}`, this.getCreateStudentRequest(), response => {
       this.router.navigate(['admin', 'students']);
     });
   }

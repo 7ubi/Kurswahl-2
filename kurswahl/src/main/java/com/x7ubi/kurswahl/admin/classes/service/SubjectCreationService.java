@@ -52,7 +52,7 @@ public class SubjectCreationService {
                 subjectCreationRequest.getSubjectAreaId());
 
         if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         }
 
         SubjectArea subjectArea = subjectAreaOptional.get();
@@ -71,13 +71,13 @@ public class SubjectCreationService {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(
                 subjectCreationRequest.getSubjectAreaId());
         if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         }
         SubjectArea subjectArea = subjectAreaOptional.get();
 
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
         }
         Subject subject = subjectOptional.get();
 
@@ -109,7 +109,7 @@ public class SubjectCreationService {
     public void deleteSubject(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
         }
         Subject subject = subjectOptional.get();
 
@@ -129,7 +129,7 @@ public class SubjectCreationService {
     public SubjectResponse getSubject(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
         }
         Subject subject = subjectOptional.get();
 
@@ -138,7 +138,7 @@ public class SubjectCreationService {
 
     private void findSubjectCreationError(SubjectCreationRequest subjectCreationRequest) throws EntityCreationException {
         if (this.subjectRepo.existsSubjectByName(subjectCreationRequest.getName())) {
-            throw new EntityCreationException(ErrorMessage.Administration.SUBJECT_ALREADY_EXISTS);
+            throw new EntityCreationException(ErrorMessage.SUBJECT_ALREADY_EXISTS);
         }
     }
 }

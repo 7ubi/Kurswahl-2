@@ -53,7 +53,7 @@ public class StudentClassCreationService {
                 studentClassCreationRequest.getTeacherId());
 
         if (teacherOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
         }
 
         Teacher teacher = teacherOptional.get();
@@ -76,7 +76,7 @@ public class StudentClassCreationService {
                 studentClassCreationRequest.getTeacherId());
 
         if (teacherOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TEACHER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TEACHER_NOT_FOUND);
         }
 
         Teacher teacher = teacherOptional.get();
@@ -85,7 +85,7 @@ public class StudentClassCreationService {
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId);
 
         if (studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         }
 
         StudentClass studentClass = studentClassOptional.get();
@@ -114,7 +114,7 @@ public class StudentClassCreationService {
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId);
 
         if (studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         }
 
         StudentClass studentClass = studentClassOptional.get();
@@ -137,7 +137,7 @@ public class StudentClassCreationService {
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId);
 
         if (studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.STUDENT_CLASS_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
         }
 
         StudentClass studentClass = studentClassOptional.get();
@@ -159,7 +159,7 @@ public class StudentClassCreationService {
 
         if (this.studentClassRepo.existsStudentClassByNameAndReleaseYear(
                 studentClassCreationRequest.getName(), currentYear)) {
-            throw new EntityCreationException(ErrorMessage.Administration.STUDENT_CLASS_ALREADY_EXISTS);
+            throw new EntityCreationException(ErrorMessage.STUDENT_CLASS_ALREADY_EXISTS);
         }
     }
 }

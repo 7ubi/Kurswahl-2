@@ -83,7 +83,7 @@ public class AdminCreationServiceTest {
                 this.adminCreationService.deleteAdmin(id));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.ADMIN_NOT_FOUND);
         Assertions.assertTrue(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
     }
 
@@ -119,7 +119,7 @@ public class AdminCreationServiceTest {
                 this.adminCreationService.editAdmin(id, adminSignupRequest));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.ADMIN_NOT_FOUND);
 
         Admin editedAdmin = this.adminRepo.findAdminByUser_Username("test.user").get();
         Assertions.assertEquals(editedAdmin.getUser().getFirstname(), this.admin.getUser().getFirstname());
@@ -154,7 +154,7 @@ public class AdminCreationServiceTest {
                 this.adminCreationService.getAdmin(id));
 
         // Then
-        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.Administration.ADMIN_NOT_FOUND);
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.ADMIN_NOT_FOUND);
     }
 
     @Test

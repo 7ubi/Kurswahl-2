@@ -1,12 +1,12 @@
 package com.x7ubi.kurswahl.common.service;
 
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
+import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ChangePasswordService {
             throws EntityNotFoundException, PasswordNotMatchingException {
         Optional<User> userOptional = this.userRepo.findByUsername(username);
         if(userOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.General.USER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         User user = userOptional.get();
         oldPasswordCorrect(user, changePasswordRequest.getOldPassword());
@@ -49,7 +49,7 @@ public class ChangePasswordService {
 
     private void oldPasswordCorrect(User user, String oldPassword) throws PasswordNotMatchingException {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new PasswordNotMatchingException(ErrorMessage.General.WRONG_OLD_PASSWORD);
+            throw new PasswordNotMatchingException(ErrorMessage.WRONG_OLD_PASSWORD);
         }
     }
 
@@ -57,7 +57,7 @@ public class ChangePasswordService {
     public void resetPassword(PasswordResetRequest passwordResetRequest) throws EntityNotFoundException {
         Optional<User> userOptional = this.userRepo.findUserByUserId(passwordResetRequest.getUserId());
         if(userOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.General.USER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         User user = userOptional.get();
         if (null == user.getGeneratedPassword()) {

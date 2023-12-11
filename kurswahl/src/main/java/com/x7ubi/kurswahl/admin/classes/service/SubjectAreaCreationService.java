@@ -52,7 +52,7 @@ public class SubjectAreaCreationService {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
         if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         }
 
         SubjectArea subjectArea = subjectAreaOptional.get();
@@ -78,7 +78,7 @@ public class SubjectAreaCreationService {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
         if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         }
 
         SubjectArea subjectArea = subjectAreaOptional.get();
@@ -97,7 +97,7 @@ public class SubjectAreaCreationService {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
         if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.SUBJECT_AREA_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         }
 
         SubjectArea subjectArea = subjectAreaOptional.get();
@@ -111,7 +111,7 @@ public class SubjectAreaCreationService {
             throws EntityCreationException {
 
         if (this.subjectAreaRepo.existsSubjectAreaByName(subjectAreaCreationRequest.getName())) {
-            throw new EntityCreationException(ErrorMessage.Administration.SUBJECT_AREA_ALREADY_EXISTS);
+            throw new EntityCreationException(ErrorMessage.SUBJECT_AREA_ALREADY_EXISTS);
         }
     }
 }

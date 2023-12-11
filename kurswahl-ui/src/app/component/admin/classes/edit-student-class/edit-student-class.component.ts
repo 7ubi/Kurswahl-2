@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, StudentClassResponse, TeacherResponses} from "../../../../app.responses";
+import {StudentClassResponse, TeacherResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -51,7 +51,7 @@ export class EditStudentClassComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/studentClass?studentClassId=${this.id}`,
+    this.httpService.put<undefined>(`/api/admin/studentClass?studentClassId=${this.id}`,
       this.getStudentClassRequest(), response =>
         this.router.navigate(['admin', 'studentClasses']));
   }

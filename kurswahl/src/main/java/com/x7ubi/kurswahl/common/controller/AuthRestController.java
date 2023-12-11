@@ -1,10 +1,9 @@
 package com.x7ubi.kurswahl.common.controller;
 
+import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.models.SecurityUser;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
@@ -12,6 +11,7 @@ import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
 import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
 import com.x7ubi.kurswahl.common.request.LoginRequest;
+import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.response.JwtResponse;
 import com.x7ubi.kurswahl.common.response.Role;
 import com.x7ubi.kurswahl.common.service.ChangePasswordService;
@@ -93,10 +93,10 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.OK).body(jwtResponse);
         } catch (BadCredentialsException e) {
             logger.error(String.valueOf(e));
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessage.Common.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessage.UNAUTHORIZED);
         } catch (Exception e) {
             logger.error(String.valueOf(e));
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,7 +121,7 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -139,7 +139,7 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.Common.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ResultResponse, SubjectAreaResponse} from "../../../../app.responses";
+import {SubjectAreaResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-subject-area',
@@ -39,7 +39,7 @@ export class EditSubjectAreaComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/subjectArea?subjectAreaId=${this.id}`,
+    this.httpService.put<undefined>(`/api/admin/subjectArea?subjectAreaId=${this.id}`,
       this.getCreateSubjectAreaRequest(), response => {
         this.router.navigate(['admin', 'subjectAreas']);
       });

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ResultResponse, StudentResponse, StudentResponses} from "../../../../app.responses";
+import {StudentResponse, StudentResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -45,7 +45,7 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   deleteStudent(studentId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/student?studentId=${studentId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/student?studentId=${studentId}`, response => {
       this.loadStudents();
       this.snackBar.open('Schüler wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
@@ -60,7 +60,7 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   resetPassword(userId: number) {
-    this.httpService.put<ResultResponse>('api/auth/resetPassword', {userId: userId}, response => {
+    this.httpService.put<undefined>('api/auth/resetPassword', {userId: userId}, response => {
       this.snackBar.open('Passwort wurde zurück gesetzt.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ResultResponse, StudentClassResponse, StudentClassResponses} from "../../../../app.responses";
+import {StudentClassResponse, StudentClassResponses} from "../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../service/http.service";
@@ -52,7 +52,7 @@ export class ShowStudentClassesComponent implements OnInit {
   }
 
   deleteStudentClass(studentClassId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/studentClass?studentClassId=${studentClassId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/studentClass?studentClassId=${studentClassId}`, response => {
       this.loadStudentClasses();
       this.snackBar.open('Klasse wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",

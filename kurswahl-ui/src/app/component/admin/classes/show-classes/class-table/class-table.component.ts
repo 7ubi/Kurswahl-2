@@ -1,5 +1,5 @@
 import {Component, Input, numberAttribute} from '@angular/core';
-import {ClassResponse, ClassResponses, ResultResponse} from "../../../../../app.responses";
+import {ClassResponse, ClassResponses} from "../../../../../app.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
@@ -48,7 +48,7 @@ export class ClassTableComponent {
   }
 
   deleteClass(classId: number) {
-    this.httpService.delete<ResultResponse>(`api/admin/class?classId=${classId}`, response => {
+    this.httpService.delete<undefined>(`api/admin/class?classId=${classId}`, response => {
       this.loadClasses();
       this.snackBar.open('Kurs wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",

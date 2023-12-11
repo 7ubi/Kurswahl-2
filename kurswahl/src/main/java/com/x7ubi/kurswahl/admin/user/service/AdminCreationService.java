@@ -64,7 +64,7 @@ public class AdminCreationService {
         Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
         if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
         }
 
         Admin admin = adminOptional.get();
@@ -79,7 +79,7 @@ public class AdminCreationService {
         Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
         if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
         }
 
         Admin admin = adminOptional.get();
@@ -95,7 +95,7 @@ public class AdminCreationService {
         Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
         if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.ADMIN_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
         }
 
         Admin admin = adminOptional.get();

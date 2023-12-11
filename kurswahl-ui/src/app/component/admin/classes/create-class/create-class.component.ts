@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, SubjectResponses, TapeResponses, TeacherResponses} from "../../../../app.responses";
+import {SubjectResponses, TapeResponses, TeacherResponses} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -47,7 +47,7 @@ export class CreateClassComponent {
       return;
     }
 
-    this.httpService.post<ResultResponse>('/api/admin/class', this.getCreateClassRequest(), response => {
+    this.httpService.post<undefined>('/api/admin/class', this.getCreateClassRequest(), response => {
       this.router.navigate(['admin', 'classes']);
     });
   }

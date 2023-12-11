@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ResultResponse, SubjectAreaResponses, SubjectResponse} from "../../../../app.responses";
+import {SubjectAreaResponses, SubjectResponse} from "../../../../app.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -48,7 +48,7 @@ export class EditSubjectComponent {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/subject?subjectId=${this.id}`, this.getCreateSubjectRequest(),
+    this.httpService.put<undefined>(`/api/admin/subject?subjectId=${this.id}`, this.getCreateSubjectRequest(),
       response => this.router.navigate(['admin', 'subjects']));
   }
 

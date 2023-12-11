@@ -36,7 +36,7 @@ public class LessonCreationService {
         Optional<Tape> tapeOptional = tapeRepo.findTapeByTapeId(lessonCreationRequest.getTapeId());
 
         if (tapeOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.TAPE_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
         }
 
         Tape tape = tapeOptional.get();
@@ -57,7 +57,7 @@ public class LessonCreationService {
         Optional<Lesson> lessonOptional = this.lessonRepo.findLessonByLessonId(lessonId);
 
         if (lessonOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.Administration.LESSON_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessage.LESSON_NOT_FOUND);
         }
 
         Lesson lesson = lessonOptional.get();
@@ -71,7 +71,7 @@ public class LessonCreationService {
     private void isLessonAvailable(LessonCreationRequest lessonCreationRequest, Tape tape) throws EntityCreationException {
         if (lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(lessonCreationRequest.getDay(),
                 lessonCreationRequest.getHour(), tape.getYear(), tape.getReleaseYear())) {
-            throw new EntityCreationException(ErrorMessage.Administration.LESSON_NOT_AVAILABLE);
+            throw new EntityCreationException(ErrorMessage.LESSON_NOT_AVAILABLE);
         }
     }
 }

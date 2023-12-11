@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ResultResponse, TeacherResponse} from "../../../../app.responses";
+import {TeacherResponse} from "../../../../app.responses";
 
 @Component({
   selector: 'app-edit-teacher',
@@ -44,7 +44,7 @@ export class EditTeacherComponent implements OnInit {
       return;
     }
 
-    this.httpService.put<ResultResponse>(`/api/admin/teacher?teacherId=${this.id}`, this.getCreateTeacherRequest(), response => {
+    this.httpService.put<undefined>(`/api/admin/teacher?teacherId=${this.id}`, this.getCreateTeacherRequest(), response => {
       this.router.navigate(['admin', 'teachers']);
     });
   }
