@@ -61,10 +61,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "kurswahl-ui:build:production"
+              "buildTarget": "kurswahl-ui:build:production"
             },
             "development": {
-              "browserTarget": "kurswahl-ui:build:development",
+              "buildTarget": "kurswahl-ui:build:development",
               "proxyConfig": "src/proxy.conf.json"
             }
           },
@@ -73,7 +73,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "kurswahl-ui:build"
+            "buildTarget": "kurswahl-ui:build"
           }
         },
         "test": {
