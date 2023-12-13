@@ -1,8 +1,9 @@
-package com.x7ubi.kurswahl.common.mapper;
+package com.x7ubi.kurswahl.admin.classes.mapper;
 
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
+import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.Class;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

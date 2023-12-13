@@ -35,6 +35,7 @@ import {EditClassComponent} from "./component/admin/classes/edit-class/edit-clas
 import {ShowLessonsComponent} from "./component/admin/classes/show-lessons/show-lessons.component";
 import {HomePageComponent} from "./component/student/home-page/home-page.component";
 import {StudentRequired} from "./student-required";
+import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
 
 const routes: Routes = [
   {
@@ -175,7 +176,12 @@ const routes: Routes = [
     path: 'student',
     component: HomePageComponent,
     canActivate: mapToCanActivate([LoginRequired, StudentRequired])
-  }
+  },
+  {
+    path: 'student/choice/:choiceNumber',
+    component: MakeChoiceComponent,
+    canActivate: mapToCanActivate([LoginRequired, StudentRequired])
+  },
 ];
 
 @NgModule({

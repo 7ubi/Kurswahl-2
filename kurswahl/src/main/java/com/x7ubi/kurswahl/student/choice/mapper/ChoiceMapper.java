@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.mapper;
+package com.x7ubi.kurswahl.student.choice.mapper;
 
 import com.x7ubi.kurswahl.common.models.Choice;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;

@@ -1,11 +1,11 @@
 package com.x7ubi.kurswahl.admin.user.service;
 
+import com.x7ubi.kurswahl.admin.user.mapper.AdminMapper;
 import com.x7ubi.kurswahl.admin.user.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.mapper.AdminMapper;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;

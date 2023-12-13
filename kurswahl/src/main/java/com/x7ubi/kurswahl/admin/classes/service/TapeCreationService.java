@@ -1,12 +1,12 @@
 package com.x7ubi.kurswahl.admin.classes.service;
 
+import com.x7ubi.kurswahl.admin.classes.mapper.TapeMapper;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.mapper.TapeMapper;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Tape;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
