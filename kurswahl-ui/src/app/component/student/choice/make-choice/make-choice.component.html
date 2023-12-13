@@ -12,7 +12,7 @@
       <ng-container matColumnDef="Montag">
         <th mat-header-cell *matHeaderCellDef> Montag</th>
         <td mat-cell class="{{ getClassForCell(0, element.hour, element.monday) }}"
-            (click)="selectLesson(0, element.hour)" *matCellDef="let element">
+            (click)="selectTape(element.monday)" *matCellDef="let element">
           {{element.monday?.name}}
         </td>
       </ng-container>
@@ -20,7 +20,7 @@
       <ng-container matColumnDef="Dienstag">
         <th mat-header-cell *matHeaderCellDef> Dienstag</th>
         <td mat-cell class="{{ getClassForCell(1, element.hour, element.tuesday) }}"
-            (click)="selectLesson(1, element.hour)" *matCellDef="let element">
+            (click)="selectTape(element.tuesday)" *matCellDef="let element">
           {{element.tuesday?.name}}
         </td>
       </ng-container>
@@ -28,7 +28,7 @@
       <ng-container matColumnDef="Mittwoch">
         <th mat-header-cell *matHeaderCellDef> Mittwoch</th>
         <td mat-cell class="{{ getClassForCell(2, element.hour, element.wednesday) }}"
-            (click)="selectLesson(2, element.hour)" *matCellDef="let element">
+            (click)="selectTape(element.wednesday)" *matCellDef="let element">
           {{element.wednesday?.name}}
         </td>
       </ng-container>
@@ -36,7 +36,7 @@
       <ng-container matColumnDef="Donnerstag">
         <th mat-header-cell *matHeaderCellDef> Donnerstag</th>
         <td mat-cell class="{{ getClassForCell(3, element.hour, element.thursday) }}"
-            (click)="selectLesson(3, element.hour)" *matCellDef="let element">
+            (click)="selectTape(element.thursday)" *matCellDef="let element">
           {{element.thursday?.name}}
         </td>
       </ng-container>
@@ -44,7 +44,7 @@
       <ng-container matColumnDef="Freitag">
         <th mat-header-cell *matHeaderCellDef> Freitag</th>
         <td mat-cell class="{{ getClassForCell(4, element.hour, element.friday) }}"
-            (click)="selectLesson(4, element.hour)" *matCellDef="let element">
+            (click)="selectTape(element.friday)" *matCellDef="let element">
           {{element.friday?.name}}
         </td>
       </ng-container>
@@ -52,5 +52,20 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
+    <div class="classes-tables">
+      <div class="classes-table">
+        <table mat-table [dataSource]="dataSourceClasses!" class="mat-elevation-z8">
+
+          <ng-container matColumnDef="Kurse">
+            <th mat-header-cell *matHeaderCellDef> Kurse</th>
+            <td mat-cell class="day" *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsClasses"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsClasses"></tr>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

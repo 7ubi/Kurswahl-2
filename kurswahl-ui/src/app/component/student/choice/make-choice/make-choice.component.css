@@ -3,12 +3,17 @@
 }
 
 .selected-tape {
+  transition: all 0.1s ease;
   background-color: #3f51b5;
   color: whitesmoke;
 }
 
 .taken {
   background-color: #e0e0e0;
+}
+
+.day {
+  transition: all 0.1s ease;
 }
 
 .day:hover {
@@ -19,4 +24,14 @@
 .selected {
   background-color: #f44336;
   color: whitesmoke;
+}
+
+.classes-tables {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.classes-table {
+  width: 30%;
 }
