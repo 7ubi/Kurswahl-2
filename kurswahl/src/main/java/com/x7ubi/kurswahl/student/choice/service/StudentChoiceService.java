@@ -13,7 +13,7 @@ import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
-import com.x7ubi.kurswahl.student.choice.response.TapeResponse;
+import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -92,7 +92,7 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public List<TapeResponse> getTapesForChoice(String username) throws EntityNotFoundException {
+    public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
         Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
         if (studentOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);

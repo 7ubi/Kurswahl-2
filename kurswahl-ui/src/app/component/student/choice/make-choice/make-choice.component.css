@@ -1,0 +1,22 @@
+.mat-column-Stunde {
+  width: 32px;
+}
+
+.selected-tape {
+  background-color: #3f51b5;
+  color: whitesmoke;
+}
+
+.taken {
+  background-color: #e0e0e0;
+}
+
+.day:hover {
+  filter: brightness(70%);
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #f44336;
+  color: whitesmoke;
+}

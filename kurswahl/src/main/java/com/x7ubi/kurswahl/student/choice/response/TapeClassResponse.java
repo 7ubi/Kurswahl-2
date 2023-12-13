@@ -2,7 +2,7 @@ package com.x7ubi.kurswahl.student.choice.response;
 
 import java.util.List;
 
-public class TapeResponse {
+public class TapeClassResponse {
 
     private Long tapeId;
 

@@ -5,7 +5,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
-import com.x7ubi.kurswahl.student.choice.response.TapeResponse;
+import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class StudentChoiceController {
         try {
             String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
 
-            List<TapeResponse> responses = this.studentChoiceService.getTapesForChoice(username);
+            List<TapeClassResponse> responses = this.studentChoiceService.getTapesForChoice(username);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (Exception e) {
             logger.error(e.getMessage());
