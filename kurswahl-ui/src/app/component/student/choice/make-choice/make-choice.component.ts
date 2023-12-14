@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ClassResponse, TapeClassResponse} from "../../stundet.responses";
-import {LessonTable} from "../../home-page/lesson-table";
+import {ChoiceResponse, TapeClassResponse} from "../../stundet.responses";
+import {LessonForTable, LessonTable} from "../../home-page/lesson-table";
 
 @Component({
   selector: 'app-make-choice',
@@ -19,10 +19,9 @@ export class MakeChoiceComponent implements OnInit {
   dataSource!: MatTableDataSource<LessonTable>;
   displayedColumns: string[];
   tapeClassResponses!: TapeClassResponse[];
+  choiceResponse!: ChoiceResponse;
 
   selectedTape?: TapeClassResponse;
-  displayedColumnsClasses: string[];
-  dataSourceClasses!: MatTableDataSource<ClassResponse>;
 
   constructor(
     private httpService: HttpService,
@@ -36,14 +35,19 @@ export class MakeChoiceComponent implements OnInit {
     }
 
     this.displayedColumns = ['Stunde', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
-
-    this.displayedColumnsClasses = ['Kurse']
   }
 
   ngOnInit(): void {
-    this.httpService.get<TapeClassResponse[]>(`/api/student/choice`, response => {
+    this.httpService.get<TapeClassResponse[]>(`/api/student/tapeChoice`, response => {
       this.tapeClassResponses = response;
       this.generateTable();
+    });
+  }
+
+  private loadChoice() {
+    this.httpService.get<ChoiceResponse>(`/api/student/choice?${this.choiceNumber}`, response => {
+      this.choiceResponse = response;
+      this.updateTable();
     });
   }
 
@@ -51,11 +55,11 @@ export class MakeChoiceComponent implements OnInit {
     for (let i = 1; i <= this.maxHours; i++) {
       let lesson: LessonTable = {
         hour: i,
-        monday: null,
-        tuesday: null,
-        wednesday: null,
-        thursday: null,
-        friday: null,
+        monday: new LessonForTable(),
+        tuesday: new LessonForTable(),
+        wednesday: new LessonForTable(),
+        thursday: new LessonForTable(),
+        friday: new LessonForTable(),
       };
       this.lessons.push(lesson)
     }
@@ -64,25 +68,31 @@ export class MakeChoiceComponent implements OnInit {
       tape.lessonResponses.forEach(lesson => {
         switch (lesson.day) {
           case 0:
-            this.lessons[lesson.hour].monday = tape;
+            this.lessons[lesson.hour].monday.tapeClass = tape;
             break;
           case 1:
-            this.lessons[lesson.hour].tuesday = tape;
+            this.lessons[lesson.hour].tuesday.tapeClass = tape;
             break;
           case 2:
-            this.lessons[lesson.hour].wednesday = tape;
+            this.lessons[lesson.hour].wednesday.tapeClass = tape;
             break;
           case 3:
-            this.lessons[lesson.hour].thursday = tape;
+            this.lessons[lesson.hour].thursday.tapeClass = tape;
             break;
           case 4:
-            this.lessons[lesson.hour].friday = tape;
+            this.lessons[lesson.hour].friday.tapeClass = tape;
             break;
         }
       });
     });
 
     this.dataSource = new MatTableDataSource(this.lessons);
+  }
+
+  private updateTable() {
+    this.lessons.forEach(lesson => {
+    });
+
   }
 
   getClassForCell(day: number, hour: number, element?: TapeClassResponse): string {
@@ -103,7 +113,6 @@ export class MakeChoiceComponent implements OnInit {
       this.selectedTape = undefined;
     } else {
       this.selectedTape = tapeClass;
-      this.dataSourceClasses = new MatTableDataSource(this.selectedTape.classResponses);
     }
   }
 }

@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
+import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.slf4j.Logger;
@@ -51,6 +52,25 @@ public class StudentChoiceController {
     }
 
     @GetMapping("/choice")
+    @StudentRequired
+    public ResponseEntity<?> getChoice(@RequestHeader("Authorization") String authorization,
+                                       @RequestParam Integer choiceNumber) {
+
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+
+            ChoiceResponse response = this.studentChoiceService.getChoice(username, choiceNumber);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/tapeChoice")
     @StudentRequired
     public ResponseEntity<?> getTapesForChoice(@RequestHeader("Authorization") String authorization) {
         logger.info("Getting choice");

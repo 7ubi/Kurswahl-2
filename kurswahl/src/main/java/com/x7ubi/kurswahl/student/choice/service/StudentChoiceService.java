@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
+import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,5 +104,25 @@ public class StudentChoiceService {
                 Year.now().getValue()).get();
 
         return this.tapeClassMapper.tapesToTapeResponses(tapes);
+    }
+
+    public ChoiceResponse getChoice(String username, Integer choiceNumber) throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+        Student student = studentOptional.get();
+
+
+        Optional<Choice> choiceOptional = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
+                choiceNumber, student.getStudentId(), Year.now().getValue());
+
+        if (choiceOptional.isEmpty()) {
+            return new ChoiceResponse();
+        }
+
+        Choice choice = choiceOptional.get();
+
+        return this.choiceMapper.choiceToChoiceResponse(choice);
     }
 }

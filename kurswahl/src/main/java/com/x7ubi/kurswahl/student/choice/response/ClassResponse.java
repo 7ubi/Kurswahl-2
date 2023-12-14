@@ -5,6 +5,8 @@ public class ClassResponse {
 
     private String name;
 
+    private TeacherResponse teacherResponse;
+
     public Long getClassId() {
         return classId;
     }
@@ -19,5 +21,13 @@ public class ClassResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TeacherResponse getTeacherResponse() {
+        return teacherResponse;
+    }
+
+    public void setTeacherResponse(TeacherResponse teacherResponse) {
+        this.teacherResponse = teacherResponse;
     }
 }

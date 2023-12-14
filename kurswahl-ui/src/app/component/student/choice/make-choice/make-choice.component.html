@@ -55,16 +55,9 @@
 
     <div class="classes-tables">
       <div class="classes-table">
-        <table mat-table [dataSource]="dataSourceClasses!" class="mat-elevation-z8">
-
-          <ng-container matColumnDef="Kurse">
-            <th mat-header-cell *matHeaderCellDef> Kurse</th>
-            <td mat-cell class="day" *matCellDef="let element"> {{element.name}} </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsClasses"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsClasses"></tr>
-        </table>
+        <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : ''}}</div>
+        <div class="class selectable" *ngFor="let c of selectedTape?.classResponses">{{c.name}}
+          - {{c.teacherResponse.abbreviation}}</div>
       </div>
     </div>
   </div>

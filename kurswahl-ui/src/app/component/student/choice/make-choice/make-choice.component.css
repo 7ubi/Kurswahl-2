@@ -12,7 +12,7 @@
   background-color: #e0e0e0;
 }
 
-.day {
+.day .class {
   transition: all 0.1s ease;
 }
 
@@ -29,9 +29,31 @@
 .classes-tables {
   margin-top: 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  background-color: white;
+  padding: 15px;
 }
 
 .classes-table {
   width: 30%;
+}
+
+.class {
+  font-size: 14px;
+  width: 100%;
+  padding: 16px;
+  font-family: Roboto, sans-serif;
+}
+
+.class.header {
+  background-color: #e0e0e0;
+}
+
+.class.selectable {
+  background-color: #f7f7f7;
+}
+
+.class.selectable:hover {
+  filter: brightness(95%);
+  cursor: pointer;
 }

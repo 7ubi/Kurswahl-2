@@ -1,6 +1,8 @@
 package com.x7ubi.kurswahl.student.choice.mapper;
 
+import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Tape;
+import com.x7ubi.kurswahl.student.choice.response.ClassResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,4 +21,7 @@ public interface TapeClassMapper {
     @Mapping(source = "aClass", target = "classResponses")
     @Mapping(source = "lessons", target = "lessonResponses")
     TapeClassResponse tapeToTapeResponse(Tape tape);
+
+    @Mapping(source = "teacher", target = "teacherResponse")
+    ClassResponse classToClassResponse(Class aclass);
 }
