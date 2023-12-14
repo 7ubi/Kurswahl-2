@@ -5,7 +5,7 @@ import java.util.List;
 public class ChoiceResponse {
     private Integer choiceNumber;
 
-    private List<ClassResponse> classResponses;
+    private List<ClassChoiceResponse> classChoiceResponses;
 
     public Integer getChoiceNumber() {
         return choiceNumber;
@@ -15,11 +15,11 @@ public class ChoiceResponse {
         this.choiceNumber = choiceNumber;
     }
 
-    public List<ClassResponse> getClassResponses() {
-        return classResponses;
+    public List<ClassChoiceResponse> getClassChoiceResponses() {
+        return classChoiceResponses;
     }
 
-    public void setClassResponses(List<ClassResponse> classResponses) {
-        this.classResponses = classResponses;
+    public void setClassChoiceResponses(List<ClassChoiceResponse> classChoiceResponses) {
+        this.classChoiceResponses = classChoiceResponses;
     }
 }

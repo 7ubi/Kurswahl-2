@@ -7,7 +7,13 @@ export interface TapeClassResponse {
 
 export interface ChoiceResponse {
   readonly choiceNumber: number;
-  readonly classResponses: ClassResponse[];
+  readonly classChoiceResponses: ClassChoiceResponse[];
+}
+
+export interface ClassChoiceResponse {
+  readonly classId: number;
+  readonly name: string;
+  readonly tapeId: number;
 }
 
 export interface ClassResponse {
