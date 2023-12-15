@@ -52,6 +52,7 @@ export class MakeChoiceComponent implements OnInit {
   }
 
   private generateTable() {
+    this.lessons = [];
     for (let i = 1; i <= this.maxHours; i++) {
       let lesson: LessonTable = {
         hour: i,
