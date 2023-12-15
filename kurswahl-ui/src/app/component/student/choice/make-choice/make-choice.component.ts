@@ -98,11 +98,22 @@ export class MakeChoiceComponent implements OnInit {
   }
 
   selectTape(tapeClass: TapeClassResponse | null) {
-    console.log(tapeClass);
     if (null === tapeClass || tapeClass === this.selectedTape) {
       this.selectedTape = undefined;
     } else {
       this.selectedTape = tapeClass;
+    }
+  }
+
+  alterChoice(classId: number) {
+    this.httpService.put<undefined>('/api/student/choice', this.getAlterChoiceRequest(classId),
+        response => this.loadChoice());
+  }
+
+  getAlterChoiceRequest(classId: number) {
+    return {
+      choiceNumber: this.choiceNumber,
+      classId: classId
     }
   }
 }

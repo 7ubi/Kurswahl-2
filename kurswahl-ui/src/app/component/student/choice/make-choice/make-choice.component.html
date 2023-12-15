@@ -56,8 +56,12 @@
     <div class="classes-tables">
       <div class="classes-table">
         <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : ''}}</div>
-        <div class="class selectable" *ngFor="let c of selectedTape?.classResponses">{{c.name}}
-          - {{c.teacherResponse.abbreviation}}</div>
+        <div
+          class="class selectable"
+          (click)="alterChoice(c.classId)"
+          *ngFor="let c of selectedTape?.classResponses">
+          {{c.name}} - {{c.teacherResponse.abbreviation}}
+        </div>
       </div>
     </div>
   </div>
