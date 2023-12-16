@@ -73,6 +73,11 @@
   background-color: #f7f7f7;
 }
 
+.class.selectable.taken {
+  background-color: #3f51b5;
+  color: whitesmoke;
+}
+
 .class.selectable:hover {
   filter: brightness(95%);
   cursor: pointer;

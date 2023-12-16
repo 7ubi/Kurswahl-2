@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ChoiceResponse, TapeClassResponse} from "../../stundet.responses";
+import {ChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
 
 @Component({
@@ -119,5 +119,13 @@ export class MakeChoiceComponent implements OnInit {
       choiceNumber: this.choiceNumber,
       classId: classId
     }
+  }
+
+  getClassForSelectClass(classResponse: ClassResponse): string {
+    if (this.choiceResponse.classChoiceResponses.filter(c => c.classId === classResponse.classId).length > 0) {
+      return 'taken';
+    }
+
+    return '';
   }
 }
