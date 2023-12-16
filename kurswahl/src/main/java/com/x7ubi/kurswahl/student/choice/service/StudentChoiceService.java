@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -84,6 +85,33 @@ public class StudentChoiceService {
 
             choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                     alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
+        }
+
+        setClassToChoice(choice, aClass);
+    }
+
+    private void setClassToChoice(Choice choice, Class aClass) {
+        Optional<Class> classWithTapeOptional = choice.getClasses().stream().filter(c ->
+                Objects.equals(c.getTape().getTapeId(), aClass.getTape().getTapeId())).findFirst();
+
+        if (classWithTapeOptional.isPresent()) {
+            Class classWithTape = classWithTapeOptional.get();
+            choice.getClasses().remove(classWithTape);
+            classWithTape.getChoices().remove(choice);
+
+            this.classRepo.save(classWithTape);
+        }
+
+        Optional<Class> classWithSubjectOptional = choice.getClasses().stream().filter(c ->
+                Objects.equals(c.getSubject().getSubjectId(), aClass.getSubject().getSubjectId())).findFirst();
+
+
+        if (classWithSubjectOptional.isPresent()) {
+            Class classWithSubject = classWithSubjectOptional.get();
+            choice.getClasses().remove(classWithSubject);
+            classWithSubject.getChoices().remove(choice);
+
+            this.classRepo.save(classWithSubject);
         }
 
         choice.getClasses().add(aClass);

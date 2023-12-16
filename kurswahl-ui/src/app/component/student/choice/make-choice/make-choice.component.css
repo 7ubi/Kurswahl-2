@@ -1,5 +1,25 @@
 .mat-column-Stunde {
-  width: 32px;
+  width: 5%;
+}
+
+.mat-column-Montag {
+  width: 19%;
+}
+
+.mat-column-Dienstag {
+  width: 19%;
+}
+
+.mat-column-Mittwoch {
+  width: 19%;
+}
+
+.mat-column-Donnerstag {
+  width: 19%;
+}
+
+.mat-column-Freitag {
+  width: 19%;
 }
 
 .selected-tape {
@@ -8,7 +28,7 @@
   color: whitesmoke;
 }
 
-.taken {
+.choose {
   background-color: #e0e0e0;
 }
 
@@ -21,7 +41,7 @@
   cursor: pointer;
 }
 
-.selected {
+.taken {
   background-color: #f44336;
   color: whitesmoke;
 }

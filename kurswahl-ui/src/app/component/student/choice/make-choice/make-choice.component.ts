@@ -86,13 +86,16 @@ export class MakeChoiceComponent implements OnInit {
     });
   }
 
-  getClassForCell(element?: TapeClassResponse): string {
+  getClassForCell(element?: LessonForTable): string {
     let elementClass: string = 'day';
 
-    if (element && element == this.selectedTape) {
+
+    if (element?.tapeClass && element.tapeClass === this.selectedTape) {
       elementClass += ' selected-tape'
-    } else if (element) {
+    } else if (element?.choice) {
       elementClass += ' taken';
+    } else if (element?.tapeClass) {
+      elementClass += ' choose';
     }
 
     return elementClass;
