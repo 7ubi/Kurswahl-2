@@ -1,17 +1,14 @@
 package com.x7ubi.kurswahl.admin.user.service;
 
+import com.x7ubi.kurswahl.admin.user.mapper.StudentMapper;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.mapper.StudentMapper;
-import com.x7ubi.kurswahl.common.models.Student;
-import com.x7ubi.kurswahl.common.models.StudentClass;
-import com.x7ubi.kurswahl.common.models.User;
-import com.x7ubi.kurswahl.common.repository.StudentClassRepo;
-import com.x7ubi.kurswahl.common.repository.StudentRepo;
-import com.x7ubi.kurswahl.common.repository.UserRepo;
+import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +32,10 @@ public class StudentCreationService {
 
     private final StudentClassRepo studentClassRepo;
 
+    private final ChoiceRepo choiceRepo;
+
+    private final ClassRepo classRepo;
+
     private final PasswordEncoder passwordEncoder;
 
     private final UsernameService usernameService;
@@ -41,11 +43,13 @@ public class StudentCreationService {
     private final StudentMapper studentMapper;
 
     protected StudentCreationService(StudentRepo studentRepo, UserRepo userRepo, StudentClassRepo studentClassRepo,
-                                     PasswordEncoder passwordEncoder, UsernameService usernameService,
-                                     StudentMapper studentMapper) {
+                                     ChoiceRepo choiceRepo, ClassRepo classRepo, PasswordEncoder passwordEncoder,
+                                     UsernameService usernameService, StudentMapper studentMapper) {
         this.studentRepo = studentRepo;
         this.userRepo = userRepo;
         this.studentClassRepo = studentClassRepo;
+        this.choiceRepo = choiceRepo;
+        this.classRepo = classRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
         this.studentMapper = studentMapper;
@@ -150,6 +154,17 @@ public class StudentCreationService {
         if (null != student.getStudentClass()) {
             student.getStudentClass().getStudents().remove(student);
             this.studentClassRepo.save(student.getStudentClass());
+        }
+
+        List<Choice> choices = new ArrayList<>(student.getChoices());
+        student.getChoices().clear();
+
+        for (Choice choice : choices) {
+            for (Class c : choice.getClasses()) {
+                c.getChoices().remove(choice);
+                this.classRepo.save(c);
+            }
+            this.choiceRepo.delete(choice);
         }
 
         logger.info(String.format("Deleted Student %s", studentUser.getUsername()));

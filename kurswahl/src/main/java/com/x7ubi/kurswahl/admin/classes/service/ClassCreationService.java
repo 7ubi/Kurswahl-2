@@ -1,25 +1,21 @@
 package com.x7ubi.kurswahl.admin.classes.service;
 
+import com.x7ubi.kurswahl.admin.classes.mapper.ClassMapper;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.mapper.ClassMapper;
 import com.x7ubi.kurswahl.common.models.Class;
-import com.x7ubi.kurswahl.common.models.Subject;
-import com.x7ubi.kurswahl.common.models.Tape;
-import com.x7ubi.kurswahl.common.models.Teacher;
-import com.x7ubi.kurswahl.common.repository.ClassRepo;
-import com.x7ubi.kurswahl.common.repository.SubjectRepo;
-import com.x7ubi.kurswahl.common.repository.TapeRepo;
-import com.x7ubi.kurswahl.common.repository.TeacherRepo;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,14 +32,17 @@ public class ClassCreationService {
 
     private final SubjectRepo subjectRepo;
 
+    private final ChoiceRepo choiceRepo;
+
     private final ClassMapper classMapper;
 
     public ClassCreationService(ClassRepo classRepo, TapeRepo tapeRepo, TeacherRepo teacherRepo,
-                                SubjectRepo subjectRepo, ClassMapper classMapper) {
+                                SubjectRepo subjectRepo, ChoiceRepo choiceRepo, ClassMapper classMapper) {
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
         this.teacherRepo = teacherRepo;
         this.subjectRepo = subjectRepo;
+        this.choiceRepo = choiceRepo;
         this.classMapper = classMapper;
     }
 
@@ -182,6 +181,13 @@ public class ClassCreationService {
 
         aclass.getTape().getaClass().remove(aclass);
         this.tapeRepo.save(aclass.getTape());
+
+        List<Choice> choices = new ArrayList<>(aclass.getChoices());
+
+        for (Choice choice : choices) {
+            choice.getClasses().remove(aclass);
+            this.choiceRepo.save(choice);
+        }
 
         this.classRepo.delete(aclass);
         logger.info(String.format("Deleted class %s", aclass.getName()));

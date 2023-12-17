@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.mapper;
+package com.x7ubi.kurswahl.admin.classes.mapper;
 
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.LessonResponse;

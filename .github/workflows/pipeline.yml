@@ -21,7 +21,7 @@ jobs:
       - name: Build and Test with Maven
         run: mvn -B package --file kurswahl/pom.xml jacoco:prepare-agent jacoco:report
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: CompiledProject
           path: .
@@ -32,7 +32,7 @@ jobs:
       - build
     steps:
       - name: Checkout compiled artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v3
         with:
           name: CompiledProject
           path: .

@@ -58,6 +58,7 @@ import {ShowLessonsComponent} from './component/admin/classes/show-lessons/show-
 import {MatChipsModule} from "@angular/material/chips";
 import {HomePageComponent} from './component/student/home-page/home-page.component';
 import {StudentRequired} from "./student-required";
+import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
 
 @NgModule({
   declarations: [
@@ -87,13 +88,14 @@ import {StudentRequired} from "./student-required";
     ShowTapesComponent,
     CreateTapeComponent,
     EditTapeComponent,
-      TapeTableComponent,
-      ShowClassesComponent,
-      ClassTableComponent,
+    TapeTableComponent,
+    ShowClassesComponent,
+    ClassTableComponent,
     CreateClassComponent,
     EditClassComponent,
     ShowLessonsComponent,
-    HomePageComponent
+    HomePageComponent,
+    MakeChoiceComponent
   ],
   imports: [
     BrowserModule,
@@ -116,6 +118,9 @@ import {StudentRequired} from "./student-required";
     MatChipsModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
+  exports: [
+    HeroComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
