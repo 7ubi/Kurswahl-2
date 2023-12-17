@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {ChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
@@ -28,6 +28,15 @@ export class MakeChoiceComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    router.events.subscribe(event => {
+      if (event instanceof ActivationEnd) {
+        this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
+        if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
+          this.router.navigate(['student']);
+        }
+        this.loadTapes();
+      }
+    });
     this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
 
     if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
@@ -38,6 +47,10 @@ export class MakeChoiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadTapes();
+  }
+
+  private loadTapes() {
     this.httpService.get<TapeClassResponse[]>(`/api/student/tapeChoice`, response => {
       this.tapeClassResponses = response;
       this.loadChoice();
@@ -127,5 +140,20 @@ export class MakeChoiceComponent implements OnInit {
     }
 
     return '';
+  }
+
+  nextStep() {
+    if (this.choiceNumber! === 1) {
+      this.router.navigate(['student', 'choice', 2]);
+      //this.choiceNumber = 2;
+      //this.loadTapes();
+    }
+  }
+
+  getNextStepText(): string {
+    if (this.choiceNumber! === 1) {
+      return "Zur zweit Wahl"
+    }
+    return "Wahl beenden";
   }
 }
