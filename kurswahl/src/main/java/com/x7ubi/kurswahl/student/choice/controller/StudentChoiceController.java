@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.student.choice.controller;
 
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
@@ -42,6 +43,9 @@ public class StudentChoiceController {
 
             this.studentChoiceService.alterChoice(username, alterStudentChoiceRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (UnauthorizedException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

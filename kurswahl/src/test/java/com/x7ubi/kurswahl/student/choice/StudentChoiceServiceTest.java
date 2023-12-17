@@ -3,6 +3,7 @@ package com.x7ubi.kurswahl.student.choice;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
@@ -205,7 +206,7 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testAlterChoice() throws EntityNotFoundException {
+    public void testAlterChoice() throws EntityNotFoundException, UnauthorizedException {
         // Given
         choice = new Choice();
         choice.setChoiceNumber(1);
@@ -239,7 +240,7 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testAlterChoiceNewChoice() throws EntityNotFoundException {
+    public void testAlterChoiceNewChoice() throws EntityNotFoundException, UnauthorizedException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         aClass = this.classRepo.findClassByName("test").get();
@@ -264,7 +265,7 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testAlterChoiceSameTape() throws EntityNotFoundException {
+    public void testAlterChoiceSameTape() throws EntityNotFoundException, UnauthorizedException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         setupClasses(this.bClass, "test 2", this.tape, this.teacher, this.subjectOther);
@@ -295,7 +296,7 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testAlterChoiceSameSubject() throws EntityNotFoundException {
+    public void testAlterChoiceSameSubject() throws EntityNotFoundException, UnauthorizedException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         setupClasses(this.bClass, "test 2", this.otherTape, this.teacher, this.subject);
@@ -360,6 +361,26 @@ public class StudentChoiceServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_FOUND);
+
+        Assertions.assertTrue(this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
+                1, student.getStudentId(), Year.now().getValue()).isEmpty());
+    }
+
+    @Test
+    public void testAlterChoiceInvalidChoiceNumber() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        AlterStudentChoiceRequest alterStudentChoiceRequest = new AlterStudentChoiceRequest();
+        alterStudentChoiceRequest.setChoiceNumber(3);
+        alterStudentChoiceRequest.setClassId(aClass.getClassId());
+
+        // When
+        UnauthorizedException unauthorizedException = Assert.assertThrows(UnauthorizedException.class, () ->
+                this.studentChoiceService.alterChoice(student.getUser().getUsername(), alterStudentChoiceRequest));
+
+        // Then
+        Assertions.assertEquals(unauthorizedException.getMessage(), ErrorMessage.INVALID_CHOICE_NUMBER);
 
         Assertions.assertTrue(this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                 1, student.getStudentId(), Year.now().getValue()).isEmpty());

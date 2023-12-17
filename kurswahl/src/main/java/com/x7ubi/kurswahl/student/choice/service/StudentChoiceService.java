@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.student.choice.service;
 
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.models.Choice;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Student;
@@ -55,7 +56,7 @@ public class StudentChoiceService {
 
     @Transactional
     public void alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, UnauthorizedException {
         Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
         if (studentOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
@@ -67,6 +68,10 @@ public class StudentChoiceService {
             throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
         }
         Class aClass = classOptional.get();
+
+        if (alterStudentChoiceRequest.getChoiceNumber() < 1 || alterStudentChoiceRequest.getChoiceNumber() > 2) {
+            throw new UnauthorizedException(ErrorMessage.INVALID_CHOICE_NUMBER);
+        }
 
         Optional<Choice> choiceOptional = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                 alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue());
