@@ -1,21 +1,22 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {ChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-make-choice',
   templateUrl: './make-choice.component.html',
   styleUrl: './make-choice.component.css'
 })
-export class MakeChoiceComponent implements OnInit {
+export class MakeChoiceComponent implements OnInit, OnDestroy {
   readonly maxChoices: number = 2;
   readonly maxHours = 15;
 
   lessons: LessonTable[] = [];
-  choiceNumber: number | null;
+  choiceNumber: number | null | undefined;
   dataSource!: MatTableDataSource<LessonTable>;
   displayedColumns: string[];
   tapeClassResponses!: TapeClassResponse[];
@@ -23,12 +24,14 @@ export class MakeChoiceComponent implements OnInit {
 
   selectedTape?: TapeClassResponse;
 
+  eventSubscription: Subscription;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute
   ) {
-    router.events.subscribe(event => {
+    this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ActivationEnd) {
         this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
         if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
@@ -37,13 +40,12 @@ export class MakeChoiceComponent implements OnInit {
         this.loadTapes();
       }
     });
-    this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
-
-    if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
-      this.router.navigate(['student']);
-    }
 
     this.displayedColumns = ['Stunde', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -91,12 +93,14 @@ export class MakeChoiceComponent implements OnInit {
 
   private updateTable() {
     this.generateTable();
-    this.lessons.forEach(lesson => {
-      this.choiceResponse.classChoiceResponses.forEach(classChoice => {
-        lesson.days.filter(l => l.tapeClass?.tapeId === classChoice.tapeId)
-          .forEach(l => l.choice = classChoice);
+    if (this.choiceResponse && this.choiceResponse.classChoiceResponses) {
+      this.lessons.forEach(lesson => {
+        this.choiceResponse.classChoiceResponses.forEach(classChoice => {
+          lesson.days.filter(l => l.tapeClass?.tapeId === classChoice.tapeId)
+            .forEach(l => l.choice = classChoice);
+        });
       });
-    });
+    }
   }
 
   getClassForCell(element?: LessonForTable): string {
@@ -118,6 +122,7 @@ export class MakeChoiceComponent implements OnInit {
     if (null === tapeClass || tapeClass === this.selectedTape) {
       this.selectedTape = undefined;
     } else {
+      console.log(tapeClass);
       this.selectedTape = tapeClass;
     }
   }
@@ -135,7 +140,9 @@ export class MakeChoiceComponent implements OnInit {
   }
 
   getClassForSelectClass(classResponse: ClassResponse): string {
-    if (this.choiceResponse.classChoiceResponses.filter(c => c.classId === classResponse.classId).length > 0) {
+    if (this.choiceResponse && this.choiceResponse.classChoiceResponses &&
+      this.choiceResponse.classChoiceResponses.filter(c =>
+        c.classId === classResponse.classId).length > 0) {
       return 'taken';
     }
 
@@ -145,8 +152,6 @@ export class MakeChoiceComponent implements OnInit {
   nextStep() {
     if (this.choiceNumber! === 1) {
       this.router.navigate(['student', 'choice', 2]);
-      //this.choiceNumber = 2;
-      //this.loadTapes();
     }
   }
 
