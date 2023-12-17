@@ -53,8 +53,9 @@ public class StudentChoiceService {
         this.tapeClassMapper = tapeClassMapper;
     }
 
-
-    public void alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest) throws EntityNotFoundException {
+    @Transactional
+    public void alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest)
+            throws EntityNotFoundException {
         Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
         if (studentOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
