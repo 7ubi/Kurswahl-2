@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ChoiceRepo extends JpaRepository<Choice, Long> {
     Optional<Choice> findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(Integer choiceNumber, Long student_studentId, Integer releaseYear);
 
+    Optional<Choice> findChoiceByChoiceId(Long choiceId);
 }

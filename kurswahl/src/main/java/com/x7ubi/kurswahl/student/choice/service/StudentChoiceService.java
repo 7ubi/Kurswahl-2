@@ -14,6 +14,7 @@ import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
+import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.slf4j.Logger;
@@ -158,5 +159,39 @@ public class StudentChoiceService {
         Choice choice = choiceOptional.get();
 
         return this.choiceMapper.choiceToChoiceResponse(choice);
+    }
+
+    public void deleteClassFromChoice(String username, DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
+            throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+        Student student = studentOptional.get();
+
+        Optional<Choice> choiceOptional
+                = this.choiceRepo.findChoiceByChoiceId(deleteClassFromChoiceRequest.getChoiceId());
+
+        if (choiceOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
+        }
+        Choice choice = choiceOptional.get();
+
+        Optional<Class> classOptional = choice.getClasses().stream().filter(c -> Objects.equals(c.getClassId(),
+                deleteClassFromChoiceRequest.getClassId())).findFirst();
+
+        if (classOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_IN_CHOICE);
+        }
+
+        Class aclass = classOptional.get();
+
+        choice.getClasses().remove(aclass);
+
+        aclass.getChoices().remove(choice);
+
+        this.choiceRepo.save(choice);
+
+        this.classRepo.save(aclass);
     }
 }

@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
+import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
@@ -65,6 +66,27 @@ public class StudentChoiceController {
 
             ChoiceResponse response = this.studentChoiceService.getChoice(username, choiceNumber);
             return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/choice")
+    @StudentRequired
+    public ResponseEntity<?> deleteClassFromChoice(@RequestHeader("Authorization") String authorization,
+                                                   @RequestBody DeleteClassFromChoiceRequest
+                                                           deleteClassFromChoiceRequest) {
+        logger.info("Deleting class from choice");
+
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+
+            this.studentChoiceService.deleteClassFromChoice(username, deleteClassFromChoiceRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
