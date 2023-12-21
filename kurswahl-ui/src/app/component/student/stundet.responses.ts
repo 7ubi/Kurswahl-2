@@ -6,6 +6,7 @@ export interface TapeClassResponse {
 }
 
 export interface ChoiceResponse {
+  readonly choiceId: number;
   readonly choiceNumber: number;
   readonly classChoiceResponses: ClassChoiceResponse[];
 }
