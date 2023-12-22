@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
-import {AdminResponse, AdminResponses} from "../../../../app.responses";
+import {AdminResponse, AdminResponses} from "../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";

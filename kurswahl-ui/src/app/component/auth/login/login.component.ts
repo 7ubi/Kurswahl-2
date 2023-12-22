@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../../service/authentication.service";
-import {LoginResponse, Role} from "../../../app.responses";
+import {LoginResponse, Role} from "../../admin/admin.responses";
 import {HttpService} from "../../../service/http.service";
 
 @Component({
