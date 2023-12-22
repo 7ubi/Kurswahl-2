@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
+import {ChoiceResponse, ClassChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
 import {Subscription} from "rxjs";
 
@@ -160,5 +160,23 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
       return "Zur zweit Wahl"
     }
     return "Wahl beenden";
+  }
+
+
+  deleteClassFromChoice() {
+    const classResponse = this.choiceResponse!.classChoiceResponses!.filter(c =>
+      c.tapeId === this.selectedTape?.tapeId)[0];
+
+    if(classResponse) {
+      this.httpService.delete<undefined>('/api/student/choice', response => this.loadChoice(),
+        () => {}, this.getDeleteClassFromChoiceRequest(classResponse))
+    }
+  }
+
+  private getDeleteClassFromChoiceRequest(classResponse: ClassChoiceResponse) {
+    return {
+      choiceId: this.choiceResponse.choiceId,
+      classId: classResponse.classId
+    };
   }
 }

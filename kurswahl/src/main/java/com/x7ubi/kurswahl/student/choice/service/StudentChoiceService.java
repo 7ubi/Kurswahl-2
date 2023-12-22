@@ -14,6 +14,7 @@ import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
+import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.slf4j.Logger;
@@ -91,9 +92,11 @@ public class StudentChoiceService {
 
             choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                     alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
+            logger.info(String.format("Created new choice for %s", student.getUser().getUsername()));
         }
 
         setClassToChoice(choice, aClass);
+        logger.info(String.format("Altered choice for %s", student.getUser().getUsername()));
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
@@ -137,6 +140,8 @@ public class StudentChoiceService {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue()).get();
 
+
+        logger.info(String.format("Found all Tapes of year %s", student.getStudentClass().getYear()));
         return this.tapeClassMapper.tapesToTapeResponses(tapes);
     }
 
@@ -157,6 +162,37 @@ public class StudentChoiceService {
 
         Choice choice = choiceOptional.get();
 
+        logger.info("Found choice");
         return this.choiceMapper.choiceToChoiceResponse(choice);
+    }
+
+    public void deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
+            throws EntityNotFoundException {
+        Optional<Choice> choiceOptional
+                = this.choiceRepo.findChoiceByChoiceId(deleteClassFromChoiceRequest.getChoiceId());
+
+        if (choiceOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
+        }
+        Choice choice = choiceOptional.get();
+
+        Optional<Class> classOptional = choice.getClasses().stream().filter(c -> Objects.equals(c.getClassId(),
+                deleteClassFromChoiceRequest.getClassId())).findFirst();
+
+        if (classOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_IN_CHOICE);
+        }
+
+        Class aclass = classOptional.get();
+
+        choice.getClasses().remove(aclass);
+
+        aclass.getChoices().remove(choice);
+
+        this.choiceRepo.save(choice);
+
+        this.classRepo.save(aclass);
+
+        logger.info(String.format("Removed %s from Choice", aclass.getName()));
     }
 }
