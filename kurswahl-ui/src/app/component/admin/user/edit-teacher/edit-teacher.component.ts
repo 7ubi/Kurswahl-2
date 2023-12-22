@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {TeacherResponse} from "../../../../app.responses";
+import {TeacherResponse} from "../../admin.responses";
 
 @Component({
   selector: 'app-edit-teacher',

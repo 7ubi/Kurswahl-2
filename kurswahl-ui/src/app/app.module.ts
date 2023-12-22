@@ -14,8 +14,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {ShowAdminsComponent} from './component/admin/user/show-admins/show-admins.component';
 import {CreateAdminComponent} from './component/admin/user/create-admin/create-admin.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {LoginRequired} from "./login-required";
-import {AdminRequired} from "./admin-required";
+import {LoginRequired} from "./routing-helper/login-required";
+import {AdminRequired} from "./routing-helper/admin-required";
 import {MatTableModule} from "@angular/material/table";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {HeroComponent} from './component/common/hero/hero.component';
@@ -24,40 +24,48 @@ import {ShowStudentsComponent} from './component/admin/user/show-students/show-s
 import {CreateStudentComponent} from './component/admin/user/create-student/create-student.component';
 import {ShowTeachersComponent} from './component/admin/user/show-teachers/show-teachers.component';
 import {CreateTeacherComponent} from './component/admin/user/create-teacher/create-teacher.component';
-import {ShowSubjectAreasComponent} from './component/admin/classes/show-subject-areas/show-subject-areas.component';
-import {CreateSubjectAreaComponent} from './component/admin/classes/create-subject-area/create-subject-area.component';
-import {ShowSubjectsComponent} from './component/admin/classes/show-subjects/show-subjects.component';
-import {CreateSubjectComponent} from './component/admin/classes/create-subject/create-subject.component';
+import {
+  ShowSubjectAreasComponent
+} from './component/admin/classes/subject-area/show-subject-areas/show-subject-areas.component';
+import {
+  CreateSubjectAreaComponent
+} from './component/admin/classes/subject-area/create-subject-area/create-subject-area.component';
+import {ShowSubjectsComponent} from './component/admin/classes/subject/show-subjects/show-subjects.component';
+import {CreateSubjectComponent} from './component/admin/classes/subject/create-subject/create-subject.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSortModule} from "@angular/material/sort";
 import {
   ShowStudentClassesComponent
-} from './component/admin/classes/show-student-classes/show-student-classes.component';
+} from './component/admin/classes/student-class/show-student-classes/show-student-classes.component';
 import {
   CreateStudentClassComponent
-} from './component/admin/classes/create-student-class/create-student-class.component';
+} from './component/admin/classes/student-class/create-student-class/create-student-class.component';
 import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
 import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
 import {EditTeacherComponent} from './component/admin/user/edit-teacher/edit-teacher.component';
 import {ChangePasswordComponent} from './component/auth/change-password/change-password.component';
 import {MatListModule} from "@angular/material/list";
-import {EditSubjectComponent} from './component/admin/classes/edit-subject/edit-subject.component';
-import {EditSubjectAreaComponent} from './component/admin/classes/edit-subject-area/edit-subject-area.component';
-import {EditStudentClassComponent} from './component/admin/classes/edit-student-class/edit-student-class.component';
-import {ShowTapesComponent} from './component/admin/classes/show-tapes/show-tapes.component';
-import {CreateTapeComponent} from './component/admin/classes/create-tape/create-tape.component';
+import {EditSubjectComponent} from './component/admin/classes/subject/edit-subject/edit-subject.component';
+import {
+  EditSubjectAreaComponent
+} from './component/admin/classes/subject-area/edit-subject-area/edit-subject-area.component';
+import {
+  EditStudentClassComponent
+} from './component/admin/classes/student-class/edit-student-class/edit-student-class.component';
+import {ShowTapesComponent} from './component/admin/classes/tape/show-tapes/show-tapes.component';
+import {CreateTapeComponent} from './component/admin/classes/tape/create-tape/create-tape.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {EditTapeComponent} from './component/admin/classes/edit-tape/edit-tape.component';
-import {TapeTableComponent} from './component/admin/classes/show-tapes/tape-table/tape-table.component';
-import {ShowClassesComponent} from './component/admin/classes/show-classes/show-classes.component';
-import {ClassTableComponent} from './component/admin/classes/show-classes/class-table/class-table.component';
-import {CreateClassComponent} from './component/admin/classes/create-class/create-class.component';
-import {EditClassComponent} from './component/admin/classes/edit-class/edit-class.component';
-import {ShowLessonsComponent} from './component/admin/classes/show-lessons/show-lessons.component';
+import {EditTapeComponent} from './component/admin/classes/tape/edit-tape/edit-tape.component';
+import {TapeTableComponent} from './component/admin/classes/tape/show-tapes/tape-table/tape-table.component';
+import {ShowClassesComponent} from './component/admin/classes/class/show-classes/show-classes.component';
+import {ClassTableComponent} from './component/admin/classes/class/show-classes/class-table/class-table.component';
+import {CreateClassComponent} from './component/admin/classes/class/create-class/create-class.component';
+import {EditClassComponent} from './component/admin/classes/class/edit-class/edit-class.component';
+import {ShowLessonsComponent} from './component/admin/classes/tape/show-lessons/show-lessons.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {HomePageComponent} from './component/student/home-page/home-page.component';
-import {StudentRequired} from "./student-required";
+import {StudentRequired} from "./routing-helper/student-required";
 import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
 
 @NgModule({

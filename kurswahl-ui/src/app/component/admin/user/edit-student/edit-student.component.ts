@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {StudentClassResponses, StudentResponse} from "../../../../app.responses";
+import {StudentClassResponses, StudentResponse} from "../../admin.responses";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 

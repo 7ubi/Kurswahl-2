@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentResponse, StudentResponses} from "../../../../app.responses";
+import {StudentResponse, StudentResponses} from "../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";

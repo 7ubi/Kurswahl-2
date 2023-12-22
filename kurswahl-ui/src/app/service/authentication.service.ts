@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
-import {LoginResponse, Role} from "../app.responses";
+import {LoginResponse, Role} from "../component/admin/admin.responses";
 import {StorageService} from "./storage.service";
 import {HttpHeaders} from "@angular/common/http";
 
