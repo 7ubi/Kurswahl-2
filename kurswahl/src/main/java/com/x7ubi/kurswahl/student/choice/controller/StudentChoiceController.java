@@ -77,15 +77,12 @@ public class StudentChoiceController {
 
     @DeleteMapping("/choice")
     @StudentRequired
-    public ResponseEntity<?> deleteClassFromChoice(@RequestHeader("Authorization") String authorization,
-                                                   @RequestBody DeleteClassFromChoiceRequest
+    public ResponseEntity<?> deleteClassFromChoice(@RequestBody DeleteClassFromChoiceRequest
                                                            deleteClassFromChoiceRequest) {
         logger.info("Deleting class from choice");
 
         try {
-            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
-
-            this.studentChoiceService.deleteClassFromChoice(username, deleteClassFromChoiceRequest);
+            this.studentChoiceService.deleteClassFromChoice(deleteClassFromChoiceRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());

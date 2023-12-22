@@ -63,6 +63,7 @@
           {{c.name}} - {{c.teacherResponse.abbreviation}}
         </div>
         <div
+          *ngIf="selectedTape?.classResponses"
           class="class selectable"
           (click)="deleteClassFromChoice()">
           Band nicht belegen

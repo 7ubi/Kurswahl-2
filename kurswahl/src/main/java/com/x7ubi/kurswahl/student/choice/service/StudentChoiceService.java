@@ -92,9 +92,11 @@ public class StudentChoiceService {
 
             choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                     alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
+            logger.info(String.format("Created new choice for %s", student.getUser().getUsername()));
         }
 
         setClassToChoice(choice, aClass);
+        logger.info(String.format("Altered choice for %s", student.getUser().getUsername()));
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
@@ -138,6 +140,8 @@ public class StudentChoiceService {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue()).get();
 
+
+        logger.info(String.format("Found all Tapes of year %s", student.getStudentClass().getYear()));
         return this.tapeClassMapper.tapesToTapeResponses(tapes);
     }
 
@@ -158,17 +162,12 @@ public class StudentChoiceService {
 
         Choice choice = choiceOptional.get();
 
+        logger.info("Found choice");
         return this.choiceMapper.choiceToChoiceResponse(choice);
     }
 
-    public void deleteClassFromChoice(String username, DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
+    public void deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
             throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
-
         Optional<Choice> choiceOptional
                 = this.choiceRepo.findChoiceByChoiceId(deleteClassFromChoiceRequest.getChoiceId());
 
@@ -193,5 +192,7 @@ public class StudentChoiceService {
         this.choiceRepo.save(choice);
 
         this.classRepo.save(aclass);
+
+        logger.info(String.format("Removed %s from Choice", aclass.getName()));
     }
 }
