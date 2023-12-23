@@ -8,6 +8,7 @@ import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
+import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.slf4j.Logger;
@@ -96,13 +97,35 @@ public class StudentChoiceController {
     @GetMapping("/tapeChoice")
     @StudentRequired
     public ResponseEntity<?> getTapesForChoice(@RequestHeader("Authorization") String authorization) {
-        logger.info("Getting choice");
+        logger.info("Getting tapes");
 
         try {
             String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
 
             List<TapeClassResponse> responses = this.studentChoiceService.getTapesForChoice(username);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/subjectTape")
+    @StudentRequired
+    public ResponseEntity<?> getTapesOfSubjects(@RequestHeader("Authorization") String authorization) {
+        logger.info("Getting subjects");
+
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+
+            List<SubjectTapeResponse> responses = this.studentChoiceService.getTapesOfSubjects(username);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

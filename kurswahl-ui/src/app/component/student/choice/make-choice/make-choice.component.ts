@@ -2,7 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ChoiceResponse, ClassChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
+import {
+  ChoiceResponse,
+  ClassChoiceResponse,
+  ClassResponse,
+  SubjectTapeResponse,
+  TapeClassResponse
+} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
 import {Subscription} from "rxjs";
 
@@ -20,6 +26,7 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
   dataSource!: MatTableDataSource<LessonTable>;
   displayedColumns: string[];
   tapeClassResponses!: TapeClassResponse[];
+  subjectTapeResponses!: SubjectTapeResponse[];
   choiceResponse!: ChoiceResponse;
 
   selectedTape?: TapeClassResponse;
@@ -56,6 +63,11 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
     this.httpService.get<TapeClassResponse[]>(`/api/student/tapeChoice`, response => {
       this.tapeClassResponses = response;
       this.loadChoice();
+    });
+
+    this.httpService.get<SubjectTapeResponse[]>(`/api/student/subjectTape`, response => {
+      this.subjectTapeResponses = response;
+      console.log(this.subjectTapeResponses);
     });
   }
 
