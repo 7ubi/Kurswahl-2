@@ -10,7 +10,9 @@ import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
+import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
+import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -388,34 +390,45 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testGetTapesForChoice() throws EntityNotFoundException {
+    public void testGetTapes() throws EntityNotFoundException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         aClass = this.classRepo.findClassByName("test").get();
 
         // When
-        List<TapeClassResponse> responses = this.studentChoiceService.getTapesForChoice(student.getUser().getUsername());
+        TapeResponses responses = this.studentChoiceService.getTapes(student.getUser().getUsername());
 
         // Then
-        Assertions.assertEquals(responses.size(), 2);
+        List<TapeClassResponse> tapeClassResponses = responses.getTapeClassResponses();
+        Assertions.assertEquals(tapeClassResponses.size(), 2);
 
-        Assertions.assertEquals(responses.get(0).getTapeId(), tape.getTapeId());
-        Assertions.assertEquals(responses.get(0).getClassResponses().size(), 1);
-        Assertions.assertEquals(responses.get(0).getClassResponses().get(0).getClassId(), aClass.getClassId());
+        Assertions.assertEquals(tapeClassResponses.get(0).getTapeId(), tape.getTapeId());
+        Assertions.assertEquals(tapeClassResponses.get(0).getClassResponses().size(), 1);
+        Assertions.assertEquals(tapeClassResponses.get(0).getClassResponses().get(0).getClassId(), aClass.getClassId());
 
-        Assertions.assertEquals(responses.get(1).getTapeId(), otherTape.getTapeId());
-        Assertions.assertTrue(responses.get(1).getClassResponses().isEmpty());
+        Assertions.assertEquals(tapeClassResponses.get(1).getTapeId(), otherTape.getTapeId());
+        Assertions.assertTrue(tapeClassResponses.get(1).getClassResponses().isEmpty());
+
+        List<SubjectTapeResponse> subjectTapeResponses = responses.getSubjectTapeResponses();
+        Assertions.assertEquals(subjectTapeResponses.size(), 2);
+
+        Assertions.assertEquals(subjectTapeResponses.get(0).getName(), subject.getName());
+        Assertions.assertEquals(subjectTapeResponses.get(0).getTapeResponses().size(), 1);
+        Assertions.assertEquals(subjectTapeResponses.get(0).getTapeResponses().get(0).getName(), tape.getName());
+
+        Assertions.assertEquals(subjectTapeResponses.get(1).getName(), subjectOther.getName());
+        Assertions.assertTrue(subjectTapeResponses.get(1).getTapeResponses().isEmpty());
     }
 
     @Test
-    public void testGetTapesForChoiceStudentNotFound() {
+    public void testGetTapesStudentNotFound() {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         aClass = this.classRepo.findClassByName("test").get();
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.studentChoiceService.getTapesForChoice("wrong"));
+                this.studentChoiceService.getTapes("wrong"));
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);

@@ -7,7 +7,8 @@ import {
   ClassChoiceResponse,
   ClassResponse,
   SubjectTapeResponse,
-  TapeClassResponse
+  TapeClassResponse,
+  TapeResponses
 } from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
 import {Subscription} from "rxjs";
@@ -56,14 +57,10 @@ export class MakeChoiceComponent implements OnDestroy {
   }
 
   private loadTapes() {
-    this.httpService.get<TapeClassResponse[]>(`/api/student/tapeChoice`, response => {
-      this.tapeClassResponses = response;
+    this.httpService.get<TapeResponses>(`/api/student/tapes`, response => {
+      this.tapeClassResponses = response.tapeClassResponses;
+      this.subjectTapeResponses = response.subjectTapeResponses;
       this.loadChoice();
-    });
-
-    this.httpService.get<SubjectTapeResponse[]>(`/api/student/subjectTape`, response => {
-      this.subjectTapeResponses = response;
-      console.log(this.subjectTapeResponses);
     });
   }
 

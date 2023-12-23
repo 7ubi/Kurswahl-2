@@ -14,6 +14,7 @@ import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
+import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -135,28 +136,30 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
+    public TapeResponses getTapes(String username) throws EntityNotFoundException {
+        TapeResponses tapeResponses = new TapeResponses();
         Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
         if (studentOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
         }
         Student student = studentOptional.get();
+        tapeResponses.setTapeClassResponses(getTapesForChoice(student));
+        tapeResponses.setSubjectTapeResponses(getTapesOfSubjects(student));
 
+        return tapeResponses;
+    }
+
+    @Transactional
+    public List<TapeClassResponse> getTapesForChoice(Student student) throws EntityNotFoundException {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue()).get();
-
 
         logger.info(String.format("Found all Tapes of year %s", student.getStudentClass().getYear()));
         return this.tapeClassMapper.tapesToTapeResponses(tapes);
     }
 
     @Transactional
-    public List<SubjectTapeResponse> getTapesOfSubjects(String username) throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
+    public List<SubjectTapeResponse> getTapesOfSubjects(Student student) throws EntityNotFoundException {
 
         List<Subject> subjects = this.subjectRepo.findAll();
 

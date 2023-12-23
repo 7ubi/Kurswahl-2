@@ -8,16 +8,13 @@ import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
-import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
-import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
+import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/student")
@@ -94,34 +91,15 @@ public class StudentChoiceController {
         }
     }
 
-    @GetMapping("/tapeChoice")
+    @GetMapping("/tapes")
     @StudentRequired
-    public ResponseEntity<?> getTapesForChoice(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> getTapes(@RequestHeader("Authorization") String authorization) {
         logger.info("Getting tapes");
 
         try {
             String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
 
-            List<TapeClassResponse> responses = this.studentChoiceService.getTapesForChoice(username);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/subjectTape")
-    @StudentRequired
-    public ResponseEntity<?> getTapesOfSubjects(@RequestHeader("Authorization") String authorization) {
-        logger.info("Getting subjects");
-
-        try {
-            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
-
-            List<SubjectTapeResponse> responses = this.studentChoiceService.getTapesOfSubjects(username);
+            TapeResponses responses = this.studentChoiceService.getTapes(username);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
