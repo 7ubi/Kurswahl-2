@@ -1,8 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {ChoiceResponse, ClassChoiceResponse, ClassResponse, TapeClassResponse} from "../../stundet.responses";
+import {
+  ChoiceResponse,
+  ClassChoiceResponse,
+  ClassResponse,
+  SubjectTapeResponse,
+  TapeClassResponse,
+  TapeResponses
+} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "./lesson-table";
 import {Subscription} from "rxjs";
 
@@ -11,7 +18,7 @@ import {Subscription} from "rxjs";
   templateUrl: './make-choice.component.html',
   styleUrl: './make-choice.component.css'
 })
-export class MakeChoiceComponent implements OnInit, OnDestroy {
+export class MakeChoiceComponent implements OnDestroy {
   readonly maxChoices: number = 2;
   readonly maxHours = 15;
 
@@ -20,6 +27,7 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
   dataSource!: MatTableDataSource<LessonTable>;
   displayedColumns: string[];
   tapeClassResponses!: TapeClassResponse[];
+  subjectTapeResponses!: SubjectTapeResponse[];
   choiceResponse!: ChoiceResponse;
 
   selectedTape?: TapeClassResponse;
@@ -48,13 +56,10 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
     this.eventSubscription.unsubscribe();
   }
 
-  ngOnInit(): void {
-    this.loadTapes();
-  }
-
   private loadTapes() {
-    this.httpService.get<TapeClassResponse[]>(`/api/student/tapeChoice`, response => {
-      this.tapeClassResponses = response;
+    this.httpService.get<TapeResponses>(`/api/student/tapes`, response => {
+      this.tapeClassResponses = response.tapeClassResponses;
+      this.subjectTapeResponses = response.subjectTapeResponses;
       this.loadChoice();
     });
   }

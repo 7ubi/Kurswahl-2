@@ -31,3 +31,17 @@ export interface LessonResponse {
 export interface TeacherResponse {
   readonly abbreviation: string;
 }
+
+export interface SubjectTapeResponse {
+  readonly name: string;
+  readonly tapeResponses: TapeResponse[];
+}
+
+export interface TapeResponse {
+  readonly name: string;
+}
+
+export interface TapeResponses {
+  readonly tapeClassResponses: TapeClassResponse[];
+  readonly subjectTapeResponses: SubjectTapeResponse[];
+}
