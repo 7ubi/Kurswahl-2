@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
@@ -17,7 +17,7 @@ import {Subscription} from "rxjs";
   templateUrl: './make-choice.component.html',
   styleUrl: './make-choice.component.css'
 })
-export class MakeChoiceComponent implements OnInit, OnDestroy {
+export class MakeChoiceComponent implements OnDestroy {
   readonly maxChoices: number = 2;
   readonly maxHours = 15;
 
@@ -53,10 +53,6 @@ export class MakeChoiceComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.loadTapes();
   }
 
   private loadTapes() {

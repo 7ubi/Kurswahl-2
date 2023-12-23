@@ -55,6 +55,24 @@
 
     <div class="classes-tables">
       <div class="classes-table">
+        <div class="class header"><span>Fächer</span> {{ selectedTape ? '- ' + selectedTape.name : '' }}</div>
+        <span *ngFor="let subjectTape of subjectTapeResponses">
+          <div
+            class="class selectable"
+            *ngIf="subjectTape.tapeResponses.length > 0"
+          >
+            {{ subjectTape.name }} - <span *ngFor="let tape of subjectTape.tapeResponses; index as i">{{ tape.name }}
+            <span *ngIf="i < subjectTape.tapeResponses.length - 1">, </span></span>
+          </div>
+        </span>
+        <div
+          *ngIf="selectedTape?.classResponses"
+          class="class selectable"
+          (click)="deleteClassFromChoice()">
+          Band nicht belegen
+        </div>
+      </div>
+      <div class="classes-table">
         <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : ''}}</div>
         <div
           class="class selectable {{ getClassForSelectClass(c) }}"
