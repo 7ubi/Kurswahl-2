@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/student")
 public class StudentChoiceController {
@@ -82,6 +84,24 @@ public class StudentChoiceController {
         try {
             this.studentChoiceService.deleteClassFromChoice(deleteClassFromChoiceRequest);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/choices")
+
+    public ResponseEntity<?> getChoice(@RequestHeader("Authorization") String authorization) {
+
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+
+            List<ChoiceResponse> response = this.studentChoiceService.getChoices(username);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

@@ -10,7 +10,7 @@ import {
   TapeClassResponse,
   TapeResponses
 } from "../../stundet.responses";
-import {LessonForTable, LessonTable} from "./lesson-table";
+import {LessonForTable, LessonTable} from "../lesson-table";
 import {Subscription} from "rxjs";
 
 @Component({
