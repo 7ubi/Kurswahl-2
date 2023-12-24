@@ -20,13 +20,19 @@ jobs:
           cache: maven
       - name: Build and Test with Maven
         run: mvn -B package --file kurswahl/pom.xml jacoco:prepare-agent jacoco:report
+      - name: Delete Previous Artifact
+        if: ${{ steps.cache-restore.outputs.cache-hit }}
+        continue-on-error: true
+        run: |
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete "CompiledProject" --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Cache Artifact
         uses: actions/cache/save@v3
         with:
-          key: ${{ runner.OS }}-CompiledProject-${{ hashFiles('**/package-lock.json') }}
+          key: CompiledProject
           path: .
-          restore-keys: |
-            ${{ runner.OS }}-CompiledProject-
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
@@ -36,7 +42,7 @@ jobs:
       - name: Checkout compiled artifact
         uses: actions/cache/restore@v3
         with:
-          key: ${{ runner.OS }}-CompiledProject-
+          key: CompiledProject
           path: .
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
