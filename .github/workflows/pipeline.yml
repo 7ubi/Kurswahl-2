@@ -21,8 +21,6 @@ jobs:
       - name: Build and Test with Maven
         run: mvn -B package --file kurswahl/pom.xml jacoco:prepare-agent jacoco:report
       - name: Delete Previous Artifact
-        if: ${{ steps.cache-restore.outputs.cache-hit }}
-        continue-on-error: true
         run: |
           gh extension install actions/gh-actions-cache
           gh actions-cache delete "CompiledProject" --confirm
