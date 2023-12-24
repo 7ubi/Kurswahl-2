@@ -85,8 +85,9 @@ export class MakeChoiceComponent implements OnDestroy {
   nextStep() {
     if (this.choiceNumber! === 1) {
       this.router.navigate(['student', 'choice', 2]);
+    } else {
+      this.router.navigate(['student', 'choices']);
     }
-    this.router.navigate(['student', 'choices']);
   }
 
   getNextStepText(): string {

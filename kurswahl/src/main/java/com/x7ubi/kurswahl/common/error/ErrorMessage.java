@@ -36,4 +36,5 @@ public class ErrorMessage {
     public static final String INVALID_CHOICE_NUMBER = "Wahlen mit dieser Wahlnummer können nicht von Schülern bearbeitet werden.";
     public static final String CHOICE_NOT_FOUND = "Wahl konnte nicht gefunden werden.";
     public static final String CLASS_NOT_IN_CHOICE = "Kurs ist nicht in der Wahl vorhanden.";
+    public static final String NOT_ENOUGH_CHOICES = "Bitte tätige eine erst und zweit Wahl.";
 }

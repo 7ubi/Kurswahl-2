@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -176,10 +179,14 @@ public class StudentChoiceService {
                 student.getStudentId(), Year.now().getValue(), 1, 2);
 
         if (choicesOptional.isEmpty()) {
-            return new ArrayList<>();
+            throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
         }
 
         List<Choice> choices = choicesOptional.get();
+
+        if (choices.size() != 2) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
+        }
 
         return this.choiceMapper.choicesToChoiceResponses(choices);
     }
