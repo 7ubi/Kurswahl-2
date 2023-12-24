@@ -1,0 +1,47 @@
+.mat-column-Stunde {
+  width: 5%;
+}
+
+.mat-column-Montag {
+  width: 19%;
+}
+
+.mat-column-Dienstag {
+  width: 19%;
+}
+
+.mat-column-Mittwoch {
+  width: 19%;
+}
+
+.mat-column-Donnerstag {
+  width: 19%;
+}
+
+.mat-column-Freitag {
+  width: 19%;
+}
+
+.selected-tape {
+  transition: all 0.1s ease;
+  background-color: #3f51b5;
+  color: whitesmoke;
+}
+
+.choose {
+  background-color: #e0e0e0;
+}
+
+.day .class {
+  transition: all 0.1s ease;
+}
+
+.day:hover {
+  filter: brightness(70%);
+  cursor: pointer;
+}
+
+.taken {
+  background-color: #f44336;
+  color: whitesmoke;
+}

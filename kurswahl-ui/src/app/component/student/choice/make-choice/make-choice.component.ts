@@ -1,16 +1,13 @@
 import {Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
-import {MatTableDataSource} from "@angular/material/table";
 import {
   ChoiceResponse,
   ClassChoiceResponse,
   ClassResponse,
   SubjectTapeResponse,
-  TapeClassResponse,
-  TapeResponses
+  TapeClassResponse
 } from "../../stundet.responses";
-import {LessonForTable, LessonTable} from "../lesson-table";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -20,13 +17,8 @@ import {Subscription} from "rxjs";
 })
 export class MakeChoiceComponent implements OnDestroy {
   readonly maxChoices: number = 2;
-  readonly maxHours = 15;
 
-  lessons: LessonTable[] = [];
   choiceNumber: number | null | undefined;
-  dataSource!: MatTableDataSource<LessonTable>;
-  displayedColumns: string[];
-  tapeClassResponses!: TapeClassResponse[];
   subjectTapeResponses!: SubjectTapeResponse[];
   choiceResponse!: ChoiceResponse;
 
@@ -45,91 +37,27 @@ export class MakeChoiceComponent implements OnDestroy {
         if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
           this.router.navigate(['student']);
         }
-        this.loadTapes();
+        this.loadChoice();
       }
     });
 
-    this.displayedColumns = ['Stunde', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+    this.loadSubjects();
   }
 
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
   }
 
-  private loadTapes() {
-    this.httpService.get<TapeResponses>(`/api/student/tapes`, response => {
-      this.tapeClassResponses = response.tapeClassResponses;
-      this.subjectTapeResponses = response.subjectTapeResponses;
-      this.loadChoice();
+  private loadSubjects() {
+    this.httpService.get<SubjectTapeResponse[]>(`/api/student/subjectTapes`, response => {
+      this.subjectTapeResponses = response;
     });
   }
 
   private loadChoice() {
     this.httpService.get<ChoiceResponse>(`/api/student/choice?choiceNumber=${this.choiceNumber}`, response => {
       this.choiceResponse = response;
-      this.updateTable();
     });
-  }
-
-  private generateTable() {
-    this.lessons = [];
-    for (let i = 1; i <= this.maxHours; i++) {
-      let lesson: LessonTable = {
-        hour: i,
-        days: [
-          new LessonForTable(),
-          new LessonForTable(),
-          new LessonForTable(),
-          new LessonForTable(),
-          new LessonForTable()
-        ]
-      };
-      this.lessons.push(lesson)
-    }
-
-    this.tapeClassResponses.forEach(tape => {
-      tape.lessonResponses.forEach(lesson => {
-        this.lessons[lesson.hour].days[lesson.day].tapeClass = tape;
-      });
-    });
-
-    this.dataSource = new MatTableDataSource(this.lessons);
-  }
-
-  private updateTable() {
-    this.generateTable();
-    if (this.choiceResponse && this.choiceResponse.classChoiceResponses) {
-      this.lessons.forEach(lesson => {
-        this.choiceResponse.classChoiceResponses.forEach(classChoice => {
-          lesson.days.filter(l => l.tapeClass?.tapeId === classChoice.tapeId)
-            .forEach(l => l.choice = classChoice);
-        });
-      });
-    }
-  }
-
-  getClassForCell(element?: LessonForTable): string {
-    let elementClass: string = 'day';
-
-
-    if (element?.tapeClass && element.tapeClass === this.selectedTape) {
-      elementClass += ' selected-tape'
-    } else if (element?.choice) {
-      elementClass += ' taken';
-    } else if (element?.tapeClass) {
-      elementClass += ' choose';
-    }
-
-    return elementClass;
-  }
-
-  selectTape(tapeClass: TapeClassResponse | null) {
-    if (null === tapeClass || tapeClass === this.selectedTape) {
-      this.selectedTape = undefined;
-    } else {
-      console.log(tapeClass);
-      this.selectedTape = tapeClass;
-    }
   }
 
   alterChoice(classId: number) {
@@ -183,5 +111,9 @@ export class MakeChoiceComponent implements OnDestroy {
       choiceId: this.choiceResponse.choiceId,
       classId: classResponse.classId
     };
+  }
+
+  selectTape($event: TapeClassResponse) {
+    this.selectedTape = $event;
   }
 }

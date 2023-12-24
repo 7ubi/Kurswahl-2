@@ -14,7 +14,6 @@ export class StudentRequired {
   }
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    console.log(this.authenticationService.getRole())
     if (this.authenticationService.getRole() !== 'STUDENT') {
 
       this.snackBar.open('Du musst ein Schüler sein, bitte melde dich erneut an!', 'Verstanden', {

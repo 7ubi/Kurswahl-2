@@ -61,9 +61,9 @@ public class StudentChoiceController {
     @StudentRequired
     public ResponseEntity<?> getChoice(@RequestHeader("Authorization") String authorization,
                                        @RequestParam Integer choiceNumber) {
-
         try {
             String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+            logger.info(String.format("Getting choice from %s", username));
 
             ChoiceResponse response = this.studentChoiceService.getChoice(username, choiceNumber);
             return ResponseEntity.status(HttpStatus.OK).body(response);
