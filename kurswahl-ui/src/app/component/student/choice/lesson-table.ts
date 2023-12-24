@@ -1,4 +1,4 @@
-import {ClassChoiceResponse, TapeClassResponse} from "../../stundet.responses";
+import {ClassChoiceResponse, TapeClassResponse} from "../stundet.responses";
 
 export class LessonForTable {
   tapeClass: TapeClassResponse | null;

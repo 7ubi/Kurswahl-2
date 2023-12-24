@@ -14,7 +14,6 @@ import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
-import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -64,11 +63,7 @@ public class StudentChoiceService {
     @Transactional
     public void alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest)
             throws EntityNotFoundException, UnauthorizedException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
+        Student student = getStudent(username);
 
         Optional<Class> classOptional = this.classRepo.findClassByClassId(alterStudentChoiceRequest.getClassId());
         if (classOptional.isEmpty()) {
@@ -136,21 +131,8 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public TapeResponses getTapes(String username) throws EntityNotFoundException {
-        TapeResponses tapeResponses = new TapeResponses();
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
-        tapeResponses.setTapeClassResponses(getTapesForChoice(student));
-        tapeResponses.setSubjectTapeResponses(getTapesOfSubjects(student));
-
-        return tapeResponses;
-    }
-
-    @Transactional
-    public List<TapeClassResponse> getTapesForChoice(Student student) throws EntityNotFoundException {
+    public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
+        Student student = getStudent(username);
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue()).get();
 
@@ -159,7 +141,8 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public List<SubjectTapeResponse> getTapesOfSubjects(Student student) throws EntityNotFoundException {
+    public List<SubjectTapeResponse> getTapesOfSubjects(String username) throws EntityNotFoundException {
+        Student student = getStudent(username);
 
         List<Subject> subjects = this.subjectRepo.findAll();
 
@@ -173,11 +156,7 @@ public class StudentChoiceService {
     }
 
     public ChoiceResponse getChoice(String username, Integer choiceNumber) throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
+        Student student = getStudent(username);
 
 
         Optional<Choice> choiceOptional = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
@@ -191,6 +170,33 @@ public class StudentChoiceService {
 
         logger.info("Found choice");
         return this.choiceMapper.choiceToChoiceResponse(choice);
+    }
+
+    public List<ChoiceResponse> getChoices(String username) throws EntityNotFoundException {
+        Student student = getStudent(username);
+
+        Optional<List<Choice>> choicesOptional = this.choiceRepo.findAllByStudent_StudentIdAndReleaseYearAndChoiceNumberOrChoiceNumber(
+                student.getStudentId(), Year.now().getValue(), 1, 2);
+
+        if (choicesOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
+        }
+
+        List<Choice> choices = choicesOptional.get();
+
+        if (choices.size() != 2) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
+        }
+
+        return this.choiceMapper.choicesToChoiceResponses(choices);
+    }
+
+    private Student getStudent(String username) throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+        return studentOptional.get();
     }
 
     public void deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)

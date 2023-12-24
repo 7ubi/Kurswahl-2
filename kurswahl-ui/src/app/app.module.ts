@@ -67,6 +67,8 @@ import {MatChipsModule} from "@angular/material/chips";
 import {HomePageComponent} from './component/student/home-page/home-page.component';
 import {StudentRequired} from "./routing-helper/student-required";
 import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
+import {ChoiceTableComponent} from "./component/student/choice/choice-table/choice-table.component";
+import {ShowChoicesComponent} from "./component/student/choice/show-choices/show-choices.component";
 
 @NgModule({
   declarations: [
@@ -103,7 +105,9 @@ import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-c
     EditClassComponent,
     ShowLessonsComponent,
     HomePageComponent,
-    MakeChoiceComponent
+    MakeChoiceComponent,
+    ChoiceTableComponent,
+    ShowChoicesComponent
   ],
   imports: [
     BrowserModule,

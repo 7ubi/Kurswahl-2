@@ -1,0 +1,10 @@
+<app-hero title="Wahlen einsehen"></app-hero>
+
+<div class="container">
+  <div class="center">
+    <div *ngFor="let choice of choiceResponses; index as i">
+      <h1 class="headline {{ i !== 0 ? 'next': '' }}">{{ i + 1 }}. Wahl</h1>
+      <app-choice-table [choiceResponse]="choice" [selectable]="false"></app-choice-table>
+    </div>
+  </div>
+</div>

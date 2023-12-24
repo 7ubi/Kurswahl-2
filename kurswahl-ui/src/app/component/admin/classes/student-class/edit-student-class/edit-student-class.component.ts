@@ -57,7 +57,6 @@ export class EditStudentClassComponent implements OnInit {
   }
 
   private getStudentClassRequest() {
-    console.log(this.editStudentClassForm.get('teacher')?.value)
     return {
       name: this.editStudentClassForm.get('name')?.value,
       year: this.editStudentClassForm.get('year')?.value,
