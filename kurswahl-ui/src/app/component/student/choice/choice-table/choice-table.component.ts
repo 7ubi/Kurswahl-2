@@ -12,7 +12,7 @@ import {HttpService} from "../../../../service/http.service";
 export class ChoiceTableComponent implements OnChanges {
   readonly maxHours = 15;
 
-  @Input() choiceResponse!: ChoiceResponse;
+  @Input() choiceResponse?: ChoiceResponse;
   @Input() selectable = true;
   @Output() selectedTapeOutput = new EventEmitter<TapeClassResponse>();
 
@@ -28,7 +28,6 @@ export class ChoiceTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("CHANGES");
     this.updateTable();
   }
 
@@ -36,7 +35,7 @@ export class ChoiceTableComponent implements OnChanges {
     this.httpService.get<TapeClassResponse[]>(`/api/student/tapeClasses`, response => {
       this.tapeClassResponses = response;
 
-      this.generateTable();
+      this.updateTable();
     });
   }
 
@@ -69,7 +68,7 @@ export class ChoiceTableComponent implements OnChanges {
     this.generateTable();
     if (this.choiceResponse && this.choiceResponse.classChoiceResponses) {
       this.lessons.forEach(lesson => {
-        this.choiceResponse.classChoiceResponses.forEach(classChoice => {
+        this.choiceResponse?.classChoiceResponses.forEach(classChoice => {
           lesson.days.filter(l => l.tapeClass?.tapeId === classChoice.tapeId)
             .forEach(l => l.choice = classChoice);
         });
@@ -78,10 +77,13 @@ export class ChoiceTableComponent implements OnChanges {
   }
 
   getClassForCell(element?: LessonForTable): string {
-    let elementClass: string = 'day';
+    let elementClass: string = '';
 
+    if (this.selectable) {
+      elementClass += 'day';
+    }
 
-    if (element?.tapeClass && element.tapeClass === this.selectedTape) {
+    if (this.selectable && element?.tapeClass && element.tapeClass === this.selectedTape) {
       elementClass += ' selected-tape'
     } else if (element?.choice) {
       elementClass += ' taken';
@@ -93,12 +95,14 @@ export class ChoiceTableComponent implements OnChanges {
   }
 
   selectTape(tapeClass: TapeClassResponse | null) {
-    if (null === tapeClass || tapeClass === this.selectedTape) {
-      this.selectedTape = undefined;
-    } else {
-      this.selectedTape = tapeClass;
-    }
+    if (this.selectable) {
+      if (null === tapeClass || tapeClass === this.selectedTape) {
+        this.selectedTape = undefined;
+      } else {
+        this.selectedTape = tapeClass;
+      }
 
-    this.selectedTapeOutput.emit(this.selectedTape);
+      this.selectedTapeOutput.emit(this.selectedTape);
+    }
   }
 }
