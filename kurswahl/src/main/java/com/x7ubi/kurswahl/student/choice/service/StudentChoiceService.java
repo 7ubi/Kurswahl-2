@@ -14,7 +14,6 @@ import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
-import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -129,17 +128,8 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public TapeResponses getTapes(String username) throws EntityNotFoundException {
-        TapeResponses tapeResponses = new TapeResponses();
+    public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
-        tapeResponses.setTapeClassResponses(getTapesForChoice(student));
-        tapeResponses.setSubjectTapeResponses(getTapesOfSubjects(student));
-
-        return tapeResponses;
-    }
-
-    @Transactional
-    public List<TapeClassResponse> getTapesForChoice(Student student) {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue()).get();
 
@@ -148,7 +138,8 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public List<SubjectTapeResponse> getTapesOfSubjects(Student student) throws EntityNotFoundException {
+    public List<SubjectTapeResponse> getTapesOfSubjects(String username) throws EntityNotFoundException {
+        Student student = getStudent(username);
 
         List<Subject> subjects = this.subjectRepo.findAll();
 

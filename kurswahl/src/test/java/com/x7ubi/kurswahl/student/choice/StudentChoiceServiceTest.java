@@ -12,7 +12,6 @@ import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
-import com.x7ubi.kurswahl.student.choice.response.TapeResponses;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -390,16 +389,15 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testGetTapes() throws EntityNotFoundException {
+    public void testGetForChoiceTapes() throws EntityNotFoundException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         aClass = this.classRepo.findClassByName("test").get();
 
         // When
-        TapeResponses responses = this.studentChoiceService.getTapes(student.getUser().getUsername());
+        List<TapeClassResponse> tapeClassResponses = this.studentChoiceService.getTapesForChoice(student.getUser().getUsername());
 
         // Then
-        List<TapeClassResponse> tapeClassResponses = responses.getTapeClassResponses();
         Assertions.assertEquals(tapeClassResponses.size(), 2);
 
         Assertions.assertEquals(tapeClassResponses.get(0).getTapeId(), tape.getTapeId());
@@ -408,8 +406,33 @@ public class StudentChoiceServiceTest {
 
         Assertions.assertEquals(tapeClassResponses.get(1).getTapeId(), otherTape.getTapeId());
         Assertions.assertTrue(tapeClassResponses.get(1).getClassResponses().isEmpty());
+    }
 
-        List<SubjectTapeResponse> subjectTapeResponses = responses.getSubjectTapeResponses();
+    @Test
+    public void testGetTapesForChoiceStudentNotFound() {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentChoiceService.getTapesForChoice("wrong"));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetTapesOfSubjects() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+
+        // When
+        List<SubjectTapeResponse> subjectTapeResponses = this.studentChoiceService.getTapesOfSubjects(
+                student.getUser().getUsername());
+
+        // Then
         Assertions.assertEquals(subjectTapeResponses.size(), 2);
 
         Assertions.assertEquals(subjectTapeResponses.get(0).getName(), subject.getName());
@@ -421,14 +444,14 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
-    public void testGetTapesStudentNotFound() {
+    public void testGetTapesOfSubjectsStudentNotFound() {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
         aClass = this.classRepo.findClassByName("test").get();
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.studentChoiceService.getTapes("wrong"));
+                this.studentChoiceService.getTapesOfSubjects("wrong"));
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
