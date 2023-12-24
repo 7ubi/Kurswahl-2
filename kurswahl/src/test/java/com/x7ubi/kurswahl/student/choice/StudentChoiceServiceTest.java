@@ -70,6 +70,8 @@ public class StudentChoiceServiceTest {
 
     private Choice choice;
 
+    private Choice secondChoice;
+
     private StudentClass studentClass;
 
     @BeforeEach
@@ -127,6 +129,26 @@ public class StudentChoiceServiceTest {
         this.classRepo.save(c);
 
         student.getChoices().add(choice);
+        this.studentRepo.save(student);
+    }
+
+    private void setupSecondChoice(Class c) {
+        secondChoice = new Choice();
+        secondChoice.setChoiceNumber(2);
+        secondChoice.setReleaseYear(Year.now().getValue());
+        secondChoice.setClasses(new HashSet<>());
+        secondChoice.getClasses().add(c);
+        secondChoice.setStudent(student);
+
+        this.choiceRepo.save(secondChoice);
+
+        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
+                student.getStudentId(), Year.now().getValue()).get();
+
+        c.getChoices().add(secondChoice);
+        this.classRepo.save(c);
+
+        student.getChoices().add(secondChoice);
         this.studentRepo.save(student);
     }
 
@@ -487,6 +509,74 @@ public class StudentChoiceServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetChoices() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+        aClass = this.classRepo.findClassByName("test").get();
+        student = this.studentRepo.findStudentByStudentId(student.getStudentId()).get();
+        setupSecondChoice(aClass);
+
+        // When
+        List<ChoiceResponse> responses = this.studentChoiceService.getChoices(student.getUser().getUsername());
+
+        // Then
+        Assertions.assertEquals(responses.size(), 2);
+
+        Assertions.assertEquals(responses.get(0).getChoiceNumber(), 1);
+        Assertions.assertEquals(responses.get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(responses.get(0).getClassChoiceResponses().get(0).getClassId(), aClass.getClassId());
+
+        Assertions.assertEquals(responses.get(1).getChoiceNumber(), 2);
+        Assertions.assertEquals(responses.get(1).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(responses.get(1).getClassChoiceResponses().get(0).getClassId(), aClass.getClassId());
+    }
+
+    @Test
+    public void testGetChoicesStudentNotFound() {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+        aClass = this.classRepo.findClassByName("test").get();
+        student = this.studentRepo.findStudentByStudentId(student.getStudentId()).get();
+        setupSecondChoice(aClass);
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentChoiceService.getChoices("wrong"));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetChoicesNoChoices() {
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentChoiceService.getChoices(student.getUser().getUsername()));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.NOT_ENOUGH_CHOICES);
+    }
+
+    @Test
+    public void testGetChoicesOneChoice() {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentChoiceService.getChoices(student.getUser().getUsername()));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.NOT_ENOUGH_CHOICES);
     }
 
     @Test
