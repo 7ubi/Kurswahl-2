@@ -13,12 +13,15 @@
 </mat-toolbar>
 <mat-sidenav-container style="height: calc(100% - 64px)">
   <mat-sidenav
-    class="sidenav"
     [opened]="isOpen"
     mode="side"
-    style="width: 300px"
+    style="width: 300px; height: 100%"
   >
     <app-sidenav></app-sidenav>
+
+    <div style="position: absolute; bottom: 0">
+      Kurswahl {{ version }} - © Tobias Renner {{ year }}
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>

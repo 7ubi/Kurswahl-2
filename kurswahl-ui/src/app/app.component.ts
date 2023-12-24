@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {AuthenticationService} from "./service/authentication.service";
+import packageInfo from '../../package.json';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,8 @@ import {AuthenticationService} from "./service/authentication.service";
 export class AppComponent {
   title = 'Kurswahl';
   isOpen = false;
+  year: number = new Date().getFullYear();
+  version = packageInfo.version;
 
   constructor(private authenticationService: AuthenticationService) {
   }
