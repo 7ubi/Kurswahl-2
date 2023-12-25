@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.user.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
-import com.x7ubi.kurswahl.admin.user.response.AdminResponses;
 import com.x7ubi.kurswahl.admin.user.service.AdminCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @KurswahlServiceTest
 public class AdminCreationServiceTest {
@@ -66,10 +67,11 @@ public class AdminCreationServiceTest {
         Long id = this.admin.getAdminId();
 
         // When
-        this.adminCreationService.deleteAdmin(id);
+        List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmin(id);
 
         // Then
         Assertions.assertFalse(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
+        Assertions.assertTrue(adminResponses.isEmpty());
     }
 
     @Test
@@ -160,17 +162,32 @@ public class AdminCreationServiceTest {
     @Test
     public void testGetAllAdmins() {
         // When
-        AdminResponses adminResponses = this.adminCreationService.getAllAdmins();
+        List<AdminResponse> adminResponses = this.adminCreationService.getAllAdmins();
 
         // Then
-        Assertions.assertEquals(adminResponses.getAdminResponses().size(), 1);
+        Assertions.assertEquals(adminResponses.size(), 1);
 
-        AdminResponse adminResponse = adminResponses.getAdminResponses().get(0);
+        AdminResponse adminResponse = adminResponses.get(0);
         Assertions.assertEquals(adminResponse.getAdminId(), this.admin.getAdminId());
         Assertions.assertEquals(adminResponse.getFirstname(), this.admin.getUser().getFirstname());
         Assertions.assertEquals(adminResponse.getSurname(), this.admin.getUser().getSurname());
         Assertions.assertEquals(adminResponse.getUsername(), this.admin.getUser().getUsername());
         Assertions.assertEquals(adminResponse.getGeneratedPassword(),
                 this.admin.getUser().getGeneratedPassword());
+    }
+
+    @Test
+    public void testDeleteAdmins() throws EntityNotFoundException {
+        // Given
+        this.admin = this.adminRepo.findAdminByUser_Username(this.admin.getUser().getUsername()).get();
+        Long id = this.admin.getAdminId();
+        List<Long> ids = List.of(id);
+
+        // When
+        List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmins(ids);
+
+        // Then
+        Assertions.assertFalse(this.adminRepo.existsAdminByUser_Username(this.admin.getUser().getUsername()));
+        Assertions.assertTrue(adminResponses.isEmpty());
     }
 }

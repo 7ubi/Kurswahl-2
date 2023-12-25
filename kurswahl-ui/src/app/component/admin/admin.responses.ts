@@ -19,10 +19,6 @@ export interface AdminResponse extends UserResponse {
   readonly adminId: number;
 }
 
-export interface AdminResponses {
-  readonly adminResponses: AdminResponse[];
-}
-
 export interface StudentResponse extends UserResponse {
   readonly studentId: number;
   readonly studentClassResponse: StudentClassResponse;

@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user.service;
 import com.x7ubi.kurswahl.admin.user.mapper.AdminMapper;
 import com.x7ubi.kurswahl.admin.user.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
-import com.x7ubi.kurswahl.admin.user.response.AdminResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Admin;
@@ -54,10 +53,10 @@ public class AdminCreationService {
         logger.info(String.format("Admin %s was created", admin.getUser().getUsername()));
     }
 
-    public AdminResponses getAllAdmins() {
+    public List<AdminResponse> getAllAdmins() {
         List<Admin> admins = this.adminRepo.findAll();
 
-        return this.adminMapper.adminsToAdminResponses(admins);
+        return this.adminMapper.adminsToAdminResponseList(admins);
     }
 
     public void editAdmin(Long adminId, AdminSignupRequest signupRequest) throws EntityNotFoundException {
@@ -75,7 +74,13 @@ public class AdminCreationService {
         logger.info(String.format("Admin %s was edited", admin.getUser().getUsername()));
     }
 
-    public void deleteAdmin(Long adminId) throws EntityNotFoundException {
+    public List<AdminResponse> deleteAdmin(Long adminId) throws EntityNotFoundException {
+        deleteAdminHelper(adminId);
+
+        return getAllAdmins();
+    }
+
+    private void deleteAdminHelper(Long adminId) throws EntityNotFoundException {
         Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
 
         if (adminOptional.isEmpty()) {
@@ -102,5 +107,14 @@ public class AdminCreationService {
         logger.info(String.format("Found Admin %s", admin.getUser().getUsername()));
 
         return this.adminMapper.adminToAdminResponse(admin);
+    }
+
+    public List<AdminResponse> deleteAdmins(List<Long> adminIds) throws EntityNotFoundException {
+
+        for (Long adminId : adminIds) {
+            deleteAdminHelper(adminId);
+        }
+
+        return getAllAdmins();
     }
 }

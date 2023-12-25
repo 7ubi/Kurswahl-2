@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../../service/http.service";
-import {AdminResponse, AdminResponses} from "../../../admin.responses";
+import {AdminResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -13,7 +13,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 })
 export class ShowAdminsComponent implements OnInit {
 
-  adminResponses!: AdminResponses;
+  adminResponses!: AdminResponse[];
   dataSource!: MatTableDataSource<AdminResponse>;
   displayedColumns: string[];
 
@@ -33,9 +33,9 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   private loadAdmins() {
-    this.httpService.get<AdminResponses>('/api/admin/admins', response => {
+    this.httpService.get<AdminResponse[]>('/api/admin/admins', response => {
       this.adminResponses = response;
-      this.dataSource = new MatTableDataSource(this.adminResponses.adminResponses);
+      this.dataSource = new MatTableDataSource(this.adminResponses);
     });
   }
 
@@ -49,8 +49,9 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   deleteAdmin(adminId: number) {
-    this.httpService.delete<undefined>(`api/admin/admin?adminId=${adminId}`, response => {
-      this.loadAdmins();
+    this.httpService.delete<AdminResponse[]>(`api/admin/admin?adminId=${adminId}`, response => {
+      this.adminResponses = response;
+      this.dataSource = new MatTableDataSource(this.adminResponses);
       this.snackBar.open('Admin wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -93,6 +94,24 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   deleteAdmins() {
+    this.httpService.delete<AdminResponse[]>(`api/admin/admins`, response => {
+      this.selection.clear();
+      this.adminResponses = response;
+      this.dataSource = new MatTableDataSource(this.adminResponses);
+      this.snackBar.open('Admins wurde erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getSelectedAdminIds());
+  }
 
+  private getSelectedAdminIds() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(admin => ids.push(admin.adminId));
+
+    return ids;
   }
 }
