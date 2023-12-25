@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {TeacherResponse, TeacherResponses} from "../../admin.responses";
+import {TeacherResponse, TeacherResponses} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
-import {HttpService} from "../../../../service/http.service";
+import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 

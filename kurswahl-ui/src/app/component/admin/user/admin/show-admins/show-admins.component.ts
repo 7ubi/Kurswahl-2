@@ -1,18 +1,19 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentResponse, StudentResponses} from "../../admin.responses";
+import {HttpService} from "../../../../../service/http.service";
+import {AdminResponse, AdminResponses} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
-import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-  selector: 'app-show-students',
-  templateUrl: './show-students.component.html',
-  styleUrls: ['./show-students.component.css']
+  selector: 'app-show-admins',
+  templateUrl: './show-admins.component.html',
+  styleUrls: ['./show-admins.component.css']
 })
-export class ShowStudentsComponent implements OnInit {
-  studentResponses!: StudentResponses;
-  dataSource!: MatTableDataSource<StudentResponse>;
+export class ShowAdminsComponent implements OnInit {
+
+  adminResponses!: AdminResponses;
+  dataSource!: MatTableDataSource<AdminResponse>;
   displayedColumns: string[];
 
   constructor(
@@ -21,17 +22,17 @@ export class ShowStudentsComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
+    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen']
   }
 
   ngOnInit(): void {
-    this.loadStudents();
+    this.loadAdmins();
   }
 
-  private loadStudents() {
-    this.httpService.get<StudentResponses>('/api/admin/students', response => {
-      this.studentResponses = response;
-      this.dataSource = new MatTableDataSource(this.studentResponses.studentResponses);
+  private loadAdmins() {
+    this.httpService.get<AdminResponses>('/api/admin/admins', response => {
+      this.adminResponses = response;
+      this.dataSource = new MatTableDataSource(this.adminResponses.adminResponses);
     });
   }
 
@@ -40,14 +41,14 @@ export class ShowStudentsComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  createStudent(): void {
+  createAdmin(): void {
     this.router.navigate(['create'], {relativeTo: this.route});
   }
 
-  deleteStudent(studentId: number) {
-    this.httpService.delete<undefined>(`api/admin/student?studentId=${studentId}`, response => {
-      this.loadStudents();
-      this.snackBar.open('Schüler wurde erfolgreich gelöscht.', 'Verstanden', {
+  deleteAdmin(adminId: number) {
+    this.httpService.delete<undefined>(`api/admin/admin?adminId=${adminId}`, response => {
+      this.loadAdmins();
+      this.snackBar.open('Admin wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
         duration: 5000
@@ -55,8 +56,8 @@ export class ShowStudentsComponent implements OnInit {
     });
   }
 
-  editStudent(studentId: number) {
-    this.router.navigate(['edit', studentId], {relativeTo: this.route});
+  editAdmin(adminId: number) {
+    this.router.navigate(['edit', adminId], {relativeTo: this.route});
   }
 
   resetPassword(userId: number) {

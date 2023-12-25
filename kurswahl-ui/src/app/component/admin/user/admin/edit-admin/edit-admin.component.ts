@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpService} from "../../../../service/http.service";
+import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AdminResponse} from "../../admin.responses";
+import {AdminResponse} from "../../../admin.responses";
 
 @Component({
   selector: 'app-edit-admin',

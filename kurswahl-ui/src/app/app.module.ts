@@ -11,8 +11,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {HttpClientModule} from "@angular/common/http";
-import {ShowAdminsComponent} from './component/admin/user/show-admins/show-admins.component';
-import {CreateAdminComponent} from './component/admin/user/create-admin/create-admin.component';
+import {ShowAdminsComponent} from './component/admin/user/admin/show-admins/show-admins.component';
+import {CreateAdminComponent} from './component/admin/user/admin/create-admin/create-admin.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {LoginRequired} from "./routing-helper/login-required";
 import {AdminRequired} from "./routing-helper/admin-required";
@@ -20,10 +20,10 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {HeroComponent} from './component/common/hero/hero.component';
 import {SidenavComponent} from './component/common/sidenav/sidenav.component';
-import {ShowStudentsComponent} from './component/admin/user/show-students/show-students.component';
-import {CreateStudentComponent} from './component/admin/user/create-student/create-student.component';
-import {ShowTeachersComponent} from './component/admin/user/show-teachers/show-teachers.component';
-import {CreateTeacherComponent} from './component/admin/user/create-teacher/create-teacher.component';
+import {ShowStudentsComponent} from './component/admin/user/student/show-students/show-students.component';
+import {CreateStudentComponent} from './component/admin/user/student/create-student/create-student.component';
+import {ShowTeachersComponent} from './component/admin/user/teacher/show-teachers/show-teachers.component';
+import {CreateTeacherComponent} from './component/admin/user/teacher/create-teacher/create-teacher.component';
 import {
   ShowSubjectAreasComponent
 } from './component/admin/classes/subject-area/show-subject-areas/show-subject-areas.component';
@@ -41,9 +41,9 @@ import {
 import {
   CreateStudentClassComponent
 } from './component/admin/classes/student-class/create-student-class/create-student-class.component';
-import {EditAdminComponent} from './component/admin/user/edit-admin/edit-admin.component';
-import {EditStudentComponent} from './component/admin/user/edit-student/edit-student.component';
-import {EditTeacherComponent} from './component/admin/user/edit-teacher/edit-teacher.component';
+import {EditAdminComponent} from './component/admin/user/admin/edit-admin/edit-admin.component';
+import {EditStudentComponent} from './component/admin/user/student/edit-student/edit-student.component';
+import {EditTeacherComponent} from './component/admin/user/teacher/edit-teacher/edit-teacher.component';
 import {ChangePasswordComponent} from './component/auth/change-password/change-password.component';
 import {MatListModule} from "@angular/material/list";
 import {EditSubjectComponent} from './component/admin/classes/subject/edit-subject/edit-subject.component';

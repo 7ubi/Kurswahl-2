@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpService} from "../../../../service/http.service";
+import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
-import {StudentClassResponses} from "../../admin.responses";
+import {StudentClassResponses} from "../../../admin.responses";
 
 @Component({
   selector: 'app-create-student',

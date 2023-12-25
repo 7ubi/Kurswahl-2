@@ -1,14 +1,14 @@
 import {NgModule} from '@angular/core';
 import {mapToCanActivate, RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./component/auth/login/login.component";
-import {ShowAdminsComponent} from "./component/admin/user/show-admins/show-admins.component";
+import {ShowAdminsComponent} from "./component/admin/user/admin/show-admins/show-admins.component";
 import {LoginRequired} from "./routing-helper/login-required";
 import {AdminRequired} from "./routing-helper/admin-required";
-import {CreateAdminComponent} from "./component/admin/user/create-admin/create-admin.component";
-import {ShowStudentsComponent} from "./component/admin/user/show-students/show-students.component";
-import {CreateStudentComponent} from "./component/admin/user/create-student/create-student.component";
-import {ShowTeachersComponent} from "./component/admin/user/show-teachers/show-teachers.component";
-import {CreateTeacherComponent} from "./component/admin/user/create-teacher/create-teacher.component";
+import {CreateAdminComponent} from "./component/admin/user/admin/create-admin/create-admin.component";
+import {ShowStudentsComponent} from "./component/admin/user/student/show-students/show-students.component";
+import {CreateStudentComponent} from "./component/admin/user/student/create-student/create-student.component";
+import {ShowTeachersComponent} from "./component/admin/user/teacher/show-teachers/show-teachers.component";
+import {CreateTeacherComponent} from "./component/admin/user/teacher/create-teacher/create-teacher.component";
 import {
   ShowSubjectAreasComponent
 } from "./component/admin/classes/subject-area/show-subject-areas/show-subject-areas.component";
@@ -23,9 +23,9 @@ import {
 import {
   CreateStudentClassComponent
 } from "./component/admin/classes/student-class/create-student-class/create-student-class.component";
-import {EditAdminComponent} from "./component/admin/user/edit-admin/edit-admin.component";
-import {EditStudentComponent} from "./component/admin/user/edit-student/edit-student.component";
-import {EditTeacherComponent} from "./component/admin/user/edit-teacher/edit-teacher.component";
+import {EditAdminComponent} from "./component/admin/user/admin/edit-admin/edit-admin.component";
+import {EditStudentComponent} from "./component/admin/user/student/edit-student/edit-student.component";
+import {EditTeacherComponent} from "./component/admin/user/teacher/edit-teacher/edit-teacher.component";
 import {ChangePasswordComponent} from "./component/auth/change-password/change-password.component";
 import {EditSubjectComponent} from "./component/admin/classes/subject/edit-subject/edit-subject.component";
 import {
