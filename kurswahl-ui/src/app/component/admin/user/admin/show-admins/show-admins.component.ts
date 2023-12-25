@@ -4,6 +4,7 @@ import {AdminResponse, AdminResponses} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-show-admins',
@@ -16,13 +17,15 @@ export class ShowAdminsComponent implements OnInit {
   dataSource!: MatTableDataSource<AdminResponse>;
   displayedColumns: string[];
 
+  selection = new SelectionModel<AdminResponse>(true, []);
+
   constructor(
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen']
+    this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
 
   ngOnInit(): void {
@@ -68,5 +71,28 @@ export class ShowAdminsComponent implements OnInit {
         duration: 5000
       });
     });
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  resetPasswords() {
+
+  }
+
+  deleteAdmins() {
+
   }
 }
