@@ -58,144 +58,130 @@ const routes: Routes = [
     canActivate: mapToCanActivate([LoginRequired])
   },
   {
-    path: 'admin/admins',
-    component: ShowAdminsComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/admins/edit/:id',
-    component: EditAdminComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/admins/create',
-    component: CreateAdminComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/students',
-    component: ShowStudentsComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/students/create',
-    component: CreateStudentComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/students/edit/:id',
-    component: EditStudentComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/teachers',
-    component: ShowTeachersComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/teachers/edit/:id',
-    component: EditTeacherComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/teachers/create',
-    component: CreateTeacherComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjectAreas',
-    component: ShowSubjectAreasComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjectAreas/create',
-    component: CreateSubjectAreaComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjectAreas/edit/:id',
-    component: EditSubjectAreaComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjects',
-    component: ShowSubjectsComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjects/create',
-    component: CreateSubjectComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/subjects/edit/:id',
-    component: EditSubjectComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/studentClasses',
-    component: ShowStudentClassesComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/studentClasses/create',
-    component: CreateStudentClassComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/studentClasses/edit/:id',
-    component: EditStudentClassComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/tapes',
-    component: ShowTapesComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/tapes/create',
-    component: CreateTapeComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/tapes/edit/:id',
-    component: EditTapeComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/classes',
-    component: ShowClassesComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/classes/create',
-    component: CreateClassComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/classes/edit/:id',
-    component: EditClassComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
-  },
-  {
-    path: 'admin/lessons/:year',
-    component: ShowLessonsComponent,
-    canActivate: mapToCanActivate([LoginRequired, AdminRequired])
+    path: 'admin',
+    canActivate: mapToCanActivate([LoginRequired, AdminRequired]),
+    children: [
+      {
+        path: 'admins',
+        component: ShowAdminsComponent
+      },
+      {
+        path: 'admins/edit/:id',
+        component: EditAdminComponent
+      },
+      {
+        path: 'admins/create',
+        component: CreateAdminComponent
+      },
+      {
+        path: 'students',
+        component: ShowStudentsComponent
+      },
+      {
+        path: 'students/create',
+        component: CreateStudentComponent
+      },
+      {
+        path: 'students/edit/:id',
+        component: EditStudentComponent
+      },
+      {
+        path: 'teachers',
+        component: ShowTeachersComponent
+      },
+      {
+        path: 'teachers/edit/:id',
+        component: EditTeacherComponent
+      },
+      {
+        path: 'teachers/create',
+        component: CreateTeacherComponent
+      },
+      {
+        path: 'subjectAreas',
+        component: ShowSubjectAreasComponent
+      },
+      {
+        path: 'subjectAreas/create',
+        component: CreateSubjectAreaComponent
+      },
+      {
+        path: 'subjectAreas/edit/:id',
+        component: EditSubjectAreaComponent
+      },
+      {
+        path: 'subjects',
+        component: ShowSubjectsComponent
+      },
+      {
+        path: 'subjects/create',
+        component: CreateSubjectComponent
+      },
+      {
+        path: 'subjects/edit/:id',
+        component: EditSubjectComponent
+      },
+      {
+        path: 'studentClasses',
+        component: ShowStudentClassesComponent
+      },
+      {
+        path: 'studentClasses/create',
+        component: CreateStudentClassComponent
+      },
+      {
+        path: 'studentClasses/edit/:id',
+        component: EditStudentClassComponent
+      },
+      {
+        path: 'tapes',
+        component: ShowTapesComponent
+      },
+      {
+        path: 'tapes/create',
+        component: CreateTapeComponent
+      },
+      {
+        path: 'tapes/edit/:id',
+        component: EditTapeComponent
+      },
+      {
+        path: 'classes',
+        component: ShowClassesComponent
+      },
+      {
+        path: 'classes/create',
+        component: CreateClassComponent
+      },
+      {
+        path: 'classes/edit/:id',
+        component: EditClassComponent
+      },
+      {
+        path: 'lessons/:year',
+        component: ShowLessonsComponent
+      },
+    ]
   },
   {
     path: 'student',
-    component: HomePageComponent,
-    canActivate: mapToCanActivate([LoginRequired, StudentRequired])
-  },
-  {
-    path: 'student/choice/:choiceNumber',
-    component: MakeChoiceComponent,
-    canActivate: mapToCanActivate([LoginRequired, StudentRequired])
-  },
-  {
-    path: 'student/choices',
-    component: ShowChoicesComponent,
-    canActivate: mapToCanActivate([LoginRequired, StudentRequired])
+    canActivate: mapToCanActivate([LoginRequired, StudentRequired]),
+    children: [
+      {
+        path: '',
+        component: HomePageComponent
+      },
+      {
+        path: 'choice/:choiceNumber',
+        pathMatch: 'full',
+        component: MakeChoiceComponent
+      },
+      {
+        path: 'choices',
+        pathMatch: 'full',
+        component: ShowChoicesComponent
+      },
+    ]
   },
   {
     path: '**',
