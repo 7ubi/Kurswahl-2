@@ -24,20 +24,20 @@ jobs:
         id: cache-restore
         uses: actions/cache/restore@v3
         with:
-          key: CompiledProject-${{ github.event.pull_request.title }}
+          key: CompiledProject-${{ github.head_ref || github.ref_name }}
           path: .
       - name: Delete Previous Cache
         if: ${{ steps.cache-restore.outputs.cache-hit }}
         continue-on-error: true
         run: |
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete "CompiledProject-${{ github.event.pull_request.title }}" --confirm
+          gh actions-cache delete "CompiledProject-${{ github.head_ref || github.ref_name }}" --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Cache Artifact
         uses: actions/cache/save@v3
         with:
-          key: CompiledProject-${{ github.event.pull_request.title }}
+          key: CompiledProject-${{ github.head_ref || github.ref_name }}
           path: .
   sonarcloud:
     name: SonarCloud
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout compiled artifact
         uses: actions/cache/restore@v3
         with:
-          key: CompiledProject-${{ github.event.pull_request.title }}
+          key: CompiledProject-${{ github.head_ref || github.ref_name }}
           path: .
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
