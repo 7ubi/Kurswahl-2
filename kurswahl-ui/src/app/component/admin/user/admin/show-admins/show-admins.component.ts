@@ -75,8 +75,8 @@ export class ShowAdminsComponent implements OnInit {
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected >= numRows;
   }
 
   toggleAllRows() {
@@ -85,7 +85,7 @@ export class ShowAdminsComponent implements OnInit {
       return;
     }
 
-    this.selection.select(...this.dataSource.data);
+    this.selection.select(...this.dataSource.filteredData);
   }
 
   resetPasswords() {
