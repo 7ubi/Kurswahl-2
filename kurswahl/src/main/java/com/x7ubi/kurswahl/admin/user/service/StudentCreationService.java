@@ -57,14 +57,7 @@ public class StudentCreationService {
     @Transactional
     public void registerStudent(StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
 
-        Optional<StudentClass> studentClassOptional =
-                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
-
-        if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
-        }
-
-        StudentClass studentClass = studentClassOptional.get();
+        StudentClass studentClass = getStudentClass(studentSignupRequest);
 
         Student student = this.studentMapper.studentRequestToStudent(studentSignupRequest);
         student.getUser().setUsername(this.usernameService.generateUsernameFromName(studentSignupRequest));
@@ -88,22 +81,9 @@ public class StudentCreationService {
     @Transactional
     public void editStudent(Long studentId, StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
 
-        Optional<StudentClass> studentClassOptional =
-                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
+        StudentClass studentClass = getStudentClass(studentSignupRequest);
 
-        if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
-        }
-
-        StudentClass studentClass = studentClassOptional.get();
-
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
-
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-
-        Student student = studentOptional.get();
+        Student student = getStudentFromId(studentId);
         this.studentMapper.studentRequestToStudent(studentSignupRequest, student);
 
         if (null == student.getStudentClass()) {
@@ -128,13 +108,7 @@ public class StudentCreationService {
 
     public StudentResponse getStudent(Long studentId) throws EntityNotFoundException {
 
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
-
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-
-        Student student = studentOptional.get();
+        Student student = getStudentFromId(studentId);
 
         return this.studentMapper.studentToStudentResponse(student);
     }
@@ -147,13 +121,7 @@ public class StudentCreationService {
     }
 
     private void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
-
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-
-        Student student = studentOptional.get();
+        Student student = getStudentFromId(studentId);
 
         User studentUser = student.getUser();
         if (null != student.getStudentClass()) {
@@ -184,5 +152,26 @@ public class StudentCreationService {
         }
 
         return this.getAllStudents();
+    }
+
+    private Student getStudentFromId(Long studentId) throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
+
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+
+        return studentOptional.get();
+    }
+
+    private StudentClass getStudentClass(StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
+        Optional<StudentClass> studentClassOptional =
+                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
+
+        if (studentClassOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
+        }
+
+        return studentClassOptional.get();
     }
 }

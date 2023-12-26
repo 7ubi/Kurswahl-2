@@ -60,13 +60,7 @@ public class AdminCreationService {
     }
 
     public void editAdmin(Long adminId, AdminSignupRequest signupRequest) throws EntityNotFoundException {
-        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
-
-        if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
-        }
-
-        Admin admin = adminOptional.get();
+        Admin admin = getAdminFromId(adminId);
 
         this.adminMapper.adminRequestToAdmin(signupRequest, admin);
 
@@ -81,13 +75,7 @@ public class AdminCreationService {
     }
 
     private void deleteAdminHelper(Long adminId) throws EntityNotFoundException {
-        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
-
-        if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
-        }
-
-        Admin admin = adminOptional.get();
+        Admin admin = getAdminFromId(adminId);
         User adminUser = admin.getUser();
 
         logger.info(String.format("Deleted Admin %s", adminUser.getUsername()));
@@ -97,13 +85,7 @@ public class AdminCreationService {
     }
 
     public AdminResponse getAdmin(Long adminId) throws EntityNotFoundException {
-        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
-
-        if (adminOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
-        }
-
-        Admin admin = adminOptional.get();
+        Admin admin = getAdminFromId(adminId);
         logger.info(String.format("Found Admin %s", admin.getUser().getUsername()));
 
         return this.adminMapper.adminToAdminResponse(admin);
@@ -116,5 +98,15 @@ public class AdminCreationService {
         }
 
         return getAllAdmins();
+    }
+
+    private Admin getAdminFromId(Long adminId) throws EntityNotFoundException {
+        Optional<Admin> adminOptional = this.adminRepo.findAdminByAdminId(adminId);
+
+        if (adminOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.ADMIN_NOT_FOUND);
+        }
+
+        return adminOptional.get();
     }
 }
