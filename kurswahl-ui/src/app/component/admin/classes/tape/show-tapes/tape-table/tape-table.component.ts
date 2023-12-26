@@ -93,8 +93,8 @@ export class TapeTableComponent implements OnInit {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
-  editTape(subjectId: number) {
-    this.router.navigate(['edit', subjectId], {relativeTo: this.route});
+  editTape(tapeId: number) {
+    this.router.navigate(['edit', tapeId], {relativeTo: this.route});
   }
 
   assignLesson() {

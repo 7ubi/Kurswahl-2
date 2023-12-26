@@ -72,10 +72,6 @@ export interface ClassResponse {
   readonly tapeResponse: TapeResponse;
 }
 
-export interface ClassResponses {
-  readonly classResponses: ClassResponse[];
-}
-
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
