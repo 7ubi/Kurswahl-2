@@ -29,10 +29,6 @@ export interface TeacherResponse extends UserResponse {
   readonly abbreviation: string;
 }
 
-export interface TeacherResponses {
-  readonly teacherResponses: TeacherResponse[];
-}
-
 export interface SubjectAreaResponse {
   readonly subjectAreaId: number;
   readonly name: string;

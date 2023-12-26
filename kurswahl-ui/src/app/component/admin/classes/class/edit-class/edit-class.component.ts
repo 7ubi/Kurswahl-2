@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClassResponse, SubjectResponses, TapeResponses, TeacherResponses} from "../../../admin.responses";
+import {ClassResponse, SubjectResponses, TapeResponses, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -12,7 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class EditClassComponent implements OnInit {
   editClassForm: FormGroup;
   subjectResponses?: SubjectResponses;
-  teacherResponses?: TeacherResponses;
+  teacherResponses?: TeacherResponse[];
   tapeResponses!: TapeResponses;
   classResultResponse?: ClassResponse;
   id: string | null;
@@ -41,8 +41,8 @@ export class EditClassComponent implements OnInit {
       this.subjectResponses = response;
     });
 
-    this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
-      response.teacherResponses.sort((a, b) =>
+    this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
+      response.sort((a, b) =>
         a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
     });

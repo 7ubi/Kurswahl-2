@@ -2,7 +2,6 @@ package com.x7ubi.kurswahl.admin.user.mapper;
 
 import com.x7ubi.kurswahl.admin.user.request.TeacherSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
-import com.x7ubi.kurswahl.admin.user.response.TeacherResponses;
 import com.x7ubi.kurswahl.common.models.Teacher;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,13 +23,6 @@ public interface TeacherMapper {
     @Mapping(source = "surname", target = "user.surname")
     @Mapping(source = "firstname", target = "user.firstname")
     void teacherRequestToTeacher(TeacherSignupRequest teacherSignupRequest, @MappingTarget Teacher teacher);
-
-    default TeacherResponses teachersToTeacherResponses(List<Teacher> teachers) {
-        TeacherResponses teacherResponses = new TeacherResponses();
-        teacherResponses.setTeacherResponses(teachersToTeacherResponse(teachers));
-        return teacherResponses;
-    }
-
     List<TeacherResponse> teachersToTeacherResponse(List<Teacher> teachers);
 
     @Mapping(source = "user.surname", target = "surname")

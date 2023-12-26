@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {TeacherResponse, TeacherResponses} from "../../../admin.responses";
+import {TeacherResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-show-teachers',
@@ -11,9 +12,10 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./show-teachers.component.css']
 })
 export class ShowTeachersComponent implements OnInit {
-  teacherResponses!: TeacherResponses;
+  teacherResponses!: TeacherResponse[];
   dataSource!: MatTableDataSource<TeacherResponse>;
   displayedColumns: string[];
+  selection = new SelectionModel<TeacherResponse>(true, []);
 
 
   constructor(
@@ -22,7 +24,7 @@ export class ShowTeachersComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Kürzel', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
+    this.displayedColumns = ['Auswählen', 'Kürzel', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
 
 
@@ -31,9 +33,9 @@ export class ShowTeachersComponent implements OnInit {
   }
 
   private loadTeachers() {
-    this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
+    this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       this.teacherResponses = response;
-      this.dataSource = new MatTableDataSource(this.teacherResponses.teacherResponses);
+      this.dataSource = new MatTableDataSource(this.teacherResponses);
     });
   }
 
@@ -43,8 +45,9 @@ export class ShowTeachersComponent implements OnInit {
   }
 
   deleteTeacher(teacherId: number) {
-    this.httpService.delete<undefined>(`api/admin/teacher?teacherId=${teacherId}`, response => {
-      this.loadTeachers();
+    this.httpService.delete<TeacherResponse[]>(`api/admin/teacher?teacherId=${teacherId}`, response => {
+      this.teacherResponses = response;
+      this.dataSource = new MatTableDataSource(this.teacherResponses);
       this.snackBar.open('Lehrer wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -69,5 +72,62 @@ export class ShowTeachersComponent implements OnInit {
         duration: 5000
       });
     });
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected >= numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.filteredData);
+  }
+
+  deleteTeachers() {
+
+    this.httpService.delete<TeacherResponse[]>(`api/admin/teachers`, response => {
+      this.teacherResponses = response;
+      this.dataSource = new MatTableDataSource(this.teacherResponses);
+      this.selection.clear();
+      this.snackBar.open('Lehrer wurden erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getDeleteTeachersRequest());
+  }
+
+  private getDeleteTeachersRequest() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(teacher => ids.push(teacher.teacherId));
+
+    return ids;
+  }
+
+  resetPasswords() {
+    this.httpService.put<undefined>('api/auth/resetPasswords', this.getPasswordResetRequests(), response => {
+      this.selection.clear();
+      this.snackBar.open('Passwörter wurden zurück gesetzt.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    });
+  }
+
+  private getPasswordResetRequests() {
+    const ids: { userId: number }[] = [];
+
+    this.selection.selected.forEach(student => ids.push({userId: student.userId}));
+
+    return ids;
   }
 }

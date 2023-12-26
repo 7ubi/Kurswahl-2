@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.user.request.TeacherSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
-import com.x7ubi.kurswahl.admin.user.response.TeacherResponses;
 import com.x7ubi.kurswahl.admin.user.service.TeacherCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 
 @KurswahlServiceTest
 public class TeacherCreationServiceTest {
@@ -185,12 +185,12 @@ public class TeacherCreationServiceTest {
     @Test
     public void testGetAllTeachers() {
         // When
-        TeacherResponses response = this.teacherCreationService.getAllTeachers();
+        List<TeacherResponse> response = this.teacherCreationService.getAllTeachers();
 
         // When
-        Assertions.assertEquals(response.getTeacherResponses().size(), 1);
+        Assertions.assertEquals(response.size(), 1);
 
-        TeacherResponse teacherResponse = response.getTeacherResponses().get(0);
+        TeacherResponse teacherResponse = response.get(0);
         Assertions.assertEquals(teacherResponse.getFirstname(), teacher.getUser().getFirstname());
         Assertions.assertEquals(teacherResponse.getSurname(), teacher.getUser().getSurname());
         Assertions.assertEquals(teacherResponse.getAbbreviation(), teacher.getAbbreviation());
@@ -204,10 +204,11 @@ public class TeacherCreationServiceTest {
         Long id = this.teacher.getTeacherId();
 
         // When
-        this.teacherCreationService.deleteTeacher(id);
+        List<TeacherResponse> response = this.teacherCreationService.deleteTeacher(id);
 
         // Then
         Assertions.assertFalse(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
+        Assertions.assertTrue(response.isEmpty());
     }
 
     @Test
@@ -255,5 +256,20 @@ public class TeacherCreationServiceTest {
         // Then
         Assertions.assertEquals(entityDependencyException.getMessage(), ErrorMessage.TEACHER_CLASS);
         Assertions.assertTrue(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
+    }
+
+    @Test
+    public void testDeleteTeachers() throws EntityDependencyException, EntityNotFoundException {
+        // Given
+        this.teacher = this.teacherRepo.findTeacherByUser_Username(this.teacher.getUser().getUsername()).get();
+        Long id = this.teacher.getTeacherId();
+        List<Long> ids = List.of(id);
+
+        // When
+        List<TeacherResponse> response = this.teacherCreationService.deleteTeachers(ids);
+
+        // Then
+        Assertions.assertFalse(this.teacherRepo.existsTeacherByUser_Username(this.teacher.getUser().getUsername()));
+        Assertions.assertTrue(response.isEmpty());
     }
 }

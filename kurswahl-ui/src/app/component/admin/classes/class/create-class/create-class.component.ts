@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectResponses, TapeResponses, TeacherResponses} from "../../../admin.responses";
+import {SubjectResponses, TapeResponses, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
 export class CreateClassComponent {
   createClassForm: FormGroup;
   subjectResponses?: SubjectResponses;
-  teacherResponses?: TeacherResponses;
+  teacherResponses?: TeacherResponse[];
   tapeResponses!: TapeResponses;
 
   constructor(
@@ -35,8 +35,8 @@ export class CreateClassComponent {
       this.subjectResponses = response;
     });
 
-    this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
-      response.teacherResponses.sort((a, b) =>
+    this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
+      response.sort((a, b) =>
           a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
     });

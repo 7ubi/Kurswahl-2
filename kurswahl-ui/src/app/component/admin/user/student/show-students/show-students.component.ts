@@ -112,6 +112,7 @@ export class ShowStudentsComponent implements OnInit {
     this.httpService.delete<StudentResponse[]>(`api/admin/students`, response => {
       this.studentResponses = response;
       this.dataSource = new MatTableDataSource(this.studentResponses);
+      this.selection.clear();
       this.snackBar.open('Schüler wurden erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",

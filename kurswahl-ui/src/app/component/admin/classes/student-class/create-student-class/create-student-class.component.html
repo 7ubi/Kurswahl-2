@@ -13,7 +13,7 @@
       <mat-form-field class="example-full-width">
         <mat-label>Lehrer</mat-label>
         <mat-select formControlName="teacher">
-          <mat-option *ngFor="let teacher of teachers?.teacherResponses"
+          <mat-option *ngFor="let teacher of teachers"
                       value="{{teacher.teacherId}}"> {{ teacher.abbreviation }}
             - {{ teacher.firstname}} {{ teacher.surname }}</mat-option>
         </mat-select>
