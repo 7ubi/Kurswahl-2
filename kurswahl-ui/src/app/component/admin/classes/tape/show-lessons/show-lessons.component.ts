@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {TapeResponse, TapeResponses} from "../../../admin.responses";
+import {TapeResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {LessonsTable} from "./lessons-table";
 import {FormControl, FormGroup} from "@angular/forms";
@@ -13,7 +13,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 })
 export class ShowLessonsComponent implements OnInit {
   year: string | null;
-  tapeResponses!: TapeResponses;
+  tapeResponses!: TapeResponse[];
   dataSource!: MatTableDataSource<LessonsTable>;
   displayedColumns: string[];
 
@@ -40,7 +40,7 @@ export class ShowLessonsComponent implements OnInit {
   }
 
   private loadTapes(tapeId?: number) {
-    this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${this.year}`, response => {
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.tapeResponses = response;
       this.generateTable();
 
@@ -64,7 +64,7 @@ export class ShowLessonsComponent implements OnInit {
       lessons.push(lesson)
     }
 
-    this.tapeResponses.tapeResponses.forEach(tape => {
+    this.tapeResponses.forEach(tape => {
       tape.lessonResponses.forEach(lesson => {
         switch (lesson.day) {
           case 0:

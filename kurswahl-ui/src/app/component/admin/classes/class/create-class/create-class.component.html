@@ -30,7 +30,7 @@
       <mat-form-field class="example-full-width" *ngIf="isTapeFormFieldActive()">
         <mat-label>Band</mat-label>
         <mat-select formControlName="tape">
-          <mat-option *ngFor="let tape of tapeResponses?.tapeResponses"
+          <mat-option *ngFor="let tape of tapeResponses"
                       value="{{tape.tapeId}}"> {{ tape.name }}
           </mat-option>
         </mat-select>

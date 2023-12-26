@@ -13,7 +13,7 @@
           <mat-chip-option
             [selected]="getIsSelectedTape(tape)"
             (selectionChange)="selected(tape)"
-            *ngFor="let tape of tapeResponses?.tapeResponses"
+            *ngFor="let tape of tapeResponses"
             value="{{ tape.name }}">
             {{ tape.name }}
           </mat-chip-option>
@@ -24,14 +24,14 @@
 
       <ng-container matColumnDef="Stunde">
         <th mat-header-cell *matHeaderCellDef> Stunde</th>
-        <td mat-cell *matCellDef="let element"> {{element.hour}} </td>
+        <td mat-cell *matCellDef="let element"> {{ element.hour }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Montag">
         <th mat-header-cell *matHeaderCellDef> Montag</th>
         <td mat-cell class="{{ getClassForCell(0, element.hour, element.monday) }}"
             (click)="selectLesson(0, element.hour)" *matCellDef="let element">
-          {{element.monday?.name}}
+          {{ element.monday?.name }}
         </td>
       </ng-container>
 
@@ -39,7 +39,7 @@
         <th mat-header-cell *matHeaderCellDef> Dienstag</th>
         <td mat-cell class="{{ getClassForCell(1, element.hour, element.tuesday) }}"
             (click)="selectLesson(1, element.hour)" *matCellDef="let element">
-          {{element.tuesday?.name}}
+          {{ element.tuesday?.name }}
         </td>
       </ng-container>
 
@@ -47,7 +47,7 @@
         <th mat-header-cell *matHeaderCellDef> Mittwoch</th>
         <td mat-cell class="{{ getClassForCell(2, element.hour, element.wednesday) }}"
             (click)="selectLesson(2, element.hour)" *matCellDef="let element">
-          {{element.wednesday?.name}}
+          {{ element.wednesday?.name }}
         </td>
       </ng-container>
 
@@ -55,7 +55,7 @@
         <th mat-header-cell *matHeaderCellDef> Donnerstag</th>
         <td mat-cell class="{{ getClassForCell(3, element.hour, element.thursday) }}"
             (click)="selectLesson(3, element.hour)" *matCellDef="let element">
-          {{element.thursday?.name}}
+          {{ element.thursday?.name }}
         </td>
       </ng-container>
 
@@ -63,7 +63,7 @@
         <th mat-header-cell *matHeaderCellDef> Freitag</th>
         <td mat-cell class="{{ getClassForCell(4, element.hour, element.friday) }}"
             (click)="selectLesson(4, element.hour)" *matCellDef="let element">
-          {{element.friday?.name}}
+          {{ element.friday?.name }}
         </td>
       </ng-container>
 

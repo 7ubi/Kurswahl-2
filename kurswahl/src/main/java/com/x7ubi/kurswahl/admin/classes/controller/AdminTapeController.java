@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.controller;
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -13,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -91,8 +92,8 @@ public class AdminTapeController {
         logger.info("Deleting Tape");
 
         try {
-            this.tapeCreationService.deleteTape(tapeId);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            List<TapeResponse> tapeResponses = this.tapeCreationService.deleteTape(tapeId);
+            return ResponseEntity.status(HttpStatus.OK).body(tapeResponses);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -107,8 +108,25 @@ public class AdminTapeController {
         logger.info("Getting all Tapes");
 
         try {
-            TapeResponses tapeResponses = this.tapeCreationService.getAllTapes(year);
+            List<TapeResponse> tapeResponses = this.tapeCreationService.getAllTapes(year);
             return ResponseEntity.status(HttpStatus.OK).body(tapeResponses);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/tapes")
+    @AdminRequired
+    public ResponseEntity<?> deleteTapes(@RequestBody List<Long> tapeIds) {
+        logger.info("Deleting Tapes");
+
+        try {
+            List<TapeResponse> tapeResponses = this.tapeCreationService.deleteTapes(tapeIds);
+            return ResponseEntity.status(HttpStatus.OK).body(tapeResponses);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

@@ -68,10 +68,6 @@ export interface TapeResponse {
   readonly lessonResponses: LessonResponse[];
 }
 
-export interface TapeResponses {
-  readonly tapeResponses: TapeResponse[];
-}
-
 export interface ClassResponse {
   readonly classId: number;
   readonly name: string;

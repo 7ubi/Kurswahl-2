@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClassResponse, SubjectResponse, TapeResponses, TeacherResponse} from "../../../admin.responses";
+import {ClassResponse, SubjectResponse, TapeResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -13,7 +13,7 @@ export class EditClassComponent implements OnInit {
   editClassForm: FormGroup;
   subjectResponses?: SubjectResponse[];
   teacherResponses?: TeacherResponse[];
-  tapeResponses!: TapeResponses;
+  tapeResponses!: TapeResponse[];
   classResultResponse?: ClassResponse;
   id: string | null;
 
@@ -56,9 +56,9 @@ export class EditClassComponent implements OnInit {
       this.editClassForm.controls['tape'].setValue(this.classResultResponse.tapeResponse.tapeId);
       this.editClassForm.controls['subject'].setValue(this.classResultResponse.subjectResponse.subjectId);
 
-      this.httpService.get<TapeResponses>(
+      this.httpService.get<TapeResponse[]>(
         `/api/admin/tapes?year=${this.classResultResponse?.tapeResponse.year}`, response => {
-          response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
+          response.sort((a, b) => a.name.localeCompare(b.name));
           this.tapeResponses = response;
         });
     });
@@ -88,14 +88,14 @@ export class EditClassComponent implements OnInit {
     const year = Number((event?.target as HTMLInputElement).value);
 
 
-    this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${year}`, response => {
-      response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${year}`, response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.tapeResponses = response;
     });
   }
 
   isTapeFormFieldActive(): boolean {
-    return this.tapeResponses?.tapeResponses.length > 0;
+    return this.tapeResponses && this.tapeResponses!.length > 0;
   }
 
 

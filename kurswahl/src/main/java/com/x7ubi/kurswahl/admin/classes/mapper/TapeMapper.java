@@ -2,7 +2,6 @@ package com.x7ubi.kurswahl.admin.classes.mapper;
 
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.common.models.Tape;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,12 +19,6 @@ public interface TapeMapper {
     Tape tapeRequestToTape(TapeCreationRequest tapeCreationRequest);
 
     void tapeRequestToTape(TapeCreationRequest tapeCreationRequest, @MappingTarget Tape tape);
-
-    default TapeResponses tapesToTapeResponses(List<Tape> tapes) {
-        TapeResponses tapeResponses = new TapeResponses();
-        tapeResponses.setTapeResponses(tapesToTapeResponseList(tapes));
-        return tapeResponses;
-    }
 
     List<TapeResponse> tapesToTapeResponseList(List<Tape> tapes);
 

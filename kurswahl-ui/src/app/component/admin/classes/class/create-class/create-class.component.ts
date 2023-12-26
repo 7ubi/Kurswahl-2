@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectResponse, TapeResponses, TeacherResponse} from "../../../admin.responses";
+import {SubjectResponse, TapeResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -13,7 +13,7 @@ export class CreateClassComponent implements OnInit {
   createClassForm: FormGroup;
   subjectResponses?: SubjectResponse[];
   teacherResponses?: TeacherResponse[];
-  tapeResponses!: TapeResponses;
+  tapeResponses!: TapeResponse[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -64,14 +64,13 @@ export class CreateClassComponent implements OnInit {
   loadTapes($event: KeyboardEvent) {
     const year = Number((event?.target as HTMLInputElement).value);
 
-
-    this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${year}`, response => {
-      response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${year}`, response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.tapeResponses = response;
     });
   }
 
   isTapeFormFieldActive(): boolean {
-    return this.tapeResponses?.tapeResponses.length > 0;
+    return this.tapeResponses && this.tapeResponses.length > 0;
   }
 }

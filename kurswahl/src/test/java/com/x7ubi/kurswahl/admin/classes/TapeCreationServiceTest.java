@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.admin.classes.service.TapeCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 
 @KurswahlServiceTest
 public class TapeCreationServiceTest {
@@ -244,12 +244,12 @@ public class TapeCreationServiceTest {
         setupLesson();
 
         // When
-        TapeResponses responses = this.tapeCreationService.getAllTapes(11);
+        List<TapeResponse> responses = this.tapeCreationService.getAllTapes(11);
 
         // Then
-        Assertions.assertEquals(responses.getTapeResponses().size(), 1);
+        Assertions.assertEquals(responses.size(), 1);
 
-        TapeResponse tape1 = responses.getTapeResponses().get(0);
+        TapeResponse tape1 = responses.get(0);
         Assertions.assertEquals(tape1.getName(), tape.getName());
         Assertions.assertEquals(tape1.getLk(), tape.getLk());
         Assertions.assertEquals(tape1.getYear(), tape.getYear());
@@ -269,13 +269,15 @@ public class TapeCreationServiceTest {
         lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
 
         // When
-        this.tapeCreationService.deleteTape(tape.getTapeId());
+        List<TapeResponse> tapeResponses = this.tapeCreationService.deleteTape(tape.getTapeId());
 
         // Then
         Assertions.assertFalse(
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
         Assertions.assertFalse(lessonRepo.existsByLessonId(lesson.getLessonId()));
         Assertions.assertFalse(classRepo.existsClassByName(aClass.getName()));
+
+        Assertions.assertTrue(tapeResponses.isEmpty());
     }
 
     @Test
@@ -297,5 +299,26 @@ public class TapeCreationServiceTest {
                 this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
         Assertions.assertTrue(lessonRepo.existsByLessonId(lesson.getLessonId()));
         Assertions.assertTrue(classRepo.existsClassByName(aClass.getName()));
+    }
+
+    @Test
+    public void deleteTapes() throws EntityNotFoundException {
+        // Given
+        setupLesson();
+        tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        setupClass();
+        tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
+        lesson = this.lessonRepo.findLessonByTape_TapeId(tape.getTapeId()).get();
+
+        // When
+        List<TapeResponse> tapeResponses = this.tapeCreationService.deleteTapes(List.of(tape.getTapeId()));
+
+        // Then
+        Assertions.assertFalse(
+                this.tapeRepo.existsTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()));
+        Assertions.assertFalse(lessonRepo.existsByLessonId(lesson.getLessonId()));
+        Assertions.assertFalse(classRepo.existsClassByName(aClass.getName()));
+
+        Assertions.assertTrue(tapeResponses.isEmpty());
     }
 }
