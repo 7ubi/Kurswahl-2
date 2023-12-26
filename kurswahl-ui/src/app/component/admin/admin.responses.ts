@@ -49,10 +49,6 @@ export interface StudentClassResponse {
   readonly releaseYear: number;
 }
 
-export interface StudentClassResponses {
-  readonly studentClassResponses: StudentClassResponse[];
-}
-
 export interface LessonResponse {
   readonly lessonId: number;
   readonly day: number;

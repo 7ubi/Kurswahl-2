@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.StudentClassMapper;
 import com.x7ubi.kurswahl.admin.classes.request.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -13,10 +12,11 @@ import com.x7ubi.kurswahl.common.models.Teacher;
 import com.x7ubi.kurswahl.common.repository.StudentClassRepo;
 import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
 import java.util.List;
@@ -124,15 +124,23 @@ public class StudentClassCreationService {
         return this.studentClassMapper.studentClassToStudentClassResponse(studentClass);
     }
 
-    public StudentClassResponses getAllStudentClasses() {
+    @Transactional
+    public List<StudentClassResponse> getAllStudentClasses() {
         List<StudentClass> studentClasses = this.studentClassRepo.findAll();
 
-        return this.studentClassMapper.studentClassesToStudentClassResponses(studentClasses);
+        return this.studentClassMapper.studentClassListToStudentClassResponseList(studentClasses);
     }
 
     @Transactional
-    public void deleteStudentClass(Long studentClassId) throws EntityNotFoundException {
+    public List<StudentClassResponse> deleteStudentClass(Long studentClassId) throws EntityNotFoundException {
 
+        deleteStudentClassHelper(studentClassId);
+
+        return getAllStudentClasses();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteStudentClassHelper(Long studentClassId) throws EntityNotFoundException {
         Optional<StudentClass> studentClassOptional
                 = this.studentClassRepo.findStudentClassByStudentClassId(studentClassId);
 
@@ -143,6 +151,7 @@ public class StudentClassCreationService {
         StudentClass studentClass = studentClassOptional.get();
 
         studentClass.getTeacher().getStudentClasses().remove(studentClass);
+        this.teacherRepo.save(studentClass.getTeacher());
         for (Student student : studentClass.getStudents()) {
             student.setStudentClass(null);
             this.studentRepo.save(student);
@@ -161,5 +170,14 @@ public class StudentClassCreationService {
                 studentClassCreationRequest.getName(), currentYear)) {
             throw new EntityCreationException(ErrorMessage.STUDENT_CLASS_ALREADY_EXISTS);
         }
+    }
+
+    @Transactional
+    public List<StudentClassResponse> deleteStudentClasses(List<Long> studentClassIds) throws EntityNotFoundException {
+        for (Long studentClassId : studentClassIds) {
+            this.deleteStudentClassHelper(studentClassId);
+        }
+
+        return getAllStudentClasses();
     }
 }

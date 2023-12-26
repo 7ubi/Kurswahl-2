@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {StudentClassResponses, StudentResponse} from "../../../admin.responses";
+import {StudentClassResponse, StudentResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class EditStudentComponent implements OnInit {
   editStudentForm: FormGroup;
-  studentClasses?: StudentClassResponses;
+  studentClasses?: StudentClassResponse[];
   student?: StudentResponse;
   id: string | null;
 
@@ -31,7 +31,7 @@ export class EditStudentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.httpService.get<StudentClassResponses>('/api/admin/studentClasses', response => {
+    this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClasses = response;
     });
 

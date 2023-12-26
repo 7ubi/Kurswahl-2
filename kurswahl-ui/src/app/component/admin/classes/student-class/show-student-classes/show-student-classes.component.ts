@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentClassResponse, StudentClassResponses} from "../../../admin.responses";
+import {StudentClassResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-show-student-classes',
@@ -12,11 +13,12 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./show-student-classes.component.css']
 })
 export class ShowStudentClassesComponent implements OnInit {
-  studentClassResponses!: StudentClassResponses;
+  studentClassResponses!: StudentClassResponse[];
   dataSource!: MatTableDataSource<StudentClassResponse>;
   displayedColumns: string[];
 
   lastSort: Sort | null = null;
+  selection = new SelectionModel<StudentClassResponse>(true, []);
 
   constructor(
     private httpService: HttpService,
@@ -24,7 +26,7 @@ export class ShowStudentClassesComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Name', 'Lehrer', 'Jahrgang', 'Aktionen'];
+    this.displayedColumns = ['Auswählen', 'Name', 'Lehrer', 'Jahrgang', 'Aktionen'];
   }
 
 
@@ -33,17 +35,21 @@ export class ShowStudentClassesComponent implements OnInit {
   }
 
   private loadStudentClasses() {
-    this.httpService.get<StudentClassResponses>('/api/admin/studentClasses', response => {
-      this.studentClassResponses = response;
-      this.dataSource = new MatTableDataSource(this.studentClassResponses.studentClassResponses);
-
-      if (this.lastSort) {
-        this.sortData(this.lastSort);
-      } else {
-        this.dataSource.data
-          = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
-      }
+    this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
+      this.setDataSource(response);
     });
+  }
+
+  private setDataSource(response: StudentClassResponse[]) {
+    this.studentClassResponses = response;
+    this.dataSource = new MatTableDataSource(this.studentClassResponses);
+
+    if (this.lastSort) {
+      this.sortData(this.lastSort);
+    } else {
+      this.dataSource.data
+        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
+    }
   }
 
   applyFilter($event: KeyboardEvent) {
@@ -52,8 +58,8 @@ export class ShowStudentClassesComponent implements OnInit {
   }
 
   deleteStudentClass(studentClassId: number) {
-    this.httpService.delete<undefined>(`api/admin/studentClass?studentClassId=${studentClassId}`, response => {
-      this.loadStudentClasses();
+    this.httpService.delete<StudentClassResponse[]>(`api/admin/studentClass?studentClassId=${studentClassId}`, response => {
+      this.setDataSource(response);
       this.snackBar.open('Klasse wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -65,7 +71,7 @@ export class ShowStudentClassesComponent implements OnInit {
   sortData(sort: Sort) {
     this.lastSort = sort;
     if (!sort.active || sort.direction === '') {
-      this.dataSource = new MatTableDataSource(this.studentClassResponses.studentClassResponses);
+      this.dataSource = new MatTableDataSource(this.studentClassResponses);
       return;
     }
 
@@ -94,5 +100,41 @@ export class ShowStudentClassesComponent implements OnInit {
 
   editStudentClass(studentClassId: number) {
     this.router.navigate(['edit', studentClassId], {relativeTo: this.route});
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected >= numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.filteredData);
+  }
+
+  deleteStudentClasses() {
+    this.httpService.delete<StudentClassResponse[]>(`api/admin/studentClasses`, response => {
+      this.setDataSource(response);
+      this.selection.clear();
+      this.snackBar.open('Klassen wurden erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getDeleteStudentClassesRequest());
+  }
+
+  private getDeleteStudentClassesRequest() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(studentClass => ids.push(studentClass.studentClassId));
+
+    return ids;
   }
 }

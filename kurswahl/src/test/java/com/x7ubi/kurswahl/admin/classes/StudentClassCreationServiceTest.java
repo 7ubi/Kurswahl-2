@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponses;
 import com.x7ubi.kurswahl.admin.classes.service.StudentClassCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 
 @KurswahlServiceTest
 public class StudentClassCreationServiceTest {
@@ -93,7 +93,7 @@ public class StudentClassCreationServiceTest {
 
     private void setupOtherStudentClass() {
         studentClassOther = new StudentClass();
-        studentClassOther.setTeacher(teacher);
+        studentClassOther.setTeacher(teacherOther);
         studentClassOther.setName("Q2b");
         studentClassOther.setReleaseYear(Year.now().getValue());
         studentClassOther.setYear(12);
@@ -323,12 +323,12 @@ public class StudentClassCreationServiceTest {
     @Test
     public void testGetAllStudentClasses() {
         // When
-        StudentClassResponses responses = this.studentClassCreationService.getAllStudentClasses();
+        List<StudentClassResponse> responses = this.studentClassCreationService.getAllStudentClasses();
 
         // Then
-        Assertions.assertEquals(responses.getStudentClassResponses().size(), 2);
+        Assertions.assertEquals(responses.size(), 2);
 
-        StudentClassResponse studentClassResponse = responses.getStudentClassResponses().get(0);
+        StudentClassResponse studentClassResponse = responses.get(0);
         Assertions.assertEquals(studentClassResponse.getStudentClassId(), studentClass.getStudentClassId());
         Assertions.assertEquals(studentClassResponse.getName(), studentClass.getName());
         Assertions.assertEquals(studentClassResponse.getYear(), studentClass.getYear());
@@ -336,7 +336,7 @@ public class StudentClassCreationServiceTest {
                 studentClass.getTeacher().getTeacherId());
         Assertions.assertEquals(studentClassResponse.getReleaseYear(), Year.now().getValue());
 
-        StudentClassResponse studentClassResponse2 = responses.getStudentClassResponses().get(1);
+        StudentClassResponse studentClassResponse2 = responses.get(1);
         Assertions.assertEquals(studentClassResponse2.getStudentClassId(), studentClassOther.getStudentClassId());
         Assertions.assertEquals(studentClassResponse2.getName(), studentClassOther.getName());
         Assertions.assertEquals(studentClassResponse2.getYear(), studentClassOther.getYear());
@@ -382,13 +382,21 @@ public class StudentClassCreationServiceTest {
         studentClass = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
 
         // When
-        this.studentClassCreationService.deleteStudentClass(studentClass.getStudentClassId());
+        List<StudentClassResponse> responses = this.studentClassCreationService.deleteStudentClass(studentClass.getStudentClassId());
 
         // Then
         Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClass.getName()));
 
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
         Assertions.assertTrue(teacher.getStudentClasses().isEmpty());
+
+        StudentClassResponse studentClassResponse2 = responses.get(0);
+        Assertions.assertEquals(studentClassResponse2.getStudentClassId(), studentClassOther.getStudentClassId());
+        Assertions.assertEquals(studentClassResponse2.getName(), studentClassOther.getName());
+        Assertions.assertEquals(studentClassResponse2.getYear(), studentClassOther.getYear());
+        Assertions.assertEquals(studentClassResponse2.getTeacher().getTeacherId(),
+                studentClassOther.getTeacher().getTeacherId());
+        Assertions.assertEquals(studentClassResponse2.getReleaseYear(), Year.now().getValue());
     }
 
     @Test
@@ -407,5 +415,27 @@ public class StudentClassCreationServiceTest {
 
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
         Assertions.assertEquals(teacher.getStudentClasses().size(), 1);
+    }
+
+    @Test
+    public void testDeleteStudentClasses() throws EntityNotFoundException {
+        // Given
+        studentClass = this.studentClassRepo.findStudentClassByName(studentClass.getName()).get();
+        studentClassOther = this.studentClassRepo.findStudentClassByName(studentClassOther.getName()).get();
+
+        // When
+        List<StudentClassResponse> responses = this.studentClassCreationService.deleteStudentClasses(
+                List.of(studentClass.getStudentClassId(), studentClassOther.getStudentClassId()));
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
+
+        Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClass.getName()));
+        Assertions.assertFalse(this.studentClassRepo.existsStudentClassByName(studentClassOther.getName()));
+
+        teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
+        Assertions.assertTrue(teacher.getStudentClasses().isEmpty());
+        teacherOther = this.teacherRepo.findTeacherByTeacherId(teacherOther.getTeacherId()).get();
+        Assertions.assertTrue(teacherOther.getStudentClasses().isEmpty());
     }
 }
