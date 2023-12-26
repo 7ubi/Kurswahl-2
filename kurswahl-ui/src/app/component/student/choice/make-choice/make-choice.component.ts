@@ -61,8 +61,8 @@ export class MakeChoiceComponent implements OnDestroy {
   }
 
   alterChoice(classId: number) {
-    this.httpService.put<undefined>('/api/student/choice', this.getAlterChoiceRequest(classId),
-        response => this.loadChoice());
+    this.httpService.put<ChoiceResponse>('/api/student/choice', this.getAlterChoiceRequest(classId),
+      response => this.choiceResponse = response);
   }
 
   getAlterChoiceRequest(classId: number) {
@@ -102,9 +102,10 @@ export class MakeChoiceComponent implements OnDestroy {
     const classResponse = this.choiceResponse!.classChoiceResponses!.filter(c =>
       c.tapeId === this.selectedTape?.tapeId)[0];
 
-    if(classResponse) {
-      this.httpService.delete<undefined>('/api/student/choice', response => this.loadChoice(),
-        () => {}, this.getDeleteClassFromChoiceRequest(classResponse))
+    if (classResponse) {
+      this.httpService.delete<ChoiceResponse>('/api/student/choice', response => this.choiceResponse = response,
+        () => {
+        }, this.getDeleteClassFromChoiceRequest(classResponse))
     }
   }
 
