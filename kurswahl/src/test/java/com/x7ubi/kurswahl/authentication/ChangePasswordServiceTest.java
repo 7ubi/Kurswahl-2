@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 @KurswahlServiceTest
 public class ChangePasswordServiceTest {
 
@@ -120,5 +122,20 @@ public class ChangePasswordServiceTest {
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testResetPasswords() throws EntityNotFoundException {
+        // Given
+        PasswordResetRequest passwordResetRequest = new PasswordResetRequest();
+        passwordResetRequest.setUserId(this.userRepo.findByUsername(user.getUsername()).get().getUserId());
+        List<PasswordResetRequest> passwordResetRequests = List.of(passwordResetRequest);
+
+        // When
+        this.changePasswordService.resetPasswords(passwordResetRequests);
+
+        // Then
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches(updatedUser.getGeneratedPassword(), updatedUser.getPassword()));
     }
 }

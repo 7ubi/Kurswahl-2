@@ -90,7 +90,22 @@ export class ShowAdminsComponent implements OnInit {
   }
 
   resetPasswords() {
+    this.httpService.put<undefined>('api/auth/resetPasswords', this.getPasswordResetRequests(), response => {
+      this.selection.clear();
+      this.snackBar.open('Passwörter wurden zurück gesetzt.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    });
+  }
 
+  private getPasswordResetRequests() {
+    const ids: { userId: number }[] = [];
+
+    this.selection.selected.forEach(admin => ids.push({userId: admin.userId}));
+
+    return ids;
   }
 
   deleteAdmins() {
