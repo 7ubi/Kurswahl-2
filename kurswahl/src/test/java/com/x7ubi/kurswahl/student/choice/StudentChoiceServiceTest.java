@@ -248,11 +248,15 @@ public class StudentChoiceServiceTest {
         alterStudentChoiceRequest.setClassId(aClass.getClassId());
 
         // When
-        this.studentChoiceService.alterChoice(student.getUser().getUsername(), alterStudentChoiceRequest);
+        ChoiceResponse choiceResponse = this.studentChoiceService.alterChoice(student.getUser().getUsername(),
+                alterStudentChoiceRequest);
 
         // Then
         Choice created_choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                 1, student.getStudentId(), Year.now().getValue()).get();
+
+
+        Assertions.assertEquals(choiceResponse.getChoiceId(), created_choice.getChoiceId());
 
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
         Assertions.assertEquals(created_choice.getClasses().size(), 1);
@@ -273,11 +277,14 @@ public class StudentChoiceServiceTest {
         alterStudentChoiceRequest.setClassId(aClass.getClassId());
 
         // When
-        this.studentChoiceService.alterChoice(student.getUser().getUsername(), alterStudentChoiceRequest);
+        ChoiceResponse choiceResponse = this.studentChoiceService.alterChoice(student.getUser().getUsername(),
+                alterStudentChoiceRequest);
 
         // Then
         Choice created_choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
                 1, student.getStudentId(), Year.now().getValue()).get();
+
+        Assertions.assertEquals(choiceResponse.getChoiceId(), created_choice.getChoiceId());
 
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
         Assertions.assertEquals(created_choice.getClasses().size(), 1);
@@ -593,9 +600,11 @@ public class StudentChoiceServiceTest {
         request.setClassId(aClass.getClassId());
 
         // When
-        this.studentChoiceService.deleteClassFromChoice(request);
+        ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(request);
 
         // Then
+        Assertions.assertEquals(response.getChoiceId(), choice.getChoiceId());
+
         choice = this.choiceRepo.findChoiceByChoiceId(choice.getChoiceId()).get();
         Assertions.assertTrue(choice.getClasses().isEmpty());
 

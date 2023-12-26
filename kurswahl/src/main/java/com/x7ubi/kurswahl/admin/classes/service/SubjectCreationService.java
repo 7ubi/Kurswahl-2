@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.SubjectMapper;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectResponse;
-import com.x7ubi.kurswahl.admin.classes.response.SubjectResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -48,14 +47,7 @@ public class SubjectCreationService {
 
         this.findSubjectCreationError(subjectCreationRequest);
 
-        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(
-                subjectCreationRequest.getSubjectAreaId());
-
-        if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
-        }
-
-        SubjectArea subjectArea = subjectAreaOptional.get();
+        SubjectArea subjectArea = getSubjectArea(subjectCreationRequest);
 
         Subject subject = this.subjectMapper.subjectRequestToSubject(subjectCreationRequest);
         subject.setSubjectArea(subjectArea);
@@ -68,18 +60,9 @@ public class SubjectCreationService {
 
     public void editSubject(Long subjectId, SubjectCreationRequest subjectCreationRequest)
             throws EntityNotFoundException, EntityCreationException {
-        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(
-                subjectCreationRequest.getSubjectAreaId());
-        if (subjectAreaOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
-        }
-        SubjectArea subjectArea = subjectAreaOptional.get();
+        SubjectArea subjectArea = getSubjectArea(subjectCreationRequest);
 
-        Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
-        if (subjectOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
-        }
-        Subject subject = subjectOptional.get();
+        Subject subject = getSubjectFromId(subjectId);
 
         if (!Objects.equals(subject.getName(), subjectCreationRequest.getName())) {
             this.findSubjectCreationError(subjectCreationRequest);
@@ -100,18 +83,20 @@ public class SubjectCreationService {
         logger.info(String.format("Edited subject %s", subject.getName()));
     }
 
-    public SubjectResponses getAllSubjects() {
+    public List<SubjectResponse> getAllSubjects() {
         List<Subject> subjects = this.subjectRepo.findAll();
 
-        return this.subjectMapper.subjectsToSubjectResponses(subjects);
+        return this.subjectMapper.subjectsToSubjectResponseList(subjects);
     }
 
-    public void deleteSubject(Long subjectId) throws EntityNotFoundException {
-        Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
-        if (subjectOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
-        }
-        Subject subject = subjectOptional.get();
+    public List<SubjectResponse> deleteSubject(Long subjectId) throws EntityNotFoundException {
+        deleteSubjectHelper(subjectId);
+
+        return getAllSubjects();
+    }
+
+    private void deleteSubjectHelper(Long subjectId) throws EntityNotFoundException {
+        Subject subject = getSubjectFromId(subjectId);
 
         subject.getSubjectArea().getSubjects().remove(subject);
         this.subjectAreaRepo.save(subject.getSubjectArea());
@@ -127,18 +112,39 @@ public class SubjectCreationService {
     }
 
     public SubjectResponse getSubject(Long subjectId) throws EntityNotFoundException {
+        Subject subject = getSubjectFromId(subjectId);
+
+        return this.subjectMapper.subjectToSubjectResponse(subject);
+    }
+
+    private Subject getSubjectFromId(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
         }
-        Subject subject = subjectOptional.get();
-
-        return this.subjectMapper.subjectToSubjectResponse(subject);
+        return subjectOptional.get();
     }
 
     private void findSubjectCreationError(SubjectCreationRequest subjectCreationRequest) throws EntityCreationException {
         if (this.subjectRepo.existsSubjectByName(subjectCreationRequest.getName())) {
             throw new EntityCreationException(ErrorMessage.SUBJECT_ALREADY_EXISTS);
         }
+    }
+
+    public List<SubjectResponse> deleteSubjects(List<Long> subjectIds) throws EntityNotFoundException {
+        for (Long subjectId : subjectIds) {
+            deleteSubjectHelper(subjectId);
+        }
+
+        return getAllSubjects();
+    }
+
+    private SubjectArea getSubjectArea(SubjectCreationRequest subjectCreationRequest) throws EntityNotFoundException {
+        Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(
+                subjectCreationRequest.getSubjectAreaId());
+        if (subjectAreaOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.SUBJECT_AREA_NOT_FOUND);
+        }
+        return subjectAreaOptional.get();
     }
 }

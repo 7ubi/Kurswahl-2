@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.TapeMapper;
 import com.x7ubi.kurswahl.admin.classes.request.TapeCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
-import com.x7ubi.kurswahl.admin.classes.response.TapeResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -87,14 +86,21 @@ public class TapeCreationService {
         return this.tapeMapper.tapeToTapeResponse(tape);
     }
 
-    public TapeResponses getAllTapes(Integer year) {
+    public List<TapeResponse> getAllTapes(Integer year) {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(year, Year.now().getValue()).get();
 
-        return this.tapeMapper.tapesToTapeResponses(tapes);
+        return this.tapeMapper.tapesToTapeResponseList(tapes);
     }
 
     @Transactional
-    public void deleteTape(Long tapeId) throws EntityNotFoundException {
+    public List<TapeResponse> deleteTape(Long tapeId) throws EntityNotFoundException {
+        Integer year = deleteTapeHelper(tapeId);
+
+        return getAllTapes(year);
+    }
+
+    @Transactional
+    protected Integer deleteTapeHelper(Long tapeId) throws EntityNotFoundException {
         Optional<Tape> tapeOptional = this.tapeRepo.findTapeByTapeId(tapeId);
         if (tapeOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.TAPE_NOT_FOUND);
@@ -111,6 +117,8 @@ public class TapeCreationService {
 
         this.tapeRepo.delete(tape);
         logger.info(String.format("Deleted tape %s", tape.getName()));
+
+        return tape.getYear();
     }
 
     public void findTapeCreationError(TapeCreationRequest tapeCreationRequest) throws EntityCreationException {
@@ -118,5 +126,14 @@ public class TapeCreationService {
                 tapeCreationRequest.getYear(), Year.now().getValue())) {
             throw new EntityCreationException(ErrorMessage.TAPE_ALREADY_EXISTS);
         }
+    }
+
+    @Transactional
+    public List<TapeResponse> deleteTapes(List<Long> tapeIds) throws EntityNotFoundException {
+        Integer year = null;
+        for (Long tapeId : tapeIds) {
+            year = deleteTapeHelper(tapeId);
+        }
+        return getAllTapes(year);
     }
 }

@@ -61,7 +61,7 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public void alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest)
+    public ChoiceResponse alterChoice(String username, AlterStudentChoiceRequest alterStudentChoiceRequest)
             throws EntityNotFoundException, UnauthorizedException {
         Student student = getStudent(username);
 
@@ -98,6 +98,8 @@ public class StudentChoiceService {
 
         setClassToChoice(choice, aClass);
         logger.info(String.format("Altered choice for %s", student.getUser().getUsername()));
+
+        return this.choiceMapper.choiceToChoiceResponse(choice);
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
@@ -199,7 +201,7 @@ public class StudentChoiceService {
         return studentOptional.get();
     }
 
-    public void deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
+    public ChoiceResponse deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
             throws EntityNotFoundException {
         Optional<Choice> choiceOptional
                 = this.choiceRepo.findChoiceByChoiceId(deleteClassFromChoiceRequest.getChoiceId());
@@ -227,5 +229,6 @@ public class StudentChoiceService {
         this.classRepo.save(aclass);
 
         logger.info(String.format("Removed %s from Choice", aclass.getName()));
+        return this.choiceMapper.choiceToChoiceResponse(choice);
     }
 }

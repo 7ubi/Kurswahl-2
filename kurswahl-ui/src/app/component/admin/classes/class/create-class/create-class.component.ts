@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectResponses, TapeResponses, TeacherResponses} from "../../../admin.responses";
+import {SubjectResponse, TapeResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -9,16 +9,16 @@ import {Router} from "@angular/router";
   templateUrl: './create-class.component.html',
   styleUrls: ['./create-class.component.css']
 })
-export class CreateClassComponent {
+export class CreateClassComponent implements OnInit {
   createClassForm: FormGroup;
-  subjectResponses?: SubjectResponses;
-  teacherResponses?: TeacherResponses;
-  tapeResponses!: TapeResponses;
+  subjectResponses?: SubjectResponse[];
+  teacherResponses?: TeacherResponse[];
+  tapeResponses!: TapeResponse[];
 
   constructor(
-      private formBuilder: FormBuilder,
-      private httpService: HttpService,
-      private router: Router
+    private formBuilder: FormBuilder,
+    private httpService: HttpService,
+    private router: Router
   ) {
     this.createClassForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -30,14 +30,14 @@ export class CreateClassComponent {
   }
 
   ngOnInit(): void {
-    this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
-      response.subjectResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
     });
 
-    this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
-      response.teacherResponses.sort((a, b) =>
-          a.abbreviation.localeCompare(b.abbreviation));
+    this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
+      response.sort((a, b) =>
+        a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
     });
   }
@@ -64,14 +64,13 @@ export class CreateClassComponent {
   loadTapes($event: KeyboardEvent) {
     const year = Number((event?.target as HTMLInputElement).value);
 
-
-    this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${year}`, response => {
-      response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${year}`, response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.tapeResponses = response;
     });
   }
 
   isTapeFormFieldActive(): boolean {
-    return this.tapeResponses?.tapeResponses.length > 0;
+    return this.tapeResponses && this.tapeResponses.length > 0;
   }
 }

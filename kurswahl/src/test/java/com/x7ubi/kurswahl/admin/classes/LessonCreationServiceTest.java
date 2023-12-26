@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.classes;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 @KurswahlServiceTest
@@ -65,9 +67,12 @@ public class LessonCreationServiceTest {
         lessonCreationRequest.setTapeId(tape.getTapeId());
 
         // When
-        this.lessonCreationService.createLesson(lessonCreationRequest);
+        List<TapeResponse> responses = this.lessonCreationService.createLesson(lessonCreationRequest);
 
         // Then
+        Assertions.assertEquals(responses.size(), 1);
+        Assertions.assertEquals(responses.get(0).getTapeId(), tape.getTapeId());
+
         Lesson createdLesson = this.lessonRepo.findLessonByDayAndHour(lessonCreationRequest.getDay(),
                 lessonCreationRequest.getHour()).get();
         Assertions.assertEquals(createdLesson.getTape().getTapeId(), tape.getTapeId());
@@ -132,9 +137,11 @@ public class LessonCreationServiceTest {
         lesson = this.lessonRepo.findLessonByDayAndHour(lesson.getDay(), lesson.getHour()).get();
 
         // When
-        this.lessonCreationService.deleteLesson(lesson.getLessonId());
+        List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lesson.getLessonId());
 
         // Then
+        Assertions.assertEquals(responses.size(), 1);
+        Assertions.assertEquals(responses.get(0).getTapeId(), tape.getTapeId());
         Assertions.assertFalse(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
                 lesson.getDay(), lesson.getHour(), tape.getYear(), tape.getReleaseYear()));
 

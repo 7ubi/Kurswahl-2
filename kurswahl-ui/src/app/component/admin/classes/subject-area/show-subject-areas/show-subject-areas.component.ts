@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {SubjectAreaResponse, SubjectAreaResponses} from "../../../admin.responses";
+import {SubjectAreaResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Sort} from "@angular/material/sort";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-show-subject-areas',
@@ -12,11 +13,12 @@ import {Sort} from "@angular/material/sort";
   styleUrls: ['./show-subject-areas.component.css']
 })
 export class ShowSubjectAreasComponent implements OnInit {
-  subjectAreaResponses!: SubjectAreaResponses;
+  subjectAreaResponses!: SubjectAreaResponse[];
   dataSource!: MatTableDataSource<SubjectAreaResponse>;
   displayedColumns: string[];
 
   lastSort: Sort | null = null;
+  selection = new SelectionModel<SubjectAreaResponse>(true, []);
 
   constructor(
     private httpService: HttpService,
@@ -24,7 +26,7 @@ export class ShowSubjectAreasComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.displayedColumns = ['Name', 'Aktionen'];
+    this.displayedColumns = ['Auswählen', 'Name', 'Aktionen'];
   }
 
 
@@ -33,15 +35,8 @@ export class ShowSubjectAreasComponent implements OnInit {
   }
 
   private loadSubjectAreas() {
-    this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
-      this.subjectAreaResponses = response;
-      this.dataSource = new MatTableDataSource(this.subjectAreaResponses.subjectAreaResponses);
-      if(this.lastSort) {
-        this.sortData(this.lastSort);
-      } else {
-      this.dataSource.data
-        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
-      }
+    this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
+      this.setDataSource(response);
     });
   }
 
@@ -55,8 +50,8 @@ export class ShowSubjectAreasComponent implements OnInit {
   }
 
   deleteSubjectArea(subjectAreaId: number) {
-    this.httpService.delete<undefined>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
-      this.loadSubjectAreas();
+    this.httpService.delete<SubjectAreaResponse[]>(`api/admin/subjectArea?subjectAreaId=${subjectAreaId}`, response => {
+      this.setDataSource(response);
       this.snackBar.open('Fachbereich wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -65,10 +60,21 @@ export class ShowSubjectAreasComponent implements OnInit {
     });
   }
 
+  private setDataSource(response: SubjectAreaResponse[]) {
+    this.subjectAreaResponses = response;
+    this.dataSource = new MatTableDataSource(this.subjectAreaResponses);
+    if (this.lastSort) {
+      this.sortData(this.lastSort);
+    } else {
+      this.dataSource.data
+        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
+    }
+  }
+
   sortData(sort: Sort) {
     this.lastSort = sort;
     if (!sort.active || sort.direction === '') {
-      this.dataSource = new MatTableDataSource(this.subjectAreaResponses.subjectAreaResponses);
+      this.dataSource = new MatTableDataSource(this.subjectAreaResponses);
       return;
     }
 
@@ -89,5 +95,42 @@ export class ShowSubjectAreasComponent implements OnInit {
 
   editSubjectArea(subjectAreaId: number) {
     this.router.navigate(['edit', subjectAreaId], {relativeTo: this.route});
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected >= numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.filteredData);
+  }
+
+
+  deleteSubjectAreas() {
+    this.httpService.delete<SubjectAreaResponse[]>(`api/admin/subjectAreas`, response => {
+      this.setDataSource(response);
+      this.selection.clear();
+      this.snackBar.open('Fachbereiche wurden erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getDeleteSubjectAreasRequest());
+  }
+
+  private getDeleteSubjectAreasRequest() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(subjectArea => ids.push(subjectArea.subjectAreaId));
+
+    return ids;
   }
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {TapeResponse, TapeResponses} from "../../../admin.responses";
+import {TapeResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {LessonsTable} from "./lessons-table";
 import {FormControl, FormGroup} from "@angular/forms";
@@ -13,7 +13,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 })
 export class ShowLessonsComponent implements OnInit {
   year: string | null;
-  tapeResponses!: TapeResponses;
+  tapeResponses!: TapeResponse[];
   dataSource!: MatTableDataSource<LessonsTable>;
   displayedColumns: string[];
 
@@ -40,14 +40,18 @@ export class ShowLessonsComponent implements OnInit {
   }
 
   private loadTapes(tapeId?: number) {
-    this.httpService.get<TapeResponses>(`/api/admin/tapes?year=${this.year}`, response => {
-      this.tapeResponses = response;
-      this.generateTable();
-
-      if (tapeId) {
-        this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.name);
-      }
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
+      this.setTapeResponse(response, tapeId);
     });
+  }
+
+  private setTapeResponse(response: TapeResponse[], tapeId: number | undefined) {
+    this.tapeResponses = response;
+    this.generateTable();
+
+    if (tapeId) {
+      this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.name);
+    }
   }
 
   private generateTable() {
@@ -64,7 +68,7 @@ export class ShowLessonsComponent implements OnInit {
       lessons.push(lesson)
     }
 
-    this.tapeResponses.tapeResponses.forEach(tape => {
+    this.tapeResponses.forEach(tape => {
       tape.lessonResponses.forEach(lesson => {
         switch (lesson.day) {
           case 0:
@@ -120,18 +124,18 @@ export class ShowLessonsComponent implements OnInit {
 
       this.selectedTape.lessonResponses.forEach(lesson => {
         if (lesson.day === day && lesson.hour === hour - 1) {
-          this.httpService.delete<undefined>(`/api/admin/lesson?lessonId=${lesson.lessonId}`,
+          this.httpService.delete<TapeResponse[]>(`/api/admin/lesson?lessonId=${lesson.lessonId}`,
             response => {
-              this.loadTapes(tapeId);
+              this.setTapeResponse(response, tapeId);
             });
           deletedLesson = true;
         }
       });
 
       if (!deletedLesson) {
-        this.httpService.post<undefined>('/api/admin/lesson', this.getLessonRequest(day, hour - 1),
+        this.httpService.post<TapeResponse[]>('/api/admin/lesson', this.getLessonRequest(day, hour - 1),
           response => {
-            this.loadTapes(tapeId);
+            this.setTapeResponse(response, tapeId);
           });
       }
     }

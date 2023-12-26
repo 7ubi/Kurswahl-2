@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,5 +66,14 @@ public class ChangePasswordService {
         }
         user.setPassword(this.passwordEncoder.encode(user.getGeneratedPassword()));
         this.userRepo.save(user);
+
+        logger.info(String.format("Reset password of %s", user.getUsername()));
+    }
+
+    @Transactional
+    public void resetPasswords(List<PasswordResetRequest> passwordResetRequests) throws EntityNotFoundException {
+        for (PasswordResetRequest passwordResetRequest : passwordResetRequests) {
+            this.resetPassword(passwordResetRequest);
+        }
     }
 }

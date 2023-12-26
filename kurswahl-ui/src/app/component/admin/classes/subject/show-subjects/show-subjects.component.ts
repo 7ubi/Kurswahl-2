@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {SubjectAreaResponses, SubjectResponse, SubjectResponses} from "../../../admin.responses";
+import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Sort} from "@angular/material/sort";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-show-subjects',
@@ -13,13 +14,14 @@ import {Sort} from "@angular/material/sort";
   styleUrls: ['./show-subjects.component.css']
 })
 export class ShowSubjectsComponent implements OnInit {
-  subjectResponses!: SubjectResponses;
+  subjectResponses!: SubjectResponse[];
   dataSource!: MatTableDataSource<SubjectResponse>;
   displayedColumns: string[];
-  subjectAreaResponses?: SubjectAreaResponses;
+  subjectAreaResponses?: SubjectAreaResponse[];
   subjectAreaFilter: FormGroup;
 
   lastSort: Sort | null = null;
+  selection = new SelectionModel<SubjectResponse>(true, []);
 
   constructor(
     private httpService: HttpService,
@@ -28,7 +30,7 @@ export class ShowSubjectsComponent implements OnInit {
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder
   ) {
-    this.displayedColumns = ['Name', 'Fachbereich', 'Aktionen'];
+    this.displayedColumns = ['Auswählen', 'Name', 'Fachbereich', 'Aktionen'];
 
     this.subjectAreaFilter = this.formBuilder.group({
       name: ['']
@@ -38,31 +40,35 @@ export class ShowSubjectsComponent implements OnInit {
   ngOnInit(): void {
     this.loadSubjectAreas();
 
-    this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
+    this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.subjectAreaResponses = response;
     });
   }
 
   private loadSubjectAreas() {
-    this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
-      this.subjectResponses = response;
-      this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
-      if(this.lastSort) {
-        this.sortData(this.lastSort);
-      } else {
-        this.dataSource.data
-          = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
-      }
+    this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
+      this.setDataSource(response);
     });
+  }
+
+  private setDataSource(response: SubjectResponse[]) {
+    this.subjectResponses = response;
+    this.dataSource = new MatTableDataSource(this.subjectResponses);
+    if (this.lastSort) {
+      this.sortData(this.lastSort);
+    } else {
+      this.dataSource.data
+        = this.dataSource.data.sort((a, b) => this.compare(a.name, b.name, true));
+    }
   }
 
   applyFilter() {
     const filterValue = this.subjectAreaFilter.get('name')?.value;
-    if(filterValue !== '') {
-      this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses
+    if (filterValue !== '') {
+      this.dataSource = new MatTableDataSource(this.subjectResponses
         .filter(value => value.subjectAreaResponse.subjectAreaId === Number(filterValue)));
     } else {
-      this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
+      this.dataSource = new MatTableDataSource(this.subjectResponses);
     }
   }
 
@@ -71,8 +77,8 @@ export class ShowSubjectsComponent implements OnInit {
   }
 
   deleteSubject(subjectId: number) {
-    this.httpService.delete<undefined>(`api/admin/subject?subjectId=${subjectId}`, response => {
-      this.loadSubjectAreas();
+    this.httpService.delete<SubjectResponse[]>(`api/admin/subject?subjectId=${subjectId}`, response => {
+      this.setDataSource(response)
       this.snackBar.open('Fach wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -89,7 +95,7 @@ export class ShowSubjectsComponent implements OnInit {
   sortData(sort: Sort) {
     this.lastSort = sort;
     if (!sort.active || sort.direction === '') {
-      this.dataSource = new MatTableDataSource(this.subjectResponses.subjectResponses);
+      this.dataSource = new MatTableDataSource(this.subjectResponses);
       return;
     }
 
@@ -112,5 +118,41 @@ export class ShowSubjectsComponent implements OnInit {
 
   editSubject(subjectId: number) {
     this.router.navigate(['edit', subjectId], {relativeTo: this.route});
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected >= numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.filteredData);
+  }
+
+  deleteSubjects() {
+    this.httpService.delete<SubjectResponse[]>(`api/admin/subjects`, response => {
+      this.setDataSource(response)
+      this.selection.clear();
+      this.snackBar.open('Fächer wurden erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getDeleteSubjectsRequest());
+  }
+
+  private getDeleteSubjectsRequest() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(subject => ids.push(subject.subjectId));
+
+    return ids;
   }
 }

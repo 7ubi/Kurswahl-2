@@ -9,14 +9,15 @@
       <mat-form-field class="example-full-width">
         <mat-label>Fach</mat-label>
         <mat-select formControlName="subject" [compareWith]="compareObjects">
-          <mat-option *ngFor="let subject of subjectResponses?.subjectResponses"
-                      value="{{subject.subjectId}}"> {{ subject.name }}</mat-option>
+          <mat-option *ngFor="let subject of subjectResponses"
+                      value="{{subject.subjectId}}"> {{ subject.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Lehrer</mat-label>
         <mat-select formControlName="teacher" [compareWith]="compareObjects">
-          <mat-option *ngFor="let teacher of teacherResponses?.teacherResponses"
+          <mat-option *ngFor="let teacher of teacherResponses"
                       value="{{teacher.teacherId}}">
             {{ teacher.firstname }} {{ teacher.surname }} - {{ teacher.abbreviation }}
           </mat-option>
@@ -29,8 +30,9 @@
       <mat-form-field class="example-full-width" *ngIf="isTapeFormFieldActive()">
         <mat-label>Band</mat-label>
         <mat-select formControlName="tape" [compareWith]="compareObjects">
-          <mat-option *ngFor="let tape of tapeResponses?.tapeResponses"
-                      value="{{tape.tapeId}}"> {{ tape.name }}</mat-option>
+          <mat-option *ngFor="let tape of tapeResponses"
+                      value="{{tape.tapeId}}"> {{ tape.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Kurs bearbeiten</button>

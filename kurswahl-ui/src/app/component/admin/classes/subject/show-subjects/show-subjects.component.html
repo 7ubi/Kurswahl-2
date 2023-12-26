@@ -8,7 +8,9 @@
           <mat-label>Fachbereich</mat-label>
           <mat-select formControlName="name" (selectionChange)="applyFilter()">
             <mat-option value="">Alle</mat-option>
-            <mat-option *ngFor="let subjectArea of subjectAreaResponses?.subjectAreaResponses" value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}</mat-option>
+            <mat-option *ngFor="let subjectArea of subjectAreaResponses"
+                        value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </form>
@@ -19,23 +21,49 @@
 
       <button mat-raised-button color="primary" (click)="createSubject()">Fach erstellen</button>
     </div>
-    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc" matSort (matSortChange)="sortData($event)">
+    <div class="bulk-actions">
+      <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteSubjects()"
+              [disabled]="selection.isEmpty()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
+           matSort (matSortChange)="sortData($event)">
+
+      <ng-container matColumnDef="Auswählen">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
 
       <ng-container matColumnDef="Name">
-        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Name</th>
+        <td mat-cell *matCellDef="let element"> {{ element.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Fachbereich">
-        <th mat-sort-header="fachbereich" mat-header-cell *matHeaderCellDef> Fachbereich </th>
-        <td mat-cell *matCellDef="let element"> {{element.subjectAreaResponse.name}} </td>
+        <th mat-sort-header="fachbereich" mat-header-cell *matHeaderCellDef> Fachbereich</th>
+        <td mat-cell *matCellDef="let element"> {{ element.subjectAreaResponse.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Aktionen">
-        <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+        <th mat-header-cell *matHeaderCellDef> Aktionen</th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon (click)="editSubject(element.subjectId)">edit</mat-icon>
-          <mat-icon (click)="deleteSubject(element.subjectId)">delete</mat-icon>
+          <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="editSubject(element.subjectId)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteSubject(element.subjectId)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
       </ng-container>
 

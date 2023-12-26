@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
 import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -404,17 +403,17 @@ public class ClassCreationServiceTest {
     }
 
     @Test
-    public void testAllClasses() {
+    public void testGetAllClasses() {
         // Given
         Integer year = 11;
 
         // When
-        ClassResponses response = this.classCreationService.getAllClasses(year);
+        List<ClassResponse> response = this.classCreationService.getAllClasses(year);
 
         // Then
-        Assertions.assertEquals(response.getClassResponses().size(), 1);
+        Assertions.assertEquals(response.size(), 1);
 
-        ClassResponse classResponse = response.getClassResponses().get(0);
+        ClassResponse classResponse = response.get(0);
         Assertions.assertEquals(classResponse.getClassId(), aClass.getClassId());
         Assertions.assertEquals(classResponse.getName(), aClass.getName());
         Assertions.assertEquals(classResponse.getTapeResponse().getTapeId(), aClass.getTape().getTapeId());
@@ -429,9 +428,11 @@ public class ClassCreationServiceTest {
         Long classId = aClass.getClassId();
 
         // When
-        this.classCreationService.deleteClass(classId);
+        List<ClassResponse> response = this.classCreationService.deleteClass(classId);
 
         // Then
+        Assertions.assertTrue(response.isEmpty());
+
         Assertions.assertFalse(this.classRepo.existsClassByClassId(classId));
         teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
         Assertions.assertTrue(teacher.getClasses().isEmpty());
@@ -461,5 +462,26 @@ public class ClassCreationServiceTest {
         Assertions.assertFalse(subject.getClasses().isEmpty());
         tape = this.tapeRepo.findTapeByTapeId(aClass.getTape().getTapeId()).get();
         Assertions.assertFalse(tape.getaClass().isEmpty());
+    }
+
+    @Test
+    public void testDeleteClasses() throws EntityNotFoundException {
+        // Given
+        aClass = this.classRepo.findClassByName("test").get();
+        Long classId = aClass.getClassId();
+
+        // When
+        List<ClassResponse> response = this.classCreationService.deleteClasses(List.of(classId));
+
+        // Then
+        Assertions.assertTrue(response.isEmpty());
+
+        Assertions.assertFalse(this.classRepo.existsClassByClassId(classId));
+        teacher = this.teacherRepo.findTeacherByTeacherId(teacher.getTeacherId()).get();
+        Assertions.assertTrue(teacher.getClasses().isEmpty());
+        subject = this.subjectRepo.findSubjectBySubjectId(aClass.getSubject().getSubjectId()).get();
+        Assertions.assertTrue(subject.getClasses().isEmpty());
+        tape = this.tapeRepo.findTapeByTapeId(aClass.getTape().getTapeId()).get();
+        Assertions.assertTrue(tape.getaClass().isEmpty());
     }
 }

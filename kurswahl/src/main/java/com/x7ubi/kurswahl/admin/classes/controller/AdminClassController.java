@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.controller;
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
 import com.x7ubi.kurswahl.admin.classes.service.ClassCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -12,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -85,8 +86,8 @@ public class AdminClassController {
         logger.info("Deleting class");
 
         try {
-            this.classCreationService.deleteClass(classId);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            List<ClassResponse> responses = this.classCreationService.deleteClass(classId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -101,8 +102,25 @@ public class AdminClassController {
         logger.info("Getting all Classes");
 
         try {
-            ClassResponses classResponses = this.classCreationService.getAllClasses(year);
+            List<ClassResponse> classResponses = this.classCreationService.getAllClasses(year);
             return ResponseEntity.status(HttpStatus.OK).body(classResponses);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/classes")
+    @AdminRequired
+    public ResponseEntity<?> deleteClasses(@RequestBody List<Long> classIds) {
+        logger.info("Deleting classes");
+
+        try {
+            List<ClassResponse> responses = this.classCreationService.deleteClasses(classIds);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

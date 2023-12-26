@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.ClassMapper;
 import com.x7ubi.kurswahl.admin.classes.request.ClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.ClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.ClassResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
@@ -151,18 +150,24 @@ public class ClassCreationService {
     }
 
     @Transactional
-    public ClassResponses getAllClasses(Integer year) {
+    public List<ClassResponse> getAllClasses(Integer year) {
         Optional<List<Class>> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
 
         if (classes.isPresent()) {
-            return this.classMapper.classesToClassResponses(classes.get());
+            return this.classMapper.classesToClassResponseList(classes.get());
         }
 
-        return new ClassResponses();
+        return new ArrayList<>();
     }
 
     @Transactional
-    public void deleteClass(Long classId) throws EntityNotFoundException {
+    public List<ClassResponse> deleteClass(Long classId) throws EntityNotFoundException {
+        Integer year = deleteClassHelper(classId);
+
+        return getAllClasses(year);
+    }
+
+    private Integer deleteClassHelper(Long classId) throws EntityNotFoundException {
         Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
         if (classOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
@@ -191,5 +196,18 @@ public class ClassCreationService {
 
         this.classRepo.delete(aclass);
         logger.info(String.format("Deleted class %s", aclass.getName()));
+
+        return aclass.getTape().getYear();
+    }
+
+    @Transactional
+    public List<ClassResponse> deleteClasses(List<Long> classIds) throws EntityNotFoundException {
+        Integer year = null;
+
+        for (Long classId : classIds) {
+            year = this.deleteClassHelper(classId);
+        }
+
+        return getAllClasses(year);
     }
 }

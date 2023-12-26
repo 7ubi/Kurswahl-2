@@ -2,7 +2,6 @@ package com.x7ubi.kurswahl.admin.user.mapper;
 
 import com.x7ubi.kurswahl.admin.user.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
-import com.x7ubi.kurswahl.admin.user.response.AdminResponses;
 import com.x7ubi.kurswahl.common.models.Admin;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,12 +22,6 @@ public interface AdminMapper {
     @Mapping(source = "surname", target = "user.surname")
     @Mapping(source = "firstname", target = "user.firstname")
     void adminRequestToAdmin(AdminSignupRequest adminSignupRequest, @MappingTarget Admin admin);
-
-    default AdminResponses adminsToAdminResponses(List<Admin> admins) {
-        AdminResponses adminResponses = new AdminResponses();
-        adminResponses.setAdminResponses(adminsToAdminResponseList(admins));
-        return adminResponses;
-    }
 
     List<AdminResponse> adminsToAdminResponseList(List<Admin> admins);
 

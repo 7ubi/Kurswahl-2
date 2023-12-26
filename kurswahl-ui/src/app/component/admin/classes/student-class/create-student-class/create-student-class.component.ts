@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TeacherResponses} from "../../../admin.responses";
+import {TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 })
 export class CreateStudentClassComponent implements OnInit {
   createStudentClassForm: FormGroup;
-  teachers?: TeacherResponses;
+  teachers?: TeacherResponse[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,8 +26,8 @@ export class CreateStudentClassComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.httpService.get<TeacherResponses>('/api/admin/teachers', response => {
-      response.teacherResponses.sort(
+    this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
+      response.sort(
         (a, b) => a.abbreviation.localeCompare(b.abbreviation));
       this.teachers = response;
     });

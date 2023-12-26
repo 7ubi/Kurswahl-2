@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectAreaResponses, SubjectResponse} from "../../../admin.responses";
+import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class EditSubjectComponent {
   editSubjectForm: FormGroup;
-  subjectAreaResponses?: SubjectAreaResponses;
+  subjectAreaResponses?: SubjectAreaResponse[];
   id: string | null;
   subject?: SubjectResponse
 
@@ -37,8 +37,8 @@ export class EditSubjectComponent {
         .setValue(this.subject.subjectAreaResponse.subjectAreaId);
     }, () => this.router.navigate(['admin', 'subjects']));
 
-    this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
-      response.subjectAreaResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectAreaResponses = response;
     });
   }

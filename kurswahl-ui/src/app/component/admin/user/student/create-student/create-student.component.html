@@ -1,0 +1,24 @@
+<app-hero title="Schüler erstellen"></app-hero>
+<form [formGroup]="createStudentForm" (ngSubmit)="createStudent()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstname" name="firstname" id="firstname" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Nachname</mat-label>
+        <input matInput formControlName="surname" name="surname" id="surname" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Klasse</mat-label>
+        <mat-select formControlName="studentClass">
+          <mat-option *ngFor="let studentClass of studentClasses"
+                      value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Schüler erstellen</button>
+    </div>
+  </div>
+</form>

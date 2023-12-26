@@ -27,6 +27,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -128,10 +130,28 @@ public class AuthRestController {
     @PutMapping("/resetPassword")
     @AdminRequired
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
-        logger.info("Reseting Password");
+        logger.info("Resetting Password");
 
         try {
             this.changePasswordService.resetPassword(passwordResetRequest);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/resetPasswords")
+    @AdminRequired
+    public ResponseEntity<?> resetPasswords(@RequestBody List<PasswordResetRequest> passwordResetRequests) {
+        logger.info("Resetting Password");
+
+        try {
+            this.changePasswordService.resetPasswords(passwordResetRequests);
 
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException e) {

@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectResponse;
-import com.x7ubi.kurswahl.admin.classes.response.SubjectResponses;
 import com.x7ubi.kurswahl.admin.classes.service.SubjectCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -17,6 +16,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @KurswahlServiceTest
 public class SubjectCreationServiceTest {
@@ -253,18 +254,18 @@ public class SubjectCreationServiceTest {
     @Test
     public void testGetAllSubjects() {
         // When
-        SubjectResponses response = this.subjectCreationService.getAllSubjects();
+        List<SubjectResponse> response = this.subjectCreationService.getAllSubjects();
 
         // Then
-        Assertions.assertEquals(response.getSubjectResponses().size(), 2);
+        Assertions.assertEquals(response.size(), 2);
 
-        SubjectResponse subject1 = response.getSubjectResponses().get(0);
+        SubjectResponse subject1 = response.get(0);
         Assertions.assertEquals(subject1.getSubjectId(), subject.getSubjectId());
         Assertions.assertEquals(subject1.getName(), subject.getName());
         Assertions.assertEquals(subject1.getSubjectAreaResponse().getSubjectAreaId(),
                 subject.getSubjectArea().getSubjectAreaId());
 
-        SubjectResponse subject2 = response.getSubjectResponses().get(1);
+        SubjectResponse subject2 = response.get(1);
         Assertions.assertEquals(subject2.getSubjectId(), subjectOther.getSubjectId());
         Assertions.assertEquals(subject2.getName(), subjectOther.getName());
         Assertions.assertEquals(subject2.getSubjectAreaResponse().getSubjectAreaId(),
@@ -277,12 +278,18 @@ public class SubjectCreationServiceTest {
         subject = this.subjectRepo.findSubjectByName(subject.getName()).get();
 
         // When
-        this.subjectCreationService.deleteSubject(subject.getSubjectId());
+        List<SubjectResponse> subjectResponses = this.subjectCreationService.deleteSubject(subject.getSubjectId());
 
         // Then
         subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
         Assertions.assertFalse(this.subjectRepo.existsSubjectByName(this.subject.getName()));
         Assertions.assertTrue(subjectArea.getSubjects().isEmpty());
+
+        SubjectResponse subject1 = subjectResponses.get(0);
+        Assertions.assertEquals(subject1.getSubjectId(), subjectOther.getSubjectId());
+        Assertions.assertEquals(subject1.getName(), subjectOther.getName());
+        Assertions.assertEquals(subject1.getSubjectAreaResponse().getSubjectAreaId(),
+                subjectOther.getSubjectArea().getSubjectAreaId());
     }
 
     @Test
@@ -300,5 +307,24 @@ public class SubjectCreationServiceTest {
 
         Assertions.assertTrue(this.subjectRepo.existsSubjectByName(this.subject.getName()));
         Assertions.assertEquals(subjectArea.getSubjects().size(), 1);
+    }
+
+    @Test
+    public void testDeleteSubjects() throws EntityNotFoundException {
+        // Given
+        subject = this.subjectRepo.findSubjectByName(subject.getName()).get();
+        subjectOther = this.subjectRepo.findSubjectByName(subjectOther.getName()).get();
+        List<Long> ids = List.of(subject.getSubjectId(), subjectOther.getSubjectId());
+
+        // When
+        List<SubjectResponse> subjectResponses = this.subjectCreationService.deleteSubjects(ids);
+
+        // Then
+        subjectArea = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectArea.getSubjectAreaId()).get();
+        Assertions.assertFalse(this.subjectRepo.existsSubjectByName(this.subject.getName()));
+        Assertions.assertFalse(this.subjectRepo.existsSubjectByName(this.subjectOther.getName()));
+        Assertions.assertTrue(subjectArea.getSubjects().isEmpty());
+
+        Assertions.assertTrue(subjectResponses.isEmpty());
     }
 }

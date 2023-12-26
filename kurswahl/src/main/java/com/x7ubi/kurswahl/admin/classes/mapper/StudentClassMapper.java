@@ -2,7 +2,6 @@ package com.x7ubi.kurswahl.admin.classes.mapper;
 
 import com.x7ubi.kurswahl.admin.classes.request.StudentClassCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponse;
-import com.x7ubi.kurswahl.admin.classes.response.StudentClassResponses;
 import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.StudentClass;
 import org.mapstruct.Mapper;
@@ -21,13 +20,6 @@ public interface StudentClassMapper {
     StudentClass studentClassRequestToStudentClass(StudentClassCreationRequest studentClassCreationRequest);
 
     void studentClassRequestToStudentClass(StudentClassCreationRequest studentClassCreationRequest, @MappingTarget StudentClass studentClass);
-
-    default StudentClassResponses studentClassesToStudentClassResponses(List<StudentClass> studentClasses) {
-
-        StudentClassResponses studentClassResponses = new StudentClassResponses();
-        studentClassResponses.setStudentClassResponses(studentClassListToStudentClassResponseList(studentClasses));
-        return studentClassResponses;
-    }
 
     StudentClassResponse studentClassToStudentClassResponse(StudentClass studentClass);
 

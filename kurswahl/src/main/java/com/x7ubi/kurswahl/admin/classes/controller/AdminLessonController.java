@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.classes.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -30,8 +33,8 @@ public class AdminLessonController {
         logger.info("Creating new Lesson");
 
         try {
-            this.lessonCreationService.createLesson(lessonCreationRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            List<TapeResponse> responses = this.lessonCreationService.createLesson(lessonCreationRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -51,8 +54,8 @@ public class AdminLessonController {
         logger.info("Deleting Lesson");
 
         try {
-            this.lessonCreationService.deleteLesson(lessonId);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lessonId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

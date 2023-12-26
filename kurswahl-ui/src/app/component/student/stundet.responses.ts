@@ -40,8 +40,3 @@ export interface SubjectTapeResponse {
 export interface TapeResponse {
   readonly name: string;
 }
-
-export interface TapeResponses {
-  readonly tapeClassResponses: TapeClassResponse[];
-  readonly subjectTapeResponses: SubjectTapeResponse[];
-}

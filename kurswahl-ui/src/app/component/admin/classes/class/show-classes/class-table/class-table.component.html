@@ -7,34 +7,61 @@
     <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>
   </mat-form-field>
 </div>
+<div class="bulk-actions">
+  <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteClasses()"
+          [disabled]="selection.isEmpty()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>
 <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
        matSort (matSortChange)="sortData($event)">
 
+  <ng-container matColumnDef="Auswählen">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="Name">
     <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Name</th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    <td mat-cell *matCellDef="let element"> {{ element.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="Band">
     <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Band</th>
-    <td mat-cell *matCellDef="let element"> {{element.tapeResponse.name}} </td>
+    <td mat-cell *matCellDef="let element"> {{ element.tapeResponse.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="Fach">
     <th mat-sort-header="subject" mat-header-cell *matHeaderCellDef> Fach</th>
-    <td mat-cell *matCellDef="let element"> {{element.subjectResponse.name}} </td>
+    <td mat-cell *matCellDef="let element"> {{ element.subjectResponse.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="Lehrer">
     <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
-    <td mat-cell *matCellDef="let element"> {{element.teacherResponse.abbreviation}} </td>
+    <td mat-cell *matCellDef="let element"> {{ element.teacherResponse.abbreviation }}</td>
   </ng-container>
 
   <ng-container matColumnDef="Aktionen">
     <th mat-header-cell *matHeaderCellDef> Aktionen</th>
     <td mat-cell *matCellDef="let element">
-      <mat-icon (click)="editTape(element.classId)">edit</mat-icon>
-      <mat-icon (click)="deleteClass(element.classId)">delete</mat-icon>
+      <button mat-mini-fab color="primary" class="bulk-actions-icons"
+              (click)="editClass(element.classId)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-mini-fab color="warn" class="bulk-actions-icons"
+              (click)="deleteClass(element.classId)">
+        <mat-icon>delete</mat-icon>
+      </button>
     </td>
   </ng-container>
 

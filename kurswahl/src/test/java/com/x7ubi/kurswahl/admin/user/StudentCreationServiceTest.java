@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
-import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.admin.user.service.StudentCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 @KurswahlServiceTest
@@ -233,9 +233,10 @@ public class StudentCreationServiceTest {
         Long id = this.student.getStudentId();
 
         // When
-        this.studentCreationService.deleteStudent(id);
+        List<StudentResponse> responses = this.studentCreationService.deleteStudent(id);
 
         // Then
+        Assertions.assertTrue(responses.isEmpty());
         Assertions.assertFalse(this.studentRepo.existsStudentByUser_Username(this.student.getUser().getUsername()));
 
         StudentClass updatedStudentClass
@@ -296,11 +297,11 @@ public class StudentCreationServiceTest {
     @Test
     public void testGetAllStudents() {
         // When
-        StudentResponses studentResponses = this.studentCreationService.getAllStudents();
+        List<StudentResponse> studentResponses = this.studentCreationService.getAllStudents();
 
         // Then
-        Assertions.assertEquals(studentResponses.getStudentResponses().size(), 1);
-        StudentResponse studentResponse = studentResponses.getStudentResponses().get(0);
+        Assertions.assertEquals(studentResponses.size(), 1);
+        StudentResponse studentResponse = studentResponses.get(0);
         Assertions.assertEquals(studentResponse.getFirstname(), student.getUser().getFirstname());
         Assertions.assertEquals(studentResponse.getSurname(), student.getUser().getSurname());
         Assertions.assertEquals(studentResponse.getUsername(), "test.user");
@@ -308,5 +309,25 @@ public class StudentCreationServiceTest {
                 student.getStudentClass().getStudentClassId());
         Assertions.assertEquals(studentResponse.getStudentClassResponse().getName(),
                 student.getStudentClass().getName());
+    }
+
+    @Test
+    public void testDeleteStudents() throws EntityNotFoundException {
+        // Given
+        this.student = this.studentRepo.findStudentByUser_Username(this.student.getUser().getUsername()).get();
+        Long id = this.student.getStudentId();
+        List<Long> ids = List.of(id);
+
+        // When
+        List<StudentResponse> responses = this.studentCreationService.deleteStudents(ids);
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
+        Assertions.assertFalse(this.studentRepo.existsStudentByUser_Username(this.student.getUser().getUsername()));
+
+        StudentClass updatedStudentClass
+                = this.studentClassRepo.findStudentClassByStudentClassId(studentClass.getStudentClassId()).get();
+
+        Assertions.assertTrue(updatedStudentClass.getStudents().isEmpty());
     }
 }

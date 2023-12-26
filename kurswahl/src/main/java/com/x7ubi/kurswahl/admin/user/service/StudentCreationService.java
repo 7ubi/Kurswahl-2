@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user.service;
 import com.x7ubi.kurswahl.admin.user.mapper.StudentMapper;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
-import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
@@ -58,14 +57,7 @@ public class StudentCreationService {
     @Transactional
     public void registerStudent(StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
 
-        Optional<StudentClass> studentClassOptional =
-                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
-
-        if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
-        }
-
-        StudentClass studentClass = studentClassOptional.get();
+        StudentClass studentClass = getStudentClass(studentSignupRequest);
 
         Student student = this.studentMapper.studentRequestToStudent(studentSignupRequest);
         student.getUser().setUsername(this.usernameService.generateUsernameFromName(studentSignupRequest));
@@ -80,31 +72,18 @@ public class StudentCreationService {
         logger.info(String.format("Student %s was created", student.getUser().getUsername()));
     }
 
-    public StudentResponses getAllStudents() {
+    public List<StudentResponse> getAllStudents() {
         List<Student> students = this.studentRepo.findAll();
 
-        return this.studentMapper.studentsToStudentResponses(students);
+        return this.studentMapper.studentsToStudentResponseList(students);
     }
 
     @Transactional
     public void editStudent(Long studentId, StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
 
-        Optional<StudentClass> studentClassOptional =
-                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
+        StudentClass studentClass = getStudentClass(studentSignupRequest);
 
-        if(studentClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
-        }
-
-        StudentClass studentClass = studentClassOptional.get();
-
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
-
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-
-        Student student = studentOptional.get();
+        Student student = getStudentFromId(studentId);
         this.studentMapper.studentRequestToStudent(studentSignupRequest, student);
 
         if (null == student.getStudentClass()) {
@@ -129,26 +108,20 @@ public class StudentCreationService {
 
     public StudentResponse getStudent(Long studentId) throws EntityNotFoundException {
 
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
-
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-
-        Student student = studentOptional.get();
+        Student student = getStudentFromId(studentId);
 
         return this.studentMapper.studentToStudentResponse(student);
     }
 
-    public void deleteStudent(Long studentId) throws EntityNotFoundException {
+    public List<StudentResponse> deleteStudent(Long studentId) throws EntityNotFoundException {
 
-        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
+        deleteStudentHelper(studentId);
 
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
+        return this.getAllStudents();
+    }
 
-        Student student = studentOptional.get();
+    private void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
+        Student student = getStudentFromId(studentId);
 
         User studentUser = student.getUser();
         if (null != student.getStudentClass()) {
@@ -171,5 +144,34 @@ public class StudentCreationService {
 
         this.studentRepo.delete(student);
         this.userRepo.delete(studentUser);
+    }
+
+    public List<StudentResponse> deleteStudents(List<Long> studentIds) throws EntityNotFoundException {
+        for (Long studentId : studentIds) {
+            deleteStudentHelper(studentId);
+        }
+
+        return this.getAllStudents();
+    }
+
+    private Student getStudentFromId(Long studentId) throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
+
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+
+        return studentOptional.get();
+    }
+
+    private StudentClass getStudentClass(StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
+        Optional<StudentClass> studentClassOptional =
+                this.studentClassRepo.findStudentClassByStudentClassId(studentSignupRequest.getStudentClassId());
+
+        if (studentClassOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_CLASS_NOT_FOUND);
+        }
+
+        return studentClassOptional.get();
     }
 }

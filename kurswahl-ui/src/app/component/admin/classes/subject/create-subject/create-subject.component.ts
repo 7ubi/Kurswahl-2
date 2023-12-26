@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
-import {SubjectAreaResponses} from "../../../admin.responses";
+import {SubjectAreaResponse} from "../../../admin.responses";
 
 @Component({
   selector: 'app-create-subject',
@@ -11,7 +11,7 @@ import {SubjectAreaResponses} from "../../../admin.responses";
 })
 export class CreateSubjectComponent implements OnInit{
   createSubjectForm: FormGroup;
-  subjectAreaResponses?: SubjectAreaResponses;
+  subjectAreaResponses?: SubjectAreaResponse[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -25,8 +25,8 @@ export class CreateSubjectComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
-      response.subjectAreaResponses.sort((a, b) =>  a.name.localeCompare(b.name));
+    this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectAreaResponses = response;
     });
   }

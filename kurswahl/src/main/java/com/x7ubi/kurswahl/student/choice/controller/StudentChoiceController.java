@@ -43,8 +43,8 @@ public class StudentChoiceController {
         try {
             String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
 
-            this.studentChoiceService.alterChoice(username, alterStudentChoiceRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            ChoiceResponse response = this.studentChoiceService.alterChoice(username, alterStudentChoiceRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (UnauthorizedException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -83,8 +83,8 @@ public class StudentChoiceController {
         logger.info("Deleting class from choice");
 
         try {
-            this.studentChoiceService.deleteClassFromChoice(deleteClassFromChoiceRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(deleteClassFromChoiceRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
