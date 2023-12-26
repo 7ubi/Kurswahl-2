@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SubjectAreaResponses, SubjectResponse, SubjectResponses} from "../../../admin.responses";
+import {SubjectAreaResponse, SubjectResponse, SubjectResponses} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -16,7 +16,7 @@ export class ShowSubjectsComponent implements OnInit {
   subjectResponses!: SubjectResponses;
   dataSource!: MatTableDataSource<SubjectResponse>;
   displayedColumns: string[];
-  subjectAreaResponses?: SubjectAreaResponses;
+  subjectAreaResponses?: SubjectAreaResponse[];
   subjectAreaFilter: FormGroup;
 
   lastSort: Sort | null = null;
@@ -38,7 +38,7 @@ export class ShowSubjectsComponent implements OnInit {
   ngOnInit(): void {
     this.loadSubjectAreas();
 
-    this.httpService.get<SubjectAreaResponses>('/api/admin/subjectAreas', response => {
+    this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.subjectAreaResponses = response;
     });
   }

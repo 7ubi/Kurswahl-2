@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.SubjectAreaMapper;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponse;
-import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -67,14 +66,20 @@ public class SubjectAreaCreationService {
         logger.info(String.format("Subject Area %s was edited", subjectArea.getName()));
     }
 
-    public SubjectAreaResponses getAllSubjectAreas() {
+    public List<SubjectAreaResponse> getAllSubjectAreas() {
 
         List<SubjectArea> subjectAreas = this.subjectAreaRepo.findAll();
 
-        return this.subjectAreaMapper.subjectAreasToSubjectAreaResponses(subjectAreas);
+        return this.subjectAreaMapper.subjectAreasToSubjectAreaResponseList(subjectAreas);
     }
 
-    public void deleteSubjectArea(Long subjectAreaId) throws EntityNotFoundException {
+    public List<SubjectAreaResponse> deleteSubjectArea(Long subjectAreaId) throws EntityNotFoundException {
+        deleteSubjectAreaHelper(subjectAreaId);
+
+        return getAllSubjectAreas();
+    }
+
+    private void deleteSubjectAreaHelper(Long subjectAreaId) throws EntityNotFoundException {
         Optional<SubjectArea> subjectAreaOptional = this.subjectAreaRepo.findSubjectAreaBySubjectAreaId(subjectAreaId);
 
         if (subjectAreaOptional.isEmpty()) {
@@ -113,5 +118,13 @@ public class SubjectAreaCreationService {
         if (this.subjectAreaRepo.existsSubjectAreaByName(subjectAreaCreationRequest.getName())) {
             throw new EntityCreationException(ErrorMessage.SUBJECT_AREA_ALREADY_EXISTS);
         }
+    }
+
+    public List<SubjectAreaResponse> deleteSubjectAreas(List<Long> subjectAreaIds) throws EntityNotFoundException {
+        for (Long subjectAreaId : subjectAreaIds) {
+            deleteSubjectAreaHelper(subjectAreaId);
+        }
+
+        return getAllSubjectAreas();
     }
 }

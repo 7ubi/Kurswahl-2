@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponse;
-import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponses;
 import com.x7ubi.kurswahl.admin.classes.service.SubjectAreaCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @KurswahlServiceTest
 public class SubjectAreaCreationServiceTest {
@@ -148,16 +149,16 @@ public class SubjectAreaCreationServiceTest {
     @Test
     public void testGetAllSubjectAreas() {
         // When
-        SubjectAreaResponses subjectAreaResponses = this.subjectAreaCreationService.getAllSubjectAreas();
+        List<SubjectAreaResponse> subjectAreaResponses = this.subjectAreaCreationService.getAllSubjectAreas();
 
         // Then
-        Assertions.assertEquals(subjectAreaResponses.getSubjectAreaResponses().size(), 2);
+        Assertions.assertEquals(subjectAreaResponses.size(), 2);
 
-        SubjectAreaResponse subjectAreaResponse1 = subjectAreaResponses.getSubjectAreaResponses().get(0);
+        SubjectAreaResponse subjectAreaResponse1 = subjectAreaResponses.get(0);
         Assertions.assertEquals(subjectAreaResponse1.getSubjectAreaId(), subjectArea.getSubjectAreaId());
         Assertions.assertEquals(subjectAreaResponse1.getName(), subjectArea.getName());
 
-        SubjectAreaResponse subjectAreaResponse2 = subjectAreaResponses.getSubjectAreaResponses().get(1);
+        SubjectAreaResponse subjectAreaResponse2 = subjectAreaResponses.get(1);
         Assertions.assertEquals(subjectAreaResponse2.getSubjectAreaId(), otherSubjectArea.getSubjectAreaId());
         Assertions.assertEquals(subjectAreaResponse2.getName(), otherSubjectArea.getName());
     }
@@ -195,10 +196,14 @@ public class SubjectAreaCreationServiceTest {
         Long id = this.subjectArea.getSubjectAreaId();
 
         // When
-        this.subjectAreaCreationService.deleteSubjectArea(id);
+        List<SubjectAreaResponse> responses = this.subjectAreaCreationService.deleteSubjectArea(id);
 
         // Then
         Assertions.assertFalse(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
+
+        Assertions.assertEquals(responses.size(), 1);
+        Assertions.assertEquals(responses.get(0).getSubjectAreaId(), otherSubjectArea.getSubjectAreaId());
+        Assertions.assertEquals(responses.get(0).getName(), otherSubjectArea.getName());
     }
 
     @Test
@@ -214,5 +219,22 @@ public class SubjectAreaCreationServiceTest {
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.SUBJECT_AREA_NOT_FOUND);
         Assertions.assertTrue(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
+    }
+
+    @Test
+    public void testDeleteSubjectAreas() throws EntityNotFoundException {
+        // Given
+        this.subjectArea = this.subjectAreaRepo.findSubjectAreaByName(this.subjectArea.getName()).get();
+        this.otherSubjectArea = this.subjectAreaRepo.findSubjectAreaByName(this.otherSubjectArea.getName()).get();
+        List<Long> ids = List.of(subjectArea.getSubjectAreaId(), otherSubjectArea.getSubjectAreaId());
+
+        // When
+        List<SubjectAreaResponse> responses = this.subjectAreaCreationService.deleteSubjectAreas(ids);
+
+        // Then
+        Assertions.assertFalse(this.subjectAreaRepo.existsSubjectAreaByName(this.subjectArea.getName()));
+        Assertions.assertFalse(this.subjectAreaRepo.existsSubjectAreaByName(this.otherSubjectArea.getName()));
+
+        Assertions.assertTrue(responses.isEmpty());
     }
 }

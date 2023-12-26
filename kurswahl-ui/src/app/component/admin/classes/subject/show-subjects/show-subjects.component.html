@@ -8,7 +8,9 @@
           <mat-label>Fachbereich</mat-label>
           <mat-select formControlName="name" (selectionChange)="applyFilter()">
             <mat-option value="">Alle</mat-option>
-            <mat-option *ngFor="let subjectArea of subjectAreaResponses?.subjectAreaResponses" value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}</mat-option>
+            <mat-option *ngFor="let subjectArea of subjectAreaResponses"
+                        value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </form>
