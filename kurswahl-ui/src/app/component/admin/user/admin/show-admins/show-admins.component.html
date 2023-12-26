@@ -20,8 +20,6 @@
       </button>
     </div>
     <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
-
-
       <ng-container matColumnDef="Auswählen">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox (change)="$event ? toggleAllRows() : null"

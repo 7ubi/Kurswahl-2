@@ -9,7 +9,31 @@
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="createStudent()">Schüler erstellen</button>
     </div>
+    <div class="bulk-actions">
+      <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="resetPasswords()"
+              [disabled]="selection.isEmpty()">
+        <mat-icon>history</mat-icon>
+      </button>
+      <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteStudents()"
+              [disabled]="selection.isEmpty()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
     <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
+      <ng-container matColumnDef="Auswählen">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
 
       <ng-container matColumnDef="Nutzername">
         <th mat-header-cell *matHeaderCellDef> Nutzername </th>
@@ -41,9 +65,15 @@
       <ng-container matColumnDef="Aktionen">
         <th mat-header-cell *matHeaderCellDef> Aktionen </th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon (click)="editStudent(element.studentId)">edit</mat-icon>
-          <mat-icon (click)="resetPassword(element.userId)">history</mat-icon>
-          <mat-icon (click)="deleteStudent(element.studentId)">delete</mat-icon>
+          <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="editStudent(element.studentId)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="resetPassword(element.userId)">
+            <mat-icon>history</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteStudent(element.studentId)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
       </ng-container>
 
