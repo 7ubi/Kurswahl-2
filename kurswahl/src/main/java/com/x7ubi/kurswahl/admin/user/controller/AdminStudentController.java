@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user.controller;
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
-import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.admin.user.service.StudentCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -12,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -91,8 +92,8 @@ public class AdminStudentController {
         logger.info("Deleting Student");
 
         try {
-            this.studentCreationService.deleteStudent(studentId);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            List<StudentResponse> response = this.studentCreationService.deleteStudent(studentId);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -108,7 +109,7 @@ public class AdminStudentController {
         logger.info("Getting all Students");
 
         try {
-            StudentResponses responses = this.studentCreationService.getAllStudents();
+            List<StudentResponse> responses = this.studentCreationService.getAllStudents();
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -116,4 +117,23 @@ public class AdminStudentController {
         }
     }
 
+
+    @DeleteMapping("/students")
+    @AdminRequired
+    public ResponseEntity<?> deleteStudents(
+            @RequestBody List<Long> studentIds
+    ) {
+        logger.info("Deleting Students");
+
+        try {
+            List<StudentResponse> response = this.studentCreationService.deleteStudents(studentIds);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

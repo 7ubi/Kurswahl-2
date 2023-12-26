@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user.mapper;
 import com.x7ubi.kurswahl.admin.classes.mapper.StudentClassMapper;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
-import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.common.models.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,12 +26,6 @@ public interface StudentMapper {
     @Mapping(source = "surname", target = "user.surname")
     @Mapping(source = "firstname", target = "user.firstname")
     void studentRequestToStudent(StudentSignupRequest studentSignupRequest, @MappingTarget Student student);
-
-    default StudentResponses studentsToStudentResponses(List<Student> students) {
-        StudentResponses studentResponses = new StudentResponses();
-        studentResponses.setStudentResponses(studentsToStudentResponseList(students));
-        return studentResponses;
-    }
 
     List<StudentResponse> studentsToStudentResponseList(List<Student> students);
 

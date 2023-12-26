@@ -113,7 +113,7 @@ export class ShowAdminsComponent implements OnInit {
       this.selection.clear();
       this.adminResponses = response;
       this.dataSource = new MatTableDataSource(this.adminResponses);
-      this.snackBar.open('Admins wurde erfolgreich gelöscht.', 'Verstanden', {
+      this.snackBar.open('Admins wurden erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
         duration: 5000

@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.user.service;
 import com.x7ubi.kurswahl.admin.user.mapper.StudentMapper;
 import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
-import com.x7ubi.kurswahl.admin.user.response.StudentResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
@@ -80,10 +79,10 @@ public class StudentCreationService {
         logger.info(String.format("Student %s was created", student.getUser().getUsername()));
     }
 
-    public StudentResponses getAllStudents() {
+    public List<StudentResponse> getAllStudents() {
         List<Student> students = this.studentRepo.findAll();
 
-        return this.studentMapper.studentsToStudentResponses(students);
+        return this.studentMapper.studentsToStudentResponseList(students);
     }
 
     @Transactional
@@ -140,8 +139,14 @@ public class StudentCreationService {
         return this.studentMapper.studentToStudentResponse(student);
     }
 
-    public void deleteStudent(Long studentId) throws EntityNotFoundException {
+    public List<StudentResponse> deleteStudent(Long studentId) throws EntityNotFoundException {
 
+        deleteStudentHelper(studentId);
+
+        return this.getAllStudents();
+    }
+
+    private void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
         if(studentOptional.isEmpty()) {
@@ -171,5 +176,13 @@ public class StudentCreationService {
 
         this.studentRepo.delete(student);
         this.userRepo.delete(studentUser);
+    }
+
+    public List<StudentResponse> deleteStudents(List<Long> studentIds) throws EntityNotFoundException {
+        for (Long studentId : studentIds) {
+            deleteStudentHelper(studentId);
+        }
+
+        return this.getAllStudents();
     }
 }

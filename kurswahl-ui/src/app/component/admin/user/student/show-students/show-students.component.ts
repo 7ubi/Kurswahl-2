@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentResponse, StudentResponses} from "../../../admin.responses";
+import {StudentResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -12,7 +12,7 @@ import {SelectionModel} from "@angular/cdk/collections";
   styleUrls: ['./show-students.component.css']
 })
 export class ShowStudentsComponent implements OnInit {
-  studentResponses!: StudentResponses;
+  studentResponses!: StudentResponse[];
   dataSource!: MatTableDataSource<StudentResponse>;
   displayedColumns: string[];
 
@@ -32,9 +32,9 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   private loadStudents() {
-    this.httpService.get<StudentResponses>('/api/admin/students', response => {
+    this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
       this.studentResponses = response;
-      this.dataSource = new MatTableDataSource(this.studentResponses.studentResponses);
+      this.dataSource = new MatTableDataSource(this.studentResponses);
     });
   }
 
@@ -48,8 +48,9 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   deleteStudent(studentId: number) {
-    this.httpService.delete<undefined>(`api/admin/student?studentId=${studentId}`, response => {
-      this.loadStudents();
+    this.httpService.delete<StudentResponse[]>(`api/admin/student?studentId=${studentId}`, response => {
+      this.studentResponses = response;
+      this.dataSource = new MatTableDataSource(this.studentResponses);
       this.snackBar.open('Schüler wurde erfolgreich gelöscht.', 'Verstanden', {
         horizontalPosition: "center",
         verticalPosition: "bottom",
@@ -108,5 +109,23 @@ export class ShowStudentsComponent implements OnInit {
 
   deleteStudents() {
 
+    this.httpService.delete<StudentResponse[]>(`api/admin/students`, response => {
+      this.studentResponses = response;
+      this.dataSource = new MatTableDataSource(this.studentResponses);
+      this.snackBar.open('Schüler wurden erfolgreich gelöscht.', 'Verstanden', {
+        horizontalPosition: "center",
+        verticalPosition: "bottom",
+        duration: 5000
+      });
+    }, () => {
+    }, this.getDeleteStudentsRequest());
+  }
+
+  private getDeleteStudentsRequest() {
+    const ids: number[] = [];
+
+    this.selection.selected.forEach(student => ids.push(student.studentId));
+
+    return ids;
   }
 }

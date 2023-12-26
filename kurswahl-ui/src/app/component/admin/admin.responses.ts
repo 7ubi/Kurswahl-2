@@ -24,10 +24,6 @@ export interface StudentResponse extends UserResponse {
   readonly studentClassResponse: StudentClassResponse;
 }
 
-export interface StudentResponses {
-  readonly studentResponses: StudentResponse[];
-}
-
 export interface TeacherResponse extends UserResponse {
   readonly teacherId: number;
   readonly abbreviation: string;
