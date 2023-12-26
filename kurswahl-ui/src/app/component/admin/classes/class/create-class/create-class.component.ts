@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectResponses, TapeResponses, TeacherResponse} from "../../../admin.responses";
+import {SubjectResponse, TapeResponses, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
@@ -9,16 +9,16 @@ import {Router} from "@angular/router";
   templateUrl: './create-class.component.html',
   styleUrls: ['./create-class.component.css']
 })
-export class CreateClassComponent {
+export class CreateClassComponent implements OnInit {
   createClassForm: FormGroup;
-  subjectResponses?: SubjectResponses;
+  subjectResponses?: SubjectResponse[];
   teacherResponses?: TeacherResponse[];
   tapeResponses!: TapeResponses;
 
   constructor(
-      private formBuilder: FormBuilder,
-      private httpService: HttpService,
-      private router: Router
+    private formBuilder: FormBuilder,
+    private httpService: HttpService,
+    private router: Router
   ) {
     this.createClassForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -30,14 +30,14 @@ export class CreateClassComponent {
   }
 
   ngOnInit(): void {
-    this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
-      response.subjectResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
     });
 
     this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       response.sort((a, b) =>
-          a.abbreviation.localeCompare(b.abbreviation));
+        a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
     });
   }

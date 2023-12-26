@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClassResponse, SubjectResponses, TapeResponses, TeacherResponse} from "../../../admin.responses";
+import {ClassResponse, SubjectResponse, TapeResponses, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class EditClassComponent implements OnInit {
   editClassForm: FormGroup;
-  subjectResponses?: SubjectResponses;
+  subjectResponses?: SubjectResponse[];
   teacherResponses?: TeacherResponse[];
   tapeResponses!: TapeResponses;
   classResultResponse?: ClassResponse;
@@ -36,8 +36,8 @@ export class EditClassComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.httpService.get<SubjectResponses>('/api/admin/subjects', response => {
-      response.subjectResponses.sort((a, b) => a.name.localeCompare(b.name));
+    this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
+      response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
     });
 
@@ -57,7 +57,7 @@ export class EditClassComponent implements OnInit {
       this.editClassForm.controls['subject'].setValue(this.classResultResponse.subjectResponse.subjectId);
 
       this.httpService.get<TapeResponses>(
-          `/api/admin/tapes?year=${this.classResultResponse?.tapeResponse.year}`, response => {
+        `/api/admin/tapes?year=${this.classResultResponse?.tapeResponse.year}`, response => {
           response.tapeResponses.sort((a, b) => a.name.localeCompare(b.name));
           this.tapeResponses = response;
         });

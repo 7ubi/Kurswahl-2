@@ -3,7 +3,6 @@ package com.x7ubi.kurswahl.admin.classes.service;
 import com.x7ubi.kurswahl.admin.classes.mapper.SubjectMapper;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectResponse;
-import com.x7ubi.kurswahl.admin.classes.response.SubjectResponses;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -100,13 +99,19 @@ public class SubjectCreationService {
         logger.info(String.format("Edited subject %s", subject.getName()));
     }
 
-    public SubjectResponses getAllSubjects() {
+    public List<SubjectResponse> getAllSubjects() {
         List<Subject> subjects = this.subjectRepo.findAll();
 
-        return this.subjectMapper.subjectsToSubjectResponses(subjects);
+        return this.subjectMapper.subjectsToSubjectResponseList(subjects);
     }
 
-    public void deleteSubject(Long subjectId) throws EntityNotFoundException {
+    public List<SubjectResponse> deleteSubject(Long subjectId) throws EntityNotFoundException {
+        deleteSubjectHelper(subjectId);
+
+        return getAllSubjects();
+    }
+
+    private void deleteSubjectHelper(Long subjectId) throws EntityNotFoundException {
         Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
         if (subjectOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.SUBJECT_NOT_FOUND);
@@ -140,5 +145,13 @@ public class SubjectCreationService {
         if (this.subjectRepo.existsSubjectByName(subjectCreationRequest.getName())) {
             throw new EntityCreationException(ErrorMessage.SUBJECT_ALREADY_EXISTS);
         }
+    }
+
+    public List<SubjectResponse> deleteSubjects(List<Long> subjectIds) throws EntityNotFoundException {
+        for (Long subjectId : subjectIds) {
+            deleteSubjectHelper(subjectId);
+        }
+
+        return getAllSubjects();
     }
 }

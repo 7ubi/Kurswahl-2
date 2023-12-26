@@ -40,10 +40,6 @@ export interface SubjectResponse {
   readonly subjectAreaResponse: SubjectAreaResponse;
 }
 
-export interface SubjectResponses {
-  readonly subjectResponses: SubjectResponse[];
-}
-
 export interface StudentClassResponse {
   readonly studentClassId: number;
   readonly name: string;
