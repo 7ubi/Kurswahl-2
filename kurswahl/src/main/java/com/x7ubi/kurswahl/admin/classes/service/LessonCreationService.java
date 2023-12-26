@@ -1,7 +1,9 @@
 package com.x7ubi.kurswahl.admin.classes.service;
 
 import com.x7ubi.kurswahl.admin.classes.mapper.LessonMapper;
+import com.x7ubi.kurswahl.admin.classes.mapper.TapeMapper;
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,13 +29,16 @@ public class LessonCreationService {
 
     private final LessonMapper lessonMapper;
 
-    public LessonCreationService(LessonRepo lessonRepo, TapeRepo tapeRepo, LessonMapper lessonMapper) {
+    private final TapeMapper tapeMapper;
+
+    public LessonCreationService(LessonRepo lessonRepo, TapeRepo tapeRepo, LessonMapper lessonMapper, TapeMapper tapeMapper) {
         this.lessonRepo = lessonRepo;
         this.tapeRepo = tapeRepo;
         this.lessonMapper = lessonMapper;
+        this.tapeMapper = tapeMapper;
     }
 
-    public void createLesson(LessonCreationRequest lessonCreationRequest) throws EntityNotFoundException, EntityCreationException {
+    public List<TapeResponse> createLesson(LessonCreationRequest lessonCreationRequest) throws EntityNotFoundException, EntityCreationException {
         Optional<Tape> tapeOptional = tapeRepo.findTapeByTapeId(lessonCreationRequest.getTapeId());
 
         if (tapeOptional.isEmpty()) {
@@ -51,9 +57,12 @@ public class LessonCreationService {
         tapeRepo.save(tape);
 
         logger.info(String.format("Saved Lesson to Tape %s", tape.getName()));
+
+        return this.tapeMapper.tapesToTapeResponseList(this.tapeRepo.findAllByYearAndReleaseYear(tape.getYear(),
+                tape.getReleaseYear()).get());
     }
 
-    public void deleteLesson(Long lessonId) throws EntityNotFoundException {
+    public List<TapeResponse> deleteLesson(Long lessonId) throws EntityNotFoundException {
         Optional<Lesson> lessonOptional = this.lessonRepo.findLessonByLessonId(lessonId);
 
         if (lessonOptional.isEmpty()) {
@@ -66,6 +75,8 @@ public class LessonCreationService {
         lessonRepo.delete(lesson);
 
         logger.info(String.format("Deleted Lesson from Tape %s", lesson.getTape().getName()));
+        return this.tapeMapper.tapesToTapeResponseList(this.tapeRepo.findAllByYearAndReleaseYear(lesson.getTape().getYear(),
+                lesson.getTape().getReleaseYear()).get());
     }
 
     private void isLessonAvailable(LessonCreationRequest lessonCreationRequest, Tape tape) throws EntityCreationException {
