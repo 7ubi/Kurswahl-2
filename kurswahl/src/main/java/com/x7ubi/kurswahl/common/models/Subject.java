@@ -23,7 +23,12 @@ public class Subject {
     @JoinColumn(nullable = false)
     private SubjectArea subjectArea;
 
-    public Subject() {}
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn()
+    private Set<Rule> rules;
+
+    public Subject() {
+    }
 
     public Long getSubjectId() {
         return subjectId;
@@ -55,5 +60,13 @@ public class Subject {
 
     public void setSubjectArea(SubjectArea subjectArea) {
         this.subjectArea = subjectArea;
+    }
+
+    public Set<Rule> getRules() {
+        return rules;
+    }
+
+    public void setRules(Set<Rule> rules) {
+        this.rules = rules;
     }
 }
