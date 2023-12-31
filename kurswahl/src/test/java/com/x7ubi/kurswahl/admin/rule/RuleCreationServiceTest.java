@@ -91,7 +91,7 @@ public class RuleCreationServiceTest {
         ruleCreationService.createRule(ruleCreationRequest);
 
         // Then
-        Rule rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
+        rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
         Assertions.assertEquals(rule.getSubjects().size(), 1);
@@ -121,7 +121,7 @@ public class RuleCreationServiceTest {
         ruleCreationService.createRule(ruleCreationRequest);
 
         // Then
-        Rule rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
+        rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
         Assertions.assertEquals(rule.getSubjects().size(), 1);
@@ -130,14 +130,14 @@ public class RuleCreationServiceTest {
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
         Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
-        
+
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         Assertions.assertEquals(subject.getRules().size(), 1);
         Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
     }
 
     @Test
-    public void testCreateRuleNameExists() throws EntityCreationException {
+    public void testCreateRuleNameExists() {
         // Given
         setupRuleSet();
         setupRule();
@@ -154,5 +154,35 @@ public class RuleCreationServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_ALREADY_EXISTS);
+    }
+
+    @Test
+    public void testCreateRuleWrongSubjectId() throws EntityCreationException {
+        // Given
+        setupRuleSet();
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+
+        RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
+        ruleCreationRequest.setName("Test");
+        ruleCreationRequest.setYear(11);
+        ruleCreationRequest.setSubjectIds(List.of(subject.getSubjectId(), subject.getSubjectId() + 3));
+
+        // When
+        ruleCreationService.createRule(ruleCreationRequest);
+
+        // Then
+        rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
+        Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
+        Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
+        Assertions.assertEquals(rule.getSubjects().size(), 1);
+        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), subject.getSubjectId());
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+        Assertions.assertEquals(ruleSet.getRules().size(), 1);
+        Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        Assertions.assertEquals(subject.getRules().size(), 1);
+        Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
     }
 }
