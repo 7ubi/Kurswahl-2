@@ -2,6 +2,8 @@ package com.x7ubi.kurswahl.admin.rule.service;
 
 import com.x7ubi.kurswahl.admin.rule.mapper.RuleMapper;
 import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.RuleSet;
 import com.x7ubi.kurswahl.common.models.Subject;
@@ -32,15 +34,19 @@ public class RuleCreationService {
     }
 
     @Transactional
-    public void createRule(RuleCreationRequest ruleCreationRequest) {
+    public void createRule(RuleCreationRequest ruleCreationRequest) throws EntityCreationException {
         RuleSet ruleSet = getOrCreateRuleSet(ruleCreationRequest.getYear());
+
+        if (ruleRepo.existsRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), ruleCreationRequest.getYear())) {
+            throw new EntityCreationException(ErrorMessage.RULE_ALREADY_EXISTS);
+        }
 
         Rule rule = this.ruleMapper.ruleRequestToRule(ruleCreationRequest);
         rule.setRuleSet(ruleSet);
         rule.setSubjects(new HashSet<>());
 
-        this.ruleRepo.saveAndFlush(rule);
         ruleSet.getRules().add(rule);
+        this.ruleRepo.saveAndFlush(rule);
         this.ruleSetRepo.saveAndFlush(ruleSet);
 
         for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
@@ -67,7 +73,8 @@ public class RuleCreationService {
             ruleSet.setRules(new HashSet<>());
             ruleSet.setYear(year);
 
-            return ruleSet;
+            this.ruleSetRepo.saveAndFlush(ruleSet);
+            return this.ruleSetRepo.findRuleSetByYear(year).get();
         }
     }
 }
