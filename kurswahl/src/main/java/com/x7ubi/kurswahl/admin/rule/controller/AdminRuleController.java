@@ -99,4 +99,19 @@ public class AdminRuleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/rules")
+    @AdminRequired
+    public ResponseEntity<?> deleteRule(@RequestBody List<Long> ruleIds) {
+        logger.info("Deleting Rules");
+        try {
+            List<RuleResponse> responses = this.ruleCreationService.deleteRules(ruleIds);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

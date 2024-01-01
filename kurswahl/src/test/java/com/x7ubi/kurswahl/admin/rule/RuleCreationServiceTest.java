@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @KurswahlServiceTest
@@ -434,7 +435,62 @@ public class RuleCreationServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_NOT_FOUND);
-        
+
+        Assertions.assertTrue(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
+    }
+
+    @Test
+    public void testDeleteRules() throws EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        List<RuleResponse> responses = this.ruleCreationService.deleteRules(List.of(rule.getRuleId()));
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
+
+        Assertions.assertFalse(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+        Assertions.assertTrue(ruleSet.getRules().isEmpty());
+
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        Assertions.assertTrue(subject.getRules().isEmpty());
+    }
+
+    @Test
+    public void testDeleteRulesEmptyList() throws EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        List<RuleResponse> responses = this.ruleCreationService.deleteRules(new ArrayList<>());
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
+
+        Assertions.assertTrue(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
+    }
+
+    @Test
+    public void testDeleteRulesRuleNotFound() {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.ruleCreationService.deleteRules(List.of(rule.getRuleId() + 3)));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_NOT_FOUND);
+
         Assertions.assertTrue(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
     }
 }

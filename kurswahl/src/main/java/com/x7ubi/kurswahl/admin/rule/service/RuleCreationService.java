@@ -182,4 +182,14 @@ public class RuleCreationService {
 
         return rule.getRuleSet().getYear();
     }
+
+    @Transactional
+    public List<RuleResponse> deleteRules(List<Long> ruleIds) throws EntityNotFoundException {
+        Integer year = null;
+        for (Long ruleId : ruleIds) {
+            year = deleteRuleHelper(ruleId);
+        }
+
+        return getRules(year);
+    }
 }
