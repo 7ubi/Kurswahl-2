@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.admin.rule.service.RuleCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.RuleSet;
 import com.x7ubi.kurswahl.common.models.Subject;
@@ -190,6 +191,38 @@ public class RuleCreationServiceTest {
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         Assertions.assertEquals(subject.getRules().size(), 1);
         Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+    }
+
+    @Test
+    public void testGetRule() throws EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        RuleResponse response = this.ruleCreationService.getRule(rule.getRuleId());
+
+        // Then
+        Assertions.assertEquals(response.getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(response.getName(), rule.getName());
+        Assertions.assertEquals(response.getSubjectResponses().size(), 1);
+        Assertions.assertEquals(response.getSubjectResponses().get(0).getSubjectId(), subject.getSubjectId());
+    }
+
+    @Test
+    public void testGetRuleRuleNotFound() {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.ruleCreationService.getRule(rule.getRuleId() + 3));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_NOT_FOUND);
     }
 
     @Test

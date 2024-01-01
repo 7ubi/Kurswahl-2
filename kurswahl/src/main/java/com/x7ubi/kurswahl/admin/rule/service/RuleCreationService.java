@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
 import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.RuleSet;
 import com.x7ubi.kurswahl.common.models.Subject;
@@ -97,5 +98,14 @@ public class RuleCreationService {
         logger.info(String.format("Got Rules for year: %s", year));
 
         return this.ruleMapper.rulesToRuleResponses(ruleSet.getRules().stream().toList());
+    }
+
+    public RuleResponse getRule(Long ruleId) throws EntityNotFoundException {
+        Optional<Rule> ruleOptional = this.ruleRepo.findRuleByRuleId(ruleId);
+        if (ruleOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.RULE_NOT_FOUND);
+        }
+        Rule rule = ruleOptional.get();
+        return this.ruleMapper.ruleToRuleResponse(rule);
     }
 }

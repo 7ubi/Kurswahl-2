@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface RuleRepo extends JpaRepository<Rule, Long> {
 
+    Optional<Rule> findRuleByRuleId(Long ruleId);
+
     Optional<Rule> findRuleByNameAndRuleSet_Year(String name, Integer year);
 
     Boolean existsRuleByNameAndRuleSet_Year(String name, Integer year);
