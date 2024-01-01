@@ -72,6 +72,21 @@ public class AdminRuleController {
         }
     }
 
+    @DeleteMapping("/rule")
+    @AdminRequired
+    public ResponseEntity<?> deleteRule(@RequestParam Long ruleId) {
+        logger.info("Deleting Rule");
+        try {
+            List<RuleResponse> responses = this.ruleCreationService.deleteRule(ruleId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/rules")
     @AdminRequired
     public ResponseEntity<?> getRules(@RequestParam Integer year) {

@@ -398,4 +398,43 @@ public class RuleCreationServiceTest {
         // Then
         Assertions.assertTrue(responses.isEmpty());
     }
+
+    @Test
+    public void testDeleteRule() throws EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        List<RuleResponse> responses = this.ruleCreationService.deleteRule(rule.getRuleId());
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
+
+        Assertions.assertFalse(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+        Assertions.assertTrue(ruleSet.getRules().isEmpty());
+
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        Assertions.assertTrue(subject.getRules().isEmpty());
+    }
+
+    @Test
+    public void testDeleteRuleRuleNotFound() {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.ruleCreationService.deleteRule(rule.getRuleId() + 3));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_NOT_FOUND);
+        
+        Assertions.assertTrue(ruleRepo.existsRuleByNameAndRuleSet_Year(rule.getName(), 11));
+    }
 }
