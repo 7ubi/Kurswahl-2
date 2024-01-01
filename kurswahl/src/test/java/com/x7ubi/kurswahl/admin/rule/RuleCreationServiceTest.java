@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.rule;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
+import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.admin.rule.service.RuleCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
@@ -75,6 +76,11 @@ public class RuleCreationServiceTest {
         ruleSet.getRules().add(rule);
         ruleSetRepo.save(ruleSet);
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+    }
+
+    private void addSubjectToRule() {
+        rule.getSubjects().add(subject);
+        ruleRepo.save(rule);
     }
 
     @Test
@@ -184,5 +190,32 @@ public class RuleCreationServiceTest {
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         Assertions.assertEquals(subject.getRules().size(), 1);
         Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+    }
+
+    @Test
+    public void testGetRules() {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        List<RuleResponse> responses = this.ruleCreationService.getRules(11);
+
+        // Then
+        Assertions.assertEquals(responses.size(), 1);
+        Assertions.assertEquals(responses.get(0).getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(responses.get(0).getName(), rule.getName());
+        Assertions.assertEquals(responses.get(0).getSubjectResponses().size(), 1);
+        Assertions.assertEquals(responses.get(0).getSubjectResponses().get(0).getSubjectId(), subject.getSubjectId());
+    }
+
+    @Test
+    public void testGetRulesNoRules() {
+        // When
+        List<RuleResponse> responses = this.ruleCreationService.getRules(11);
+
+        // Then
+        Assertions.assertTrue(responses.isEmpty());
     }
 }

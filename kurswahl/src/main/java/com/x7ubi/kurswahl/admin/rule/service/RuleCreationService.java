@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.rule.service;
 
 import com.x7ubi.kurswahl.admin.rule.mapper.RuleMapper;
 import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
+import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.models.Rule;
@@ -10,14 +11,20 @@ import com.x7ubi.kurswahl.common.models.Subject;
 import com.x7ubi.kurswahl.common.repository.RuleRepo;
 import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RuleCreationService {
+    private final Logger logger = LoggerFactory.getLogger(RuleCreationService.class);
+
     private final RuleSetRepo ruleSetRepo;
 
     private final RuleRepo ruleRepo;
@@ -59,6 +66,7 @@ public class RuleCreationService {
             rule.getSubjects().add(subject);
             this.subjectRepo.saveAndFlush(subject);
         }
+        logger.info(String.format("Created Rule %s", rule.getName()));
 
         this.ruleRepo.saveAndFlush(rule);
     }
@@ -74,7 +82,20 @@ public class RuleCreationService {
             ruleSet.setYear(year);
 
             this.ruleSetRepo.saveAndFlush(ruleSet);
+            logger.info(String.format("Created Rule Set for year: %s", year));
             return this.ruleSetRepo.findRuleSetByYear(year).get();
         }
+    }
+
+    public List<RuleResponse> getRules(Integer year) {
+        Optional<RuleSet> ruleSetOptional = this.ruleSetRepo.findRuleSetByYear(year);
+        if (ruleSetOptional.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        RuleSet ruleSet = ruleSetOptional.get();
+        logger.info(String.format("Got Rules for year: %s", year));
+
+        return this.ruleMapper.rulesToRuleResponses(ruleSet.getRules().stream().toList());
     }
 }
