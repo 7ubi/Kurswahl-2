@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.common.models.Rule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.List;
 )
 public interface RuleMapper {
     Rule ruleRequestToRule(RuleCreationRequest ruleCreationRequest);
+
+    void ruleRequestToRule(RuleCreationRequest ruleCreationRequest, @MappingTarget Rule rule);
 
     @Mapping(source = "subjects", target = "subjectResponses")
     RuleResponse ruleToRuleResponse(Rule rule);

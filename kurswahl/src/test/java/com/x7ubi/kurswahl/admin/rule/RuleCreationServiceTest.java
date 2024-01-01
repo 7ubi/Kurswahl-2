@@ -42,9 +42,15 @@ public class RuleCreationServiceTest {
 
     private Subject subject;
 
+    private Subject otherSubject;
+
     private RuleSet ruleSet;
 
+    private RuleSet otherRuleSet;
+
     private Rule rule;
+
+    private Rule otherRule;
 
     @BeforeEach
     public void setupTest() {
@@ -57,6 +63,11 @@ public class RuleCreationServiceTest {
 
         subjectAreaRepo.save(subjectArea);
         subjectRepo.save(subject);
+
+        otherSubject = new Subject();
+        otherSubject.setName("Subject Other");
+        otherSubject.setSubjectArea(subjectArea);
+        subjectRepo.save(otherSubject);
     }
 
     private void setupRuleSet() {
@@ -77,6 +88,24 @@ public class RuleCreationServiceTest {
         ruleSet.getRules().add(rule);
         ruleSetRepo.save(ruleSet);
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+    }
+
+    private void setupOtherRule() {
+        otherRuleSet = new RuleSet();
+        otherRuleSet.setYear(12);
+
+        ruleSetRepo.save(otherRuleSet);
+        otherRuleSet = ruleSetRepo.findRuleSetByYear(12).get();
+
+        otherRule = new Rule();
+        otherRule.setRuleSet(otherRuleSet);
+        otherRule.setName("Other Rule");
+
+        ruleRepo.save(otherRule);
+        otherRule = ruleRepo.findRuleByNameAndRuleSet_Year("Other Rule", 12).get();
+        ruleSet.getRules().add(otherRule);
+        ruleSetRepo.save(otherRuleSet);
+        otherRuleSet = ruleSetRepo.findRuleSetByYear(12).get();
     }
 
     private void addSubjectToRule() {
@@ -191,6 +220,123 @@ public class RuleCreationServiceTest {
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         Assertions.assertEquals(subject.getRules().size(), 1);
         Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+    }
+
+    @Test
+    public void testEditRule() throws EntityCreationException, EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        setupRule();
+
+        RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
+        ruleCreationRequest.setName("Rule");
+        ruleCreationRequest.setYear(12);
+        ruleCreationRequest.setSubjectIds(List.of(otherSubject.getSubjectId()));
+
+        // When
+        ruleCreationService.editRule(rule.getRuleId(), ruleCreationRequest);
+
+        // Then
+        rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 12).get();
+        Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
+        Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
+        Assertions.assertEquals(rule.getSubjects().size(), 1);
+        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), otherSubject.getSubjectId());
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(12).get();
+        Assertions.assertEquals(ruleSet.getRules().size(), 1);
+        Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+        Assertions.assertTrue(ruleSet.getRules().isEmpty());
+
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        Assertions.assertTrue(subject.getRules().isEmpty());
+
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        Assertions.assertEquals(otherSubject.getRules().size(), 1);
+        Assertions.assertEquals(otherSubject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+    }
+
+    @Test
+    public void testEditRuleWrongSubjectId() throws EntityCreationException, EntityNotFoundException {
+        // Given
+        setupRuleSet();
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        setupRule();
+
+        RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
+        ruleCreationRequest.setName("Test");
+        ruleCreationRequest.setYear(12);
+        ruleCreationRequest.setSubjectIds(List.of(otherSubject.getSubjectId() + 3));
+
+        // When
+        ruleCreationService.editRule(rule.getRuleId(), ruleCreationRequest);
+
+        // Then
+        rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 12).get();
+        Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
+        Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
+        Assertions.assertTrue(rule.getSubjects().isEmpty());
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(12).get();
+        Assertions.assertEquals(ruleSet.getRules().size(), 1);
+        Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+
+        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
+        Assertions.assertTrue(ruleSet.getRules().isEmpty());
+
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        Assertions.assertTrue(subject.getRules().isEmpty());
+
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        Assertions.assertTrue(otherSubject.getRules().isEmpty());
+    }
+
+    @Test
+    public void testEditRuleWrongRuleId() {
+        // Given
+        setupRuleSet();
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        setupRule();
+
+        RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
+        ruleCreationRequest.setName("Test");
+        ruleCreationRequest.setYear(12);
+        ruleCreationRequest.setSubjectIds(List.of(otherSubject.getSubjectId()));
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.ruleCreationService.editRule(rule.getRuleId() + 3, ruleCreationRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_NOT_FOUND);
+    }
+
+    @Test
+    public void testEditRuleNameExists() {
+        // Given
+        setupRuleSet();
+        subject = subjectRepo.findSubjectByName(subject.getName()).get();
+        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
+        setupRule();
+        setupOtherRule();
+
+        RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
+        ruleCreationRequest.setName(otherRule.getName());
+        ruleCreationRequest.setYear(12);
+        ruleCreationRequest.setSubjectIds(List.of(otherSubject.getSubjectId()));
+
+        // When
+        EntityCreationException exception = Assert.assertThrows(EntityCreationException.class, () ->
+                this.ruleCreationService.editRule(rule.getRuleId(), ruleCreationRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.RULE_ALREADY_EXISTS);
     }
 
     @Test

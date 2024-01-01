@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RuleCreationService {
@@ -58,18 +55,23 @@ public class RuleCreationService {
         this.ruleSetRepo.saveAndFlush(ruleSet);
 
         for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
-            Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
-            if (subjectOptional.isEmpty()) {
-                continue;
-            }
-            Subject subject = subjectOptional.get();
-            subject.getRules().add(rule);
-            rule.getSubjects().add(subject);
-            this.subjectRepo.saveAndFlush(subject);
+            addSubjectToRule(subjectId, rule);
         }
         logger.info(String.format("Created Rule %s", rule.getName()));
 
         this.ruleRepo.saveAndFlush(rule);
+    }
+
+    @Transactional
+    protected void addSubjectToRule(Long subjectId, Rule rule) {
+        Optional<Subject> subjectOptional = this.subjectRepo.findSubjectBySubjectId(subjectId);
+        if (subjectOptional.isEmpty()) {
+            return;
+        }
+        Subject subject = subjectOptional.get();
+        subject.getRules().add(rule);
+        rule.getSubjects().add(subject);
+        this.subjectRepo.saveAndFlush(subject);
     }
 
     @Transactional
@@ -95,17 +97,68 @@ public class RuleCreationService {
         }
 
         RuleSet ruleSet = ruleSetOptional.get();
-        logger.info(String.format("Got Rules for year: %s", year));
+        logger.info(String.format("Got Rules for year %s", year));
 
         return this.ruleMapper.rulesToRuleResponses(ruleSet.getRules().stream().toList());
     }
 
     public RuleResponse getRule(Long ruleId) throws EntityNotFoundException {
+        Rule rule = getRuleById(ruleId);
+        return this.ruleMapper.ruleToRuleResponse(rule);
+    }
+
+    private Rule getRuleById(Long ruleId) throws EntityNotFoundException {
         Optional<Rule> ruleOptional = this.ruleRepo.findRuleByRuleId(ruleId);
         if (ruleOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.RULE_NOT_FOUND);
         }
-        Rule rule = ruleOptional.get();
-        return this.ruleMapper.ruleToRuleResponse(rule);
+        return ruleOptional.get();
+    }
+
+    @Transactional
+    public void editRule(Long ruleId, RuleCreationRequest ruleCreationRequest)
+            throws EntityNotFoundException, EntityCreationException {
+        Rule rule = getRuleById(ruleId);
+
+        if (!Objects.equals(rule.getName(), ruleCreationRequest.getName())) {
+            if (ruleRepo.existsRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), ruleCreationRequest.getYear())) {
+                throw new EntityCreationException(ErrorMessage.RULE_ALREADY_EXISTS);
+            }
+            this.ruleMapper.ruleRequestToRule(ruleCreationRequest, rule);
+        }
+
+        if (!Objects.equals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear())) {
+            rule.getRuleSet().getRules().remove(rule);
+            ruleSetRepo.save(rule.getRuleSet());
+
+            RuleSet ruleSet = getOrCreateRuleSet(ruleCreationRequest.getYear());
+            ruleSet.getRules().add(rule);
+            ruleSetRepo.save(ruleSet);
+
+            rule.setRuleSet(ruleSet);
+        }
+
+        for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
+            if (rule.getSubjects().stream().noneMatch(subject -> Objects.equals(subject.getSubjectId(), subjectId))) {
+                addSubjectToRule(subjectId, rule);
+            }
+        }
+
+        for (Subject subject : rule.getSubjects()) {
+            if (ruleCreationRequest.getSubjectIds().stream().noneMatch(subjectId ->
+                    Objects.equals(subject.getSubjectId(), subjectId))) {
+                removeSubjectFromRule(subject, rule);
+            }
+        }
+
+        ruleRepo.save(rule);
+    }
+
+    @Transactional
+    protected void removeSubjectFromRule(Subject subject, Rule rule) {
+        subject.getRules().remove(rule);
+        subjectRepo.save(subject);
+        rule.getSubjects().remove(subject);
+        ruleRepo.save(rule);
     }
 }

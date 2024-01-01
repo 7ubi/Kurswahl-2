@@ -56,6 +56,22 @@ public class AdminRuleController {
         }
     }
 
+    @PutMapping("/rule")
+    @AdminRequired
+    public ResponseEntity<?> editRule(@RequestParam Long ruleId, @RequestBody RuleCreationRequest ruleCreationRequest) {
+        logger.info("Editing rule");
+        try {
+            this.ruleCreationService.editRule(ruleId, ruleCreationRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (EntityCreationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/rules")
     @AdminRequired
     public ResponseEntity<?> getRules(@RequestParam Integer year) {
