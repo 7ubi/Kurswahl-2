@@ -229,6 +229,7 @@ public class RuleCreationServiceTest {
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
         setupRule();
+        addSubjectToRule();
 
         RuleCreationRequest ruleCreationRequest = new RuleCreationRequest();
         ruleCreationRequest.setName("Rule");

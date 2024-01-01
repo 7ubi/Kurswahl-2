@@ -138,16 +138,16 @@ public class RuleCreationService {
             rule.setRuleSet(ruleSet);
         }
 
-        for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
-            if (rule.getSubjects().stream().noneMatch(subject -> Objects.equals(subject.getSubjectId(), subjectId))) {
-                addSubjectToRule(subjectId, rule);
-            }
-        }
-
         for (Subject subject : rule.getSubjects()) {
             if (ruleCreationRequest.getSubjectIds().stream().noneMatch(subjectId ->
                     Objects.equals(subject.getSubjectId(), subjectId))) {
                 removeSubjectFromRule(subject, rule);
+            }
+        }
+
+        for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
+            if (rule.getSubjects().stream().noneMatch(subject -> Objects.equals(subject.getSubjectId(), subjectId))) {
+                addSubjectToRule(subjectId, rule);
             }
         }
 
