@@ -8,7 +8,6 @@ import java.util.Set;
 @Table(name = "CHOICE")
 public class Choice {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
