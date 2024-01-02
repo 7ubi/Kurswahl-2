@@ -10,6 +10,8 @@ public class RuleResponse {
 
     private String name;
 
+    private Integer year;
+
     private List<SubjectResponse> subjectResponses;
 
     public Long getRuleId() {
@@ -34,5 +36,13 @@ public class RuleResponse {
 
     public void setSubjectResponses(List<SubjectResponse> subjectResponses) {
         this.subjectResponses = subjectResponses;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 }

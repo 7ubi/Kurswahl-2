@@ -1,0 +1,24 @@
+<app-hero title="Regel erstellen"></app-hero>
+<form [formGroup]="editRuleForm" (ngSubmit)="createRule()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" name="name" id="name" type="text">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Jahrgang</mat-label>
+        <input matInput formControlName="year" name="year" id="year" type="number">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Fächer</mat-label>
+        <mat-select formControlName="subjects" multiple>
+          <mat-option *ngFor="let subject of subjectResponses"
+                      value="{{subject.subjectId}}"> {{ subject.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Fach erstellen</button>
+    </div>
+  </div>
+</form>

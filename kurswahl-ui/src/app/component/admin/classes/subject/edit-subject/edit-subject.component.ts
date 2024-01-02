@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
@@ -9,11 +9,11 @@ import {ActivatedRoute, Router} from "@angular/router";
   templateUrl: './edit-subject.component.html',
   styleUrls: ['./edit-subject.component.css']
 })
-export class EditSubjectComponent {
+export class EditSubjectComponent implements OnInit {
   editSubjectForm: FormGroup;
   subjectAreaResponses?: SubjectAreaResponse[];
   id: string | null;
-  subject?: SubjectResponse
+  subject?: SubjectResponse;
 
   constructor(
     private formBuilder: FormBuilder,

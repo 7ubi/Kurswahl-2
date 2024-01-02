@@ -159,6 +159,7 @@ public class RuleCreationService {
         subject.getRules().remove(rule);
         subjectRepo.save(subject);
         rule.getSubjects().remove(subject);
+        ruleRepo.save(rule);
     }
 
     @Transactional
@@ -168,11 +169,12 @@ public class RuleCreationService {
     }
 
     @Transactional
-    protected Integer deleteRuleHelper(Long ruleId) throws EntityNotFoundException {
+    public Integer deleteRuleHelper(Long ruleId) throws EntityNotFoundException {
         Rule rule = getRuleById(ruleId);
 
         for (Subject subject : rule.getSubjects()) {
-            removeSubjectFromRule(subject, rule);
+            subject.getRules().remove(rule);
+            subjectRepo.save(subject);
         }
 
         rule.getRuleSet().getRules().remove(rule);

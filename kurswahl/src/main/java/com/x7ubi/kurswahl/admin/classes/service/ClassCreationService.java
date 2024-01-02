@@ -8,10 +8,10 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class ClassCreationService {
         logger.info(String.format("Created class %s", aclass.getName()));
     }
 
-    @Transactional()
+    @Transactional
     public void editClass(Long classId, ClassCreationRequest classCreationRequest) throws EntityNotFoundException {
         Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
         if (classOptional.isEmpty()) {
@@ -167,7 +167,7 @@ public class ClassCreationService {
         return getAllClasses(year);
     }
 
-    private Integer deleteClassHelper(Long classId) throws EntityNotFoundException {
+    public Integer deleteClassHelper(Long classId) throws EntityNotFoundException {
         Optional<Class> classOptional = this.classRepo.findClassByClassId(classId);
         if (classOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_FOUND);
