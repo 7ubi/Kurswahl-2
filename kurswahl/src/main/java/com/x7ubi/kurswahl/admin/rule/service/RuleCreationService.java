@@ -169,7 +169,7 @@ public class RuleCreationService {
     }
 
     @Transactional
-    protected Integer deleteRuleHelper(Long ruleId) throws EntityNotFoundException {
+    public Integer deleteRuleHelper(Long ruleId) throws EntityNotFoundException {
         Rule rule = getRuleById(ruleId);
 
         for (Subject subject : rule.getSubjects()) {

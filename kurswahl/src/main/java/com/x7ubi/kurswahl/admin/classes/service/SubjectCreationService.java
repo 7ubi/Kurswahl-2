@@ -7,14 +7,16 @@ import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.Subject;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
+import com.x7ubi.kurswahl.common.repository.RuleRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectRepo;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +35,16 @@ public class SubjectCreationService {
 
     private final ClassCreationService classCreationService;
 
+    private final RuleRepo ruleRepo;
+
     protected SubjectCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
-                                     SubjectMapper subjectMapper, ClassCreationService classCreationService) {
+                                     SubjectMapper subjectMapper, ClassCreationService classCreationService,
+                                     RuleRepo ruleRepo) {
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.subjectMapper = subjectMapper;
         this.classCreationService = classCreationService;
+        this.ruleRepo = ruleRepo;
     }
 
     @Transactional
@@ -89,13 +95,15 @@ public class SubjectCreationService {
         return this.subjectMapper.subjectsToSubjectResponseList(subjects);
     }
 
+    @Transactional
     public List<SubjectResponse> deleteSubject(Long subjectId) throws EntityNotFoundException {
         deleteSubjectHelper(subjectId);
 
         return getAllSubjects();
     }
 
-    private void deleteSubjectHelper(Long subjectId) throws EntityNotFoundException {
+    @Transactional
+    public void deleteSubjectHelper(Long subjectId) throws EntityNotFoundException {
         Subject subject = getSubjectFromId(subjectId);
 
         subject.getSubjectArea().getSubjects().remove(subject);
@@ -104,7 +112,13 @@ public class SubjectCreationService {
         subject.getClasses().clear();
         this.subjectRepo.save(subject);
         for (Class aclass : classes) {
-            classCreationService.deleteClass(aclass.getClassId());
+            classCreationService.deleteClassHelper(aclass.getClassId());
+        }
+        List<Rule> rules = new ArrayList<>(subject.getRules());
+        this.subjectRepo.save(subject);
+        for (Rule rule : rules) {
+            rule.getSubjects().remove(subject);
+            ruleRepo.save(rule);
         }
         this.subjectRepo.delete(subject);
 
@@ -131,6 +145,7 @@ public class SubjectCreationService {
         }
     }
 
+    @Transactional
     public List<SubjectResponse> deleteSubjects(List<Long> subjectIds) throws EntityNotFoundException {
         for (Long subjectId : subjectIds) {
             deleteSubjectHelper(subjectId);
