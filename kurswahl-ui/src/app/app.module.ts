@@ -69,6 +69,10 @@ import {StudentRequired} from "./routing-helper/student-required";
 import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
 import {ChoiceTableComponent} from "./component/student/choice/choice-table/choice-table.component";
 import {ShowChoicesComponent} from "./component/student/choice/show-choices/show-choices.component";
+import {ShowRulesComponent} from "./component/admin/rules/show-rules/show-rules.component";
+import {RuleTableComponent} from "./component/admin/rules/show-rules/rule-table/rule-table.component";
+import {CreateRuleComponent} from "./component/admin/rules/create-rule/create-rule.component";
+import {EditRuleComponent} from "./component/admin/rules/edit-rule/edit-rule.component";
 
 @NgModule({
   declarations: [
@@ -107,7 +111,11 @@ import {ShowChoicesComponent} from "./component/student/choice/show-choices/show
     HomePageComponent,
     MakeChoiceComponent,
     ChoiceTableComponent,
-    ShowChoicesComponent
+    ShowChoicesComponent,
+    ShowRulesComponent,
+    RuleTableComponent,
+    CreateRuleComponent,
+    EditRuleComponent
   ],
   imports: [
     BrowserModule,
@@ -135,4 +143,5 @@ import {ShowChoicesComponent} from "./component/student/choice/show-choices/show
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

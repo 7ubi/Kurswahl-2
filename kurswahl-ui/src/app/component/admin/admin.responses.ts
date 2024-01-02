@@ -72,6 +72,13 @@ export interface ClassResponse {
   readonly tapeResponse: TapeResponse;
 }
 
+export interface RuleResponse {
+  readonly ruleId: number;
+  readonly name: string;
+  readonly subjectResponses: SubjectResponse[];
+  readonly year: number;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

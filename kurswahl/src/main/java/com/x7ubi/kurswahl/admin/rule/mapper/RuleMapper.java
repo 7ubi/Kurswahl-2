@@ -22,6 +22,7 @@ public interface RuleMapper {
     void ruleRequestToRule(RuleCreationRequest ruleCreationRequest, @MappingTarget Rule rule);
 
     @Mapping(source = "subjects", target = "subjectResponses")
+    @Mapping(source = "ruleSet.year", target = "year")
     RuleResponse ruleToRuleResponse(Rule rule);
 
     List<RuleResponse> rulesToRuleResponses(List<Rule> rules);

@@ -159,6 +159,7 @@ public class RuleCreationService {
         subject.getRules().remove(rule);
         subjectRepo.save(subject);
         rule.getSubjects().remove(subject);
+        ruleRepo.save(rule);
     }
 
     @Transactional
@@ -172,7 +173,8 @@ public class RuleCreationService {
         Rule rule = getRuleById(ruleId);
 
         for (Subject subject : rule.getSubjects()) {
-            removeSubjectFromRule(subject, rule);
+            subject.getRules().remove(rule);
+            subjectRepo.save(subject);
         }
 
         rule.getRuleSet().getRules().remove(rule);
