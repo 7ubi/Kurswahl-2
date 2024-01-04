@@ -47,9 +47,11 @@ public class StudentChoiceService {
 
     private final SubjectTapeMapper subjectTapeMapper;
 
+    private final StudentRuleService studentRuleService;
+
     public StudentChoiceService(ChoiceRepo choiceRepo, ClassRepo classRepo, TapeRepo tapeRepo, StudentRepo studentRepo,
                                 SubjectRepo subjectRepo, ChoiceMapper choiceMapper, TapeClassMapper tapeClassMapper,
-                                SubjectTapeMapper subjectTapeMapper) {
+                                SubjectTapeMapper subjectTapeMapper, StudentRuleService studentRuleService) {
         this.choiceRepo = choiceRepo;
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
@@ -58,6 +60,7 @@ public class StudentChoiceService {
         this.choiceMapper = choiceMapper;
         this.tapeClassMapper = tapeClassMapper;
         this.subjectTapeMapper = subjectTapeMapper;
+        this.studentRuleService = studentRuleService;
     }
 
     @Transactional
@@ -99,7 +102,9 @@ public class StudentChoiceService {
         setClassToChoice(choice, aClass);
         logger.info(String.format("Altered choice for %s", student.getUser().getUsername()));
 
-        return this.choiceMapper.choiceToChoiceResponse(choice);
+        ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
+        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(student.getStudentClass().getYear(), choice));
+        return choiceResponse;
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
@@ -165,13 +170,17 @@ public class StudentChoiceService {
                 choiceNumber, student.getStudentId(), Year.now().getValue());
 
         if (choiceOptional.isEmpty()) {
-            return new ChoiceResponse();
+            ChoiceResponse choiceResponse = new ChoiceResponse();
+            choiceResponse.setRuleResponses(this.studentRuleService.getAllRules(student.getStudentClass().getYear()));
+            return choiceResponse;
         }
 
         Choice choice = choiceOptional.get();
 
         logger.info("Found choice");
-        return this.choiceMapper.choiceToChoiceResponse(choice);
+        ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
+        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(student.getStudentClass().getYear(), choice));
+        return choiceResponse;
     }
 
     public List<ChoiceResponse> getChoices(String username) throws EntityNotFoundException {
@@ -201,6 +210,7 @@ public class StudentChoiceService {
         return studentOptional.get();
     }
 
+    @Transactional
     public ChoiceResponse deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
             throws EntityNotFoundException {
         Optional<Choice> choiceOptional
@@ -229,6 +239,8 @@ public class StudentChoiceService {
         this.classRepo.save(aclass);
 
         logger.info(String.format("Removed %s from Choice", aclass.getName()));
-        return this.choiceMapper.choiceToChoiceResponse(choice);
+        ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
+        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(choice.getStudent().getStudentClass().getYear(), choice));
+        return choiceResponse;
     }
 }

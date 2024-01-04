@@ -10,6 +10,8 @@ public class ChoiceResponse {
 
     private List<ClassChoiceResponse> classChoiceResponses;
 
+    private List<RuleResponse> ruleResponses;
+
     public Long getChoiceId() {
         return choiceId;
     }
@@ -32,5 +34,13 @@ public class ChoiceResponse {
 
     public void setClassChoiceResponses(List<ClassChoiceResponse> classChoiceResponses) {
         this.classChoiceResponses = classChoiceResponses;
+    }
+
+    public List<RuleResponse> getRuleResponses() {
+        return ruleResponses;
+    }
+
+    public void setRuleResponses(List<RuleResponse> ruleResponses) {
+        this.ruleResponses = ruleResponses;
     }
 }
