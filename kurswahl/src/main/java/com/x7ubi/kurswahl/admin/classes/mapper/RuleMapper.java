@@ -1,8 +1,7 @@
-package com.x7ubi.kurswahl.admin.rule.mapper;
+package com.x7ubi.kurswahl.admin.classes.mapper;
 
-import com.x7ubi.kurswahl.admin.classes.mapper.SubjectMapper;
-import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
-import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
+import com.x7ubi.kurswahl.admin.classes.request.RuleCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.RuleResponse;
 import com.x7ubi.kurswahl.common.models.Rule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

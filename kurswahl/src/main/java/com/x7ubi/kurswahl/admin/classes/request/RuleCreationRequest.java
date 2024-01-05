@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.admin.rule.request;
+package com.x7ubi.kurswahl.admin.classes.request;
 
 import java.util.List;
 

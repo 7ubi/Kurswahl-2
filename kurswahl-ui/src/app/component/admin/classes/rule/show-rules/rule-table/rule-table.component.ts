@@ -1,9 +1,9 @@
 import {Component, Input, numberAttribute, OnInit} from '@angular/core';
-import {RuleResponse} from "../../../admin.responses";
+import {RuleResponse} from "../../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
-import {HttpService} from "../../../../../service/http.service";
+import {HttpService} from "../../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 

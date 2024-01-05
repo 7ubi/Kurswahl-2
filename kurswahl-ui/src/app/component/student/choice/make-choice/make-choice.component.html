@@ -58,7 +58,8 @@
       </div>
     </div>
 
-    <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()">
+    <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()"
+            [disabled]="choiceResponse.ruleResponses.length !== 0">
       {{ getNextStepText() }}
     </button>
   </div>
