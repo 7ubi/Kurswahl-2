@@ -18,12 +18,12 @@
         </span>
       </div>
       <div class="classes-table">
-        <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : ''}}</div>
+        <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : '' }}</div>
         <div
           class="class selectable {{ getClassForSelectClass(c) }}"
           (click)="alterChoice(c.classId)"
           *ngFor="let c of selectedTape?.classResponses">
-          {{c.name}} - {{c.teacherResponse.abbreviation}}
+          {{ c.name }} - {{ c.teacherResponse.abbreviation }}
         </div>
         <div
           *ngIf="selectedTape?.classResponses"
@@ -32,9 +32,34 @@
           Band nicht belegen
         </div>
       </div>
+      <div class="classes-table">
+        <div class="class header"><span>Nicht erfüllte Wahlbedingungen</span></div>
+        <div
+          class="class selectable"
+          style="padding: 0"
+          *ngFor="let rule of choiceResponse?.ruleResponses">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ rule.name }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            Wähle eines dieser Fächer:
+            <span *ngFor="let subject of rule.subjectResponses; index as i">
+              {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+            </span>
+          </mat-expansion-panel>
+        </div>
+        <div
+          class="class"
+          *ngIf="choiceResponse.ruleResponses.length === 0">
+          Alle Wahlbedingungen wurden erfüllt
+        </div>
+      </div>
     </div>
 
-    <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()">
+    <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()"
+            [disabled]="choiceResponse.ruleResponses.length !== 0">
       {{ getNextStepText() }}
     </button>
   </div>

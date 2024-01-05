@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {RuleResponse, SubjectResponse} from "../../admin.responses";
-import {HttpService} from "../../../../service/http.service";
+import {RuleResponse, SubjectResponse} from "../../../admin.responses";
+import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({

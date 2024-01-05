@@ -1,6 +1,4 @@
-package com.x7ubi.kurswahl.admin.rule.response;
-
-import com.x7ubi.kurswahl.admin.classes.response.SubjectResponse;
+package com.x7ubi.kurswahl.admin.classes.response;
 
 import java.util.List;
 

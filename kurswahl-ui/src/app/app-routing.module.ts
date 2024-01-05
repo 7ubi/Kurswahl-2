@@ -46,9 +46,9 @@ import {StudentRequired} from "./routing-helper/student-required";
 import {MakeChoiceComponent} from "./component/student/choice/make-choice/make-choice.component";
 import {ShowChoicesComponent} from "./component/student/choice/show-choices/show-choices.component";
 import {PageNotFoundComponent} from "./component/common/page-not-found/page-not-found.component";
-import {ShowRulesComponent} from "./component/admin/rules/show-rules/show-rules.component";
-import {CreateRuleComponent} from "./component/admin/rules/create-rule/create-rule.component";
-import {EditRuleComponent} from "./component/admin/rules/edit-rule/edit-rule.component";
+import {ShowRulesComponent} from "./component/admin/classes/rule/show-rules/show-rules.component";
+import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/create-rule.component";
+import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
 
 const routes: Routes = [
   {

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SubjectResponse} from "../../admin.responses";
-import {HttpService} from "../../../../service/http.service";
+import {SubjectResponse} from "../../../admin.responses";
+import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 
 @Component({

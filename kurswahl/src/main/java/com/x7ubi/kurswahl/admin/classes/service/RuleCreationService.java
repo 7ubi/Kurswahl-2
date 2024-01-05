@@ -1,8 +1,8 @@
-package com.x7ubi.kurswahl.admin.rule.service;
+package com.x7ubi.kurswahl.admin.classes.service;
 
-import com.x7ubi.kurswahl.admin.rule.mapper.RuleMapper;
-import com.x7ubi.kurswahl.admin.rule.request.RuleCreationRequest;
-import com.x7ubi.kurswahl.admin.rule.response.RuleResponse;
+import com.x7ubi.kurswahl.admin.classes.mapper.RuleMapper;
+import com.x7ubi.kurswahl.admin.classes.request.RuleCreationRequest;
+import com.x7ubi.kurswahl.admin.classes.response.RuleResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;

@@ -1,9 +1,8 @@
 
-
 .classes-tables {
   margin-top: 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   background-color: white;
   padding: 15px;
 }
@@ -15,7 +14,8 @@
 .class {
   font-size: 14px;
   width: 100%;
-  padding: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
   font-family: Roboto, sans-serif;
   background-color: #f7f7f7;
 }
