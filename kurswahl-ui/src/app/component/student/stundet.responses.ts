@@ -9,6 +9,7 @@ export interface ChoiceResponse {
   readonly choiceId: number;
   readonly choiceNumber: number;
   readonly classChoiceResponses: ClassChoiceResponse[];
+  readonly ruleResponses: RuleResponse[];
 }
 
 export interface ClassChoiceResponse {
@@ -38,5 +39,14 @@ export interface SubjectTapeResponse {
 }
 
 export interface TapeResponse {
+  readonly name: string;
+}
+
+export interface RuleResponse {
+  readonly name: string;
+  readonly subjectResponses: SubjectResponse[];
+}
+
+export interface SubjectResponse {
   readonly name: string;
 }

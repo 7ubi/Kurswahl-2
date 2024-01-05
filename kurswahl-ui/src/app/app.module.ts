@@ -73,6 +73,7 @@ import {ShowRulesComponent} from "./component/admin/rules/show-rules/show-rules.
 import {RuleTableComponent} from "./component/admin/rules/show-rules/rule-table/rule-table.component";
 import {CreateRuleComponent} from "./component/admin/rules/create-rule/create-rule.component";
 import {EditRuleComponent} from "./component/admin/rules/edit-rule/edit-rule.component";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import {EditRuleComponent} from "./component/admin/rules/edit-rule/edit-rule.com
     MatSortModule,
     MatListModule,
     MatCheckboxModule,
-    MatChipsModule
+    MatChipsModule,
+    MatExpansionModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [
