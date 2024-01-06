@@ -79,6 +79,17 @@ export interface RuleResponse {
   readonly year: number;
 }
 
+export interface ChoiceSurveillanceResponse {
+  readonly studentSurveillanceResponse: StudentSurveillanceResponse;
+  readonly chosen: boolean;
+  readonly fulfilledRules: boolean;
+}
+
+export interface StudentSurveillanceResponse extends UserResponse {
+  readonly studentClassId: number;
+  readonly name: string;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

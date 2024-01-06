@@ -49,6 +49,7 @@ import {PageNotFoundComponent} from "./component/common/page-not-found/page-not-
 import {ShowRulesComponent} from "./component/admin/classes/rule/show-rules/show-rules.component";
 import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/create-rule.component";
 import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
+import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 
 const routes: Routes = [
   {
@@ -175,6 +176,10 @@ const routes: Routes = [
       {
         path: 'rules/edit/:id',
         component: EditRuleComponent
+      },
+      {
+        path: 'choiceSurveillance',
+        component: ChoiceSurveillanceComponent
       },
     ]
   },

@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="center">
+    <div class="header">
+      <mat-form-field>
+        <mat-label>Suche</mat-label>
+        <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>
+      </mat-form-field>
+    </div>
+    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
+           matSort (matSortChange)="sortData($event)">
+
+      <ng-container matColumnDef="Schüler">
+        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Schüler</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.studentSurveillanceResponse.firstname }} {{ element.studentSurveillanceResponse.surname }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Gewählt">
+        <th mat-header-cell *matHeaderCellDef> Gewählt</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon *ngIf="element.chosen">check</mat-icon>
+          <mat-icon *ngIf="!element.chosen">close</mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Wahlbedingungen erfüllt">
+        <th mat-header-cell *matHeaderCellDef> Wahlbedingungen erfüllt</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon *ngIf="element.fulfilledRules">check</mat-icon>
+          <mat-icon *ngIf="!element.fulfilledRules">close</mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
