@@ -9,11 +9,11 @@ import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +78,6 @@ public class StudentCreationService {
         return this.studentMapper.studentsToStudentResponseList(students);
     }
 
-    @Transactional
     public void editStudent(Long studentId, StudentSignupRequest studentSignupRequest) throws EntityNotFoundException {
 
         StudentClass studentClass = getStudentClass(studentSignupRequest);
