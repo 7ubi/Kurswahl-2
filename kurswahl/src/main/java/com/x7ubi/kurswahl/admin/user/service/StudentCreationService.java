@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -74,6 +75,9 @@ public class StudentCreationService {
 
     public List<StudentResponse> getAllStudents() {
         List<Student> students = this.studentRepo.findAll();
+        students = students.stream().filter(student -> null == student.getStudentClass() ||
+                (null != student.getStudentClass() &&
+                        Objects.equals(student.getStudentClass().getReleaseYear(), Year.now().getValue()))).toList();
 
         return this.studentMapper.studentsToStudentResponseList(students);
     }
