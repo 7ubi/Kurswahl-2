@@ -74,6 +74,7 @@ import {RuleTableComponent} from "./component/admin/classes/rule/show-rules/rule
 import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/create-rule.component";
 import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
     ShowRulesComponent,
     RuleTableComponent,
     CreateRuleComponent,
-    EditRuleComponent
+    EditRuleComponent,
+    ChoiceSurveillanceComponent
   ],
   imports: [
     BrowserModule,

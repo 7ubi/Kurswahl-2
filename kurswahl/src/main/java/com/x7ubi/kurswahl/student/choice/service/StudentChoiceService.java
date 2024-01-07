@@ -186,16 +186,10 @@ public class StudentChoiceService {
     public List<ChoiceResponse> getChoices(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
 
-        Optional<List<Choice>> choicesOptional = this.choiceRepo.findAllByStudent_StudentIdAndReleaseYearAndChoiceNumberOrChoiceNumber(
-                student.getStudentId(), Year.now().getValue(), 1, 2);
+        List<Choice> choices = this.choiceRepo.findAll().stream().filter(choice -> choice.getReleaseYear() ==
+                Year.now().getValue() && (choice.getChoiceNumber() == 1 || choice.getChoiceNumber() == 2)).toList();
 
-        if (choicesOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
-        }
-
-        List<Choice> choices = choicesOptional.get();
-
-        if (choices.size() != 2) {
+        if (choices.size() < 2) {
             throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
         }
 

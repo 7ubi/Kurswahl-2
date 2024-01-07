@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="center">
+    <div class="header">
+      <form [formGroup]="studentClassFilter">
+        <mat-form-field>
+          <mat-label>Klasse</mat-label>
+          <mat-select formControlName="name" (selectionChange)="applyFilter()">
+            <mat-option value="">Alle</mat-option>
+            <mat-option *ngFor="let studentClass of studentClassResponses"
+                        value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <mat-form-field>
+        <mat-label>Suche</mat-label>
+        <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>
+      </mat-form-field>
+    </div>
+    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
+           matSort (matSortChange)="sortData($event)">
+
+      <ng-container matColumnDef="Schüler">
+        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Schüler</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.studentSurveillanceResponse.firstname }} {{ element.studentSurveillanceResponse.surname }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Gewählt">
+        <th mat-header-cell *matHeaderCellDef> Gewählt</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary" *ngIf="element.chosen">check
+          </mat-icon>
+          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn" *ngIf="!element.chosen">close
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Wahlbedingungen erfüllt">
+        <th mat-header-cell *matHeaderCellDef> Wahlbedingungen erfüllt</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary" *ngIf="element.fulfilledRules">
+            check
+          </mat-icon>
+          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn" *ngIf="!element.fulfilledRules">
+            close
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

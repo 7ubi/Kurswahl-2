@@ -20,6 +20,13 @@
     <mat-list-item (click)="navigateTo('/admin/classes')" class="side-nav-item"> Kurse</mat-list-item>
     <mat-list-item (click)="navigateTo('/admin/rules')" class="side-nav-item"> Wahlbedingungen</mat-list-item>
   </div>
+  <mat-list-item>
+    <mat-icon class="side-nav-icon">search</mat-icon>
+    <b>Wahl Überwachung</b>
+  </mat-list-item>
+  <div class="submenu">
+    <mat-list-item (click)="navigateTo('/admin/choiceSurveillance')" class="side-nav-item"> Überwachung</mat-list-item>
+  </div>
 </mat-nav-list>
 
 <mat-nav-list *ngIf="getRole() === 'STUDENT'">
