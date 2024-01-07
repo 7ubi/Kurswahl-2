@@ -126,7 +126,7 @@ public class StudentClassCreationService {
 
     @Transactional
     public List<StudentClassResponse> getAllStudentClasses() {
-        List<StudentClass> studentClasses = this.studentClassRepo.findAll();
+        List<StudentClass> studentClasses = this.studentClassRepo.findAllByReleaseYear(Year.now().getValue());
 
         return this.studentClassMapper.studentClassListToStudentClassResponseList(studentClasses);
     }
