@@ -1,6 +1,17 @@
 <div class="container">
   <div class="center">
     <div class="header">
+      <form [formGroup]="studentClassFilter">
+        <mat-form-field>
+          <mat-label>Klasse</mat-label>
+          <mat-select formControlName="name" (selectionChange)="applyFilter()">
+            <mat-option value="">Alle</mat-option>
+            <mat-option *ngFor="let studentClass of studentClassResponses"
+                        value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
       <mat-form-field>
         <mat-label>Suche</mat-label>
         <input matInput (keyup)="applySearch($event)" placeholder="Name" #input>

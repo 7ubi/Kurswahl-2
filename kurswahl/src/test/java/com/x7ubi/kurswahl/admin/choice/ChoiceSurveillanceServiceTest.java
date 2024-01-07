@@ -392,4 +392,26 @@ public class ChoiceSurveillanceServiceTest {
         Assertions.assertFalse(responses.get(0).getChosen());
         Assertions.assertFalse(responses.get(0).getFulfilledRules());
     }
+
+    @Test
+    public void testGetChoiceSurveillanceNotChosenBothChoices() {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+
+        // When
+        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
+
+        // Then
+        Assertions.assertEquals(responses.size(), 1);
+        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
+                studentClass.getStudentClassId());
+        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
+        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
+                student.getUser().getUsername());
+        Assertions.assertFalse(responses.get(0).getChosen());
+        Assertions.assertFalse(responses.get(0).getFulfilledRules());
+    }
 }
