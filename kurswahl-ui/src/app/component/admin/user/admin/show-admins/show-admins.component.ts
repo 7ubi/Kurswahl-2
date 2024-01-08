@@ -19,6 +19,8 @@ export class ShowAdminsComponent implements OnInit {
 
   selection = new SelectionModel<AdminResponse>(true, []);
 
+  loadedAdmins = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -36,6 +38,7 @@ export class ShowAdminsComponent implements OnInit {
     this.httpService.get<AdminResponse[]>('/api/admin/admins', response => {
       this.adminResponses = response;
       this.dataSource = new MatTableDataSource(this.adminResponses);
+      this.loadedAdmins = true;
     });
   }
 
