@@ -22,6 +22,8 @@ export class RuleTableComponent implements OnInit {
   lastSort: Sort | null = null;
   selection = new SelectionModel<RuleResponse>(true, []);
 
+  loadedRules = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -38,6 +40,7 @@ export class RuleTableComponent implements OnInit {
   private loadRules() {
     this.httpService.get<RuleResponse[]>(`/api/admin/rules?year=${this.year}`, response => {
       this.setDataSource(response);
+      this.loadedRules = true;
     });
   }
 

@@ -1,7 +1,7 @@
 <app-hero title="Kurs bearbeiten"></app-hero>
 <form [formGroup]="editClassForm" (ngSubmit)="createClass()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="classResponse">
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" name="name" id="name" type="text">
@@ -36,6 +36,13 @@
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Kurs bearbeiten</button>
+    </div>
+
+    <div *ngIf="!classResponse" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

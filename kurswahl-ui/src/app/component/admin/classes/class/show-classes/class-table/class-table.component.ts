@@ -22,6 +22,8 @@ export class ClassTableComponent {
   lastSort: Sort | null = null;
   selection = new SelectionModel<ClassResponse>(true, []);
 
+  loadedClasses = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -38,6 +40,7 @@ export class ClassTableComponent {
   private loadClasses() {
     this.httpService.get<ClassResponse[]>(`/api/admin/classes?year=${this.year}`, response => {
       this.setDataSource(response);
+      this.loadedClasses = true;
     });
   }
 

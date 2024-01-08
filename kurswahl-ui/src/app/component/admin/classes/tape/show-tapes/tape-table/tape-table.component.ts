@@ -22,6 +22,8 @@ export class TapeTableComponent implements OnInit {
   lastSort: Sort | null = null;
   selection = new SelectionModel<TapeResponse>(true, []);
 
+  loadedTapes = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -38,6 +40,7 @@ export class TapeTableComponent implements OnInit {
   private loadTapes() {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.setDataSource(response);
+      this.loadedTapes = true;
     });
   }
 

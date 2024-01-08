@@ -20,6 +20,8 @@ export class ShowStudentClassesComponent implements OnInit {
   lastSort: Sort | null = null;
   selection = new SelectionModel<StudentClassResponse>(true, []);
 
+  loadedStudentClasses = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -37,6 +39,7 @@ export class ShowStudentClassesComponent implements OnInit {
   private loadStudentClasses() {
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.setDataSource(response);
+      this.loadedStudentClasses = true;
     });
   }
 

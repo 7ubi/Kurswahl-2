@@ -14,7 +14,7 @@ export class EditClassComponent implements OnInit {
   subjectResponses?: SubjectResponse[];
   teacherResponses?: TeacherResponse[];
   tapeResponses!: TapeResponse[];
-  classResultResponse?: ClassResponse;
+  classResponse?: ClassResponse;
   id: string | null;
 
   constructor(
@@ -48,16 +48,16 @@ export class EditClassComponent implements OnInit {
     });
 
     this.httpService.get<ClassResponse>(`/api/admin/class?classId=${this.id}`, response => {
-      this.classResultResponse = response;
+      this.classResponse = response;
 
-      this.editClassForm.controls['name'].setValue(this.classResultResponse.name);
-      this.editClassForm.controls['year'].setValue(this.classResultResponse.tapeResponse.year);
-      this.editClassForm.controls['teacher'].setValue(this.classResultResponse.teacherResponse.teacherId);
-      this.editClassForm.controls['tape'].setValue(this.classResultResponse.tapeResponse.tapeId);
-      this.editClassForm.controls['subject'].setValue(this.classResultResponse.subjectResponse.subjectId);
+      this.editClassForm.controls['name'].setValue(this.classResponse.name);
+      this.editClassForm.controls['year'].setValue(this.classResponse.tapeResponse.year);
+      this.editClassForm.controls['teacher'].setValue(this.classResponse.teacherResponse.teacherId);
+      this.editClassForm.controls['tape'].setValue(this.classResponse.tapeResponse.tapeId);
+      this.editClassForm.controls['subject'].setValue(this.classResponse.subjectResponse.subjectId);
 
       this.httpService.get<TapeResponse[]>(
-        `/api/admin/tapes?year=${this.classResultResponse?.tapeResponse.year}`, response => {
+        `/api/admin/tapes?year=${this.classResponse?.tapeResponse.year}`, response => {
           response.sort((a, b) => a.name.localeCompare(b.name));
           this.tapeResponses = response;
         });
