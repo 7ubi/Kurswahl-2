@@ -1,7 +1,7 @@
 <app-hero title="Schüler bearbeiten"></app-hero>
 <form [formGroup]="editStudentForm" (ngSubmit)="editStudent()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="student">
       <mat-form-field class="example-full-width">
         <mat-label>Vorname</mat-label>
         <input matInput formControlName="firstname" name="firstname" id="firstname" type="text">
@@ -19,6 +19,13 @@
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Schüler bearbeiten</button>
+    </div>
+
+    <div *ngIf="!student" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>
