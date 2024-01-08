@@ -1,7 +1,7 @@
 <app-hero title="Lehrer bearbeiten"></app-hero>
 <form [formGroup]="editTeacherForm" (ngSubmit)="editTeacher()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="teacher">
       <mat-form-field class="example-full-width">
         <mat-label>Vorname</mat-label>
         <input matInput formControlName="firstname" name="firstname" id="firstname" type="text">
@@ -15,6 +15,13 @@
         <input matInput formControlName="abbreviation" name="abbreviation" id="abbreviation" type="text">
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Lehrer bearbeiten</button>
+    </div>
+
+    <div *ngIf="!teacher" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

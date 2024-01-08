@@ -1,7 +1,7 @@
 <app-hero title="Fach bearbeiten"></app-hero>
 <form [formGroup]="editSubjectForm" (ngSubmit)="editSubject()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="subject">
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" name="name" id="name" type="text">
@@ -10,10 +10,18 @@
         <mat-label>Fachbereich</mat-label>
         <mat-select formControlName="subjectArea" [compareWith]="compareSubjectAreaObjects">
           <mat-option *ngFor="let subjectArea of subjectAreaResponses"
-                      value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}</mat-option>
+                      value="{{subjectArea.subjectAreaId}}"> {{ subjectArea.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Fach bearbeiten</button>
+    </div>
+
+    <div *ngIf="!subject" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>
