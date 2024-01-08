@@ -21,6 +21,8 @@ export class ChoiceSurveillanceComponent implements OnInit {
 
   lastSort: Sort | null = null;
 
+  loadedChoice = false;
+
   constructor(
     private httpService: HttpService,
     private formBuilder: FormBuilder
@@ -43,6 +45,8 @@ export class ChoiceSurveillanceComponent implements OnInit {
             .toLocaleLowerCase().includes(filter) || (`${data.studentSurveillanceResponse.surname}`)
             .toLocaleLowerCase().includes(filter);
         }
+
+        this.loadedChoice = true;
       });
 
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {

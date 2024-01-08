@@ -19,6 +19,8 @@ export class ShowLessonsComponent implements OnInit {
 
   selectedTape?: TapeResponse;
 
+  loadedTapes = false;
+
   readonly maxHours = 15;
 
   tapeFormGroup: FormGroup = new FormGroup({
@@ -42,6 +44,7 @@ export class ShowLessonsComponent implements OnInit {
   private loadTapes(tapeId?: number) {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.setTapeResponse(response, tapeId);
+      this.loadedTapes = true;
     });
   }
 

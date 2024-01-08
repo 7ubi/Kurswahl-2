@@ -17,6 +17,7 @@ export class ShowTeachersComponent implements OnInit {
   displayedColumns: string[];
   selection = new SelectionModel<TeacherResponse>(true, []);
 
+  loadedTeachers = false;
 
   constructor(
     private httpService: HttpService,
@@ -36,6 +37,7 @@ export class ShowTeachersComponent implements OnInit {
     this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       this.teacherResponses = response;
       this.dataSource = new MatTableDataSource(this.teacherResponses);
+      this.loadedTeachers = true;
     });
   }
 

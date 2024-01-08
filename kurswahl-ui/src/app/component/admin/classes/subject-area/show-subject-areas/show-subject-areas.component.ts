@@ -20,6 +20,8 @@ export class ShowSubjectAreasComponent implements OnInit {
   lastSort: Sort | null = null;
   selection = new SelectionModel<SubjectAreaResponse>(true, []);
 
+  loadedSubjectAreas = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -37,6 +39,7 @@ export class ShowSubjectAreasComponent implements OnInit {
   private loadSubjectAreas() {
     this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.setDataSource(response);
+      this.loadedSubjectAreas = true;
     });
   }
 

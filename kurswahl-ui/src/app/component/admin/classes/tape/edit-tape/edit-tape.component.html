@@ -1,7 +1,7 @@
 <app-hero title="Band bearbeiten"></app-hero>
 <form [formGroup]="editStudentClassForm" (ngSubmit)="editStudentClass()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="tape">
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" name="name" id="name" type="text">
@@ -14,6 +14,13 @@
                     labelPosition="after">LK
       </mat-checkbox>
       <button mat-raised-button color="primary" type="submit">Band bearbeiten</button>
+    </div>
+
+    <div *ngIf="!tape" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

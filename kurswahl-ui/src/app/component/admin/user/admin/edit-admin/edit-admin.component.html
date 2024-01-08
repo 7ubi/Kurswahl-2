@@ -1,7 +1,7 @@
 <app-hero title="Admin bearbeiten"></app-hero>
 <form [formGroup]="editAdminForm" (ngSubmit)="editAdmin()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="admin">
       <mat-form-field class="example-full-width">
         <mat-label>Vorname</mat-label>
         <input matInput formControlName="firstname" name="firstname" id="firstname" type="text">
@@ -11,6 +11,14 @@
         <input matInput formControlName="surname" name="surname" id="surname" type="text">
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Admin bearbeiten</button>
+
+    </div>
+
+    <div *ngIf="!admin" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

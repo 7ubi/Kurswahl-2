@@ -1,12 +1,19 @@
 <app-hero title="Fachbereich bearbeiten"></app-hero>
 <form [formGroup]="editSubjectAreaForm" (ngSubmit)="editSubjectArea()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="subjectArea">
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" name="name" id="name" type="text">
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Fachbereich bearbeiten</button>
+    </div>
+
+    <div *ngIf="!subjectArea" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

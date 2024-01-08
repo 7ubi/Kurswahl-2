@@ -1,7 +1,7 @@
 <app-hero title="Klasse bearbeiten"></app-hero>
 <form [formGroup]="editStudentClassForm" (ngSubmit)="editStudentClass()">
   <div class="container">
-    <div class="center">
+    <div class="center" *ngIf="studentClass">
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" name="name" id="name" type="text">
@@ -15,10 +15,18 @@
         <mat-select formControlName="teacher" [compareWith]="compareSubjectAreaObjects">
           <mat-option *ngFor="let teacher of teachers"
                       value="{{teacher.teacherId}}"> {{ teacher.abbreviation }}
-            - {{ teacher.firstname}} {{ teacher.surname }}</mat-option>
+            - {{ teacher.firstname }} {{ teacher.surname }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">Klasse bearbeiten</button>
+    </div>
+
+    <div *ngIf="!studentClass" class="spinner">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
   </div>
 </form>

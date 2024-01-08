@@ -75,6 +75,7 @@ import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/cr
 import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -139,7 +140,8 @@ import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surve
     MatListModule,
     MatCheckboxModule,
     MatChipsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressSpinnerModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [
