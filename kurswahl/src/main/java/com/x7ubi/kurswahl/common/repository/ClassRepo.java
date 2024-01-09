@@ -17,7 +17,7 @@ public interface ClassRepo extends JpaRepository<Class, Long> {
 
     Optional<Class> findTopByNameAndTeacherAndTapeAndSubjectOrderByClassIdDesc(String name, Teacher teacher, Tape tape, Subject subject);
 
-    Optional<List<Class>> findAllByTapeYearAndTapeReleaseYear(Integer year, Integer releaseYear);
+    List<Class> findAllByTapeYearAndTapeReleaseYear(Integer year, Integer releaseYear);
 
     Boolean existsClassByClassId(Long classId);
 
