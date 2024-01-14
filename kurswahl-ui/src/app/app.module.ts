@@ -76,6 +76,7 @@ import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-r
 import {MatExpansionModule} from "@angular/material/expansion";
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     RuleTableComponent,
     CreateRuleComponent,
     EditRuleComponent,
-    ChoiceSurveillanceComponent
+    ChoiceSurveillanceComponent,
+    AssignChoiceComponent
   ],
   imports: [
     BrowserModule,

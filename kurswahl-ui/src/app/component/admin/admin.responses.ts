@@ -90,6 +90,17 @@ export interface StudentSurveillanceResponse extends UserResponse {
   readonly name: string;
 }
 
+export interface ClassChoiceResponse {
+  readonly name: string;
+  readonly teacherResponse: TeacherResponse;
+  readonly choiceResponses: ChoiceResponse[];
+}
+
+export interface ChoiceResponse {
+  readonly choiceNumber: number;
+  readonly studentSurveillanceResponse: StudentSurveillanceResponse;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

@@ -33,11 +33,13 @@ export class MakeChoiceComponent implements OnDestroy {
   ) {
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ActivationEnd) {
-        this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
-        if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
-          this.router.navigate(['student']);
+        if (this.choiceNumber != Number(this.route.snapshot.paramMap.get('choiceNumber'))) {
+          this.choiceNumber = Number(this.route.snapshot.paramMap.get('choiceNumber'));
+          if (this.choiceNumber < 1 || this.choiceNumber > this.maxChoices) {
+            this.router.navigate(['student']);
+          }
+          this.loadChoice();
         }
-        this.loadChoice();
       }
     });
 

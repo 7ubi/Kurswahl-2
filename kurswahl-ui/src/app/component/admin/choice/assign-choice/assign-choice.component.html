@@ -1,0 +1,17 @@
+<app-hero title="Ergebnisse Jahrgang {{ year }}"></app-hero>
+
+<div class="container">
+  <div class="center">
+
+    <mat-expansion-panel class="class" *ngFor="let c of classes">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ c.name }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="choice" *ngFor="let choice of c.choiceResponses">
+        {{ choice.studentSurveillanceResponse.firstname }} {{ choice.studentSurveillanceResponse.surname }}
+      </div>
+    </mat-expansion-panel>
+  </div>
+</div>
