@@ -16,6 +16,8 @@ export class AssignChoiceComponent implements OnDestroy {
 
   classes?: ClassStudentsResponse[];
 
+  loadedClasses = false;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -29,7 +31,7 @@ export class AssignChoiceComponent implements OnDestroy {
           if (this.year < 11 || this.year > 12) {
             this.router.navigate(['admin', 'admins']);
           }
-
+          this.loadedClasses = false;
           this.loadClasses();
         }
       }
@@ -39,6 +41,7 @@ export class AssignChoiceComponent implements OnDestroy {
   loadClasses() {
     this.httpService.get <ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => this.classes = response);
+    this.loadedClasses = true;
   }
 
   ngOnDestroy(): void {
