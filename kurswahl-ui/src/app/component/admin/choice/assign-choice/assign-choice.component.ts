@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
-import {ClassChoiceResponse} from "../../admin.responses";
+import {ClassStudentsResponse} from "../../admin.responses";
 
 @Component({
   selector: 'app-assign-choice',
@@ -14,7 +14,7 @@ export class AssignChoiceComponent implements OnDestroy {
 
   eventSubscription: Subscription;
 
-  classes?: ClassChoiceResponse[];
+  classes?: ClassStudentsResponse[];
 
   constructor(
     private httpService: HttpService,
@@ -37,7 +37,7 @@ export class AssignChoiceComponent implements OnDestroy {
   }
 
   loadClasses() {
-    this.httpService.get <ClassChoiceResponse[]>(`/api/admin/classesChoices?year=${this.year}`,
+    this.httpService.get <ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => this.classes = response);
   }
 

@@ -4,13 +4,13 @@ import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
 
 import java.util.List;
 
-public class ClassChoiceResponse {
+public class ClassStudentsResponse {
 
     private String name;
 
     private TeacherResponse teacherResponse;
 
-    private List<ChoiceResponse> choiceResponses;
+    private List<StudentSurveillanceResponse> studentSurveillanceResponses;
 
     public String getName() {
         return name;
@@ -28,11 +28,11 @@ public class ClassChoiceResponse {
         this.teacherResponse = teacherResponse;
     }
 
-    public List<ChoiceResponse> getChoiceResponses() {
-        return choiceResponses;
+    public List<StudentSurveillanceResponse> getStudentSurveillanceResponses() {
+        return studentSurveillanceResponses;
     }
 
-    public void setChoiceResponses(List<ChoiceResponse> choiceResponses) {
-        this.choiceResponses = choiceResponses;
+    public void setStudentSurveillanceResponses(List<StudentSurveillanceResponse> studentSurveillanceResponses) {
+        this.studentSurveillanceResponses = studentSurveillanceResponses;
     }
 }

@@ -9,8 +9,8 @@
           {{ c.name }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <div class="choice" *ngFor="let choice of c.choiceResponses">
-        {{ choice.studentSurveillanceResponse.firstname }} {{ choice.studentSurveillanceResponse.surname }}
+      <div class="choice" *ngFor="let student of c.studentSurveillanceResponses">
+        {{ student.firstname }} {{ student.surname }}
       </div>
     </mat-expansion-panel>
   </div>
