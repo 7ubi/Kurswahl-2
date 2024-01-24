@@ -20,6 +20,7 @@ public interface ClassStudentsMapper {
 
     @Mapping(source = "teacher", target = "teacherResponse")
     @Mapping(source = "choices", target = "studentSurveillanceResponses")
+    @Mapping(source = "tape.name", target = "tapeName")
     ClassStudentsResponse classToClassChoiceResponse(Class aclass);
 
     List<ClassStudentsResponse> classesToClassChoiceResponses(List<Class> classes);
@@ -30,6 +31,7 @@ public interface ClassStudentsMapper {
     @Mapping(source = "choice.student.user.username", target = "username")
     @Mapping(source = "choice.student.studentClass.studentClassId", target = "studentClassId")
     @Mapping(source = "choice.student.studentClass.name", target = "name")
+    @Mapping(source = "choice.student.studentId", target = "studentId")
     @Mapping(source = "choice.student.user.userId", target = "userId")
     StudentSurveillanceResponse choiceToStudentSurveillanceResponse(Choice choice);
 }

@@ -12,6 +12,8 @@ public class ClassStudentsResponse {
 
     private List<StudentSurveillanceResponse> studentSurveillanceResponses;
 
+    private String tapeName;
+
     public String getName() {
         return name;
     }
@@ -34,5 +36,13 @@ public class ClassStudentsResponse {
 
     public void setStudentSurveillanceResponses(List<StudentSurveillanceResponse> studentSurveillanceResponses) {
         this.studentSurveillanceResponses = studentSurveillanceResponses;
+    }
+
+    public String getTapeName() {
+        return tapeName;
+    }
+
+    public void setTapeName(String tapeName) {
+        this.tapeName = tapeName;
     }
 }

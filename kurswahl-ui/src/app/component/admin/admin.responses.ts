@@ -87,6 +87,7 @@ export interface ChoiceSurveillanceResponse {
 
 export interface StudentSurveillanceResponse extends UserResponse {
   readonly studentClassId: number;
+  readonly studentId: number;
   readonly name: string;
 }
 
@@ -94,6 +95,7 @@ export interface ClassStudentsResponse {
   readonly name: string;
   readonly teacherResponse: TeacherResponse;
   readonly studentSurveillanceResponses: StudentSurveillanceResponse[];
+  readonly tapeName: string;
 }
 
 export enum Role {

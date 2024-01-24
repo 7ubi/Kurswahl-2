@@ -8,8 +8,13 @@
         <mat-panel-title>
           {{ c.name }}
         </mat-panel-title>
+
+        <mat-panel-description>
+          {{ c.tapeName }}
+        </mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="choice" *ngFor="let student of c.studentSurveillanceResponses">
+      <div (click)="openChoice(student.studentId)" class="choice"
+           *ngFor="let student of c.studentSurveillanceResponses">
         {{ student.firstname }} {{ student.surname }}
       </div>
     </mat-expansion-panel>

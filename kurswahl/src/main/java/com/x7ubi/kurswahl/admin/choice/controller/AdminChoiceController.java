@@ -3,9 +3,11 @@ package com.x7ubi.kurswahl.admin.choice.controller;
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
+import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
 import com.x7ubi.kurswahl.admin.choice.service.ChoiceSurveillanceService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -53,6 +55,21 @@ public class AdminChoiceController {
         try {
             List<ClassStudentsResponse> responses = this.assignChoiceService.getClassesWithStudents(year);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/studentChoices")
+    @AdminRequired
+    public ResponseEntity<?> getStudentChoices(@RequestParam Long studentId) {
+        logger.info("Load Choices of Student");
+
+        try {
+            StudentChoicesResponse responses = this.assignChoiceService.getStundetChoices(studentId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }

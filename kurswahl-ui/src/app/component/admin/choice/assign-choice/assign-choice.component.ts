@@ -47,4 +47,11 @@ export class AssignChoiceComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
   }
+
+  openChoice(studentId: number) {
+    this.httpService.get <undefined>(`/api/admin/studentChoices?studentId=${studentId}`,
+      response => {
+
+      });
+  }
 }
