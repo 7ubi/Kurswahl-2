@@ -1,24 +1,30 @@
 package com.x7ubi.kurswahl.admin.choice;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
-import com.x7ubi.kurswahl.admin.choice.service.ChoiceSurveillanceService;
+import com.x7ubi.kurswahl.admin.choice.response.ChoiceResponse;
+import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
+import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
+import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
 @KurswahlServiceTest
-public class ChoiceSurveillanceServiceTest {
+public class AssignChoiceServiceTest {
     @Autowired
-    private ChoiceSurveillanceService choiceSurveillanceService;
+    private AssignChoiceService assignChoiceService;
 
     @Autowired
     private ChoiceRepo choiceRepo;
@@ -58,9 +64,9 @@ public class ChoiceSurveillanceServiceTest {
 
     private Teacher teacher;
 
-    private Class aClass;
+    private com.x7ubi.kurswahl.common.models.Class aClass;
 
-    private Class bClass;
+    private com.x7ubi.kurswahl.common.models.Class bClass;
 
     private Choice choice;
 
@@ -136,7 +142,7 @@ public class ChoiceSurveillanceServiceTest {
         this.studentRepo.save(student);
     }
 
-    private void setupSecondChoice(Class c) {
+    private void setupSecondChoice(com.x7ubi.kurswahl.common.models.Class c) {
         secondChoice = new Choice();
         secondChoice.setChoiceNumber(2);
         secondChoice.setReleaseYear(Year.now().getValue());
@@ -245,155 +251,74 @@ public class ChoiceSurveillanceServiceTest {
     }
 
     @Test
-    public void testGetChoiceSurveillanceForStudents() {
+    public void testGetClassesWithStudents() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
-        setupRuleSet();
-        setupRule();
-        addSubjectToRule();
         this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
+        setupChoice(aClass);
+
+        Integer year = 11;
+
+        // When
+        List<ClassStudentsResponse> classStudentsResponses = this.assignChoiceService.getClassesWithStudents(year);
+
+        // Then
+        Assertions.assertEquals(classStudentsResponses.size(), 1);
+        Assertions.assertEquals(classStudentsResponses.get(0).getName(), aClass.getName());
+        Assertions.assertEquals(classStudentsResponses.get(0).getTapeName(), tape.getName());
+        Assertions.assertEquals(classStudentsResponses.get(0).getTeacherResponse().getTeacherId(), teacher.getTeacherId());
+        Assertions.assertEquals(classStudentsResponses.get(0).getStudentSurveillanceResponses().size(), 1);
+        Assertions.assertEquals(classStudentsResponses.get(0).getStudentSurveillanceResponses().get(0).getStudentId(), student.getStudentId());
+    }
+
+    @Test
+    public void testGetStundetChoices() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
         setupChoice(aClass);
         this.aClass = this.classRepo.findClassByName("test").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
         setupSecondChoice(aClass);
 
         // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.getStundetChoices(student.getStudentId());
 
         // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertTrue(responses.get(0).getChosen());
-        Assertions.assertTrue(responses.get(0).getFulfilledRules());
+        Assertions.assertEquals(studentChoicesResponse.getStudentId(), student.getStudentId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().size(), 2);
+
+        studentChoicesResponse.getChoiceResponses().sort(Comparator.comparing(ChoiceResponse::getChoiceNumber));
+
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getChoiceNumber(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getChoiceNumber(), 2);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
     }
 
     @Test
-    public void testGetChoiceSurveillanceNoRuleSet() {
+    public void testGetStundetChoicesStudentNotFound() throws EntityNotFoundException {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
         setupChoice(aClass);
         this.aClass = this.classRepo.findClassByName("test").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
         setupSecondChoice(aClass);
 
         // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.assignChoiceService.getStundetChoices(student.getStudentId() + 3));
 
         // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertTrue(responses.get(0).getChosen());
-        Assertions.assertTrue(responses.get(0).getFulfilledRules());
-    }
-
-    @Test
-    public void testGetChoiceSurveillanceRulesNotFulfilled() {
-        // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupRuleSet();
-        setupRule();
-        addSubjectToRule();
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(null);
-
-        // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
-
-        // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertTrue(responses.get(0).getChosen());
-        Assertions.assertFalse(responses.get(0).getFulfilledRules());
-    }
-
-    @Test
-    public void testGetChoiceSurveillanceRulesNotFulfilledBothChoices() {
-        // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupRuleSet();
-        setupRule();
-        addSubjectToRule();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(null);
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(null);
-
-        // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
-
-        // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertTrue(responses.get(0).getChosen());
-        Assertions.assertFalse(responses.get(0).getFulfilledRules());
-    }
-
-    @Test
-    public void testGetChoiceSurveillanceNotChosen() {
-        // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupRuleSet();
-        setupRule();
-        addSubjectToRule();
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
-
-        // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
-
-        // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertFalse(responses.get(0).getChosen());
-        Assertions.assertFalse(responses.get(0).getFulfilledRules());
-    }
-
-    @Test
-    public void testGetChoiceSurveillanceNotChosenBothChoices() {
-        // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupRuleSet();
-        setupRule();
-        addSubjectToRule();
-
-        // When
-        List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
-
-        // Then
-        Assertions.assertEquals(responses.size(), 1);
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getStudentClassId(),
-                studentClass.getStudentClassId());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getName(), studentClass.getName());
-        Assertions.assertEquals(responses.get(0).getStudentSurveillanceResponse().getUsername(),
-                student.getUser().getUsername());
-        Assertions.assertFalse(responses.get(0).getChosen());
-        Assertions.assertFalse(responses.get(0).getFulfilledRules());
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
     }
 }

@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class AssignChoiceService {
         this.studentRepo = studentRepo;
     }
 
+    @Transactional
     public List<ClassStudentsResponse> getClassesWithStudents(Integer year) {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
         classes.forEach(c -> {
