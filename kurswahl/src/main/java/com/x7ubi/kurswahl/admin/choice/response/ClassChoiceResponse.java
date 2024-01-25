@@ -8,7 +8,7 @@ public class ClassChoiceResponse {
 
     private String name;
 
-    private String tapeName;
+    private Long tapeId;
 
     private TeacherResponse teacherResponse;
 
@@ -28,12 +28,12 @@ public class ClassChoiceResponse {
         this.name = name;
     }
 
-    public String getTapeName() {
-        return tapeName;
+    public Long getTapeId() {
+        return tapeId;
     }
 
-    public void setTapeName(String tapeName) {
-        this.tapeName = tapeName;
+    public void setTapeId(Long tapeId) {
+        this.tapeId = tapeId;
     }
 
     public TeacherResponse getTeacherResponse() {

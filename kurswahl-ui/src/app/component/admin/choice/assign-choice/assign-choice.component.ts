@@ -2,7 +2,9 @@ import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
-import {ClassStudentsResponse} from "../../admin.responses";
+import {ClassStudentsResponse, StudentChoiceResponse, TapeResponse} from "../../admin.responses";
+import {ChoiceTable} from "./choice-table";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-assign-choice',
@@ -15,16 +17,27 @@ export class AssignChoiceComponent implements OnDestroy {
   eventSubscription: Subscription;
 
   classes?: ClassStudentsResponse[];
+  tapes?: TapeResponse[];
+  studentChoice?: StudentChoiceResponse;
+
+  dataSource!: MatTableDataSource<ChoiceTable>;
+  displayedColumns: string[];
 
   loadedClasses = false;
+
+  loadedChoice?: boolean = undefined;
+
+  choiceTables?: ChoiceTable[];
 
   constructor(
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute) {
+
+    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl'];
+
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
-        console.log(this.route, event)
         if (this.year != Number(this.route.snapshot.paramMap.get('year'))) {
           this.year = Number(this.route.snapshot.paramMap.get('year'));
 
@@ -39,9 +52,13 @@ export class AssignChoiceComponent implements OnDestroy {
   }
 
   loadClasses() {
-    this.httpService.get <ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
-      response => this.classes = response);
-    this.loadedClasses = true;
+    this.httpService.get<ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
+      response => {
+        this.classes = response;
+        this.loadedClasses = true;
+      });
+
+    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => this.tapes = response)
   }
 
   ngOnDestroy(): void {
@@ -49,9 +66,36 @@ export class AssignChoiceComponent implements OnDestroy {
   }
 
   openChoice(studentId: number) {
-    this.httpService.get <undefined>(`/api/admin/studentChoices?studentId=${studentId}`,
+    this.loadedChoice = true;
+    this.httpService.get <StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
       response => {
+        this.studentChoice = response;
+        this.loadedChoice = true;
 
+        this.generateChoiceTable();
       });
+  }
+
+  private generateChoiceTable() {
+    const firstChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 1);
+    const secondChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 2);
+
+    this.choiceTables = [];
+
+    this.tapes?.forEach(tape => {
+      let choiceTable = new ChoiceTable(tape);
+
+      if (firstChoice) {
+        choiceTable.firstChoice = firstChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
+      }
+
+      if (secondChoice) {
+        choiceTable.secondChoice = secondChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
+      }
+
+      this.choiceTables?.push(choiceTable);
+    });
+
+    this.dataSource = new MatTableDataSource(this.choiceTables);
   }
 }

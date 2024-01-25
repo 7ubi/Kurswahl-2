@@ -11,6 +11,37 @@
 }
 
 .class {
+  width: 45%;
+}
+
+
+.choice-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.choice-header {
+  text-align: left;
+  font-size: 16px;
+  background-color: white;
+  padding: 18px 24px;
   margin-bottom: 5px;
-  width: 50%;
+  border-radius: 3px;
+  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 1px rgba(0, 0, 0, 0.14), 0px 1px 7px 1px rgba(0, 0, 0, 0.12);
+}
+
+.table-header-group {
+  text-align: left;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.table-header {
+  width: 25%;
+  font-size: 16px;
+}
+
+.choice-table {
+
 }

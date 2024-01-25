@@ -32,7 +32,7 @@ public interface StudentChoiceMapper {
     @Mapping(source = "classes", target = "classChoiceResponses")
     ChoiceResponse choiceToChoiceResponse(Choice choice);
 
-    @Mapping(source = "tape.name", target = "tapeName")
+    @Mapping(source = "tape.tapeId", target = "tapeId")
     @Mapping(source = "teacher", target = "teacherResponse")
     ClassChoiceResponse classToClassChoiceResponse(Class aclass);
 }

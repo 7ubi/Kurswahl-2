@@ -98,6 +98,22 @@ export interface ClassStudentsResponse {
   readonly tapeName: string;
 }
 
+export interface StudentChoiceResponse extends StudentSurveillanceResponse {
+  readonly choiceResponses: ChoiceResponse[];
+}
+
+export interface ChoiceResponse {
+  readonly choiceNumber: number;
+  readonly classChoiceResponses: ClassChoiceResponse[];
+}
+
+export interface ClassChoiceResponse {
+  readonly classId: number;
+  readonly name: string;
+  readonly tapeId: number;
+  readonly teacherResponse: TeacherResponse;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

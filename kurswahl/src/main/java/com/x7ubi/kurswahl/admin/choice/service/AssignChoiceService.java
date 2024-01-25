@@ -67,6 +67,10 @@ public class AssignChoiceService {
             throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
         }
 
+        Student student = studentOptional.get();
+        student.setChoices(student.getChoices().stream().filter(choice -> choice.getReleaseYear() ==
+                Year.now().getValue()).collect(Collectors.toSet()));
+
         return this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
     }
 }
