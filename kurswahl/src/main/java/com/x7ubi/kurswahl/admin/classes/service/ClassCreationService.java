@@ -151,13 +151,9 @@ public class ClassCreationService {
 
     @Transactional
     public List<ClassResponse> getAllClasses(Integer year) {
-        Optional<List<Class>> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
+        List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
 
-        if (classes.isPresent()) {
-            return this.classMapper.classesToClassResponseList(classes.get());
-        }
-
-        return new ArrayList<>();
+        return this.classMapper.classesToClassResponseList(classes);
     }
 
     @Transactional

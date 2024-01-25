@@ -60,8 +60,6 @@ public class ChoiceSurveillanceServiceTest {
 
     private Class aClass;
 
-    private Class bClass;
-
     private Choice choice;
 
     private Choice secondChoice;
@@ -69,8 +67,6 @@ public class ChoiceSurveillanceServiceTest {
     private StudentClass studentClass;
 
     private RuleSet ruleSet;
-
-    private RuleSet otherRuleSet;
 
     private Rule rule;
 
@@ -242,24 +238,6 @@ public class ChoiceSurveillanceServiceTest {
     private void addSubjectToRule() {
         rule.getSubjects().add(subject);
         ruleRepo.save(rule);
-    }
-
-    private void setupOtherRule() {
-        otherRuleSet = new RuleSet();
-        otherRuleSet.setYear(12);
-
-        ruleSetRepo.save(otherRuleSet);
-        otherRuleSet = ruleSetRepo.findRuleSetByYear(12).get();
-
-        otherRule = new Rule();
-        otherRule.setRuleSet(otherRuleSet);
-        otherRule.setName("Other Rule");
-
-        ruleRepo.save(otherRule);
-        otherRule = ruleRepo.findRuleByNameAndRuleSet_Year("Other Rule", 12).get();
-        ruleSet.getRules().add(otherRule);
-        ruleSetRepo.save(otherRuleSet);
-        otherRuleSet = ruleSetRepo.findRuleSetByYear(12).get();
     }
 
     @Test

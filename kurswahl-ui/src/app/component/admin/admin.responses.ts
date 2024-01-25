@@ -87,7 +87,31 @@ export interface ChoiceSurveillanceResponse {
 
 export interface StudentSurveillanceResponse extends UserResponse {
   readonly studentClassId: number;
+  readonly studentId: number;
   readonly name: string;
+}
+
+export interface ClassStudentsResponse {
+  readonly name: string;
+  readonly teacherResponse: TeacherResponse;
+  readonly studentSurveillanceResponses: StudentSurveillanceResponse[];
+  readonly tapeName: string;
+}
+
+export interface StudentChoiceResponse extends StudentSurveillanceResponse {
+  readonly choiceResponses: ChoiceResponse[];
+}
+
+export interface ChoiceResponse {
+  readonly choiceNumber: number;
+  readonly classChoiceResponses: ClassChoiceResponse[];
+}
+
+export interface ClassChoiceResponse {
+  readonly classId: number;
+  readonly name: string;
+  readonly tapeId: number;
+  readonly teacherResponse: TeacherResponse;
 }
 
 export enum Role {

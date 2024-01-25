@@ -50,6 +50,7 @@ import {ShowRulesComponent} from "./component/admin/classes/rule/show-rules/show
 import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/create-rule.component";
 import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
+import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 
 const routes: Routes = [
   {
@@ -180,6 +181,10 @@ const routes: Routes = [
       {
         path: 'choiceSurveillance',
         component: ChoiceSurveillanceComponent
+      },
+      {
+        path: 'assignChoices/:year',
+        component: AssignChoiceComponent
       },
     ]
   },

@@ -4,9 +4,19 @@ import com.x7ubi.kurswahl.admin.user.response.UserResponse;
 
 public class StudentSurveillanceResponse extends UserResponse {
 
+    private Long studentId;
+
     private Long studentClassId;
 
     private String name;
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
 
     public Long getStudentClassId() {
         return studentClassId;
