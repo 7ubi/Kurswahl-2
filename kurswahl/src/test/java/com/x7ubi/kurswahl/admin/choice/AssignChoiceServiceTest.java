@@ -66,21 +66,11 @@ public class AssignChoiceServiceTest {
 
     private com.x7ubi.kurswahl.common.models.Class aClass;
 
-    private com.x7ubi.kurswahl.common.models.Class bClass;
-
     private Choice choice;
 
     private Choice secondChoice;
 
     private StudentClass studentClass;
-
-    private RuleSet ruleSet;
-
-    private RuleSet otherRuleSet;
-
-    private Rule rule;
-
-    private Rule otherRule;
 
     @BeforeEach
     public void setupTest() {
@@ -223,31 +213,6 @@ public class AssignChoiceServiceTest {
         tape = tapeRepo.findTapeByNameAndYearAndReleaseYear(tape.getName(), tape.getYear(), tape.getReleaseYear()).get();
         tape.getaClass().add(c);
         tapeRepo.save(tape);
-    }
-
-    private void setupRuleSet() {
-        ruleSet = new RuleSet();
-        ruleSet.setYear(11);
-
-        ruleSetRepo.save(ruleSet);
-        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
-    }
-
-    private void setupRule() {
-        rule = new Rule();
-        rule.setRuleSet(ruleSet);
-        rule.setName("Rule");
-
-        ruleRepo.save(rule);
-        rule = ruleRepo.findRuleByNameAndRuleSet_Year("Rule", 11).get();
-        ruleSet.getRules().add(rule);
-        ruleSetRepo.save(ruleSet);
-        ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
-    }
-
-    private void addSubjectToRule() {
-        rule.getSubjects().add(subject);
-        ruleRepo.save(rule);
     }
 
     @Test

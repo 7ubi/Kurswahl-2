@@ -60,8 +60,6 @@ public class ChoiceSurveillanceServiceTest {
 
     private Class aClass;
 
-    private Class bClass;
-
     private Choice choice;
 
     private Choice secondChoice;
@@ -69,8 +67,6 @@ public class ChoiceSurveillanceServiceTest {
     private StudentClass studentClass;
 
     private RuleSet ruleSet;
-
-    private RuleSet otherRuleSet;
 
     private Rule rule;
 
