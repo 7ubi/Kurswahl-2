@@ -5,7 +5,7 @@ import com.x7ubi.kurswahl.admin.choice.response.ClassChoiceResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.Choice;
-import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,10 +29,12 @@ public interface StudentChoiceMapper {
     StudentChoicesResponse studentToStudentChoicesResponse(Student student);
 
 
-    @Mapping(source = "classes", target = "classChoiceResponses")
+    @Mapping(source = "choiceClasses", target = "classChoiceResponses")
     ChoiceResponse choiceToChoiceResponse(Choice choice);
 
-    @Mapping(source = "tape.tapeId", target = "tapeId")
-    @Mapping(source = "teacher", target = "teacherResponse")
-    ClassChoiceResponse classToClassChoiceResponse(Class aclass);
+    @Mapping(source = "aClass.tape.tapeId", target = "tapeId")
+    @Mapping(source = "aClass.teacher", target = "teacherResponse")
+    @Mapping(source = "aClass.classId", target = "classId")
+    @Mapping(source = "aClass.name", target = "name")
+    ClassChoiceResponse classToClassChoiceResponse(ChoiceClass choiceClass);
 }

@@ -50,6 +50,9 @@ public class StudentRuleServiceTest {
     @Autowired
     private RuleRepo ruleRepo;
 
+    @Autowired
+    private ChoiceClassRepo choiceClassRepo;
+
     private Student student;
 
     private Tape tape;
@@ -112,16 +115,21 @@ public class StudentRuleServiceTest {
     }
 
     private void setupChoice(Class c) {
+        ChoiceClass choiceClass = new ChoiceClass();
+        choiceClass.setChoice(choice);
+        choiceClass.setaClass(c);
+        this.choiceClassRepo.save(choiceClass);
+
         choice = new Choice();
         choice.setChoiceNumber(1);
         choice.setReleaseYear(Year.now().getValue());
-        choice.setClasses(new HashSet<>());
-        choice.getClasses().add(c);
+        choice.setChoiceClasses(new HashSet<>());
+        choice.getChoiceClasses().add(choiceClass);
         choice.setStudent(student);
 
         this.choiceRepo.save(choice);
 
-        c.getChoices().add(choice);
+        c.getChoiceClasses().add(choiceClass);
         this.classRepo.save(c);
 
         student.getChoices().add(choice);

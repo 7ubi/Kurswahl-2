@@ -41,6 +41,8 @@ public class StudentChoiceService {
 
     private final SubjectRepo subjectRepo;
 
+    private final ChoiceClassRepo choiceClassRepo;
+
     private final ChoiceMapper choiceMapper;
 
     private final TapeClassMapper tapeClassMapper;
@@ -50,13 +52,15 @@ public class StudentChoiceService {
     private final StudentRuleService studentRuleService;
 
     public StudentChoiceService(ChoiceRepo choiceRepo, ClassRepo classRepo, TapeRepo tapeRepo, StudentRepo studentRepo,
-                                SubjectRepo subjectRepo, ChoiceMapper choiceMapper, TapeClassMapper tapeClassMapper,
-                                SubjectTapeMapper subjectTapeMapper, StudentRuleService studentRuleService) {
+                                SubjectRepo subjectRepo, ChoiceClassRepo choiceClassRepo, ChoiceMapper choiceMapper,
+                                TapeClassMapper tapeClassMapper, SubjectTapeMapper subjectTapeMapper,
+                                StudentRuleService studentRuleService) {
         this.choiceRepo = choiceRepo;
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
         this.studentRepo = studentRepo;
         this.subjectRepo = subjectRepo;
+        this.choiceClassRepo = choiceClassRepo;
         this.choiceMapper = choiceMapper;
         this.tapeClassMapper = tapeClassMapper;
         this.subjectTapeMapper = subjectTapeMapper;
@@ -88,9 +92,12 @@ public class StudentChoiceService {
             choice = this.choiceMapper.choiceRequestToChoice(alterStudentChoiceRequest);
             choice.setStudent(student);
             choice.setReleaseYear(Year.now().getValue());
-            choice.setClasses(new HashSet<>());
+            choice.setChoiceClasses(new HashSet<>());
 
             this.choiceRepo.save(choice);
+
+            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
+                    alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
             student.getChoices().add(choice);
             this.studentRepo.save(student);
 
@@ -108,32 +115,40 @@ public class StudentChoiceService {
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
-        Optional<Class> classWithTapeOptional = choice.getClasses().stream().filter(c ->
-                Objects.equals(c.getTape().getTapeId(), aClass.getTape().getTapeId())).findFirst();
+        Optional<ChoiceClass> choiceClassWithTapeOptional = choice.getChoiceClasses().stream().filter(c ->
+                Objects.equals(c.getaClass().getTape().getTapeId(), aClass.getTape().getTapeId())).findFirst();
 
-        if (classWithTapeOptional.isPresent()) {
-            Class classWithTape = classWithTapeOptional.get();
-            choice.getClasses().remove(classWithTape);
-            classWithTape.getChoices().remove(choice);
+        if (choiceClassWithTapeOptional.isPresent()) {
+            ChoiceClass choiceClass = choiceClassWithTapeOptional.get();
+            choice.getChoiceClasses().remove(choiceClass);
+            choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
 
-            this.classRepo.save(classWithTape);
+            this.classRepo.save(choiceClass.getaClass());
+            this.choiceClassRepo.delete(choiceClass);
         }
 
-        Optional<Class> classWithSubjectOptional = choice.getClasses().stream().filter(c ->
-                Objects.equals(c.getSubject().getSubjectId(), aClass.getSubject().getSubjectId())).findFirst();
+        Optional<ChoiceClass> choiceClassWithSubjectOptional = choice.getChoiceClasses().stream().filter(c ->
+                Objects.equals(c.getaClass().getSubject().getSubjectId(), aClass.getSubject().getSubjectId())).findFirst();
 
 
-        if (classWithSubjectOptional.isPresent()) {
-            Class classWithSubject = classWithSubjectOptional.get();
-            choice.getClasses().remove(classWithSubject);
-            classWithSubject.getChoices().remove(choice);
+        if (choiceClassWithSubjectOptional.isPresent()) {
+            ChoiceClass choiceClass = choiceClassWithSubjectOptional.get();
+            choice.getChoiceClasses().remove(choiceClass);
+            choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
 
-            this.classRepo.save(classWithSubject);
+            this.classRepo.save(choiceClass.getaClass());
+            this.choiceClassRepo.delete(choiceClass);
         }
 
-        choice.getClasses().add(aClass);
+        ChoiceClass choiceClass = new ChoiceClass();
+        choiceClass.setaClass(aClass);
+        choiceClass.setChoice(choice);
+
+        this.choiceClassRepo.save(choiceClass);
+
+        choice.getChoiceClasses().add(choiceClass);
         this.choiceRepo.save(choice);
-        aClass.getChoices().add(choice);
+        aClass.getChoiceClasses().add(choiceClass);
         this.classRepo.save(aClass);
     }
 
@@ -215,24 +230,26 @@ public class StudentChoiceService {
         }
         Choice choice = choiceOptional.get();
 
-        Optional<Class> classOptional = choice.getClasses().stream().filter(c -> Objects.equals(c.getClassId(),
-                deleteClassFromChoiceRequest.getClassId())).findFirst();
+        Optional<ChoiceClass> choiceClassOptional = choice.getChoiceClasses().stream().filter(c ->
+                Objects.equals(c.getaClass().getClassId(), deleteClassFromChoiceRequest.getClassId())).findFirst();
 
-        if (classOptional.isEmpty()) {
+        if (choiceClassOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.CLASS_NOT_IN_CHOICE);
         }
 
-        Class aclass = classOptional.get();
+        ChoiceClass choiceClass = choiceClassOptional.get();
 
-        choice.getClasses().remove(aclass);
+        choice.getChoiceClasses().remove(choiceClass);
 
-        aclass.getChoices().remove(choice);
+        choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
 
         this.choiceRepo.save(choice);
 
-        this.classRepo.save(aclass);
+        this.classRepo.save(choiceClass.getaClass());
 
-        logger.info(String.format("Removed %s from Choice", aclass.getName()));
+        this.choiceClassRepo.delete(choiceClass);
+
+        logger.info(String.format("Removed %s from Choice", choiceClass.getaClass().getName()));
         ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
         choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(choice.getStudent().getStudentClass().getYear(), choice));
         return choiceResponse;

@@ -33,15 +33,19 @@ public class ClassCreationService {
 
     private final ChoiceRepo choiceRepo;
 
+    private final ChoiceClassRepo choiceClassRepo;
+
     private final ClassMapper classMapper;
 
     public ClassCreationService(ClassRepo classRepo, TapeRepo tapeRepo, TeacherRepo teacherRepo,
-                                SubjectRepo subjectRepo, ChoiceRepo choiceRepo, ClassMapper classMapper) {
+                                SubjectRepo subjectRepo, ChoiceRepo choiceRepo, ChoiceClassRepo choiceClassRepo,
+                                ClassMapper classMapper) {
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
         this.teacherRepo = teacherRepo;
         this.subjectRepo = subjectRepo;
         this.choiceRepo = choiceRepo;
+        this.choiceClassRepo = choiceClassRepo;
         this.classMapper = classMapper;
     }
 
@@ -183,11 +187,12 @@ public class ClassCreationService {
         aclass.getTape().getaClass().remove(aclass);
         this.tapeRepo.save(aclass.getTape());
 
-        List<Choice> choices = new ArrayList<>(aclass.getChoices());
+        List<ChoiceClass> choiceClasses = new ArrayList<>(aclass.getChoiceClasses());
 
-        for (Choice choice : choices) {
-            choice.getClasses().remove(aclass);
-            this.choiceRepo.save(choice);
+        for (ChoiceClass choiceClass : choiceClasses) {
+            choiceClass.getChoice().getChoiceClasses().remove(choiceClass);
+            this.choiceRepo.save(choiceClass.getChoice());
+            this.choiceClassRepo.delete(choiceClass);
         }
 
         this.classRepo.delete(aclass);

@@ -52,6 +52,9 @@ public class StudentChoiceServiceTest {
     @Autowired
     private StudentClassRepo studentClassRepo;
 
+    @Autowired
+    private ChoiceClassRepo choiceClassRepo;
+
     private Student student;
 
     private Tape tape;
@@ -116,16 +119,27 @@ public class StudentChoiceServiceTest {
     }
 
     private void setupChoice(Class c) {
+
         choice = new Choice();
         choice.setChoiceNumber(1);
         choice.setReleaseYear(Year.now().getValue());
-        choice.setClasses(new HashSet<>());
-        choice.getClasses().add(c);
+        choice.setChoiceClasses(new HashSet<>());
         choice.setStudent(student);
 
         this.choiceRepo.save(choice);
 
-        c.getChoices().add(choice);
+        ChoiceClass choiceClass = new ChoiceClass();
+        choiceClass.setChoice(choice);
+        choiceClass.setaClass(c);
+        this.choiceClassRepo.save(choiceClass);
+
+        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
+                student.getStudentId(), Year.now().getValue()).get();
+
+        choice.getChoiceClasses().add(choiceClass);
+        this.choiceRepo.save(choice);
+
+        c.getChoiceClasses().add(choiceClass);
         this.classRepo.save(c);
 
         student.getChoices().add(choice);
@@ -133,19 +147,27 @@ public class StudentChoiceServiceTest {
     }
 
     private void setupSecondChoice(Class c) {
+
         secondChoice = new Choice();
         secondChoice.setChoiceNumber(2);
         secondChoice.setReleaseYear(Year.now().getValue());
-        secondChoice.setClasses(new HashSet<>());
-        secondChoice.getClasses().add(c);
+        secondChoice.setChoiceClasses(new HashSet<>());
         secondChoice.setStudent(student);
 
         this.choiceRepo.save(secondChoice);
 
+        ChoiceClass choiceClass = new ChoiceClass();
+        choiceClass.setChoice(secondChoice);
+        choiceClass.setaClass(c);
+        this.choiceClassRepo.save(choiceClass);
+
         secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
                 student.getStudentId(), Year.now().getValue()).get();
 
-        c.getChoices().add(secondChoice);
+        secondChoice.getChoiceClasses().add(choiceClass);
+        this.choiceRepo.save(secondChoice);
+
+        c.getChoiceClasses().add(choiceClass);
         this.classRepo.save(c);
 
         student.getChoices().add(secondChoice);
@@ -259,12 +281,12 @@ public class StudentChoiceServiceTest {
         Assertions.assertEquals(choiceResponse.getChoiceId(), created_choice.getChoiceId());
 
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
-        Assertions.assertEquals(created_choice.getClasses().size(), 1);
-        Assertions.assertEquals(created_choice.getClasses().stream().toList().get(0).getClassId(), aClass.getClassId());
+        Assertions.assertEquals(created_choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(created_choice.getChoiceClasses().stream().toList().get(0).getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().size(), 1);
-        Assertions.assertEquals(aClass.getChoices().stream().toList().get(0).getChoiceId(), created_choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().toList().get(0).getChoice().getChoiceId(), created_choice.getChoiceId());
     }
 
     @Test
@@ -286,13 +308,14 @@ public class StudentChoiceServiceTest {
 
         Assertions.assertEquals(choiceResponse.getChoiceId(), created_choice.getChoiceId());
 
+
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
-        Assertions.assertEquals(created_choice.getClasses().size(), 1);
-        Assertions.assertEquals(created_choice.getClasses().stream().toList().get(0).getClassId(), aClass.getClassId());
+        Assertions.assertEquals(created_choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(created_choice.getChoiceClasses().stream().toList().get(0).getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().size(), 1);
-        Assertions.assertEquals(aClass.getChoices().stream().toList().get(0).getChoiceId(), created_choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().toList().get(0).getChoice().getChoiceId(), created_choice.getChoiceId());
     }
 
     @Test
@@ -315,15 +338,15 @@ public class StudentChoiceServiceTest {
                 1, student.getStudentId(), Year.now().getValue()).get();
 
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
-        Assertions.assertEquals(created_choice.getClasses().size(), 1);
-        Assertions.assertEquals(created_choice.getClasses().stream().toList().get(0).getClassId(), aClass.getClassId());
+        Assertions.assertEquals(created_choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(created_choice.getChoiceClasses().stream().toList().get(0).getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().size(), 1);
-        Assertions.assertEquals(aClass.getChoices().stream().toList().get(0).getChoiceId(), created_choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().toList().get(0).getChoice().getChoiceId(), created_choice.getChoiceId());
 
         this.bClass = this.classRepo.findClassByClassId(this.bClass.getClassId()).get();
-        Assertions.assertTrue(this.bClass.getChoices().isEmpty());
+        Assertions.assertTrue(this.bClass.getChoiceClasses().isEmpty());
     }
 
     @Test
@@ -346,15 +369,15 @@ public class StudentChoiceServiceTest {
                 1, student.getStudentId(), Year.now().getValue()).get();
 
         Assertions.assertEquals(created_choice.getChoiceNumber(), 1);
-        Assertions.assertEquals(created_choice.getClasses().size(), 1);
-        Assertions.assertEquals(created_choice.getClasses().stream().toList().get(0).getClassId(), aClass.getClassId());
+        Assertions.assertEquals(created_choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(created_choice.getChoiceClasses().stream().toList().get(0).getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().size(), 1);
-        Assertions.assertEquals(aClass.getChoices().stream().toList().get(0).getChoiceId(), created_choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().toList().get(0).getChoice().getChoiceId(), created_choice.getChoiceId());
 
         this.bClass = this.classRepo.findClassByClassId(this.bClass.getClassId()).get();
-        Assertions.assertTrue(this.bClass.getChoices().isEmpty());
+        Assertions.assertTrue(this.bClass.getChoiceClasses().isEmpty());
     }
 
     @Test
@@ -606,10 +629,10 @@ public class StudentChoiceServiceTest {
         Assertions.assertEquals(response.getChoiceId(), choice.getChoiceId());
 
         choice = this.choiceRepo.findChoiceByChoiceId(choice.getChoiceId()).get();
-        Assertions.assertTrue(choice.getClasses().isEmpty());
+        Assertions.assertTrue(choice.getChoiceClasses().isEmpty());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertTrue(aClass.getChoices().isEmpty());
+        Assertions.assertTrue(aClass.getChoiceClasses().isEmpty());
     }
 
     @Test
@@ -633,11 +656,11 @@ public class StudentChoiceServiceTest {
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CHOICE_NOT_FOUND);
 
         choice = this.choiceRepo.findChoiceByChoiceId(choice.getChoiceId()).get();
-        Assertions.assertEquals(choice.getClasses().size(), 1);
-        Assertions.assertEquals(choice.getClasses().stream().findFirst().get().getClassId(), aClass.getClassId());
+        Assertions.assertEquals(choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(choice.getChoiceClasses().stream().findFirst().get().getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().stream().findFirst().get().getChoiceId(), choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().findFirst().get().getChoice().getChoiceId(), choice.getChoiceId());
     }
 
     @Test
@@ -661,10 +684,10 @@ public class StudentChoiceServiceTest {
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_IN_CHOICE);
 
         choice = this.choiceRepo.findChoiceByChoiceId(choice.getChoiceId()).get();
-        Assertions.assertEquals(choice.getClasses().size(), 1);
-        Assertions.assertEquals(choice.getClasses().stream().findFirst().get().getClassId(), aClass.getClassId());
+        Assertions.assertEquals(choice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(choice.getChoiceClasses().stream().findFirst().get().getaClass().getClassId(), aClass.getClassId());
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
-        Assertions.assertEquals(aClass.getChoices().stream().findFirst().get().getChoiceId(), choice.getChoiceId());
+        Assertions.assertEquals(aClass.getChoiceClasses().stream().findFirst().get().getChoice().getChoiceId(), choice.getChoiceId());
     }
 }

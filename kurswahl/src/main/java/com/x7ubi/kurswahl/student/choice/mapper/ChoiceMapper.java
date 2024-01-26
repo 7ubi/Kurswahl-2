@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.student.choice.mapper;
 
 import com.x7ubi.kurswahl.common.models.Choice;
-import com.x7ubi.kurswahl.common.models.Class;
+import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.ClassChoiceResponse;
@@ -20,9 +20,11 @@ public interface ChoiceMapper {
 
     List<ChoiceResponse> choicesToChoiceResponses(List<Choice> choices);
 
-    @Mapping(source = "classes", target = "classChoiceResponses")
+    @Mapping(source = "choiceClasses", target = "classChoiceResponses")
     ChoiceResponse choiceToChoiceResponse(Choice choice);
 
-    @Mapping(source = "tape.tapeId", target = "tapeId")
-    ClassChoiceResponse classToClassChoiceResponse(Class c);
+    @Mapping(source = "aClass.tape.tapeId", target = "tapeId")
+    @Mapping(source = "aClass.name", target = "name")
+    @Mapping(source = "aClass.classId", target = "classId")
+    ClassChoiceResponse classToClassChoiceResponse(ChoiceClass c);
 }

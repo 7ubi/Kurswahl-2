@@ -56,6 +56,9 @@ public class AssignChoiceServiceTest {
     @Autowired
     private RuleRepo ruleRepo;
 
+    @Autowired
+    private ChoiceClassRepo choiceClassRepo;
+
     private Student student;
 
     private Tape tape;
@@ -114,39 +117,57 @@ public class AssignChoiceServiceTest {
     }
 
     private void setupChoice(Class c) {
+
         choice = new Choice();
         choice.setChoiceNumber(1);
         choice.setReleaseYear(Year.now().getValue());
-        choice.setClasses(new HashSet<>());
-        choice.getClasses().add(c);
+        choice.setChoiceClasses(new HashSet<>());
         choice.setStudent(student);
 
         this.choiceRepo.save(choice);
 
         if (c != null) {
-            c.getChoices().add(choice);
+            ChoiceClass choiceClass = new ChoiceClass();
+            choiceClass.setChoice(choice);
+            choiceClass.setaClass(c);
+            this.choiceClassRepo.save(choiceClass);
+
+            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
+                    student.getStudentId(), Year.now().getValue()).get();
+
+            choice.getChoiceClasses().add(choiceClass);
+            this.choiceRepo.save(choice);
+
+            c.getChoiceClasses().add(choiceClass);
             this.classRepo.save(c);
         }
-
         student.getChoices().add(choice);
         this.studentRepo.save(student);
     }
 
-    private void setupSecondChoice(com.x7ubi.kurswahl.common.models.Class c) {
+    private void setupSecondChoice(Class c) {
+
         secondChoice = new Choice();
         secondChoice.setChoiceNumber(2);
         secondChoice.setReleaseYear(Year.now().getValue());
-        secondChoice.setClasses(new HashSet<>());
-        secondChoice.getClasses().add(c);
+        secondChoice.setChoiceClasses(new HashSet<>());
         secondChoice.setStudent(student);
 
         this.choiceRepo.save(secondChoice);
 
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
-
         if (c != null) {
-            c.getChoices().add(secondChoice);
+            ChoiceClass choiceClass = new ChoiceClass();
+            choiceClass.setChoice(secondChoice);
+            choiceClass.setaClass(c);
+            this.choiceClassRepo.save(choiceClass);
+
+            secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
+                    student.getStudentId(), Year.now().getValue()).get();
+
+            secondChoice.getChoiceClasses().add(choiceClass);
+            this.choiceRepo.save(secondChoice);
+
+            c.getChoiceClasses().add(choiceClass);
             this.classRepo.save(c);
         }
 

@@ -51,7 +51,7 @@ public class StudentRuleService {
         for (Rule rule : ruleSet.get().getRules()) {
             boolean ruleFulfilled = false;
             for (Subject subject : rule.getSubjects()) {
-                if (choice.getClasses().stream().anyMatch(c -> Objects.equals(c.getSubject().getSubjectId(),
+                if (choice.getChoiceClasses().stream().anyMatch(c -> Objects.equals(c.getaClass().getSubject().getSubjectId(),
                         subject.getSubjectId()))) {
                     ruleFulfilled = true;
                     break;

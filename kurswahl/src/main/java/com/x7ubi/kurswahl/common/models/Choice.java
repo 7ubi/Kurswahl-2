@@ -25,7 +25,7 @@ public class Choice {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn()
-    private Set<Class> classes;
+    private Set<ChoiceClass> choiceClasses;
 
     public Choice() {
     }
@@ -62,11 +62,11 @@ public class Choice {
         this.student = student;
     }
 
-    public Set<Class> getClasses() {
-        return classes;
+    public Set<ChoiceClass> getChoiceClasses() {
+        return choiceClasses;
     }
 
-    public void setClasses(Set<Class> classes) {
-        this.classes = classes;
+    public void setChoiceClasses(Set<ChoiceClass> choiceClasses) {
+        this.choiceClasses = choiceClasses;
     }
 }
