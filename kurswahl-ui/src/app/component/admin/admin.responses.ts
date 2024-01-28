@@ -112,6 +112,8 @@ export interface ClassChoiceResponse {
   readonly name: string;
   readonly tapeId: number;
   readonly teacherResponse: TeacherResponse;
+  readonly selected: boolean;
+  readonly choiceClassId: number;
 }
 
 export enum Role {

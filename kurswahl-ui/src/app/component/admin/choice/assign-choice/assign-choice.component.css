@@ -41,3 +41,12 @@
   width: 25%;
   font-size: 16px;
 }
+
+.selected {
+  color: #f44336;
+}
+
+.selectable:hover {
+  filter: brightness(95%);
+  cursor: pointer;
+}

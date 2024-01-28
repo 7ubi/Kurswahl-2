@@ -6,8 +6,10 @@ import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Student;
+import com.x7ubi.kurswahl.common.repository.ChoiceClassRepo;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import org.slf4j.Logger;
@@ -28,15 +30,18 @@ public class AssignChoiceService {
 
     private final ClassRepo classRepo;
 
+    private final ChoiceClassRepo choiceClassRepo;
+
     private final ClassStudentsMapper classStudentsMapper;
 
     private final StudentChoiceMapper studentChoiceMapper;
 
     private final StudentRepo studentRepo;
 
-    public AssignChoiceService(ClassRepo classRepo, ClassStudentsMapper classStudentsMapper,
+    public AssignChoiceService(ClassRepo classRepo, ChoiceClassRepo choiceClassRepo, ClassStudentsMapper classStudentsMapper,
                                StudentChoiceMapper studentChoiceMapper, StudentRepo studentRepo) {
         this.classRepo = classRepo;
+        this.choiceClassRepo = choiceClassRepo;
         this.classStudentsMapper = classStudentsMapper;
         this.studentChoiceMapper = studentChoiceMapper;
         this.studentRepo = studentRepo;
@@ -74,5 +79,19 @@ public class AssignChoiceService {
                 Year.now().getValue()).collect(Collectors.toSet()));
 
         return this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
+    }
+
+    public StudentChoicesResponse assignChoice(Long choiceClassId) throws EntityNotFoundException {
+        Optional<ChoiceClass> choiceClassOptional = this.choiceClassRepo.findChoiceClassByChoiceClassId(choiceClassId);
+
+        if (choiceClassOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
+        }
+
+        ChoiceClass choiceClass = choiceClassOptional.get();
+        choiceClass.setSelected(true);
+        this.choiceClassRepo.save(choiceClass);
+
+        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 }
