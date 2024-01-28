@@ -126,7 +126,7 @@ public class StudentCreationService {
         return this.getAllStudents();
     }
 
-    private void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
+    protected void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
         Student student = getStudentFromId(studentId);
 
         User studentUser = student.getUser();
@@ -137,11 +137,15 @@ public class StudentCreationService {
 
         List<Choice> choices = new ArrayList<>(student.getChoices());
         student.getChoices().clear();
+        this.studentRepo.save(student);
 
         for (Choice choice : choices) {
-            for (ChoiceClass choiceClass : choice.getChoiceClasses()) {
+            ArrayList<ChoiceClass> choiceClasses = new ArrayList<>(choice.getChoiceClasses());
+            for (ChoiceClass choiceClass : choiceClasses) {
                 choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
                 this.classRepo.save(choiceClass.getaClass());
+                choice.getChoiceClasses().remove(choiceClass);
+                this.choiceRepo.save(choice);
                 this.choiceClassRepo.delete(choiceClass);
             }
             this.choiceRepo.delete(choice);
