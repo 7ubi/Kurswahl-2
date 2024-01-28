@@ -28,9 +28,10 @@ public class Class {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn()
-    private Set<Choice> choices;
+    private Set<ChoiceClass> choiceClasses;
 
-    public Class() {}
+    public Class() {
+    }
 
     public Long getClassId() {
         return classId;
@@ -72,11 +73,11 @@ public class Class {
         this.tape = tape;
     }
 
-    public Set<Choice> getChoices() {
-        return choices;
+    public Set<ChoiceClass> getChoiceClasses() {
+        return choiceClasses;
     }
 
-    public void setChoices(Set<Choice> choices) {
-        this.choices = choices;
+    public void setChoiceClasses(Set<ChoiceClass> choiceClasses) {
+        this.choiceClasses = choiceClasses;
     }
 }

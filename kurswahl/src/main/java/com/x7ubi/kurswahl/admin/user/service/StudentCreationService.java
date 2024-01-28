@@ -5,7 +5,6 @@ import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
@@ -36,6 +35,8 @@ public class StudentCreationService {
 
     private final ClassRepo classRepo;
 
+    private final ChoiceClassRepo choiceClassRepo;
+
     private final PasswordEncoder passwordEncoder;
 
     private final UsernameService usernameService;
@@ -43,13 +44,15 @@ public class StudentCreationService {
     private final StudentMapper studentMapper;
 
     protected StudentCreationService(StudentRepo studentRepo, UserRepo userRepo, StudentClassRepo studentClassRepo,
-                                     ChoiceRepo choiceRepo, ClassRepo classRepo, PasswordEncoder passwordEncoder,
-                                     UsernameService usernameService, StudentMapper studentMapper) {
+                                     ChoiceRepo choiceRepo, ClassRepo classRepo, ChoiceClassRepo choiceClassRepo,
+                                     PasswordEncoder passwordEncoder, UsernameService usernameService,
+                                     StudentMapper studentMapper) {
         this.studentRepo = studentRepo;
         this.userRepo = userRepo;
         this.studentClassRepo = studentClassRepo;
         this.choiceRepo = choiceRepo;
         this.classRepo = classRepo;
+        this.choiceClassRepo = choiceClassRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
         this.studentMapper = studentMapper;
@@ -123,7 +126,7 @@ public class StudentCreationService {
         return this.getAllStudents();
     }
 
-    private void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
+    protected void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
         Student student = getStudentFromId(studentId);
 
         User studentUser = student.getUser();
@@ -134,11 +137,16 @@ public class StudentCreationService {
 
         List<Choice> choices = new ArrayList<>(student.getChoices());
         student.getChoices().clear();
+        this.studentRepo.save(student);
 
         for (Choice choice : choices) {
-            for (Class c : choice.getClasses()) {
-                c.getChoices().remove(choice);
-                this.classRepo.save(c);
+            ArrayList<ChoiceClass> choiceClasses = new ArrayList<>(choice.getChoiceClasses());
+            for (ChoiceClass choiceClass : choiceClasses) {
+                choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
+                this.classRepo.save(choiceClass.getaClass());
+                choice.getChoiceClasses().remove(choiceClass);
+                this.choiceRepo.save(choice);
+                this.choiceClassRepo.delete(choiceClass);
             }
             this.choiceRepo.delete(choice);
         }

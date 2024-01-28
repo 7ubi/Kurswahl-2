@@ -3,7 +3,7 @@ package com.x7ubi.kurswahl.admin.choice.mapper;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
-import com.x7ubi.kurswahl.common.models.Choice;
+import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,7 +19,7 @@ import java.util.List;
 public interface ClassStudentsMapper {
 
     @Mapping(source = "teacher", target = "teacherResponse")
-    @Mapping(source = "choices", target = "studentSurveillanceResponses")
+    @Mapping(source = "choiceClasses", target = "studentSurveillanceResponses")
     @Mapping(source = "tape.name", target = "tapeName")
     ClassStudentsResponse classToClassChoiceResponse(Class aclass);
 
@@ -33,5 +33,5 @@ public interface ClassStudentsMapper {
     @Mapping(source = "choice.student.studentClass.name", target = "name")
     @Mapping(source = "choice.student.studentId", target = "studentId")
     @Mapping(source = "choice.student.user.userId", target = "userId")
-    StudentSurveillanceResponse choiceToStudentSurveillanceResponse(Choice choice);
+    StudentSurveillanceResponse choiceToStudentSurveillanceResponse(ChoiceClass choice);
 }

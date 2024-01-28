@@ -47,11 +47,11 @@ public class AssignChoiceService {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
         classes.forEach(c -> {
             List<Student> students = new ArrayList<>();
-            c.setChoices(c.getChoices().stream().filter(choice -> {
-                if (students.contains(choice.getStudent())) {
+            c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
+                if (students.contains(choiceClass.getChoice().getStudent())) {
                     return false;
                 }
-                students.add(choice.getStudent());
+                students.add(choiceClass.getChoice().getStudent());
                 return true;
             }).collect(Collectors.toSet()));
         });

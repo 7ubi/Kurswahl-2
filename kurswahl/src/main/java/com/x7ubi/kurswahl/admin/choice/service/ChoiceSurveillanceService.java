@@ -87,7 +87,7 @@ public class ChoiceSurveillanceService {
         for (Rule rule : ruleSet.getRules()) {
             boolean fulfilled = false;
             for (Subject subject : rule.getSubjects()) {
-                if (choice.getClasses().stream().anyMatch(c -> Objects.equals(c.getSubject().getSubjectId(),
+                if (choice.getChoiceClasses().stream().anyMatch(c -> Objects.equals(c.getaClass().getSubject().getSubjectId(),
                         subject.getSubjectId()))) {
                     fulfilled = true;
                     break;
