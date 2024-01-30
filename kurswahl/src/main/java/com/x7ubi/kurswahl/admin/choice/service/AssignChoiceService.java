@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.models.Choice;
 import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.Student;
@@ -18,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,6 +90,24 @@ public class AssignChoiceService {
         ChoiceClass choiceClass = choiceClassOptional.get();
         choiceClass.setSelected(true);
         this.choiceClassRepo.save(choiceClass);
+
+        Set<Choice> choices = choiceClass.getChoice().getStudent().getChoices().stream()
+                .filter(choice -> choice.getReleaseYear() == Year.now().getValue()).collect(Collectors.toSet());
+
+        choices.forEach(choice -> choice.getChoiceClasses().forEach(choiceClassOfChoice -> {
+            if (Objects.equals(choiceClassOfChoice.getChoiceClassId(), choiceClass.getChoiceClassId())) {
+                return;
+            }
+
+            if (choiceClassOfChoice.isSelected() &&
+                    (Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
+                            choiceClass.getaClass().getSubject().getSubjectId()) ||
+                            Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
+                                    choiceClass.getaClass().getTape().getTapeId()))) {
+                choiceClassOfChoice.setSelected(false);
+                this.choiceClassRepo.save(choiceClassOfChoice);
+            }
+        }));
 
         return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
