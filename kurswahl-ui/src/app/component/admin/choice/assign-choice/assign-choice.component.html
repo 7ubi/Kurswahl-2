@@ -39,12 +39,18 @@
 
                 <ng-container matColumnDef="1. Wahl">
                   <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
-                  <td mat-cell *matCellDef="let element"> {{ element.firstChoice?.name }}</td>
+                  <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
+                      (click)="assignChoice(element.firstChoice)"
+                      *matCellDef="let element"> {{ element.firstChoice?.name }}
+                  </td>
                 </ng-container>
 
                 <ng-container matColumnDef="2. Wahl">
                   <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
-                  <td mat-cell *matCellDef="let element"> {{ element.secondChoice?.name }}</td>
+                  <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
+                      (click)="assignChoice(element.secondChoice)"
+                      *matCellDef="let element"> {{ element.secondChoice?.name }}
+                  </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

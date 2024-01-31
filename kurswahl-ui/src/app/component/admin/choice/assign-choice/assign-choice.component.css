@@ -41,3 +41,17 @@
   width: 25%;
   font-size: 16px;
 }
+
+.mat-column-Band {
+  width: 32px;
+}
+
+.selected {
+  background-color: var(--primary);
+  color: white;
+}
+
+.selectable:hover {
+  filter: brightness(95%);
+  cursor: pointer;
+}

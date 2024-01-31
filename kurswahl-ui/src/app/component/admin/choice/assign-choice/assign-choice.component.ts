@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
-import {ClassStudentsResponse, StudentChoiceResponse, TapeResponse} from "../../admin.responses";
+import {ClassChoiceResponse, ClassStudentsResponse, StudentChoiceResponse, TapeResponse} from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
 
@@ -97,5 +97,21 @@ export class AssignChoiceComponent implements OnDestroy {
     });
 
     this.dataSource = new MatTableDataSource(this.choiceTables);
+  }
+
+  assignChoice(element: ClassChoiceResponse) {
+    if (element && element.selected) {
+      this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+    }
+
+    if (element && !element.selected) {
+      this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+    }
   }
 }

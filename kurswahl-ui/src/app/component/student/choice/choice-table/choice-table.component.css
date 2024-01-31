@@ -24,7 +24,7 @@
 
 .selected-tape {
   transition: all 0.1s ease;
-  background-color: #3f51b5;
+  background-color: var(--primary);
   color: whitesmoke;
 }
 
@@ -42,6 +42,6 @@
 }
 
 .taken {
-  background-color: #f44336;
+  background-color: var(--warn);
   color: whitesmoke;
 }

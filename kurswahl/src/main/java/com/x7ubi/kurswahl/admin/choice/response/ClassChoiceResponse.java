@@ -6,6 +6,10 @@ public class ClassChoiceResponse {
 
     private Long classId;
 
+    private Long choiceClassId;
+
+    private boolean selected;
+
     private String name;
 
     private Long tapeId;
@@ -42,5 +46,21 @@ public class ClassChoiceResponse {
 
     public void setTeacherResponse(TeacherResponse teacherResponse) {
         this.teacherResponse = teacherResponse;
+    }
+
+    public Long getChoiceClassId() {
+        return choiceClassId;
+    }
+
+    public void setChoiceClassId(Long choiceClassId) {
+        this.choiceClassId = choiceClassId;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
