@@ -80,6 +80,7 @@ public class AssignChoiceService {
         return this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
     }
 
+    @Transactional
     public StudentChoicesResponse assignChoice(Long choiceClassId) throws EntityNotFoundException {
         ChoiceClass choiceClass = getChoiceClass(choiceClassId);
         choiceClass.setSelected(true);

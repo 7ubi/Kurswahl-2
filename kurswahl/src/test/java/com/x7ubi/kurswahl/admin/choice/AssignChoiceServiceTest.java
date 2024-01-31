@@ -63,11 +63,17 @@ public class AssignChoiceServiceTest {
 
     private Tape tape;
 
+    private Tape otherTape;
+
     private Subject subject;
+
+    private Subject otherSubject;
 
     private Teacher teacher;
 
-    private com.x7ubi.kurswahl.common.models.Class aClass;
+    private Class aClass;
+
+    private Class bClass;
 
     private Choice choice;
 
@@ -159,6 +165,7 @@ public class AssignChoiceServiceTest {
             ChoiceClass choiceClass = new ChoiceClass();
             choiceClass.setChoice(secondChoice);
             choiceClass.setaClass(c);
+            choiceClass.setSelected(true);
             this.choiceClassRepo.save(choiceClass);
 
             secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
@@ -184,6 +191,15 @@ public class AssignChoiceServiceTest {
         tape.setaClass(new HashSet<>());
 
         tapeRepo.save(tape);
+
+        otherTape = new Tape();
+        otherTape.setName("GK 2");
+        otherTape.setYear(11);
+        otherTape.setReleaseYear(Year.now().getValue());
+        otherTape.setLk(false);
+        otherTape.setaClass(new HashSet<>());
+
+        tapeRepo.save(otherTape);
     }
 
     public void setupSubjects() {
@@ -198,6 +214,14 @@ public class AssignChoiceServiceTest {
         subject.setSubjectArea(subjectArea);
         this.subjectRepo.save(subject);
         subjectArea.getSubjects().add(subject);
+
+        otherSubject = new Subject();
+        otherSubject.setName("test 2");
+        otherSubject.setSubjectArea(subjectArea);
+        this.subjectRepo.save(otherSubject);
+        subjectArea.getSubjects().add(otherSubject);
+
+        this.subjectAreaRepo.save(subjectArea);
     }
 
     public void setupTeachers() {
@@ -291,7 +315,7 @@ public class AssignChoiceServiceTest {
     }
 
     @Test
-    public void testGetStundetChoicesStudentNotFound() throws EntityNotFoundException {
+    public void testGetStundetChoicesStudentNotFound() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
@@ -306,5 +330,153 @@ public class AssignChoiceServiceTest {
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);
+    }
+
+    @Test
+    public void testAssignChoice() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
+
+        // When
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.assignChoice(choiceClasses.get(0).getChoiceClassId());
+
+        // Then
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getChoiceNumber(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertTrue(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .isSelected());
+    }
+
+    @Test
+    public void testAssignChoiceChoiceClassNotFound() {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.assignChoiceService.assignChoice(choiceClasses.get(0).getChoiceClassId() + 3));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CHOICE_NOT_FOUND);
+    }
+
+    @Test
+    public void testAssignChoiceSameSubject() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test 2", otherTape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test 2").get();
+        setupChoice(aClass);
+        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
+        setupSecondChoice(bClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
+
+        // When
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.assignChoice(choiceClasses.get(0).getChoiceClassId());
+
+        // Then
+        studentChoicesResponse.getChoiceResponses().sort(Comparator.comparing(ChoiceResponse::getChoiceNumber));
+
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getChoiceNumber(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertTrue(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .isSelected());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getChoiceNumber(), 2);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getClassId(), this.bClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getTapeId(), this.otherTape.getTapeId());
+        Assertions.assertFalse(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .isSelected());
+    }
+
+    @Test
+    public void testAssignChoiceSameTape() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test 2", tape, teacher, otherSubject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test 2").get();
+        setupChoice(aClass);
+        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
+        setupSecondChoice(bClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
+
+        // When
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.assignChoice(choiceClasses.get(0).getChoiceClassId());
+
+        // Then
+        studentChoicesResponse.getChoiceResponses().sort(Comparator.comparing(ChoiceResponse::getChoiceNumber));
+
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getChoiceNumber(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertTrue(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .isSelected());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getChoiceNumber(), 2);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getClassId(), this.bClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertFalse(studentChoicesResponse.getChoiceResponses().get(1).getClassChoiceResponses().get(0)
+                .isSelected());
+    }
+
+    @Test
+    public void testDeleteChoiceSelection() throws EntityNotFoundException {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        setupSecondChoice(aClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(secondChoice.getChoiceId());
+
+        // When
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.deleteChoiceSelection(choiceClasses.get(0).getChoiceClassId());
+
+        // Then
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getChoiceNumber(), 2);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().size(), 1);
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getClassId(), this.aClass.getClassId());
+        Assertions.assertEquals(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .getTapeId(), this.tape.getTapeId());
+        Assertions.assertFalse(studentChoicesResponse.getChoiceResponses().get(0).getClassChoiceResponses().get(0)
+                .isSelected());
+    }
+
+    @Test
+    public void testDeleteChoiceSelectionChoiceClassNotFound() {
+        // Given
+        setupClasses(aClass, "test", tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        setupSecondChoice(aClass);
+        List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(secondChoice.getChoiceId());
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.assignChoiceService.deleteChoiceSelection(choiceClasses.get(0).getChoiceClassId() + 3));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CHOICE_NOT_FOUND);
     }
 }
