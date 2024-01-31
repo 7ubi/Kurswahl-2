@@ -42,8 +42,13 @@
   font-size: 16px;
 }
 
+.mat-column-Band {
+  width: 32px;
+}
+
 .selected {
-  color: #f44336;
+  background-color: var(--primary);
+  color: white;
 }
 
 .selectable:hover {
