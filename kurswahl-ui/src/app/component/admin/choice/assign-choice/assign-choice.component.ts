@@ -100,7 +100,14 @@ export class AssignChoiceComponent implements OnDestroy {
   }
 
   assignChoice(element: ClassChoiceResponse) {
-    if (element) {
+    if (element && element.selected) {
+      this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+    }
+
+    if (element && !element.selected) {
       this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
         this.studentChoice = response;
         this.generateChoiceTable();

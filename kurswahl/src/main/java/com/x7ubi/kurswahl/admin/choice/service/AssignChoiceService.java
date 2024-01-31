@@ -81,13 +81,7 @@ public class AssignChoiceService {
     }
 
     public StudentChoicesResponse assignChoice(Long choiceClassId) throws EntityNotFoundException {
-        Optional<ChoiceClass> choiceClassOptional = this.choiceClassRepo.findChoiceClassByChoiceClassId(choiceClassId);
-
-        if (choiceClassOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
-        }
-
-        ChoiceClass choiceClass = choiceClassOptional.get();
+        ChoiceClass choiceClass = getChoiceClass(choiceClassId);
         choiceClass.setSelected(true);
         this.choiceClassRepo.save(choiceClass);
 
@@ -108,6 +102,25 @@ public class AssignChoiceService {
                 this.choiceClassRepo.save(choiceClassOfChoice);
             }
         }));
+
+        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+    }
+
+    private ChoiceClass getChoiceClass(Long choiceClassId) throws EntityNotFoundException {
+        Optional<ChoiceClass> choiceClassOptional = this.choiceClassRepo.findChoiceClassByChoiceClassId(choiceClassId);
+
+        if (choiceClassOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
+        }
+
+        return choiceClassOptional.get();
+    }
+
+    public StudentChoicesResponse deleteChoiceSelection(Long choiceClassId) throws EntityNotFoundException {
+        ChoiceClass choiceClass = getChoiceClass(choiceClassId);
+        choiceClass.setSelected(false);
+
+        this.choiceClassRepo.save(choiceClass);
 
         return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
     }

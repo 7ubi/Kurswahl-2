@@ -86,4 +86,19 @@ public class AdminChoiceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/assignChoice")
+    @AdminRequired
+    public ResponseEntity<?> deleteChoiceSelection(@RequestParam Long choiceClassId) {
+        logger.info("Deleting Choice Selection from Student");
+
+        try {
+            StudentChoicesResponse responses = this.assignChoiceService.deleteChoiceSelection(choiceClassId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
