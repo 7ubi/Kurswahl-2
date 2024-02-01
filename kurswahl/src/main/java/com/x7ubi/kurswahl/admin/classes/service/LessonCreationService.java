@@ -59,7 +59,7 @@ public class LessonCreationService {
         logger.info(String.format("Saved Lesson to Tape %s", tape.getName()));
 
         return this.tapeMapper.tapesToTapeResponseList(this.tapeRepo.findAllByYearAndReleaseYear(tape.getYear(),
-                tape.getReleaseYear()).get());
+                tape.getReleaseYear()));
     }
 
     public List<TapeResponse> deleteLesson(Long lessonId) throws EntityNotFoundException {
@@ -76,7 +76,7 @@ public class LessonCreationService {
 
         logger.info(String.format("Deleted Lesson from Tape %s", lesson.getTape().getName()));
         return this.tapeMapper.tapesToTapeResponseList(this.tapeRepo.findAllByYearAndReleaseYear(lesson.getTape().getYear(),
-                lesson.getTape().getReleaseYear()).get());
+                lesson.getTape().getReleaseYear()));
     }
 
     private void isLessonAvailable(LessonCreationRequest lessonCreationRequest, Tape tape) throws EntityCreationException {

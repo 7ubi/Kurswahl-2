@@ -12,11 +12,7 @@ public interface TapeRepo extends JpaRepository<Tape, Long> {
 
     Optional<Tape> findTapeByNameAndYearAndReleaseYear(String name, Integer year, Integer releaseYear);
 
-    Boolean existsTapeByTapeId(Long tapeId);
-
-    Boolean existsTapeByName(String name);
-
     Boolean existsTapeByNameAndYearAndReleaseYear(String name, Integer year, Integer releaseYear);
 
-    Optional<List<Tape>> findAllByYearAndReleaseYear(Integer year, Integer releaseYear);
+    List<Tape> findAllByYearAndReleaseYear(Integer year, Integer releaseYear);
 }

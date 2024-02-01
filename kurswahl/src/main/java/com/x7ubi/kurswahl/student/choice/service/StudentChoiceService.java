@@ -101,8 +101,6 @@ public class StudentChoiceService {
             student.getChoices().add(choice);
             this.studentRepo.save(student);
 
-            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
-                    alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
             logger.info(String.format("Created new choice for %s", student.getUser().getUsername()));
         }
 
@@ -156,7 +154,7 @@ public class StudentChoiceService {
     public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
-                Year.now().getValue()).get();
+                Year.now().getValue());
 
         logger.info(String.format("Found all Tapes of year %s", student.getStudentClass().getYear()));
         return this.tapeClassMapper.tapesToTapeResponses(tapes);
@@ -202,7 +200,8 @@ public class StudentChoiceService {
         Student student = getStudent(username);
 
         List<Choice> choices = this.choiceRepo.findAll().stream().filter(choice -> choice.getReleaseYear() ==
-                Year.now().getValue() && (choice.getChoiceNumber() == 1 || choice.getChoiceNumber() == 2)).toList();
+                Year.now().getValue() && Objects.equals(student.getStudentId(), choice.getStudent().getStudentId()) &&
+                (choice.getChoiceNumber() == 1 || choice.getChoiceNumber() == 2)).toList();
 
         if (choices.size() < 2) {
             throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);
