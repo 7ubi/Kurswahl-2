@@ -1,6 +1,7 @@
 package com.x7ubi.kurswahl.admin.choice.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
+import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
@@ -8,6 +9,7 @@ import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
 import com.x7ubi.kurswahl.admin.choice.service.ChoiceSurveillanceService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,13 @@ public class AdminChoiceController {
 
     private final AssignChoiceService assignChoiceService;
 
-    public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService, AssignChoiceService assignChoiceService) {
+    private final JwtUtils jwtUtils;
+
+    public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService,
+                                 AssignChoiceService assignChoiceService, JwtUtils jwtUtils) {
         this.choiceSurveillanceService = choiceSurveillanceService;
         this.assignChoiceService = assignChoiceService;
+        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping("/choiceSurveillance")
@@ -64,6 +70,24 @@ public class AdminChoiceController {
 
         try {
             StudentChoicesResponse responses = this.assignChoiceService.getStundetChoices(studentId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/assignChoice")
+    @AdminRequired
+    public ResponseEntity<?> assignAlternateChoice(@RequestHeader("Authorization") String authorization,
+                                                   @RequestBody AlternateChoiceRequest alternateChoiceRequest) {
+        logger.info("Assigning alternate Choice to Student");
+
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+            StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(username,
+                    alternateChoiceRequest);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
