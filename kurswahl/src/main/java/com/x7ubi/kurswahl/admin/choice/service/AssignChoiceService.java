@@ -1,20 +1,17 @@
 package com.x7ubi.kurswahl.admin.choice.service;
 
+import com.x7ubi.kurswahl.admin.choice.mapper.ChoiceTapeMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.ClassStudentsMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentChoiceMapper;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
+import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.models.Choice;
-import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
-import com.x7ubi.kurswahl.common.models.Student;
-import com.x7ubi.kurswahl.common.repository.ChoiceClassRepo;
-import com.x7ubi.kurswahl.common.repository.ChoiceRepo;
-import com.x7ubi.kurswahl.common.repository.ClassRepo;
-import com.x7ubi.kurswahl.common.repository.StudentRepo;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,17 +38,23 @@ public class AssignChoiceService {
 
     private final ChoiceRepo choiceRepo;
 
+    private final TapeRepo tapeRepo;
+
+    private final ChoiceTapeMapper choiceTapeMapper;
+
     public static final Integer ALTERNATE_CHOICE_NUMBER = 3;
 
     public AssignChoiceService(ClassRepo classRepo, ChoiceClassRepo choiceClassRepo, ClassStudentsMapper
             classStudentsMapper, StudentChoiceMapper studentChoiceMapper, StudentRepo studentRepo, ChoiceRepo
-                                       choiceRepo) {
+                                       choiceRepo, TapeRepo tapeRepo, ChoiceTapeMapper choiceTapeMapper) {
         this.classRepo = classRepo;
         this.choiceClassRepo = choiceClassRepo;
         this.classStudentsMapper = classStudentsMapper;
         this.studentChoiceMapper = studentChoiceMapper;
         this.studentRepo = studentRepo;
         this.choiceRepo = choiceRepo;
+        this.tapeRepo = tapeRepo;
+        this.choiceTapeMapper = choiceTapeMapper;
     }
 
     @Transactional
@@ -142,11 +145,7 @@ public class AssignChoiceService {
     @Transactional
     public StudentChoicesResponse assignAlternateChoice(String username, AlternateChoiceRequest alternateChoiceRequest)
             throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        Student student = studentOptional.get();
+        Student student = getStudent(username);
 
         Optional<Class> classOptional = this.classRepo.findClassByClassId(alternateChoiceRequest.getClassId());
         if (classOptional.isEmpty()) {
@@ -192,5 +191,19 @@ public class AssignChoiceService {
         deselectChoiceClassSameTapeOrSubject(choiceClass);
 
         return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+    }
+
+    private Student getStudent(String username) throws EntityNotFoundException {
+        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+        return studentOptional.get();
+    }
+
+    public List<ChoiceTapeResponse> getTapes(Integer year) {
+        List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(year, Year.now().getValue());
+
+        return this.choiceTapeMapper.tapesToChoiceTapeResponses(tapes);
     }
 }

@@ -53,6 +53,14 @@
                   </td>
                 </ng-container>
 
+                <ng-container matColumnDef="Alternative">
+                  <th mat-header-cell *matHeaderCellDef> Alternative</th>
+                  <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
+                      (click)="assignChoice(element.alternativeChoice)"
+                      *matCellDef="let element"> {{ element.alternativeChoice?.name }}
+                  </td>
+                </ng-container>
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
