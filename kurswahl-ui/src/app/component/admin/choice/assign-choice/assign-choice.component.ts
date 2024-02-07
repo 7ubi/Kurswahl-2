@@ -144,4 +144,13 @@ export class AssignChoiceComponent implements OnDestroy {
   selectTape(tapeId: number) {
     this.selectedTape = this.tapes?.find(tape => tape.tapeId === tapeId);
   }
+
+  deleteAlternative(alternative: ClassChoiceResponse) {
+    if (alternative) {
+      this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+    }
+  }
 }

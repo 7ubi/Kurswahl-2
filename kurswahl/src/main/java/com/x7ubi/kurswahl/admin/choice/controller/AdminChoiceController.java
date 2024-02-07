@@ -120,6 +120,21 @@ public class AdminChoiceController {
         }
     }
 
+    @DeleteMapping("/alternativeChoice")
+    @AdminRequired
+    public ResponseEntity<?> deleteAlternativeChoiceClass(@RequestParam Long choiceClassId) {
+        logger.info("Deleting Alternative Choice Class");
+
+        try {
+            StudentChoicesResponse responses = this.assignChoiceService.deleteAlternativeChoiceClass(choiceClassId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/choiceTapes")
     @AdminRequired
     public ResponseEntity<?> getTapes(@RequestParam Integer year) {

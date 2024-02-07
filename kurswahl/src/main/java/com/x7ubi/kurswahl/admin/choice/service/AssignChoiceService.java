@@ -197,18 +197,28 @@ public class AssignChoiceService {
         return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
-    private Student getStudent(String username) throws EntityNotFoundException {
-        Optional<Student> studentOptional = this.studentRepo.findStudentByUser_Username(username);
-        if (studentOptional.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
-        }
-        return studentOptional.get();
-    }
-
     @Transactional
     public List<ChoiceTapeResponse> getTapes(Integer year) {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(year, Year.now().getValue());
 
         return this.choiceTapeMapper.tapesToChoiceTapeResponses(tapes);
+    }
+
+    @Transactional
+    public StudentChoicesResponse deleteAlternativeChoiceClass(Long choiceClassId) throws EntityNotFoundException {
+        Optional<ChoiceClass> choiceClassOptional = this.choiceClassRepo.findChoiceClassByChoiceClassId(choiceClassId);
+
+        if (choiceClassOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
+        }
+        ChoiceClass choiceClass = choiceClassOptional.get();
+
+        choiceClass.getaClass().getChoiceClasses().remove(choiceClass);
+        this.classRepo.save(choiceClass.getaClass());
+        choiceClass.getChoice().getChoiceClasses().remove(choiceClass);
+        this.choiceRepo.save(choiceClass.getChoice());
+        this.choiceClassRepo.delete(choiceClass);
+
+        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 }

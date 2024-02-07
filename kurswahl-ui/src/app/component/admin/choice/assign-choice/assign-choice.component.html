@@ -74,6 +74,9 @@
                               (click)="assignAlternative(c.classId)">
                         {{ c.name }}
                       </button>
+                      <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
+                        Keine Alternative
+                      </button>
                     </mat-menu>
                   </td>
                 </ng-container>
