@@ -2,7 +2,12 @@ import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
-import {ClassChoiceResponse, ClassStudentsResponse, StudentChoiceResponse, TapeResponse} from "../../admin.responses";
+import {
+  ChoiceTapeResponse,
+  ClassChoiceResponse,
+  ClassStudentsResponse,
+  StudentChoiceResponse
+} from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
 
@@ -17,7 +22,8 @@ export class AssignChoiceComponent implements OnDestroy {
   eventSubscription: Subscription;
 
   classes?: ClassStudentsResponse[];
-  tapes?: TapeResponse[];
+  tapes?: ChoiceTapeResponse[];
+  selectedTape?: ChoiceTapeResponse;
   studentChoice?: StudentChoiceResponse;
 
   dataSource!: MatTableDataSource<ChoiceTable>;
@@ -34,7 +40,7 @@ export class AssignChoiceComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute) {
 
-    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl'];
+    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
@@ -58,7 +64,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.loadedClasses = true;
       });
 
-    this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => this.tapes = response)
+    this.httpService.get<ChoiceTapeResponse[]>(`/api/admin/choiceTapes?year=${this.year}`, response => this.tapes = response);
   }
 
   ngOnDestroy(): void {
@@ -79,6 +85,7 @@ export class AssignChoiceComponent implements OnDestroy {
   private generateChoiceTable() {
     const firstChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 1);
     const secondChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 2);
+    const alternative = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 3);
 
     this.choiceTables = [];
 
@@ -91,6 +98,10 @@ export class AssignChoiceComponent implements OnDestroy {
 
       if (secondChoice) {
         choiceTable.secondChoice = secondChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
+      }
+
+      if (alternative) {
+        choiceTable.alternativeChoice = alternative.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
       this.choiceTables?.push(choiceTable);
@@ -109,6 +120,34 @@ export class AssignChoiceComponent implements OnDestroy {
 
     if (element && !element.selected) {
       this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+    }
+  }
+
+  assignAlternative(classId: number) {
+    this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
+      response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+  }
+
+  getAlternativeRequest(classId: number) {
+    return {
+      studentId: this.studentChoice?.studentId,
+      classId: classId
+    };
+  }
+
+  selectTape(tapeId: number) {
+    this.selectedTape = this.tapes?.find(tape => tape.tapeId === tapeId);
+  }
+
+  deleteAlternative(alternative: ClassChoiceResponse) {
+    if (alternative) {
+      this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
         this.studentChoice = response;
         this.generateChoiceTable();
       });

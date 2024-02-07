@@ -46,6 +46,10 @@
   width: 32px;
 }
 
+.mat-column-Aktion {
+  width: 32px;
+}
+
 .selected {
   background-color: var(--primary);
   color: white;
@@ -54,4 +58,9 @@
 .selectable:hover {
   filter: brightness(95%);
   cursor: pointer;
+}
+
+.alternative {
+  display: flex;
+  justify-content: space-evenly;
 }

@@ -1,11 +1,12 @@
-import {ClassChoiceResponse, TapeResponse} from "../../admin.responses";
+import {ChoiceTapeResponse, ClassChoiceResponse} from "../../admin.responses";
 
 export class ChoiceTable {
-  tape: TapeResponse;
+  tape: ChoiceTapeResponse;
   firstChoice?: ClassChoiceResponse;
   secondChoice?: ClassChoiceResponse;
+  alternativeChoice?: ClassChoiceResponse;
 
-  constructor(tape: TapeResponse) {
+  constructor(tape: ChoiceTapeResponse) {
     this.tape = tape;
   }
 }

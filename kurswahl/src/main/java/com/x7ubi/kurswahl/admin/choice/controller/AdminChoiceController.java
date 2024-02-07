@@ -1,7 +1,9 @@
 package com.x7ubi.kurswahl.admin.choice.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
+import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
+import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
@@ -26,7 +28,8 @@ public class AdminChoiceController {
 
     private final AssignChoiceService assignChoiceService;
 
-    public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService, AssignChoiceService assignChoiceService) {
+    public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService,
+                                 AssignChoiceService assignChoiceService) {
         this.choiceSurveillanceService = choiceSurveillanceService;
         this.assignChoiceService = assignChoiceService;
     }
@@ -72,6 +75,21 @@ public class AdminChoiceController {
         }
     }
 
+    @PostMapping("/assignChoice")
+    @AdminRequired
+    public ResponseEntity<?> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) {
+        logger.info("Assigning alternate Choice to Student");
+
+        try {
+            StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(alternateChoiceRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/assignChoice")
     @AdminRequired
     public ResponseEntity<?> assignChoice(@RequestParam Long choiceClassId) {
@@ -97,6 +115,34 @@ public class AdminChoiceController {
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/alternativeChoice")
+    @AdminRequired
+    public ResponseEntity<?> deleteAlternativeChoiceClass(@RequestParam Long choiceClassId) {
+        logger.info("Deleting Alternative Choice Class");
+
+        try {
+            StudentChoicesResponse responses = this.assignChoiceService.deleteAlternativeChoiceClass(choiceClassId);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/choiceTapes")
+    @AdminRequired
+    public ResponseEntity<?> getTapes(@RequestParam Integer year) {
+        logger.info("Getting Tapes");
+
+        try {
+            List<ChoiceTapeResponse> responses = this.assignChoiceService.getTapes(year);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }

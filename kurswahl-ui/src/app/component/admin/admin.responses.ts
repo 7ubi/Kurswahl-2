@@ -116,6 +116,18 @@ export interface ClassChoiceResponse {
   readonly choiceClassId: number;
 }
 
+export interface ChoiceTapeResponse {
+  readonly tapeId: number;
+  readonly name: string;
+  readonly choiceTapeClassResponses: ChoiceTapeClassResponse[];
+}
+
+export interface ChoiceTapeClassResponse {
+  readonly classId: number;
+  readonly name: string;
+  readonly teacherResponse: TeacherResponse;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
