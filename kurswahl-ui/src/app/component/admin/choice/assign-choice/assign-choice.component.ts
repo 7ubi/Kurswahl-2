@@ -23,6 +23,7 @@ export class AssignChoiceComponent implements OnDestroy {
 
   classes?: ClassStudentsResponse[];
   tapes?: ChoiceTapeResponse[];
+  selectedTape?: ChoiceTapeResponse;
   studentChoice?: StudentChoiceResponse;
 
   dataSource!: MatTableDataSource<ChoiceTable>;
@@ -39,7 +40,7 @@ export class AssignChoiceComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute) {
 
-    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl', 'Alternative'];
+    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
@@ -123,5 +124,24 @@ export class AssignChoiceComponent implements OnDestroy {
         this.generateChoiceTable();
       });
     }
+  }
+
+  assignAlternative(classId: number) {
+    this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
+      response => {
+        this.studentChoice = response;
+        this.generateChoiceTable();
+      });
+  }
+
+  getAlternativeRequest(classId: number) {
+    return {
+      studentId: this.studentChoice?.studentId,
+      classId: classId
+    };
+  }
+
+  selectTape(tapeId: number) {
+    this.selectedTape = this.tapes?.find(tape => tape.tapeId === tapeId);
   }
 }

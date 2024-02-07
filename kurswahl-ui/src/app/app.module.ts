@@ -77,6 +77,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -143,7 +144,8 @@ import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assi
     MatCheckboxModule,
     MatChipsModule,
     MatExpansionModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatMenuModule
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

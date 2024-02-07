@@ -10,7 +10,6 @@ import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
 import com.x7ubi.kurswahl.admin.choice.service.ChoiceSurveillanceService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,13 +28,10 @@ public class AdminChoiceController {
 
     private final AssignChoiceService assignChoiceService;
 
-    private final JwtUtils jwtUtils;
-
     public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService,
-                                 AssignChoiceService assignChoiceService, JwtUtils jwtUtils) {
+                                 AssignChoiceService assignChoiceService) {
         this.choiceSurveillanceService = choiceSurveillanceService;
         this.assignChoiceService = assignChoiceService;
-        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping("/choiceSurveillance")
@@ -81,14 +77,11 @@ public class AdminChoiceController {
 
     @PostMapping("/assignChoice")
     @AdminRequired
-    public ResponseEntity<?> assignAlternateChoice(@RequestHeader("Authorization") String authorization,
-                                                   @RequestBody AlternateChoiceRequest alternateChoiceRequest) {
+    public ResponseEntity<?> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) {
         logger.info("Assigning alternate Choice to Student");
 
         try {
-            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
-            StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(username,
-                    alternateChoiceRequest);
+            StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(alternateChoiceRequest);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

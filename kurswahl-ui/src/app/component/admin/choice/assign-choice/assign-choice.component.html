@@ -57,7 +57,24 @@
                   <th mat-header-cell *matHeaderCellDef> Alternative</th>
                   <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
                       (click)="assignChoice(element.alternativeChoice)"
-                      *matCellDef="let element"> {{ element.alternativeChoice?.name }}
+                      *matCellDef="let element">
+                    {{ element.alternativeChoice?.name }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Aktion">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectTape(element.tape.tapeId)"
+                            aria-label="Example icon-button with a menu" style="float: right">
+                      <mat-icon>expand_more</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item *ngFor="let c of selectedTape?.choiceTapeClassResponses"
+                              (click)="assignAlternative(c.classId)">
+                        {{ c.name }}
+                      </button>
+                    </mat-menu>
                   </td>
                 </ng-container>
 

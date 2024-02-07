@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.admin.choice.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChoiceTapeResponse {
@@ -7,7 +8,7 @@ public class ChoiceTapeResponse {
 
     private String name;
 
-    private List<ChoiceTapeClassResponse> choiceTapeClassResponses;
+    private List<ChoiceTapeClassResponse> choiceTapeClassResponses = new ArrayList<>();
 
     public Long getTapeId() {
         return tapeId;

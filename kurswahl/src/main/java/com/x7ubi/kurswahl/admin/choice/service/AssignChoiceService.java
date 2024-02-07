@@ -143,9 +143,13 @@ public class AssignChoiceService {
     }
 
     @Transactional
-    public StudentChoicesResponse assignAlternateChoice(String username, AlternateChoiceRequest alternateChoiceRequest)
+    public StudentChoicesResponse assignAlternateChoice(AlternateChoiceRequest alternateChoiceRequest)
             throws EntityNotFoundException {
-        Student student = getStudent(username);
+        Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(alternateChoiceRequest.getStudentId());
+        if (studentOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.STUDENT_NOT_FOUND);
+        }
+        Student student = studentOptional.get();
 
         Optional<Class> classOptional = this.classRepo.findClassByClassId(alternateChoiceRequest.getClassId());
         if (classOptional.isEmpty()) {
@@ -201,6 +205,7 @@ public class AssignChoiceService {
         return studentOptional.get();
     }
 
+    @Transactional
     public List<ChoiceTapeResponse> getTapes(Integer year) {
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(year, Year.now().getValue());
 
