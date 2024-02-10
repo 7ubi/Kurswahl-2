@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.admin.user.service;
 
+import com.x7ubi.kurswahl.common.auth.request.SignupRequest;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.request.SignupRequest;
 import org.springframework.stereotype.Service;
 
 @Service

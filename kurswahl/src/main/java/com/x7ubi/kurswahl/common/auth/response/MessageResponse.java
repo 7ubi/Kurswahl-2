@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.response;
+package com.x7ubi.kurswahl.common.auth.response;
 
 public class MessageResponse {
     private String message;

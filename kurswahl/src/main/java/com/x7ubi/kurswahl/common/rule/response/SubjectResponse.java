@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.student.choice.response;
+package com.x7ubi.kurswahl.common.rule.response;
 
 public class SubjectResponse {
     private String name;

@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.common.config;
 
+import com.x7ubi.kurswahl.common.auth.service.JpaUserDetailsService;
 import com.x7ubi.kurswahl.common.jwt.AuthEntryPointJwt;
-import com.x7ubi.kurswahl.common.service.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

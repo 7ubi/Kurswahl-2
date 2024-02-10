@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.request;
+package com.x7ubi.kurswahl.common.auth.request;
 
 public class PasswordResetRequest {
 

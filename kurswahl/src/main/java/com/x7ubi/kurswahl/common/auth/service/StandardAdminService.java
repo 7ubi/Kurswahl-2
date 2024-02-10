@@ -1,10 +1,10 @@
-package com.x7ubi.kurswahl.common.service;
+package com.x7ubi.kurswahl.common.auth.service;
 
+import com.x7ubi.kurswahl.common.auth.utils.PasswordGenerator;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

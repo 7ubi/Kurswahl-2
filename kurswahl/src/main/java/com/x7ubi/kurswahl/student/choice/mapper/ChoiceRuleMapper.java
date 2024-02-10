@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.student.choice.mapper;
 
 import com.x7ubi.kurswahl.common.models.Rule;
-import com.x7ubi.kurswahl.student.choice.response.RuleResponse;
+import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

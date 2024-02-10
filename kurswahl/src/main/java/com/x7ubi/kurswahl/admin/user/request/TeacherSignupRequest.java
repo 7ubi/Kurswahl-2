@@ -1,12 +1,13 @@
 package com.x7ubi.kurswahl.admin.user.request;
 
-import com.x7ubi.kurswahl.common.request.SignupRequest;
+import com.x7ubi.kurswahl.common.auth.request.SignupRequest;
 
 public class TeacherSignupRequest extends SignupRequest {
 
     private String abbreviation;
 
-    public TeacherSignupRequest() {}
+    public TeacherSignupRequest() {
+    }
 
     public String getAbbreviation() {
         return abbreviation;

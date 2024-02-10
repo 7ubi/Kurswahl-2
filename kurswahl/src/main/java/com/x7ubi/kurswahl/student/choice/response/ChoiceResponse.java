@@ -1,5 +1,7 @@
 package com.x7ubi.kurswahl.student.choice.response;
 
+import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
+
 import java.util.List;
 
 public class ChoiceResponse {

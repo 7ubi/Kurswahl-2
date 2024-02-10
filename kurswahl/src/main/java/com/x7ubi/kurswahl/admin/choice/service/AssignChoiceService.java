@@ -12,6 +12,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
+import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,11 +43,13 @@ public class AssignChoiceService {
 
     private final ChoiceTapeMapper choiceTapeMapper;
 
+    private final RuleService ruleService;
+
     public static final Integer ALTERNATE_CHOICE_NUMBER = 3;
 
     public AssignChoiceService(ClassRepo classRepo, ChoiceClassRepo choiceClassRepo, ClassStudentsMapper
             classStudentsMapper, StudentChoiceMapper studentChoiceMapper, StudentRepo studentRepo, ChoiceRepo
-                                       choiceRepo, TapeRepo tapeRepo, ChoiceTapeMapper choiceTapeMapper) {
+                                       choiceRepo, TapeRepo tapeRepo, ChoiceTapeMapper choiceTapeMapper, RuleService ruleService) {
         this.classRepo = classRepo;
         this.choiceClassRepo = choiceClassRepo;
         this.classStudentsMapper = classStudentsMapper;
@@ -55,6 +58,7 @@ public class AssignChoiceService {
         this.choiceRepo = choiceRepo;
         this.tapeRepo = tapeRepo;
         this.choiceTapeMapper = choiceTapeMapper;
+        this.ruleService = ruleService;
     }
 
     @Transactional
@@ -88,7 +92,13 @@ public class AssignChoiceService {
         student.setChoices(student.getChoices().stream().filter(choice -> choice.getReleaseYear() ==
                 Year.now().getValue()).collect(Collectors.toSet()));
 
-        return this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
+        Set<ChoiceClass> choiceClasses
+                = this.choiceClassRepo.findAllByChoice_Student_StudentIdAndChoice_ReleaseYearAndSelected(studentId,
+                Year.now().getValue(), true);
+
+        StudentChoicesResponse studentChoicesResponse = this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
+        studentChoicesResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choiceClasses));
+        return studentChoicesResponse;
     }
 
     @Transactional

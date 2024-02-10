@@ -1,13 +1,13 @@
-package com.x7ubi.kurswahl.common.service;
+package com.x7ubi.kurswahl.common.auth.service;
 
+import com.x7ubi.kurswahl.common.auth.request.ChangePasswordRequest;
+import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
+import com.x7ubi.kurswahl.common.auth.utils.PasswordGenerator;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.common.utils.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class ChangePasswordService {
     public void changePassword(String username, ChangePasswordRequest changePasswordRequest)
             throws EntityNotFoundException, PasswordNotMatchingException {
         Optional<User> userOptional = this.userRepo.findByUsername(username);
-        if(userOptional.isEmpty()) {
+        if (userOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         User user = userOptional.get();
@@ -57,7 +57,7 @@ public class ChangePasswordService {
     @Transactional
     public void resetPassword(PasswordResetRequest passwordResetRequest) throws EntityNotFoundException {
         Optional<User> userOptional = this.userRepo.findUserByUserId(passwordResetRequest.getUserId());
-        if(userOptional.isEmpty()) {
+        if (userOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         User user = userOptional.get();
