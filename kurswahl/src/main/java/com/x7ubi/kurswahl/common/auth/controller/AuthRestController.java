@@ -1,6 +1,13 @@
-package com.x7ubi.kurswahl.common.controller;
+package com.x7ubi.kurswahl.common.auth.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
+import com.x7ubi.kurswahl.common.auth.request.ChangePasswordRequest;
+import com.x7ubi.kurswahl.common.auth.request.LoginRequest;
+import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
+import com.x7ubi.kurswahl.common.auth.response.JwtResponse;
+import com.x7ubi.kurswahl.common.auth.response.Role;
+import com.x7ubi.kurswahl.common.auth.service.ChangePasswordService;
+import com.x7ubi.kurswahl.common.auth.service.StandardAdminService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
@@ -9,13 +16,6 @@ import com.x7ubi.kurswahl.common.models.SecurityUser;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
 import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
-import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
-import com.x7ubi.kurswahl.common.request.LoginRequest;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.common.response.JwtResponse;
-import com.x7ubi.kurswahl.common.response.Role;
-import com.x7ubi.kurswahl.common.service.ChangePasswordService;
-import com.x7ubi.kurswahl.common.service.StandardAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -73,7 +73,7 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-        @RequestBody LoginRequest loginRequest
+            @RequestBody LoginRequest loginRequest
     ) {
         logger.info(String.format("Logging in %s", loginRequest.getUsername()));
 
@@ -86,7 +86,7 @@ public class AuthRestController {
 
             SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
 
-            Role role =  getRoleUser(userDetails.getUsername());
+            Role role = getRoleUser(userDetails.getUsername());
 
             String name = String.format("%s %s", userDetails.getUser().getFirstname(),
                     userDetails.getUser().getSurname());
@@ -164,15 +164,15 @@ public class AuthRestController {
     }
 
     private Role getRoleUser(String username) {
-        if(adminRepo.existsAdminByUser_Username(username)) {
+        if (adminRepo.existsAdminByUser_Username(username)) {
             return Role.ADMIN;
         }
 
-        if(studentRepo.existsStudentByUser_Username(username)) {
+        if (studentRepo.existsStudentByUser_Username(username)) {
             return Role.STUDENT;
         }
 
-        if(teacherRepo.existsTeacherByUser_Username(username)) {
+        if (teacherRepo.existsTeacherByUser_Username(username)) {
             return Role.TEACHER;
         }
 

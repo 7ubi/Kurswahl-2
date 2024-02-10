@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.response;
+package com.x7ubi.kurswahl.common.auth.response;
 
 public class JwtResponse {
     private String token;
@@ -9,7 +9,8 @@ public class JwtResponse {
 
     private String name;
 
-    public JwtResponse() {}
+    public JwtResponse() {
+    }
 
     public JwtResponse(String token, Long id, String username, Role role, String name) {
         this.token = token;
@@ -50,6 +51,7 @@ public class JwtResponse {
     public void setUsername(String username) {
         this.username = username;
     }
+
     public Role getRole() {
         return role;
     }

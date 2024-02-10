@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.service;
+package com.x7ubi.kurswahl.common.auth.service;
 
 import com.x7ubi.kurswahl.common.models.SecurityUser;
 import com.x7ubi.kurswahl.common.repository.UserRepo;

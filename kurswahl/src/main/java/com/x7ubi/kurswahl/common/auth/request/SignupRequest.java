@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.request;
+package com.x7ubi.kurswahl.common.auth.request;
 
 public class SignupRequest {
     private String firstname;
@@ -9,7 +9,8 @@ public class SignupRequest {
         this.surname = surname;
     }
 
-    public SignupRequest() {}
+    public SignupRequest() {
+    }
 
     public String getFirstname() {
         return firstname;

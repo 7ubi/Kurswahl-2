@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
+import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.SubjectTapeMapper;
 import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
@@ -49,12 +50,12 @@ public class StudentChoiceService {
 
     private final SubjectTapeMapper subjectTapeMapper;
 
-    private final StudentRuleService studentRuleService;
+    private final RuleService ruleService;
 
     public StudentChoiceService(ChoiceRepo choiceRepo, ClassRepo classRepo, TapeRepo tapeRepo, StudentRepo studentRepo,
                                 SubjectRepo subjectRepo, ChoiceClassRepo choiceClassRepo, ChoiceMapper choiceMapper,
                                 TapeClassMapper tapeClassMapper, SubjectTapeMapper subjectTapeMapper,
-                                StudentRuleService studentRuleService) {
+                                RuleService ruleService) {
         this.choiceRepo = choiceRepo;
         this.classRepo = classRepo;
         this.tapeRepo = tapeRepo;
@@ -64,7 +65,7 @@ public class StudentChoiceService {
         this.choiceMapper = choiceMapper;
         this.tapeClassMapper = tapeClassMapper;
         this.subjectTapeMapper = subjectTapeMapper;
-        this.studentRuleService = studentRuleService;
+        this.ruleService = ruleService;
     }
 
     @Transactional
@@ -108,7 +109,7 @@ public class StudentChoiceService {
         logger.info(String.format("Altered choice for %s", student.getUser().getUsername()));
 
         ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
-        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(student.getStudentClass().getYear(), choice));
+        choiceResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choice.getChoiceClasses()));
         return choiceResponse;
     }
 
@@ -184,7 +185,7 @@ public class StudentChoiceService {
 
         if (choiceOptional.isEmpty()) {
             ChoiceResponse choiceResponse = new ChoiceResponse();
-            choiceResponse.setRuleResponses(this.studentRuleService.getAllRules(student.getStudentClass().getYear()));
+            choiceResponse.setRuleResponses(this.ruleService.getAllRules(student.getStudentClass().getYear()));
             return choiceResponse;
         }
 
@@ -192,7 +193,7 @@ public class StudentChoiceService {
 
         logger.info("Found choice");
         ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
-        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(student.getStudentClass().getYear(), choice));
+        choiceResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choice.getChoiceClasses()));
         return choiceResponse;
     }
 
@@ -250,7 +251,7 @@ public class StudentChoiceService {
 
         logger.info(String.format("Removed %s from Choice", choiceClass.getaClass().getName()));
         ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
-        choiceResponse.setRuleResponses(this.studentRuleService.getRulesByChoice(choice.getStudent().getStudentClass().getYear(), choice));
+        choiceResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(choice.getStudent().getStudentClass().getYear(), choice.getChoiceClasses()));
         return choiceResponse;
     }
 }

@@ -1,11 +1,11 @@
-package com.x7ubi.kurswahl.student.choice;
+package com.x7ubi.kurswahl.common.rule;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
-import com.x7ubi.kurswahl.student.choice.response.RuleResponse;
-import com.x7ubi.kurswahl.student.choice.service.StudentRuleService;
+import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
+import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 
 @KurswahlServiceTest
-public class StudentRuleServiceTest {
+public class RuleServiceTest {
     @Autowired
-    private StudentRuleService studentRuleService;
+    private RuleService ruleService;
 
     @Autowired
     private ChoiceRepo choiceRepo;
@@ -237,7 +237,7 @@ public class StudentRuleServiceTest {
         addSubjectToRule();
 
         // When
-        List<RuleResponse> ruleResponses = this.studentRuleService.getAllRules(11);
+        List<RuleResponse> ruleResponses = this.ruleService.getAllRules(11);
 
         // Then
         Assertions.assertEquals(ruleResponses.size(), 1);
@@ -249,7 +249,7 @@ public class StudentRuleServiceTest {
     @Test
     public void testGetAllRulesNoRuleSet() {
         // When
-        List<RuleResponse> ruleResponses = this.studentRuleService.getAllRules(11);
+        List<RuleResponse> ruleResponses = this.ruleService.getAllRules(11);
 
         // Then
         Assertions.assertTrue(ruleResponses.isEmpty());
@@ -266,7 +266,7 @@ public class StudentRuleServiceTest {
         setupChoice(this.aClass);
 
         // When
-        List<RuleResponse> ruleResponses = this.studentRuleService.getRulesByChoice(11, choice);
+        List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
 
         // Then
         Assertions.assertEquals(ruleResponses.size(), 1);
@@ -286,7 +286,7 @@ public class StudentRuleServiceTest {
         setupChoice(this.aClass);
 
         // When
-        List<RuleResponse> ruleResponses = this.studentRuleService.getRulesByChoice(11, choice);
+        List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
 
         // Then
         Assertions.assertTrue(ruleResponses.isEmpty());
@@ -300,7 +300,7 @@ public class StudentRuleServiceTest {
         setupChoice(this.aClass);
 
         // When
-        List<RuleResponse> ruleResponses = this.studentRuleService.getRulesByChoice(11, choice);
+        List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
 
         // Then
         Assertions.assertTrue(ruleResponses.isEmpty());

@@ -1,6 +1,6 @@
 package com.x7ubi.kurswahl.admin.user.request;
 
-import com.x7ubi.kurswahl.common.request.SignupRequest;
+import com.x7ubi.kurswahl.common.auth.request.SignupRequest;
 
 public class AdminSignupRequest extends SignupRequest {
 

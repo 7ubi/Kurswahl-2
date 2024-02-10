@@ -1,4 +1,4 @@
-package com.x7ubi.kurswahl.common.utils;
+package com.x7ubi.kurswahl.common.auth.utils;
 
 import java.util.ArrayList;
 import java.util.List;

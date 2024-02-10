@@ -1,7 +1,7 @@
 package com.x7ubi.kurswahl.common.config;
 
+import com.x7ubi.kurswahl.common.auth.service.JpaUserDetailsService;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
-import com.x7ubi.kurswahl.common.service.JpaUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

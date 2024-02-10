@@ -1,14 +1,14 @@
 package com.x7ubi.kurswahl.authentication;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
+import com.x7ubi.kurswahl.common.auth.request.ChangePasswordRequest;
+import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
+import com.x7ubi.kurswahl.common.auth.service.ChangePasswordService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
-import com.x7ubi.kurswahl.common.request.ChangePasswordRequest;
-import com.x7ubi.kurswahl.common.request.PasswordResetRequest;
-import com.x7ubi.kurswahl.common.service.ChangePasswordService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
