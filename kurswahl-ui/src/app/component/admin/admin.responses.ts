@@ -1,3 +1,5 @@
+import {RuleResponse as Rule} from "../student/stundet.responses";
+
 export interface LoginResponse {
   readonly token: string;
   readonly type: string;
@@ -100,6 +102,7 @@ export interface ClassStudentsResponse {
 
 export interface StudentChoiceResponse extends StudentSurveillanceResponse {
   readonly choiceResponses: ChoiceResponse[];
+  readonly ruleResponses: Rule[];
 }
 
 export interface ChoiceResponse {

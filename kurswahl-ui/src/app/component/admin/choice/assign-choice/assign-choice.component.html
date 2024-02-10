@@ -28,6 +28,23 @@
       <div class="class">
         <div class="student-choice" *ngIf="studentChoice">
           <div class="choice-header">{{ studentChoice.firstname }} {{ studentChoice.surname }}</div>
+          <mat-expansion-panel *ngIf="studentChoice?.ruleResponses && studentChoice?.ruleResponses!.length > 0"
+                               style="margin-bottom: 5px;">
+            <mat-expansion-panel-header>
+              <mat-panel-title style="color: var(--warn)">
+                Nicht erfüllte Wahlbedingungen
+              </mat-panel-title>
+              <mat-panel-description style="color: var(--warn)">
+                {{ studentChoice?.ruleResponses?.length }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="rule" *ngFor="let rule of studentChoice?.ruleResponses">
+              {{ rule.name }} -
+              <span *ngFor="let subject of rule.subjectResponses; index as i">
+                {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+              </span>
+            </div>
+          </mat-expansion-panel>
           <div class="choice-table">
             <div class="table-header-group">
               <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
