@@ -14,6 +14,7 @@ import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
 import java.util.HashSet;
@@ -50,6 +51,7 @@ public class ChoiceResultService {
         this.ruleService = ruleService;
     }
 
+    @Transactional(readOnly = true)
     public ChoiceResultResponse getResults(Integer year) {
         ChoiceResultResponse choiceResultResponse = new ChoiceResultResponse();
 
