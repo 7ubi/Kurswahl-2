@@ -23,6 +23,24 @@
           </div>
         </mat-expansion-panel>
       </div>
+      <div class="class">
+        <div class="rules not-fulfilled" *ngIf="results?.studentsNotFulfilledRules!.length > 0">
+          <h2>{{ results?.studentsNotFulfilledRules!.length }}
+            Schüler {{ results?.studentsNotFulfilledRules!.length === 1 ? 'hat' : 'haben' }} nicht alle Wahlbedingungen
+            erfüllt.</h2>
+          <mat-list role="list">
+            <mat-list-item style="text-align: left;" *ngFor="let student of results?.studentsNotFulfilledRules"
+                           role="listitem">
+              <span class="student-list">{{ student.firstname }} {{ student.surname }}</span>
+            </mat-list-item>
+          </mat-list>
+
+        </div>
+        <div class="rules fulfilled" *ngIf="results?.studentsNotFulfilledRules!.length === 0">
+          <h2>Alle Schüler haben die Wahlbedingungen erfüllt.</h2>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
