@@ -2,9 +2,12 @@ package com.x7ubi.kurswahl.admin.choice.service;
 
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentSurveillanceMapper;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
-import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.models.Choice;
+import com.x7ubi.kurswahl.common.models.RuleSet;
+import com.x7ubi.kurswahl.common.models.Student;
 import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
 import com.x7ubi.kurswahl.common.repository.StudentRepo;
+import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,10 +30,14 @@ public class ChoiceSurveillanceService {
 
     private final StudentSurveillanceMapper studentSurveillanceMapper;
 
-    public ChoiceSurveillanceService(RuleSetRepo ruleSetRepo, StudentRepo studentRepo, StudentSurveillanceMapper studentSurveillanceMapper) {
+    private final RuleService ruleService;
+
+    public ChoiceSurveillanceService(RuleSetRepo ruleSetRepo, StudentRepo studentRepo,
+                                     StudentSurveillanceMapper studentSurveillanceMapper, RuleService ruleService) {
         this.ruleSetRepo = ruleSetRepo;
         this.studentRepo = studentRepo;
         this.studentSurveillanceMapper = studentSurveillanceMapper;
+        this.ruleService = ruleService;
     }
 
     @Transactional
@@ -63,7 +70,6 @@ public class ChoiceSurveillanceService {
                 continue;
             }
             response.setChosen(true);
-
             Optional<RuleSet> ruleSetOptional = ruleSets.stream().filter(ruleSet -> Objects.equals(ruleSet.getYear(),
                     student.getStudentClass().getYear())).findFirst();
             if (ruleSetOptional.isEmpty()) {
@@ -72,8 +78,8 @@ public class ChoiceSurveillanceService {
                 continue;
             }
             RuleSet ruleSet = ruleSetOptional.get();
-            response.setFulfilledRules(getRulesFulfilled(ruleSet, firstChoiceOptional.get()) &&
-                    getRulesFulfilled(ruleSet, secondChoiceOptional.get()));
+            response.setFulfilledRules(this.ruleService.getRulesFulfilled(ruleSet, firstChoiceOptional.get().getChoiceClasses()) &&
+                    this.ruleService.getRulesFulfilled(ruleSet, secondChoiceOptional.get().getChoiceClasses()));
 
             responses.add(response);
         }
@@ -81,23 +87,5 @@ public class ChoiceSurveillanceService {
         logger.info("Analyzed all Student Choices");
 
         return responses;
-    }
-
-    private Boolean getRulesFulfilled(RuleSet ruleSet, Choice choice) {
-        for (Rule rule : ruleSet.getRules()) {
-            boolean fulfilled = false;
-            for (Subject subject : rule.getSubjects()) {
-                if (choice.getChoiceClasses().stream().anyMatch(c -> Objects.equals(c.getaClass().getSubject().getSubjectId(),
-                        subject.getSubjectId()))) {
-                    fulfilled = true;
-                    break;
-                }
-            }
-
-            if (!fulfilled) {
-                return false;
-            }
-        }
-        return true;
     }
 }
