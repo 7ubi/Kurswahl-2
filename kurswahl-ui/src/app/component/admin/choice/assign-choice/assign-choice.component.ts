@@ -51,6 +51,8 @@ export class AssignChoiceComponent implements OnDestroy {
             this.router.navigate(['admin', 'admins']);
           }
           this.loadedClasses = false;
+          this.studentChoice = undefined;
+          this.classes = undefined;
           this.loadClasses();
         }
       }

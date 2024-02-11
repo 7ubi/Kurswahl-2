@@ -61,4 +61,23 @@ public class RuleService {
 
         return this.choiceRuleMapper.rulesToRuleResponses(rules);
     }
+
+
+    public Boolean getRulesFulfilled(RuleSet ruleSet, Set<ChoiceClass> choiceClasses) {
+        for (Rule rule : ruleSet.getRules()) {
+            boolean fulfilled = false;
+            for (Subject subject : rule.getSubjects()) {
+                if (choiceClasses.stream().anyMatch(c -> Objects.equals(c.getaClass().getSubject().getSubjectId(),
+                        subject.getSubjectId()))) {
+                    fulfilled = true;
+                    break;
+                }
+            }
+
+            if (!fulfilled) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -61,7 +61,7 @@ public class AssignChoiceService {
         this.ruleService = ruleService;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ClassStudentsResponse> getClassesWithStudents(Integer year) {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
         classes.forEach(c -> {
@@ -143,6 +143,7 @@ public class AssignChoiceService {
         return choiceClassOptional.get();
     }
 
+    @Transactional
     public StudentChoicesResponse deleteChoiceSelection(Long choiceClassId) throws EntityNotFoundException {
         ChoiceClass choiceClass = getChoiceClass(choiceClassId);
         choiceClass.setSelected(false);

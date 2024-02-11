@@ -131,6 +131,11 @@ export interface ChoiceTapeClassResponse {
   readonly teacherResponse: TeacherResponse;
 }
 
+export interface ChoiceResultResponse {
+  readonly studentsNotFulfilledRules: StudentSurveillanceResponse[];
+  readonly classStudentsResponses: ClassStudentsResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

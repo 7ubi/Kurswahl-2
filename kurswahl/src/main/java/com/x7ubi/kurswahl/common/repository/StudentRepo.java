@@ -13,7 +13,7 @@ public interface StudentRepo extends JpaRepository<Student, Long> {
 
     List<Student> findAllByStudentClass_ReleaseYear(Integer year);
 
-    Boolean existsStudentByUser_Username(String username);
+    List<Student> findAllByStudentClass_ReleaseYearAndStudentClass_Year(Integer releaseYear, Integer year);
 
-    Boolean existsStudentByStudentId(Long studentId);
+    Boolean existsStudentByUser_Username(String username);
 }

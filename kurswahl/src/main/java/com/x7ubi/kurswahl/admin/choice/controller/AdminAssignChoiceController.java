@@ -2,12 +2,10 @@ package com.x7ubi.kurswahl.admin.choice.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
-import com.x7ubi.kurswahl.admin.choice.response.ChoiceSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
-import com.x7ubi.kurswahl.admin.choice.service.ChoiceSurveillanceService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -20,31 +18,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminChoiceController {
+public class AdminAssignChoiceController {
 
-    private final Logger logger = LoggerFactory.getLogger(AdminChoiceController.class);
-
-    private final ChoiceSurveillanceService choiceSurveillanceService;
+    Logger logger = LoggerFactory.getLogger(AdminAssignChoiceController.class);
 
     private final AssignChoiceService assignChoiceService;
 
-    public AdminChoiceController(ChoiceSurveillanceService choiceSurveillanceService,
-                                 AssignChoiceService assignChoiceService) {
-        this.choiceSurveillanceService = choiceSurveillanceService;
+    public AdminAssignChoiceController(AssignChoiceService assignChoiceService) {
         this.assignChoiceService = assignChoiceService;
-    }
-
-    @GetMapping("/choiceSurveillance")
-    @AdminRequired
-    public ResponseEntity<?> getChoiceSurveillanceForStudents() {
-        logger.info("Choice Surveillance For Students");
-
-        try {
-            List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping("/classesStudents")
