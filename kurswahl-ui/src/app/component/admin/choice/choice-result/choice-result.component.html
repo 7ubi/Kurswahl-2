@@ -1,0 +1,28 @@
+<app-hero title="Ergebnisse Jahrgang {{ year }}"></app-hero>
+
+<div class="container">
+  <div class="center">
+    <div class="choice-container">
+      <div class="class">
+        <mat-expansion-panel style="margin-bottom: 5px;" *ngFor="let c of results?.classStudentsResponses">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ c.name }}
+            </mat-panel-title>
+
+            <mat-panel-description>
+              {{ c.teacherResponse.firstname }} {{ c.teacherResponse.surname }} - {{ c.teacherResponse.abbreviation }}
+            </mat-panel-description>
+
+            <mat-panel-description>
+              {{ c.tapeName }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="choice" *ngFor="let student of c.studentSurveillanceResponses">
+            {{ student.firstname }} {{ student.surname }}
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </div>
+</div>

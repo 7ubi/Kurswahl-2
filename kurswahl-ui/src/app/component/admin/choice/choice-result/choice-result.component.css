@@ -1,0 +1,15 @@
+.choice {
+  width: 100%;
+  font-size: 14px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.choice-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.class {
+  width: 45%;
+}

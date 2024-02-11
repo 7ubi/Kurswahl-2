@@ -51,6 +51,7 @@ import {CreateRuleComponent} from "./component/admin/classes/rule/create-rule/cr
 import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-rule.component";
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
+import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
 
 const routes: Routes = [
   {
@@ -185,6 +186,10 @@ const routes: Routes = [
       {
         path: 'assignChoices/:year',
         component: AssignChoiceComponent
+      },
+      {
+        path: 'result/:year',
+        component: ChoiceResultComponent
       },
     ]
   },

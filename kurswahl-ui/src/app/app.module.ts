@@ -78,6 +78,7 @@ import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surve
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 import {MatMenuModule} from "@angular/material/menu";
+import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import {MatMenuModule} from "@angular/material/menu";
     CreateRuleComponent,
     EditRuleComponent,
     ChoiceSurveillanceComponent,
-    AssignChoiceComponent
+    AssignChoiceComponent,
+    ChoiceResultComponent,
   ],
   imports: [
     BrowserModule,

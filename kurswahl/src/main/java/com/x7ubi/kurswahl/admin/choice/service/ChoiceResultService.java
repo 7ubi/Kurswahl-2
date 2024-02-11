@@ -16,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,16 +83,7 @@ public class ChoiceResultService {
 
     private void getClasses(Integer year, ChoiceResultResponse choiceResultResponse) {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
-        classes.forEach(c -> {
-            List<Student> students = new ArrayList<>();
-            c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
-                if (!choiceClass.isSelected() || students.contains(choiceClass.getChoice().getStudent())) {
-                    return false;
-                }
-                students.add(choiceClass.getChoice().getStudent());
-                return true;
-            }).collect(Collectors.toSet()));
-        });
+        classes.forEach(c -> c.setChoiceClasses(c.getChoiceClasses().stream().filter(ChoiceClass::isSelected).collect(Collectors.toSet())));
 
         logger.info(String.format("Filtered Students, who chose classes in year %s", year));
 
