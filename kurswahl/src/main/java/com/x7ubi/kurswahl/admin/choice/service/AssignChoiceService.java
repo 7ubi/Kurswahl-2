@@ -61,6 +61,7 @@ public class AssignChoiceService {
         this.ruleService = ruleService;
     }
 
+    @Transactional(readOnly = true)
     public List<ClassStudentsResponse> getClassesWithStudents(Integer year) {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
         classes.forEach(c -> {
