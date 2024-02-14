@@ -51,4 +51,8 @@ export class ChoiceResultComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
   }
+
+  goToAssignChoice(studentId: number, year: number) {
+    this.router.navigate(['/admin', 'assignChoices', year, studentId]);
+  }
 }

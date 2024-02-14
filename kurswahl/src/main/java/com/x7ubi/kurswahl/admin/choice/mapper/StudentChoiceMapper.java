@@ -23,6 +23,7 @@ public interface StudentChoiceMapper {
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "studentClass.studentClassId", target = "studentClassId")
     @Mapping(source = "studentClass.name", target = "name")
+    @Mapping(source = "studentClass.year", target = "year")
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "studentId", target = "studentId")
     @Mapping(source = "choices", target = "choiceResponses")

@@ -10,6 +10,8 @@ public class StudentSurveillanceResponse extends UserResponse {
 
     private String name;
 
+    private Integer year;
+
     public Long getStudentId() {
         return studentId;
     }
@@ -32,5 +34,13 @@ public class StudentSurveillanceResponse extends UserResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 }

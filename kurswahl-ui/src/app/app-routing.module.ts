@@ -184,6 +184,10 @@ const routes: Routes = [
         component: ChoiceSurveillanceComponent
       },
       {
+        path: 'assignChoices/:year/:studentId',
+        component: AssignChoiceComponent
+      },
+      {
         path: 'assignChoices/:year',
         component: AssignChoiceComponent
       },
