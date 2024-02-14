@@ -4,6 +4,7 @@ import {ChoiceSurveillanceResponse, StudentClassResponse} from "../../admin.resp
 import {HttpService} from "../../../../service/http.service";
 import {Sort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-choice-surveillance',
@@ -25,7 +26,8 @@ export class ChoiceSurveillanceComponent implements OnInit {
 
   constructor(
     private httpService: HttpService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.displayedColumns = ['Schüler', 'Gewählt', 'Wahlbedingungen erfüllt'];
 
@@ -90,5 +92,9 @@ export class ChoiceSurveillanceComponent implements OnInit {
     } else {
       this.dataSource = new MatTableDataSource(this.choiceSurveillanceResponses);
     }
+  }
+
+  goToAssignChoice(studentId: number, year: number) {
+    this.router.navigate(['/admin', 'assignChoices', year, studentId]);
   }
 }

@@ -17,6 +17,8 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrl: './assign-choice.component.css'
 })
 export class AssignChoiceComponent implements OnDestroy {
+  initialStudent: number | null = null;
+
   year!: number;
 
   eventSubscription: Subscription;
@@ -53,6 +55,7 @@ export class AssignChoiceComponent implements OnDestroy {
           this.loadedClasses = false;
           this.studentChoice = undefined;
           this.classes = undefined;
+          this.initialStudent = Number(this.route.snapshot.paramMap.get('studentId'));
           this.loadClasses();
         }
       }
@@ -66,7 +69,12 @@ export class AssignChoiceComponent implements OnDestroy {
         this.loadedClasses = true;
       });
 
-    this.httpService.get<ChoiceTapeResponse[]>(`/api/admin/choiceTapes?year=${this.year}`, response => this.tapes = response);
+    this.httpService.get<ChoiceTapeResponse[]>(`/api/admin/choiceTapes?year=${this.year}`, response => {
+      this.tapes = response;
+      if (this.initialStudent) {
+        this.openChoice(this.initialStudent);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -77,10 +85,12 @@ export class AssignChoiceComponent implements OnDestroy {
     this.loadedChoice = true;
     this.httpService.get <StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
       response => {
-        this.studentChoice = response;
-        this.loadedChoice = true;
+        if (this.year === response.year) {
+          this.studentChoice = response;
+          this.loadedChoice = true;
 
-        this.generateChoiceTable();
+          this.generateChoiceTable();
+        }
       });
   }
 

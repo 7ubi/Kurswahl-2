@@ -30,3 +30,9 @@
 .student-list {
   color: white;
 }
+
+.student-list:hover {
+  background-color: var(--warn);
+  filter: brightness(85%);
+  cursor: pointer;
+}

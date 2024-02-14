@@ -17,6 +17,7 @@ public interface StudentSurveillanceMapper {
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "studentClass.studentClassId", target = "studentClassId")
     @Mapping(source = "studentClass.name", target = "name")
+    @Mapping(source = "studentClass.year", target = "year")
     @Mapping(source = "user.userId", target = "userId")
     StudentSurveillanceResponse studentTostudentSurveillanceResponse(Student student);
 }

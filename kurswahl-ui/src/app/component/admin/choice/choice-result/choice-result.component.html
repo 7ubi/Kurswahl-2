@@ -29,9 +29,11 @@
             Schüler {{ results?.studentsNotFulfilledRules!.length === 1 ? 'hat' : 'haben' }} nicht alle Wahlbedingungen
             erfüllt.</h2>
           <mat-list role="list">
-            <mat-list-item style="text-align: left;" *ngFor="let student of results?.studentsNotFulfilledRules"
-                           role="listitem">
-              <span class="student-list">{{ student.firstname }} {{ student.surname }}</span>
+            <mat-list-item class="student-list" style="text-align: left;"
+                           *ngFor="let student of results?.studentsNotFulfilledRules"
+                           role="listitem"
+                           (click)="goToAssignChoice(student.studentId, student.year)">
+              <span style="color: white">{{ student.firstname }} {{ student.surname }}</span>
             </mat-list-item>
           </mat-list>
 
