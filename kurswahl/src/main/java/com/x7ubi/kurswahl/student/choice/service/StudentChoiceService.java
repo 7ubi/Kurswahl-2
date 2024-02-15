@@ -30,27 +30,17 @@ import java.util.stream.Collectors;
 @Service
 public class StudentChoiceService {
 
-    Logger logger = LoggerFactory.getLogger(StudentChoiceService.class);
-
     private final ChoiceRepo choiceRepo;
-
     private final ClassRepo classRepo;
-
     private final TapeRepo tapeRepo;
-
     private final StudentRepo studentRepo;
-
     private final SubjectRepo subjectRepo;
-
     private final ChoiceClassRepo choiceClassRepo;
-
     private final ChoiceMapper choiceMapper;
-
     private final TapeClassMapper tapeClassMapper;
-
     private final SubjectTapeMapper subjectTapeMapper;
-
     private final RuleService ruleService;
+    Logger logger = LoggerFactory.getLogger(StudentChoiceService.class);
 
     public StudentChoiceService(ChoiceRepo choiceRepo, ClassRepo classRepo, TapeRepo tapeRepo, StudentRepo studentRepo,
                                 SubjectRepo subjectRepo, ChoiceClassRepo choiceClassRepo, ChoiceMapper choiceMapper,
@@ -90,6 +80,10 @@ public class StudentChoiceService {
         if (choiceOptional.isPresent()) {
             choice = choiceOptional.get();
         } else {
+            if (alterStudentChoiceRequest.getChoiceNumber() == 2) {
+                selectChoiceClassesFirstChoice(student);
+            }
+
             choice = this.choiceMapper.choiceRequestToChoice(alterStudentChoiceRequest);
             choice.setStudent(student);
             choice.setReleaseYear(Year.now().getValue());
@@ -111,6 +105,21 @@ public class StudentChoiceService {
         ChoiceResponse choiceResponse = this.choiceMapper.choiceToChoiceResponse(choice);
         choiceResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choice.getChoiceClasses()));
         return choiceResponse;
+    }
+
+    @Transactional
+    protected void selectChoiceClassesFirstChoice(Student student) {
+
+        Optional<Choice> choiceOptional = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
+                1, student.getStudentId(), Year.now().getValue());
+
+        if (choiceOptional.isPresent()) {
+            Choice choice = choiceOptional.get();
+            for (ChoiceClass choiceClass : choice.getChoiceClasses()) {
+                choiceClass.setSelected(true);
+                this.choiceClassRepo.save(choiceClass);
+            }
+        }
     }
 
     private void setClassToChoice(Choice choice, Class aClass) {
