@@ -290,6 +290,31 @@ public class StudentChoiceServiceTest {
     }
 
     @Test
+    public void testAlterChoiceSelectChoiceClassesFirstChoice() throws EntityNotFoundException, UnauthorizedException {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+
+        AlterStudentChoiceRequest alterStudentChoiceRequest = new AlterStudentChoiceRequest();
+        alterStudentChoiceRequest.setChoiceNumber(2);
+        alterStudentChoiceRequest.setClassId(aClass.getClassId());
+
+        // When
+        ChoiceResponse choiceResponse = this.studentChoiceService.alterChoice(student.getUser().getUsername(),
+                alterStudentChoiceRequest);
+
+        // Then
+        Choice firstChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
+                1, student.getStudentId(), Year.now().getValue()).get();
+
+        Assertions.assertEquals(firstChoice.getChoiceNumber(), 1);
+        Assertions.assertEquals(firstChoice.getChoiceClasses().size(), 1);
+        Assertions.assertEquals(firstChoice.getChoiceClasses().stream().toList().get(0).getaClass().getClassId(), aClass.getClassId());
+        Assertions.assertTrue(firstChoice.getChoiceClasses().stream().toList().get(0).isSelected());
+    }
+
+    @Test
     public void testAlterChoiceNewChoice() throws EntityNotFoundException, UnauthorizedException {
         // Given
         setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
