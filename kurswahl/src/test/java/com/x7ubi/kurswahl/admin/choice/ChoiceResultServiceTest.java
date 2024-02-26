@@ -111,10 +111,10 @@ public class ChoiceResultServiceTest {
         this.studentClassRepo.save(studentClass);
     }
 
-    private void setupChoice(com.x7ubi.kurswahl.common.models.Class c, boolean selected) {
+    private void setupChoice(com.x7ubi.kurswahl.common.models.Class c, boolean selected, Integer choiceNumber) {
 
         Choice choice = new Choice();
-        choice.setChoiceNumber(1);
+        choice.setChoiceNumber(choiceNumber);
         choice.setReleaseYear(Year.now().getValue());
         choice.setChoiceClasses(new HashSet<>());
         choice.setStudent(student);
@@ -128,7 +128,7 @@ public class ChoiceResultServiceTest {
             choiceClass.setSelected(selected);
             this.choiceClassRepo.save(choiceClass);
 
-            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
+            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(choiceNumber,
                     student.getStudentId(), Year.now().getValue()).get();
 
             choice.getChoiceClasses().add(choiceClass);
@@ -236,7 +236,7 @@ public class ChoiceResultServiceTest {
         setupRuleSet();
         setupClasses(aClass, tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, true);
+        setupChoice(aClass, true, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
@@ -258,7 +258,7 @@ public class ChoiceResultServiceTest {
         setupRuleSet();
         setupClasses(aClass, tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, false);
+        setupChoice(aClass, false, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
@@ -270,6 +270,9 @@ public class ChoiceResultServiceTest {
 
         Assertions.assertEquals(response.getStudentsNotFulfilledRules().size(), 1);
         Assertions.assertEquals(response.getStudentsNotFulfilledRules().get(0).getStudentId(), student.getStudentId());
+
+        Assertions.assertEquals(response.getStudentsNotChosen().size(), 1);
+        Assertions.assertEquals(response.getStudentsNotChosen().get(0).getStudentId(), student.getStudentId());
     }
 
     @Test
@@ -278,7 +281,7 @@ public class ChoiceResultServiceTest {
         Integer year = 11;
         setupClasses(aClass, tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, true);
+        setupChoice(aClass, true, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
@@ -291,5 +294,34 @@ public class ChoiceResultServiceTest {
                 .getStudentId(), student.getStudentId());
 
         Assertions.assertTrue(response.getStudentsNotFulfilledRules().isEmpty());
+
+        Assertions.assertEquals(response.getStudentsNotChosen().size(), 1);
+        Assertions.assertEquals(response.getStudentsNotChosen().get(0).getStudentId(), student.getStudentId());
+    }
+
+    @Test
+    public void testGetResultsChosen() {
+        // Given
+        Integer year = 11;
+        setupClasses(aClass, tape, teacher, subject);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass, true, 1);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        this.student = this.studentRepo.findStudentByUser_Username(student.getUser().getUsername()).get();
+        setupChoice(aClass, false, 2);
+
+        // When
+        ChoiceResultResponse response = this.choiceResultService.getResults(year);
+
+        // Then
+        Assertions.assertEquals(response.getClassStudentsResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
+                .getStudentId(), student.getStudentId());
+
+        Assertions.assertTrue(response.getStudentsNotFulfilledRules().isEmpty());
+
+        Assertions.assertTrue(response.getStudentsNotChosen().isEmpty());
     }
 }

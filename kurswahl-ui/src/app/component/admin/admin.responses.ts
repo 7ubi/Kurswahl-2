@@ -134,6 +134,7 @@ export interface ChoiceTapeClassResponse {
 
 export interface ChoiceResultResponse {
   readonly studentsNotFulfilledRules: StudentSurveillanceResponse[];
+  readonly studentsNotChosen: StudentSurveillanceResponse[];
   readonly classStudentsResponses: ClassStudentsResponse[];
 }
 

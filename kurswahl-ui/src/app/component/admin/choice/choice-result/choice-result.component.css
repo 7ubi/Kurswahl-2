@@ -25,6 +25,12 @@
 .not-fulfilled {
   background-color: var(--warn);
   color: white;
+  margin-bottom: 10px;
+}
+
+.not-chosen {
+  background-color: var(--accent);
+  color: white;
 }
 
 .student-list {
