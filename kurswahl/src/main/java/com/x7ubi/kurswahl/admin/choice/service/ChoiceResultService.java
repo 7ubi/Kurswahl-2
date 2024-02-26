@@ -57,20 +57,21 @@ public class ChoiceResultService {
         List<Student> students = this.studentRepo.findAllByStudentClass_ReleaseYearAndStudentClass_Year(Year.now().getValue(), year);
 
         Optional<RuleSet> ruleSetOptional = this.ruleSetRepo.findRuleSetByYear(year);
-        if (ruleSetOptional.isPresent()) {
-            RuleSet ruleSet = ruleSetOptional.get();
+        RuleSet ruleSet;
+        ruleSet = ruleSetOptional.orElse(null);
 
-            students.forEach(student -> {
-                Set<ChoiceClass> choiceClasses = new HashSet<>();
+        students.forEach(student -> {
+            Set<ChoiceClass> choiceClasses = new HashSet<>();
 
-                student.setChoices(student.getChoices().stream().filter(choice ->
-                        Objects.equals(choice.getReleaseYear(), Year.now().getValue())).collect(Collectors.toSet()));
+            student.setChoices(student.getChoices().stream().filter(choice ->
+                    Objects.equals(choice.getReleaseYear(), Year.now().getValue())).collect(Collectors.toSet()));
 
-                if (student.getChoices().size() < 2) {
-                    choiceResultResponse.getStudentsNotChosen().add(this.studentSurveillanceMapper
-                            .studentTostudentSurveillanceResponse(student));
-                }
+            if (student.getChoices().size() < 2) {
+                choiceResultResponse.getStudentsNotChosen().add(this.studentSurveillanceMapper
+                        .studentTostudentSurveillanceResponse(student));
+            }
 
+            if (ruleSet != null) {
                 student.getChoices().forEach(choice -> {
                     if (choice.getReleaseYear() == Year.now().getValue()) {
                         choiceClasses.addAll(choice.getChoiceClasses().stream().filter(ChoiceClass::isSelected).toList());
@@ -81,8 +82,8 @@ public class ChoiceResultService {
                     choiceResultResponse.getStudentsNotFulfilledRules().add(this.studentSurveillanceMapper
                             .studentTostudentSurveillanceResponse(student));
                 }
-            });
-        }
+            }
+        });
         logger.info("Generated results");
 
         return choiceResultResponse;
