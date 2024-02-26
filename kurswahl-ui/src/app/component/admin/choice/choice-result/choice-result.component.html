@@ -38,7 +38,21 @@
           </mat-list>
 
         </div>
-        <div class="rules fulfilled" *ngIf="results?.studentsNotFulfilledRules!.length === 0">
+        <div class="rules not-chosen" *ngIf="results?.studentsNotChosen!.length > 0">
+          <h2>{{ results?.studentsNotChosen!.length }}
+            Schüler {{ results?.studentsNotChosen!.length === 1 ? 'hat' : 'haben' }} nicht gewählt.</h2>
+          <mat-list role="list">
+            <mat-list-item class="student-list" style="text-align: left;"
+                           *ngFor="let student of results?.studentsNotChosen"
+                           role="listitem"
+                           (click)="goToAssignChoice(student.studentId, student.year)">
+              <span style="color: white">{{ student.firstname }} {{ student.surname }}</span>
+            </mat-list-item>
+          </mat-list>
+
+        </div>
+        <div class="rules fulfilled"
+             *ngIf="results?.studentsNotFulfilledRules!.length === 0 && results?.studentsNotChosen!.length === 0">
           <h2>Alle Schüler haben die Wahlbedingungen erfüllt.</h2>
         </div>
 

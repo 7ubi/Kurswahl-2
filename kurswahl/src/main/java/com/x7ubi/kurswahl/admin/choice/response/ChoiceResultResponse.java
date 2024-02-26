@@ -6,14 +6,12 @@ import java.util.List;
 public class ChoiceResultResponse {
     private List<StudentSurveillanceResponse> studentsNotFulfilledRules = new ArrayList<>();
 
+    private List<StudentSurveillanceResponse> studentsNotChosen = new ArrayList<>();
+
     private List<ClassStudentsResponse> classStudentsResponses;
 
     public List<StudentSurveillanceResponse> getStudentsNotFulfilledRules() {
         return studentsNotFulfilledRules;
-    }
-
-    public void setStudentsNotFulfilledRules(List<StudentSurveillanceResponse> studentsNotFulfilledRules) {
-        this.studentsNotFulfilledRules = studentsNotFulfilledRules;
     }
 
     public List<ClassStudentsResponse> getClassStudentsResponses() {
@@ -22,5 +20,9 @@ public class ChoiceResultResponse {
 
     public void setClassStudentsResponses(List<ClassStudentsResponse> classStudentsResponses) {
         this.classStudentsResponses = classStudentsResponses;
+    }
+
+    public List<StudentSurveillanceResponse> getStudentsNotChosen() {
+        return studentsNotChosen;
     }
 }

@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,13 +63,21 @@ public class ChoiceResultService {
             students.forEach(student -> {
                 Set<ChoiceClass> choiceClasses = new HashSet<>();
 
+                student.setChoices(student.getChoices().stream().filter(choice ->
+                        Objects.equals(choice.getReleaseYear(), Year.now().getValue())).collect(Collectors.toSet()));
+
+                if (student.getChoices().size() < 2) {
+                    choiceResultResponse.getStudentsNotChosen().add(this.studentSurveillanceMapper
+                            .studentTostudentSurveillanceResponse(student));
+                }
+
                 student.getChoices().forEach(choice -> {
                     if (choice.getReleaseYear() == Year.now().getValue()) {
                         choiceClasses.addAll(choice.getChoiceClasses().stream().filter(ChoiceClass::isSelected).toList());
                     }
                 });
 
-                if (!this.ruleService.getRulesFulfilled(ruleSet, choiceClasses)) {
+                if (!this.ruleService.getRulesFulfilled(ruleSet, choiceClasses) && !student.getChoices().isEmpty()) {
                     choiceResultResponse.getStudentsNotFulfilledRules().add(this.studentSurveillanceMapper
                             .studentTostudentSurveillanceResponse(student));
                 }
