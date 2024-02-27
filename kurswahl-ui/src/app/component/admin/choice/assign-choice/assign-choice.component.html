@@ -39,10 +39,10 @@
               </mat-panel-description>
             </mat-expansion-panel-header>
             <div class="rule" *ngFor="let rule of studentChoice?.ruleResponses">
-              {{ rule.name }} -
+              {{ rule.name }} <span *ngIf="rule.subjectResponses && rule.subjectResponses!.length > 0">-
               <span *ngFor="let subject of rule.subjectResponses; index as i">
                 {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
-              </span>
+              </span></span>
             </div>
           </mat-expansion-panel>
           <div class="choice-table">

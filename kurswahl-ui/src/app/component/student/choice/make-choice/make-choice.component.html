@@ -44,9 +44,11 @@
                 {{ rule.name }}
               </mat-panel-title>
             </mat-expansion-panel-header>
-            Wähle eines dieser Fächer:
-            <span *ngFor="let subject of rule.subjectResponses; index as i">
-              {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+            <span *ngIf="rule.subjectResponses && rule.subjectResponses.length > 0">
+              Wähle eines dieser Fächer:
+              <span *ngFor="let subject of rule.subjectResponses; index as i">
+                {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+              </span>
             </span>
           </mat-expansion-panel>
         </div>
