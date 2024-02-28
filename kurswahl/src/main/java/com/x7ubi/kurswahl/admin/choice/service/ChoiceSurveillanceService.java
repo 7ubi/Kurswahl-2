@@ -40,7 +40,7 @@ public class ChoiceSurveillanceService {
         this.ruleService = ruleService;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChoiceSurveillanceResponse> getChoiceSurveillanceForStudents() {
         List<ChoiceSurveillanceResponse> responses = new ArrayList<>();
         List<Student> students = this.studentRepo.findAllByStudentClass_ReleaseYear(Year.now().getValue());

@@ -10,6 +10,7 @@ import com.x7ubi.kurswahl.student.choice.mapper.ChoiceRuleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,6 +77,7 @@ public class RuleService {
     }
 
 
+    @Transactional(readOnly = true)
     public Boolean getRulesFulfilled(RuleSet ruleSet, Set<ChoiceClass> choiceClasses) {
         for (Rule rule : ruleSet.getRules()) {
             boolean fulfilled = false;
@@ -94,6 +96,7 @@ public class RuleService {
         return getNumberOfLKsFulfilled(choiceClasses);
     }
 
+    @Transactional(readOnly = true)
     public Boolean getNumberOfLKsFulfilled(Set<ChoiceClass> choiceClasses) {
         AtomicInteger numberOfLks = new AtomicInteger();
 
