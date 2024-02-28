@@ -63,6 +63,8 @@ public class ChoiceSurveillanceServiceTest {
 
     private Class aClass;
 
+    private Class bClass;
+
     private Choice choice;
 
     private Choice secondChoice;
@@ -116,23 +118,31 @@ public class ChoiceSurveillanceServiceTest {
         this.studentClassRepo.save(studentClass);
     }
 
-    private void setupChoice(Class c) {
+    private void setupChoice(Choice choice, Integer choiceNumber, Class c, Class bc) {
 
         choice = new Choice();
-        choice.setChoiceNumber(1);
+        choice.setChoiceNumber(choiceNumber);
         choice.setReleaseYear(Year.now().getValue());
         choice.setChoiceClasses(new HashSet<>());
         choice.setStudent(student);
 
         this.choiceRepo.save(choice);
 
+        choice = addClassToChoice(choice, choiceNumber, c);
+        choice = addClassToChoice(choice, choiceNumber, bc);
+
+        student.getChoices().add(choice);
+        this.studentRepo.save(student);
+    }
+
+    private Choice addClassToChoice(Choice choice, Integer choiceNumber, Class c) {
         if (c != null) {
             ChoiceClass choiceClass = new ChoiceClass();
             choiceClass.setChoice(choice);
             choiceClass.setaClass(c);
             this.choiceClassRepo.save(choiceClass);
 
-            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
+            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(choiceNumber,
                     student.getStudentId(), Year.now().getValue()).get();
 
             choice.getChoiceClasses().add(choiceClass);
@@ -141,38 +151,7 @@ public class ChoiceSurveillanceServiceTest {
             c.getChoiceClasses().add(choiceClass);
             this.classRepo.save(c);
         }
-        student.getChoices().add(choice);
-        this.studentRepo.save(student);
-    }
-
-    private void setupSecondChoice(Class c) {
-
-        secondChoice = new Choice();
-        secondChoice.setChoiceNumber(2);
-        secondChoice.setReleaseYear(Year.now().getValue());
-        secondChoice.setChoiceClasses(new HashSet<>());
-        secondChoice.setStudent(student);
-
-        this.choiceRepo.save(secondChoice);
-
-        if (c != null) {
-            ChoiceClass choiceClass = new ChoiceClass();
-            choiceClass.setChoice(secondChoice);
-            choiceClass.setaClass(c);
-            this.choiceClassRepo.save(choiceClass);
-
-            secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                    student.getStudentId(), Year.now().getValue()).get();
-
-            secondChoice.getChoiceClasses().add(choiceClass);
-            this.choiceRepo.save(secondChoice);
-
-            c.getChoiceClasses().add(choiceClass);
-            this.classRepo.save(c);
-        }
-
-        student.getChoices().add(secondChoice);
-        this.studentRepo.save(student);
+        return choice;
     }
 
     private void setupTapes() {
@@ -180,7 +159,7 @@ public class ChoiceSurveillanceServiceTest {
         tape.setName("GK 1");
         tape.setYear(11);
         tape.setReleaseYear(Year.now().getValue());
-        tape.setLk(false);
+        tape.setLk(true);
         tape.setaClass(new HashSet<>());
 
         tapeRepo.save(tape);
@@ -265,15 +244,18 @@ public class ChoiceSurveillanceServiceTest {
     public void testGetChoiceSurveillanceForStudents() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         setupRuleSet();
         setupRule();
         addSubjectToRule();
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
+        setupChoice(choice, 1, aClass, bClass);
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(aClass);
+        setupChoice(secondChoice, 2, aClass, bClass);
 
         // When
         List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
@@ -293,12 +275,15 @@ public class ChoiceSurveillanceServiceTest {
     public void testGetChoiceSurveillanceNoRuleSet() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
+        setupChoice(choice, 1, aClass, bClass);
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(aClass);
+        setupChoice(secondChoice, 2, aClass, bClass);
 
         // When
         List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
@@ -318,14 +303,16 @@ public class ChoiceSurveillanceServiceTest {
     public void testGetChoiceSurveillanceRulesNotFulfilled() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         setupRuleSet();
         setupRule();
         addSubjectToRule();
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
+        setupChoice(choice, 1, aClass, bClass);
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(null);
+        setupChoice(secondChoice, 2, null, null);
 
         // When
         List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
@@ -349,9 +336,9 @@ public class ChoiceSurveillanceServiceTest {
         setupRule();
         addSubjectToRule();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(null);
+        setupChoice(choice, 1, null, null);
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupSecondChoice(null);
+        setupChoice(choice, 2, null, null);
 
         // When
         List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();
@@ -371,12 +358,14 @@ public class ChoiceSurveillanceServiceTest {
     public void testGetChoiceSurveillanceNotChosen() {
         // Given
         setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         setupRuleSet();
         setupRule();
         addSubjectToRule();
         this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
         this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(aClass);
+        setupChoice(choice, 1, aClass, bClass);
 
         // When
         List<ChoiceSurveillanceResponse> responses = this.choiceSurveillanceService.getChoiceSurveillanceForStudents();

@@ -10,8 +10,10 @@ import com.x7ubi.kurswahl.student.choice.mapper.ChoiceRuleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class RuleService {
@@ -21,6 +23,10 @@ public class RuleService {
     private final RuleSetRepo ruleSetRepo;
 
     private final ChoiceRuleMapper choiceRuleMapper;
+
+    public final static int NUMBER_OF_LKS = 2;
+
+    public final static String LK_NOT_FULFILLED_RULE = String.format("Es müssen %s Leistungskurse gewählt werden", NUMBER_OF_LKS);
 
 
     public RuleService(RuleSetRepo ruleSetRepo, ChoiceRuleMapper choiceRuleMapper) {
@@ -58,11 +64,20 @@ public class RuleService {
                 rules.add(rule);
             }
         }
+        List<RuleResponse> ruleResponses = this.choiceRuleMapper.rulesToRuleResponses(rules);
 
-        return this.choiceRuleMapper.rulesToRuleResponses(rules);
+        if (!getNumberOfLKsFulfilled(choiceClasses)) {
+            RuleResponse lkRuleNotFulfilled = new RuleResponse();
+            lkRuleNotFulfilled.setName(LK_NOT_FULFILLED_RULE);
+            lkRuleNotFulfilled.setSubjectResponses(new ArrayList<>());
+            ruleResponses.add(lkRuleNotFulfilled);
+        }
+
+        return ruleResponses;
     }
 
 
+    @Transactional(readOnly = true)
     public Boolean getRulesFulfilled(RuleSet ruleSet, Set<ChoiceClass> choiceClasses) {
         for (Rule rule : ruleSet.getRules()) {
             boolean fulfilled = false;
@@ -78,6 +93,24 @@ public class RuleService {
                 return false;
             }
         }
-        return true;
+        return getNumberOfLKsFulfilled(choiceClasses);
     }
+
+    @Transactional(readOnly = true)
+    public Boolean getNumberOfLKsFulfilled(Set<ChoiceClass> choiceClasses) {
+        AtomicInteger numberOfLks = new AtomicInteger();
+
+        for (ChoiceClass choiceClass : choiceClasses) {
+            if (choiceClass.getaClass().getTape().getLk()) {
+                numberOfLks.getAndIncrement();
+
+                if (numberOfLks.get() == NUMBER_OF_LKS) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

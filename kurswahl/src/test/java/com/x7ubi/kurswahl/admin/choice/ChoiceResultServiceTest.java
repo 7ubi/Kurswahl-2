@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.choice;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceResultResponse;
+import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.service.ChoiceResultService;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.Comparator;
 import java.util.HashSet;
 
 @KurswahlServiceTest
@@ -60,7 +62,9 @@ public class ChoiceResultServiceTest {
 
     private Teacher teacher;
 
-    private com.x7ubi.kurswahl.common.models.Class aClass;
+    private Class aClass;
+
+    private Class bClass;
 
     private StudentClass studentClass;
 
@@ -111,7 +115,7 @@ public class ChoiceResultServiceTest {
         this.studentClassRepo.save(studentClass);
     }
 
-    private void setupChoice(com.x7ubi.kurswahl.common.models.Class c, boolean selected, Integer choiceNumber) {
+    private void setupChoice(com.x7ubi.kurswahl.common.models.Class c, Class bc, boolean selected, Integer choiceNumber) {
 
         Choice choice = new Choice();
         choice.setChoiceNumber(choiceNumber);
@@ -121,6 +125,14 @@ public class ChoiceResultServiceTest {
 
         this.choiceRepo.save(choice);
 
+        choice = getChoice(c, selected, choiceNumber, choice);
+        choice = getChoice(bc, selected, choiceNumber, choice);
+
+        student.getChoices().add(choice);
+        this.studentRepo.save(student);
+    }
+
+    private Choice getChoice(Class c, boolean selected, Integer choiceNumber, Choice choice) {
         if (c != null) {
             ChoiceClass choiceClass = new ChoiceClass();
             choiceClass.setChoice(choice);
@@ -137,8 +149,7 @@ public class ChoiceResultServiceTest {
             c.getChoiceClasses().add(choiceClass);
             this.classRepo.save(c);
         }
-        student.getChoices().add(choice);
-        this.studentRepo.save(student);
+        return choice;
     }
 
     private void setupTapes() {
@@ -146,7 +157,7 @@ public class ChoiceResultServiceTest {
         tape.setName("GK 1");
         tape.setYear(11);
         tape.setReleaseYear(Year.now().getValue());
-        tape.setLk(false);
+        tape.setLk(true);
         tape.setaClass(new HashSet<>());
 
         tapeRepo.save(tape);
@@ -180,9 +191,9 @@ public class ChoiceResultServiceTest {
         teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
     }
 
-    private void setupClasses(Class c, Tape tape, Teacher teacher, Subject subject) {
+    private void setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
         c = new Class();
-        c.setName("test");
+        c.setName(name);
         c.setTape(tape);
         c.setSubject(subject);
         c.setTeacher(teacher);
@@ -234,15 +245,18 @@ public class ChoiceResultServiceTest {
         // Given
         Integer year = 11;
         setupRuleSet();
-        setupClasses(aClass, tape, teacher, subject);
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, true, 1);
+        this.bClass = this.classRepo.findClassByName("test other").get();
+        setupChoice(aClass, bClass, true, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
 
         // Then
-        Assertions.assertEquals(response.getClassStudentsResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
+        response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
@@ -256,15 +270,18 @@ public class ChoiceResultServiceTest {
         // Given
         Integer year = 11;
         setupRuleSet();
-        setupClasses(aClass, tape, teacher, subject);
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, false, 1);
+        this.bClass = this.classRepo.findClassByName("test other").get();
+        setupChoice(aClass, bClass, false, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
 
         // Then
-        Assertions.assertEquals(response.getClassStudentsResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
+        response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
         Assertions.assertTrue(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().isEmpty());
 
@@ -279,15 +296,18 @@ public class ChoiceResultServiceTest {
     public void testGetResultsEmptyRuleSet() {
         // Given
         Integer year = 11;
-        setupClasses(aClass, tape, teacher, subject);
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, true, 1);
+        this.bClass = this.classRepo.findClassByName("test other").get();
+        setupChoice(aClass, bClass, true, 1);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
 
         // Then
-        Assertions.assertEquals(response.getClassStudentsResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
+        response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
@@ -303,18 +323,22 @@ public class ChoiceResultServiceTest {
     public void testGetResultsChosen() {
         // Given
         Integer year = 11;
-        setupClasses(aClass, tape, teacher, subject);
+        setupClasses(aClass, "test", tape, teacher, subject);
+        setupClasses(bClass, "test other", tape, teacher, subject);
         this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(aClass, true, 1);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
+        setupChoice(aClass, bClass, true, 1);
         this.student = this.studentRepo.findStudentByUser_Username(student.getUser().getUsername()).get();
-        setupChoice(aClass, false, 2);
+        this.aClass = this.classRepo.findClassByName("test").get();
+        this.bClass = this.classRepo.findClassByName("test other").get();
+        setupChoice(aClass, bClass, false, 2);
 
         // When
         ChoiceResultResponse response = this.choiceResultService.getResults(year);
 
         // Then
-        Assertions.assertEquals(response.getClassStudentsResponses().size(), 1);
+        Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
+        response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
