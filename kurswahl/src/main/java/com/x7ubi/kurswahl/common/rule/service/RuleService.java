@@ -68,6 +68,7 @@ public class RuleService {
         if (!getNumberOfLKsFulfilled(choiceClasses)) {
             RuleResponse lkRuleNotFulfilled = new RuleResponse();
             lkRuleNotFulfilled.setName(LK_NOT_FULFILLED_RULE);
+            lkRuleNotFulfilled.setSubjectResponses(new ArrayList<>());
             ruleResponses.add(lkRuleNotFulfilled);
         }
 

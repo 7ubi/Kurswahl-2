@@ -3,7 +3,10 @@ package com.x7ubi.kurswahl.common.rule;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
-import com.x7ubi.kurswahl.common.repository.*;
+import com.x7ubi.kurswahl.common.repository.RuleRepo;
+import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
+import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
+import com.x7ubi.kurswahl.common.repository.SubjectRepo;
 import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.junit.jupiter.api.Assertions;
@@ -21,41 +24,22 @@ public class RuleServiceTest {
     private RuleService ruleService;
 
     @Autowired
-    private ChoiceRepo choiceRepo;
-
-    @Autowired
-    private ClassRepo classRepo;
-
-    @Autowired
-    private TapeRepo tapeRepo;
-
-    @Autowired
-    private SubjectAreaRepo subjectAreaRepo;
-
-    @Autowired
-    private SubjectRepo subjectRepo;
-
-    @Autowired
-    private TeacherRepo teacherRepo;
-
-    @Autowired
-    private StudentRepo studentRepo;
-
-    @Autowired
-    private StudentClassRepo studentClassRepo;
-
-    @Autowired
     private RuleSetRepo ruleSetRepo;
 
     @Autowired
     private RuleRepo ruleRepo;
 
     @Autowired
-    private ChoiceClassRepo choiceClassRepo;
+    private SubjectRepo subjectRepo;
+
+    @Autowired
+    private SubjectAreaRepo subjectAreaRepo;
 
     private Student student;
 
     private Tape tape;
+
+    private Tape otherTape;
 
     private Subject subject;
 
@@ -65,9 +49,9 @@ public class RuleServiceTest {
 
     private Class aClass;
 
-    private Choice choice;
+    private Class bClass;
 
-    private StudentClass studentClass;
+    private Choice choice;
 
     private RuleSet ruleSet;
 
@@ -77,28 +61,10 @@ public class RuleServiceTest {
     public void setupTest() {
         setupTapes();
         setupSubjects();
-        setupTeachers();
         setupStudent();
     }
 
-    private void setupStudentClass() {
-        studentClass = new StudentClass();
-        studentClass.setTeacher(teacher);
-        studentClass.setName("E2a");
-        studentClass.setReleaseYear(Year.now().getValue());
-        studentClass.setYear(11);
-
-        this.studentClassRepo.save(studentClass);
-
-        teacher.setStudentClasses(new HashSet<>());
-        teacher.getStudentClasses().add(studentClass);
-        this.teacherRepo.save(teacher);
-
-        studentClass = this.studentClassRepo.findStudentClassByName("E2a").get();
-    }
-
     private void setupStudent() {
-        setupStudentClass();
         User user = new User();
         user.setUsername("test.student");
         user.setFirstname("Test");
@@ -107,44 +73,43 @@ public class RuleServiceTest {
         student = new Student();
         student.setUser(user);
         student.setChoices(new HashSet<>());
-        student.setStudentClass(studentClass);
-        studentClass.getStudents().add(student);
-
-        this.studentRepo.save(student);
-        this.studentClassRepo.save(studentClass);
     }
 
-    private void setupChoice(Class c) {
-        ChoiceClass choiceClass = new ChoiceClass();
-        choiceClass.setChoice(choice);
-        choiceClass.setaClass(c);
-        this.choiceClassRepo.save(choiceClass);
+    private void setupChoice() {
 
         choice = new Choice();
         choice.setChoiceNumber(1);
         choice.setReleaseYear(Year.now().getValue());
         choice.setChoiceClasses(new HashSet<>());
-        choice.getChoiceClasses().add(choiceClass);
         choice.setStudent(student);
+    }
 
-        this.choiceRepo.save(choice);
+    private void addClassToChoice(Class c) {
+        ChoiceClass choiceClass = new ChoiceClass();
+        choiceClass.setChoice(choice);
+        choiceClass.setaClass(c);
+
+        choice.getChoiceClasses().add(choiceClass);
 
         c.getChoiceClasses().add(choiceClass);
-        this.classRepo.save(c);
 
         student.getChoices().add(choice);
-        this.studentRepo.save(student);
     }
 
     private void setupTapes() {
         tape = new Tape();
-        tape.setName("GK 1");
+        tape.setName("LK 1");
         tape.setYear(11);
         tape.setReleaseYear(Year.now().getValue());
-        tape.setLk(false);
+        tape.setLk(true);
         tape.setaClass(new HashSet<>());
 
-        tapeRepo.save(tape);
+        otherTape = new Tape();
+        otherTape.setName("LK 2");
+        otherTape.setYear(11);
+        otherTape.setReleaseYear(Year.now().getValue());
+        otherTape.setLk(true);
+        otherTape.setaClass(new HashSet<>());
     }
 
     public void setupSubjects() {
@@ -158,50 +123,31 @@ public class RuleServiceTest {
         subject.setName("test");
         subject.setSubjectArea(subjectArea);
         this.subjectRepo.save(subject);
+        subject = this.subjectRepo.findSubjectByName("test").get();
         subjectArea.getSubjects().add(subject);
 
         subjectOther = new Subject();
         subjectOther.setName("test other");
         subjectOther.setSubjectArea(subjectArea);
         this.subjectRepo.save(subjectOther);
+        subjectOther = this.subjectRepo.findSubjectByName("test other").get();
         subjectArea.getSubjects().add(subjectOther);
         this.subjectAreaRepo.save(subjectArea);
     }
 
-    public void setupTeachers() {
-        User user = new User();
-        user.setUsername("test.user");
-        user.setFirstname("Test");
-        user.setSurname("User");
-        user.setPassword("Password");
-        teacher = new Teacher();
-        teacher.setAbbreviation("NN");
-        teacher.setUser(user);
-
-        this.teacherRepo.save(teacher);
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
-    }
-
-    private void setupClasses(Class c, Tape tape, Teacher teacher, Subject subject) {
-        c = new Class();
-        c.setName("test");
+    private Class setupClass(String name, Tape tape, Subject subject) {
+        Class c = new Class();
+        c.setName(name);
         c.setTape(tape);
         c.setSubject(subject);
         c.setTeacher(teacher);
-        this.classRepo.save(c);
+        c.setChoiceClasses(new HashSet<>());
 
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
-        teacher.getClasses().add(c);
-        this.teacherRepo.save(teacher);
-
-        subject = subjectRepo.findSubjectByName(subject.getName()).get();
         subject.setClasses(new HashSet<>());
         subject.getClasses().add(c);
-        this.subjectRepo.save(subject);
-
-        tape = tapeRepo.findTapeByNameAndYearAndReleaseYear(tape.getName(), tape.getYear(), tape.getReleaseYear()).get();
         tape.getaClass().add(c);
-        tapeRepo.save(tape);
+
+        return c;
     }
 
     private void setupRuleSet() {
@@ -261,9 +207,11 @@ public class RuleServiceTest {
         setupRuleSet();
         setupRule();
         addSubjectToRule();
-        setupClasses(aClass, this.tape, this.teacher, this.subjectOther);
-        aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(this.aClass);
+        this.aClass = setupClass("test", this.tape, this.subjectOther);
+        this.bClass = setupClass("test other", this.tape, this.subjectOther);
+        setupChoice();
+        addClassToChoice(this.aClass);
+        addClassToChoice(this.bClass);
 
         // When
         List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
@@ -281,9 +229,11 @@ public class RuleServiceTest {
         setupRuleSet();
         setupRule();
         addSubjectToRule();
-        setupClasses(aClass, this.tape, this.teacher, this.subject);
-        aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(this.aClass);
+        this.aClass = setupClass("test", this.tape, this.subject);
+        this.bClass = setupClass("test other", this.tape, this.subject);
+        setupChoice();
+        addClassToChoice(this.aClass);
+        addClassToChoice(this.bClass);
 
         // When
         List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
@@ -295,14 +245,35 @@ public class RuleServiceTest {
     @Test
     public void testGetRulesByChoiceNoRuleSet() {
         // Given
-        setupClasses(aClass, this.tape, this.teacher, this.subject);
-        aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(this.aClass);
+        this.aClass = setupClass("test", this.tape, this.subjectOther);
+        this.bClass = setupClass("test other", this.tape, this.subjectOther);
+        setupChoice();
+        addClassToChoice(this.aClass);
+        addClassToChoice(this.bClass);
 
         // When
         List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
 
         // Then
         Assertions.assertTrue(ruleResponses.isEmpty());
+    }
+
+    @Test
+    public void testGetRulesByChoiceRuleNumLKsNotFulfilled() {
+        // Given
+        setupRuleSet();
+        setupRule();
+        addSubjectToRule();
+        this.aClass = setupClass("test", this.tape, this.subject);
+        setupChoice();
+        addClassToChoice(this.aClass);
+
+        // When
+        List<RuleResponse> ruleResponses = this.ruleService.getRulesByChoiceClasses(11, choice.getChoiceClasses());
+
+        // Then
+        Assertions.assertEquals(ruleResponses.size(), 1);
+        Assertions.assertEquals(ruleResponses.get(0).getName(), RuleService.LK_NOT_FULFILLED_RULE);
+        Assertions.assertTrue(ruleResponses.get(0).getSubjectResponses().isEmpty());
     }
 }
