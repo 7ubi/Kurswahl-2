@@ -19,6 +19,8 @@ export class ShowStudentsComponent implements OnInit {
   selection = new SelectionModel<StudentResponse>(true, []);
   loadedStudents = false;
 
+  file: string | null = null;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -30,14 +32,6 @@ export class ShowStudentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStudents();
-  }
-
-  private loadStudents() {
-    this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
-      this.studentResponses = response;
-      this.dataSource = new MatTableDataSource(this.studentResponses);
-      this.loadedStudents = true;
-    });
   }
 
   applyFilter($event: KeyboardEvent) {
@@ -101,14 +95,6 @@ export class ShowStudentsComponent implements OnInit {
     });
   }
 
-  private getPasswordResetRequests() {
-    const ids: { userId: number }[] = [];
-
-    this.selection.selected.forEach(student => ids.push({userId: student.userId}));
-
-    return ids;
-  }
-
   deleteStudents() {
 
     this.httpService.delete<StudentResponse[]>(`api/admin/students`, response => {
@@ -122,6 +108,31 @@ export class ShowStudentsComponent implements OnInit {
       });
     }, () => {
     }, this.getDeleteStudentsRequest());
+  }
+
+  async importDataFromCSV($event: Event) {
+    console.log($event)
+    this.file = await ($event.target as HTMLInputElement)!.files![0].text();
+    console.log(this.file);
+
+    // TODO
+    //  https://material.angular.io/components/dialog/examples#dialog-content
+  }
+
+  private loadStudents() {
+    this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
+      this.studentResponses = response;
+      this.dataSource = new MatTableDataSource(this.studentResponses);
+      this.loadedStudents = true;
+    });
+  }
+
+  private getPasswordResetRequests() {
+    const ids: { userId: number }[] = [];
+
+    this.selection.selected.forEach(student => ids.push({userId: student.userId}));
+
+    return ids;
   }
 
   private getDeleteStudentsRequest() {
