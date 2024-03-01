@@ -8,14 +8,7 @@
         <input #input (keyup)="applyFilter($event)" matInput placeholder="Name">
       </mat-form-field>
       <div>
-        <input #fileUploadSimple (change)="importDataFromCSV($event)" [accept]="'.csv'" class="file-input"
-               hidden="hidden"
-               type="file"/>
-
-        <button (click)="fileUploadSimple.click()" color="primary" mat-raised-button
-                matTooltip="Datei muss eine CSV Datei sein. Die erste Zeile der Datei wird ignoriert. Format: Klasse, Nachname, Vorname"
-                style="margin-right: 5px"
-        >
+        <button (click)="openDialog()" color="primary" mat-raised-button style="margin-right: 5px">
           Schüler aus Datei importieren
         </button>
 

@@ -80,6 +80,10 @@ import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assi
 import {MatMenuModule} from "@angular/material/menu";
 import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {
+  CsvImportDialogComponent
+} from "./component/admin/user/student/show-students/csv-import-dialog/csv-import-dialog.component";
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -126,6 +130,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     ChoiceSurveillanceComponent,
     AssignChoiceComponent,
     ChoiceResultComponent,
+    CsvImportDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -149,7 +154,11 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

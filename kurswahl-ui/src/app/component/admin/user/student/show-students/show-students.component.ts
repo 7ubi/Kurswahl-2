@@ -5,6 +5,8 @@ import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MatDialog} from "@angular/material/dialog";
+import {CsvImportDialogComponent} from "./csv-import-dialog/csv-import-dialog.component";
 
 @Component({
   selector: 'app-show-students',
@@ -25,7 +27,8 @@ export class ShowStudentsComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog
   ) {
     this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
   }
@@ -110,15 +113,6 @@ export class ShowStudentsComponent implements OnInit {
     }, this.getDeleteStudentsRequest());
   }
 
-  async importDataFromCSV($event: Event) {
-    console.log($event)
-    this.file = await ($event.target as HTMLInputElement)!.files![0].text();
-    console.log(this.file);
-
-    // TODO
-    //  https://material.angular.io/components/dialog/examples#dialog-content
-  }
-
   private loadStudents() {
     this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
       this.studentResponses = response;
@@ -141,5 +135,13 @@ export class ShowStudentsComponent implements OnInit {
     this.selection.selected.forEach(student => ids.push(student.studentId));
 
     return ids;
+  }
+
+  openDialog() {
+    const dialogReference = this.matDialog.open(CsvImportDialogComponent);
+
+    dialogReference.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }
