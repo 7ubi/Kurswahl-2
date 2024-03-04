@@ -1,20 +1,32 @@
-<h2 matDialogTitle>Schüler importieren</h2>
+<h1 matDialogTitle>Schüler importieren</h1>
 
 <mat-dialog-content>
   <ul>
-    <li>Datei muss eine CSV Datei sein.</li>
-    <li>Die erste Zeile der Datei wird ignoriert.</li>
-    <li>Format: Klasse, Nachname, Vorname</li>
+    <li>Datei muss eine UTF-8 kodierte CSV Datei sein.</li>
+    <li>Alle Zeilen werden importiert, das heißt Zeilen mit den Spalten Titeln müssen entfernt werden.</li>
+    <li>Format: Klasse;Nachname;Vorname</li>
   </ul>
-  <input #fileUploadSimple (change)="importDataFromCSV($event)" [accept]="'.csv'" class="file-input"
-         hidden="hidden"
-         type="file"/>
-  <button (click)="fileUploadSimple.click()" color="accent" mat-raised-button>Datei auswählen</button>
-  <span> {{ fileName }}</span>
+  <h2>Wähle eine Datei aus</h2>
+  <div style="margin-bottom: 5px">
+    <input #fileUploadSimple (change)="importDataFromCSV($event)" [accept]="'.csv'" class="file-input"
+           hidden="hidden"
+           type="file"/>
+    <button (click)="fileUploadSimple.click()" color="accent" mat-raised-button>Datei auswählen</button>
+    <span> {{ fileName }}</span>
+  </div>
+  <h2>Wähle einen Jahrgang aus</h2>
+  <form [formGroup]="yearForm">
+    <mat-form-field class="example-full-width">
+      <mat-label>Jahrgang</mat-label>
+      <input matInput formControlName="year" name="year" id="year" type="number"
+             [matTooltip]="'Jahrgang 11 ist für die Wahl für Q1 und Jahrgang 12 ist für die Wahl für Q3.'">
+    </mat-form-field>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Abbrechen</button>
-  <button mat-raised-button color="primary" [disabled]="fileName === null" (click)="importData()" cdkFocusInitial>
+  <button mat-raised-button color="primary" [disabled]="fileName === null && !yearForm.valid"
+          [mat-dialog-close]="fileText">
     Importieren
   </button>
 </mat-dialog-actions>

@@ -142,6 +142,8 @@ export class ShowStudentsComponent implements OnInit {
 
     dialogReference.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
+      this.file = result;
+      console.log(this.file);
     });
   }
 }
