@@ -38,7 +38,7 @@ export class ShowStudentsComponent implements OnInit {
   }
 
   applyFilter($event: KeyboardEvent) {
-    const filterValue = (event?.target as HTMLInputElement).value;
+    const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
@@ -141,10 +141,12 @@ export class ShowStudentsComponent implements OnInit {
     const dialogReference = this.matDialog.open(CsvImportDialogComponent);
 
     dialogReference.afterClosed().subscribe(result => {
-      this.httpService.post<StudentResponse[]>('/api/admin/csvStudents', result, response => {
-        this.studentResponses = response;
-        this.dataSource = new MatTableDataSource(this.studentResponses);
-      });
+      if (result) {
+        this.httpService.post<StudentResponse[]>('/api/admin/csvStudents', result, response => {
+          this.studentResponses = response;
+          this.dataSource = new MatTableDataSource(this.studentResponses);
+        });
+      }
     });
   }
 }
