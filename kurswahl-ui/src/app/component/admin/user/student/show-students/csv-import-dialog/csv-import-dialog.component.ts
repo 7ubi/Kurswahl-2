@@ -20,7 +20,14 @@ export class CsvImportDialogComponent {
 
   async importDataFromCSV($event: Event) {
     const file = ($event.target as HTMLInputElement)!.files![0];
-    this.fileText = await file.text()
+    this.fileText = await file.text();
     this.fileName = file.name;
+  }
+
+  getRequest() {
+    return {
+      year: this.yearForm.get('year')?.value,
+      csv: this.fileText
+    }
   }
 }

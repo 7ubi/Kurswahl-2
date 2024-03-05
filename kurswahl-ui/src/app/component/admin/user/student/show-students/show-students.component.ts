@@ -141,9 +141,10 @@ export class ShowStudentsComponent implements OnInit {
     const dialogReference = this.matDialog.open(CsvImportDialogComponent);
 
     dialogReference.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-      this.file = result;
-      console.log(this.file);
+      this.httpService.post<StudentResponse[]>('/api/admin/csvStudents', result, response => {
+        this.studentResponses = response;
+        this.dataSource = new MatTableDataSource(this.studentResponses);
+      });
     });
   }
 }

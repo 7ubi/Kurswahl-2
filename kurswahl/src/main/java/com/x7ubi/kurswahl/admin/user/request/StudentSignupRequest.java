@@ -9,6 +9,10 @@ public class StudentSignupRequest extends SignupRequest {
     public StudentSignupRequest() {
     }
 
+    public StudentSignupRequest(String firstname, String surname) {
+        super(firstname, surname);
+    }
+
     public Long getStudentClassId() {
         return studentClassId;
     }

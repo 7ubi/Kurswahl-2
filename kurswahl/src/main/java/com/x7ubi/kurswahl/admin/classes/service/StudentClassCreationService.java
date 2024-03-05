@@ -94,9 +94,12 @@ public class StudentClassCreationService {
         }
         this.studentClassMapper.studentClassRequestToStudentClass(studentClassCreationRequest, studentClass);
 
-        if (!Objects.equals(studentClass.getTeacher().getTeacherId(), studentClassCreationRequest.getTeacherId())) {
-            studentClass.getTeacher().getStudentClasses().remove(studentClass);
-            this.teacherRepo.save(studentClass.getTeacher());
+        if (studentClass.getTeacher() == null || !Objects.equals(studentClass.getTeacher().getTeacherId(),
+                studentClassCreationRequest.getTeacherId())) {
+            if (studentClass.getTeacher() != null) {
+                studentClass.getTeacher().getStudentClasses().remove(studentClass);
+                this.teacherRepo.save(studentClass.getTeacher());
+            }
 
             teacher.getStudentClasses().add(studentClass);
             this.teacherRepo.save(teacher);

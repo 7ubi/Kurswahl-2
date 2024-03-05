@@ -26,7 +26,7 @@
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Abbrechen</button>
   <button mat-raised-button color="primary" [disabled]="fileName === null && !yearForm.valid"
-          [mat-dialog-close]="fileText">
+          [mat-dialog-close]="getRequest()">
     Importieren
   </button>
 </mat-dialog-actions>
