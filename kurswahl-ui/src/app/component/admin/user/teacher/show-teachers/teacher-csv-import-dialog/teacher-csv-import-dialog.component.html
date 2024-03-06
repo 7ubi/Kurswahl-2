@@ -1,0 +1,24 @@
+<h1 matDialogTitle>Lehrer importieren</h1>
+
+<mat-dialog-content>
+  <ul>
+    <li>Datei muss eine UTF-8 kodierte CSV Datei sein.</li>
+    <li>Alle Zeilen werden importiert, das heißt Zeilen mit den Spalten Titeln müssen entfernt werden.</li>
+    <li>Format: Kürzel;Nachname;Vorname</li>
+  </ul>
+  <h2>Wähle eine Datei aus</h2>
+  <div style="margin-bottom: 5px">
+    <input #fileUploadSimple (change)="importDataFromCSV($event)" [accept]="'.csv'" class="file-input"
+           hidden="hidden"
+           type="file"/>
+    <button (click)="fileUploadSimple.click()" color="accent" mat-raised-button>Datei auswählen</button>
+    <span> {{ fileName }}</span>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Abbrechen</button>
+  <button mat-raised-button color="primary" [disabled]="fileName === null"
+          [mat-dialog-close]="fileText">
+    Importieren
+  </button>
+</mat-dialog-actions>

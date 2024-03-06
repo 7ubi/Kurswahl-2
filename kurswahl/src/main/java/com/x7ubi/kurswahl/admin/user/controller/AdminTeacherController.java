@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.user.request.TeacherSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.TeacherResponse;
 import com.x7ubi.kurswahl.admin.user.service.TeacherCreationService;
+import com.x7ubi.kurswahl.admin.user.service.TeacherCsvService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -23,8 +24,11 @@ public class AdminTeacherController {
 
     private final TeacherCreationService teacherCreationService;
 
-    public AdminTeacherController(TeacherCreationService teacherCreationService) {
+    private final TeacherCsvService teacherCsvService;
+
+    public AdminTeacherController(TeacherCreationService teacherCreationService, TeacherCsvService teacherCsvService) {
         this.teacherCreationService = teacherCreationService;
+        this.teacherCsvService = teacherCsvService;
     }
 
     @PostMapping("/teacher")
@@ -131,6 +135,20 @@ public class AdminTeacherController {
         } catch (EntityDependencyException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/csvTeachers")
+    @AdminRequired
+    public ResponseEntity<?> importCsv(@RequestBody String csv) {
+        logger.info("Importing Teachers from csv");
+
+        try {
+            List<TeacherResponse> responses = this.teacherCsvService.importCsv(csv);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

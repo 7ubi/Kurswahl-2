@@ -5,6 +5,8 @@ import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MatDialog} from "@angular/material/dialog";
+import {TeacherCsvImportDialogComponent} from "./teacher-csv-import-dialog/teacher-csv-import-dialog.component";
 
 @Component({
   selector: 'app-show-teachers',
@@ -23,7 +25,8 @@ export class ShowTeachersComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog
   ) {
     this.displayedColumns = ['Auswählen', 'Kürzel', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
@@ -42,7 +45,7 @@ export class ShowTeachersComponent implements OnInit {
   }
 
   applyFilter($event: KeyboardEvent) {
-    const filterValue = (event?.target as HTMLInputElement).value;
+    const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
@@ -131,5 +134,18 @@ export class ShowTeachersComponent implements OnInit {
     this.selection.selected.forEach(student => ids.push({userId: student.userId}));
 
     return ids;
+  }
+
+  openDialog() {
+    const dialogReference = this.matDialog.open(TeacherCsvImportDialogComponent);
+
+    dialogReference.afterClosed().subscribe(result => {
+      if (result) {
+        this.httpService.post<TeacherResponse[]>('/api/admin/csvTeachers', result, response => {
+          this.teacherResponses = response;
+          this.dataSource = new MatTableDataSource(this.teacherResponses);
+        });
+      }
+    });
   }
 }
