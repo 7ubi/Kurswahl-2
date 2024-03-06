@@ -7,7 +7,12 @@
         <mat-label>Suche</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="createTeacher()">Lehrer erstellen</button>
+      <div>
+        <button (click)="openDialog()" color="primary" mat-raised-button style="margin-right: 5px">
+          Lehrer aus Datei importieren
+        </button>
+        <button mat-raised-button color="primary" (click)="createTeacher()">Lehrer erstellen</button>
+      </div>
     </div>
     <div class="bulk-actions">
       <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="resetPasswords()"

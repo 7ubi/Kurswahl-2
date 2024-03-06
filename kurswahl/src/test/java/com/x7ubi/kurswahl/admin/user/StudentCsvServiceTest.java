@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.HashSet;
 import java.util.List;
 
 @KurswahlServiceTest
@@ -36,10 +37,9 @@ public class StudentCsvServiceTest {
         studentClass.setName("E2a");
         studentClass.setReleaseYear(releaseYear);
         studentClass.setYear(11);
+        studentClass.setStudents(new HashSet<>());
 
-        this.studentClassRepo.save(studentClass);
-
-        studentClass = this.studentClassRepo.findStudentClassByName("E2a").get();
+        studentClass = this.studentClassRepo.save(studentClass);
     }
 
     private void setupStudent() {

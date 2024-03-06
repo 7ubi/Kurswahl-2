@@ -12,5 +12,5 @@ public interface TeacherRepo extends JpaRepository<Teacher, Long> {
 
     Boolean existsTeacherByUser_Username(String username);
 
-    Boolean existsTeacherByTeacherId(Long teacherId);
+    boolean existsTeacherByAbbreviationAndUser_FirstnameAndUser_Surname(String abbreviation, String firstname, String surname);
 }
