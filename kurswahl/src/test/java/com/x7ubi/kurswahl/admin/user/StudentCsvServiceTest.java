@@ -131,6 +131,8 @@ public class StudentCsvServiceTest {
         Assertions.assertEquals(response.get(0).getFirstname(), "Test");
         Assertions.assertEquals(response.get(0).getSurname(), "Test");
         Assertions.assertEquals(response.get(0).getStudentClassResponse().getName(), "E2a");
+        Assertions.assertEquals(response.get(0).getStudentClassResponse().getStudentClassId(),
+                studentClass.getStudentClassId());
         Assertions.assertNotNull(response.get(0).getGeneratedPassword());
     }
 
@@ -154,6 +156,7 @@ public class StudentCsvServiceTest {
         Assertions.assertEquals(response.get(0).getFirstname(), "Test");
         Assertions.assertEquals(response.get(0).getSurname(), "Test");
         Assertions.assertEquals(response.get(0).getStudentClassResponse().getName(), "E2a");
+        Assertions.assertEquals(response.get(0).getStudentClassResponse().getReleaseYear(), Year.now().getValue());
         Assertions.assertNotNull(response.get(0).getGeneratedPassword());
     }
 
