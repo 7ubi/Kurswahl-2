@@ -5,80 +5,86 @@
     <div class="header">
       <mat-form-field>
         <mat-label>Suche</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
+        <input #input (keyup)="applyFilter($event)" matInput placeholder="Name">
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="createStudent()">Schüler erstellen</button>
+      <div>
+        <button (click)="openDialog()" color="primary" mat-raised-button style="margin-right: 5px">
+          Schüler aus Datei importieren
+        </button>
+
+        <button (click)="createStudent()" color="primary" mat-raised-button>Schüler erstellen</button>
+      </div>
     </div>
     <div class="bulk-actions">
-      <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="resetPasswords()"
-              [disabled]="selection.isEmpty()">
+      <button (click)="resetPasswords()" [disabled]="selection.isEmpty()" class="bulk-actions-icons" color="primary"
+              mat-mini-fab>
         <mat-icon>history</mat-icon>
       </button>
-      <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteStudents()"
-              [disabled]="selection.isEmpty()">
+      <button (click)="deleteStudents()" [disabled]="selection.isEmpty()" class="bulk-actions-icons" color="warn"
+              mat-mini-fab>
         <mat-icon>delete</mat-icon>
       </button>
     </div>
-    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
+    <table [dataSource]="dataSource!" class="mat-elevation-z8" mat-table>
       <ng-container matColumnDef="Auswählen">
-        <th mat-header-cell *matHeaderCellDef>
+        <th *matHeaderCellDef mat-header-cell>
           <mat-checkbox (change)="$event ? toggleAllRows() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let row">
-          <mat-checkbox (click)="$event.stopPropagation()"
-                        (change)="$event ? selection.toggle(row) : null"
+        <td *matCellDef="let row" mat-cell>
+          <mat-checkbox (change)="$event ? selection.toggle(row) : null"
+                        (click)="$event.stopPropagation()"
                         [checked]="selection.isSelected(row)">
           </mat-checkbox>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="Nutzername">
-        <th mat-header-cell *matHeaderCellDef> Nutzername</th>
-        <td mat-cell *matCellDef="let element"> {{ element.username }}</td>
+        <th *matHeaderCellDef mat-header-cell> Nutzername</th>
+        <td *matCellDef="let element" mat-cell> {{ element.username }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Vorname">
-        <th mat-header-cell *matHeaderCellDef> Vorname</th>
-        <td mat-cell *matCellDef="let element"> {{ element.firstname }}</td>
+        <th *matHeaderCellDef mat-header-cell> Vorname</th>
+        <td *matCellDef="let element" mat-cell> {{ element.firstname }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Nachname">
-        <th mat-header-cell *matHeaderCellDef> Nachname</th>
-        <td mat-cell *matCellDef="let element"> {{ element.surname }}</td>
+        <th *matHeaderCellDef mat-header-cell> Nachname</th>
+        <td *matCellDef="let element" mat-cell> {{ element.surname }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Klasse">
-        <th mat-header-cell *matHeaderCellDef> Klasse</th>
-        <td mat-cell *matCellDef="let element">
+        <th *matHeaderCellDef mat-header-cell> Klasse</th>
+        <td *matCellDef="let element" mat-cell>
           <span *ngIf="element.studentClassResponse">{{ element.studentClassResponse.name }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="Generiertes Passwort">
-        <th mat-header-cell *matHeaderCellDef> Generiertes Passwort</th>
-        <td mat-cell *matCellDef="let element"> {{ element.generatedPassword }}</td>
+        <th *matHeaderCellDef mat-header-cell> Generiertes Passwort</th>
+        <td *matCellDef="let element" mat-cell> {{ element.generatedPassword }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Aktionen">
-        <th mat-header-cell *matHeaderCellDef> Aktionen</th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="editStudent(element.studentId)">
+        <th *matHeaderCellDef mat-header-cell> Aktionen</th>
+        <td *matCellDef="let element" mat-cell>
+          <button (click)="editStudent(element.studentId)" class="bulk-actions-icons" color="primary" mat-mini-fab>
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-mini-fab color="primary" class="bulk-actions-icons" (click)="resetPassword(element.userId)">
+          <button (click)="resetPassword(element.userId)" class="bulk-actions-icons" color="primary" mat-mini-fab>
             <mat-icon>history</mat-icon>
           </button>
-          <button mat-mini-fab color="warn" class="bulk-actions-icons" (click)="deleteStudent(element.studentId)">
+          <button (click)="deleteStudent(element.studentId)" class="bulk-actions-icons" color="warn" mat-mini-fab>
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
     </table>
 
     <div *ngIf="!loadedStudents" class="spinner-table">

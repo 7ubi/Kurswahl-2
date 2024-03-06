@@ -79,6 +79,11 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 import {MatMenuModule} from "@angular/material/menu";
 import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {
+  CsvImportDialogComponent
+} from "./component/admin/user/student/show-students/csv-import-dialog/csv-import-dialog.component";
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -125,6 +130,7 @@ import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choi
     ChoiceSurveillanceComponent,
     AssignChoiceComponent,
     ChoiceResultComponent,
+    CsvImportDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -147,7 +153,12 @@ import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choi
     MatChipsModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

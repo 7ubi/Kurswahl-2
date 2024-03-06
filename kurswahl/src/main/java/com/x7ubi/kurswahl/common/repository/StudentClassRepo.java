@@ -11,6 +11,8 @@ public interface StudentClassRepo extends JpaRepository<StudentClass, Long> {
 
     Optional<StudentClass> findStudentClassByName(String name);
 
+    Optional<StudentClass> findStudentClassByNameAndYearAndReleaseYear(String name, Integer year, Integer releaseYear);
+
     List<StudentClass> findAllByReleaseYear(Integer year);
 
     Boolean existsStudentClassByNameAndReleaseYear(String name, Integer releaseYear);

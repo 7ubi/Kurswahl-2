@@ -5,6 +5,8 @@ import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MatDialog} from "@angular/material/dialog";
+import {CsvImportDialogComponent} from "./csv-import-dialog/csv-import-dialog.component";
 
 @Component({
   selector: 'app-show-students',
@@ -19,11 +21,14 @@ export class ShowStudentsComponent implements OnInit {
   selection = new SelectionModel<StudentResponse>(true, []);
   loadedStudents = false;
 
+  file: string | null = null;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog
   ) {
     this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
   }
@@ -32,16 +37,8 @@ export class ShowStudentsComponent implements OnInit {
     this.loadStudents();
   }
 
-  private loadStudents() {
-    this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
-      this.studentResponses = response;
-      this.dataSource = new MatTableDataSource(this.studentResponses);
-      this.loadedStudents = true;
-    });
-  }
-
   applyFilter($event: KeyboardEvent) {
-    const filterValue = (event?.target as HTMLInputElement).value;
+    const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
@@ -101,14 +98,6 @@ export class ShowStudentsComponent implements OnInit {
     });
   }
 
-  private getPasswordResetRequests() {
-    const ids: { userId: number }[] = [];
-
-    this.selection.selected.forEach(student => ids.push({userId: student.userId}));
-
-    return ids;
-  }
-
   deleteStudents() {
 
     this.httpService.delete<StudentResponse[]>(`api/admin/students`, response => {
@@ -124,11 +113,40 @@ export class ShowStudentsComponent implements OnInit {
     }, this.getDeleteStudentsRequest());
   }
 
+  private loadStudents() {
+    this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
+      this.studentResponses = response;
+      this.dataSource = new MatTableDataSource(this.studentResponses);
+      this.loadedStudents = true;
+    });
+  }
+
+  private getPasswordResetRequests() {
+    const ids: { userId: number }[] = [];
+
+    this.selection.selected.forEach(student => ids.push({userId: student.userId}));
+
+    return ids;
+  }
+
   private getDeleteStudentsRequest() {
     const ids: number[] = [];
 
     this.selection.selected.forEach(student => ids.push(student.studentId));
 
     return ids;
+  }
+
+  openDialog() {
+    const dialogReference = this.matDialog.open(CsvImportDialogComponent);
+
+    dialogReference.afterClosed().subscribe(result => {
+      if (result) {
+        this.httpService.post<StudentResponse[]>('/api/admin/csvStudents', result, response => {
+          this.studentResponses = response;
+          this.dataSource = new MatTableDataSource(this.studentResponses);
+        });
+      }
+    });
   }
 }
