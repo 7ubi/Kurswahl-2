@@ -7,15 +7,13 @@ import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.auth.response.JwtResponse;
 import com.x7ubi.kurswahl.common.auth.response.Role;
 import com.x7ubi.kurswahl.common.auth.service.ChangePasswordService;
+import com.x7ubi.kurswahl.common.auth.service.LoginHelperService;
 import com.x7ubi.kurswahl.common.auth.service.StandardAdminService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.models.SecurityUser;
-import com.x7ubi.kurswahl.common.repository.AdminRepo;
-import com.x7ubi.kurswahl.common.repository.StudentRepo;
-import com.x7ubi.kurswahl.common.repository.TeacherRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,26 +38,20 @@ public class AuthRestController {
 
     private final JwtUtils jwtUtils;
 
-    private final AdminRepo adminRepo;
-
-    private final TeacherRepo teacherRepo;
-
-    private final StudentRepo studentRepo;
-
     private final StandardAdminService standardAdminService;
 
     private final ChangePasswordService changePasswordService;
 
-    public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AdminRepo adminRepo,
-                              TeacherRepo teacherRepo, StudentRepo studentRepo,
-                              StandardAdminService standardAdminService, ChangePasswordService changePasswordService) {
+    private final LoginHelperService loginHelperService;
+
+    public AuthRestController(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
+                              StandardAdminService standardAdminService, ChangePasswordService changePasswordService,
+                              LoginHelperService loginHelperService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
-        this.adminRepo = adminRepo;
-        this.teacherRepo = teacherRepo;
-        this.studentRepo = studentRepo;
         this.standardAdminService = standardAdminService;
         this.changePasswordService = changePasswordService;
+        this.loginHelperService = loginHelperService;
     }
 
     @PostMapping("/standardAdmin")
@@ -86,12 +78,14 @@ public class AuthRestController {
 
             SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
 
-            Role role = getRoleUser(userDetails.getUsername());
+            Role role = this.loginHelperService.getRoleUser(userDetails.getUsername());
+
+            boolean changedPassword = this.loginHelperService.getChangedPassword(userDetails.getUser());
 
             String name = String.format("%s %s", userDetails.getUser().getFirstname(),
                     userDetails.getUser().getSurname());
             JwtResponse jwtResponse = new JwtResponse(jwt, userDetails.getUser().getUserId(), userDetails.getUsername(),
-                    role, name);
+                    role, name, changedPassword);
             return ResponseEntity.status(HttpStatus.OK).body(jwtResponse);
         } catch (BadCredentialsException e) {
             logger.error(String.valueOf(e));
@@ -161,21 +155,5 @@ public class AuthRestController {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private Role getRoleUser(String username) {
-        if (adminRepo.existsAdminByUser_Username(username)) {
-            return Role.ADMIN;
-        }
-
-        if (studentRepo.existsStudentByUser_Username(username)) {
-            return Role.STUDENT;
-        }
-
-        if (teacherRepo.existsTeacherByUser_Username(username)) {
-            return Role.TEACHER;
-        }
-
-        return Role.NOROLE;
     }
 }

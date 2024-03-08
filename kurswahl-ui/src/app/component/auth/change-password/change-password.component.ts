@@ -2,6 +2,9 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpService} from "../../../service/http.service";
+import {Role} from "../../admin/admin.responses";
+import {AuthenticationService} from "../../../service/authentication.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-change-password',
@@ -17,7 +20,9 @@ export class ChangePasswordComponent {
   constructor(
     private httpService: HttpService,
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authenticationService: AuthenticationService,
+    private router: Router
   ) {
     this.changePasswordFormGroup = this.formBuilder.group({
       oldPassword: ['', Validators.required],
@@ -47,6 +52,13 @@ export class ChangePasswordComponent {
         verticalPosition: "bottom",
         duration: 5000
       });
+
+
+      if (this.authenticationService.getRole() === Role.ADMIN.toString()) {
+        this.router.navigate(['admin', 'admins']);
+      } else if (this.authenticationService.getRole() === Role.STUDENT.toString()) {
+        this.router.navigate(['student']);
+      }
     });
   }
 
