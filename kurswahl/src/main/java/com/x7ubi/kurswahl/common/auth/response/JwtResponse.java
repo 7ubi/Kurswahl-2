@@ -6,18 +6,19 @@ public class JwtResponse {
     private Long id;
     private String username;
     private Role role;
-
     private String name;
+    private boolean changedPassword;
 
     public JwtResponse() {
     }
 
-    public JwtResponse(String token, Long id, String username, Role role, String name) {
+    public JwtResponse(String token, Long id, String username, Role role, String name, boolean changedPassword) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.role = role;
         this.name = name;
+        this.changedPassword = changedPassword;
     }
 
     public String getToken() {
@@ -66,5 +67,13 @@ public class JwtResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isChangedPassword() {
+        return changedPassword;
+    }
+
+    public void setChangedPassword(boolean changedPassword) {
+        this.changedPassword = changedPassword;
     }
 }

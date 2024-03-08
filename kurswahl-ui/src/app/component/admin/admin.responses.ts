@@ -7,6 +7,7 @@ export interface LoginResponse {
   readonly username: string;
   readonly role: Role;
   readonly name: string;
+  readonly changedPassword: boolean;
 }
 
 export interface UserResponse {

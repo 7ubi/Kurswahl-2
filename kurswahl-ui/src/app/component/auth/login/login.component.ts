@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {AuthenticationService} from "../../../service/authentication.service";
 import {LoginResponse, Role} from "../../admin/admin.responses";
 import {HttpService} from "../../../service/http.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
     private httpService: HttpService,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private snackBar: MatSnackBar
   ) {
     this.loginFormGroup = this.formBuilder.group({
       username: ['', Validators.required],
@@ -27,7 +29,7 @@ export class LoginComponent {
   }
 
   makeLogin() {
-    if(!this.loginFormGroup.valid) {
+    if (!this.loginFormGroup.valid) {
       return;
     }
 
@@ -36,7 +38,17 @@ export class LoginComponent {
       this.authenticationService.saveRole(response.role);
       this.authenticationService.saveName(response.name);
 
-      if(response.role.toString() === Role.ADMIN.toString()) {
+      if (!response.changedPassword) {
+        this.router.navigate(['changePassword']);
+        this.snackBar.open('Bitte ändere dein Passwort für mehr Sicherheit', 'Verstanden', {
+          horizontalPosition: "center",
+          verticalPosition: "bottom",
+          duration: 5000
+        });
+        return;
+      }
+
+      if (response.role.toString() === Role.ADMIN.toString()) {
         this.router.navigate(['admin', 'admins']);
       } else if (response.role.toString() === Role.STUDENT.toString()) {
         this.router.navigate(['student']);
