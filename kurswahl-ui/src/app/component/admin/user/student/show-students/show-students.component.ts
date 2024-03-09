@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentResponse} from "../../../admin.responses";
+import {StudentClassResponse, StudentResponse} from "../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -7,6 +7,9 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatDialog} from "@angular/material/dialog";
 import {CsvImportDialogComponent} from "./csv-import-dialog/csv-import-dialog.component";
+import autoTable from "jspdf-autotable";
+import jsPDF from "jspdf";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-show-students',
@@ -18,6 +21,10 @@ export class ShowStudentsComponent implements OnInit {
   dataSource!: MatTableDataSource<StudentResponse>;
   displayedColumns: string[];
 
+  studentClassResponses?: StudentClassResponse[];
+  studentClassFilter: FormGroup;
+  selectedStudentClass?: StudentClassResponse;
+
   selection = new SelectionModel<StudentResponse>(true, []);
   loadedStudents = false;
 
@@ -28,18 +35,40 @@ export class ShowStudentsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private formBuilder: FormBuilder
   ) {
     this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
+
+    this.studentClassFilter = this.formBuilder.group({
+      name: ['']
+    });
   }
 
   ngOnInit(): void {
+    this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
+      this.studentClassResponses = response;
+    });
+
     this.loadStudents();
   }
 
-  applyFilter($event: KeyboardEvent) {
+  applySearch($event: KeyboardEvent) {
     const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter() {
+    const filterValue = this.studentClassFilter.get('name')?.value;
+    if (filterValue !== '') {
+      this.dataSource = new MatTableDataSource(this.studentResponses!
+        .filter(value => value.studentClassResponse.studentClassId === Number(filterValue)));
+      this.selectedStudentClass = this.studentClassResponses?.find(studentClass =>
+        studentClass.studentClassId === Number(filterValue));
+    } else {
+      this.dataSource = new MatTableDataSource(this.studentResponses);
+      this.selectedStudentClass = undefined;
+    }
   }
 
   createStudent(): void {
@@ -148,5 +177,23 @@ export class ShowStudentsComponent implements OnInit {
         });
       }
     });
+  }
+
+  exportStudents() {
+    if (this.studentResponses!.length > 0) {
+      const doc = new jsPDF();
+
+      const head = ['Klasse', 'Vorname', 'Nachname', 'Generiertes Password'];
+      const info: {}[] = [];
+      this.dataSource.filteredData.forEach(student =>
+        info.push([student.studentClassResponse.name, student.firstname, student.surname, student.generatedPassword]));
+
+      autoTable(doc, {
+        head: [head],
+        body: info,
+      });
+
+      doc.save(`Schueler${this.selectedStudentClass ? this.selectedStudentClass.name : ''}.pdf`);
+    }
   }
 }
