@@ -52,6 +52,7 @@ import {EditRuleComponent} from "./component/admin/classes/rule/edit-rule/edit-r
 import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surveillance/choice-surveillance.component";
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
+import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
 
 const routes: Routes = [
   {
@@ -214,6 +215,11 @@ const routes: Routes = [
         path: 'choices',
         pathMatch: 'full',
         component: ShowChoicesComponent
+      },
+      {
+        path: 'choiceResult',
+        pathMatch: 'full',
+        component: ShowResultComponent
       },
     ]
   },

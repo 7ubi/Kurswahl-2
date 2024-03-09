@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
@@ -22,6 +23,8 @@ public interface ChoiceMapper {
 
     @Mapping(source = "choiceClasses", target = "classChoiceResponses")
     ChoiceResponse choiceToChoiceResponse(Choice choice);
+
+    List<ClassChoiceResponse> choiceClassSetToClassChoiceResponseList(Set<ChoiceClass> set);
 
     @Mapping(source = "aClass.tape.tapeId", target = "tapeId")
     @Mapping(source = "aClass.name", target = "name")
