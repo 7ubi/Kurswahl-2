@@ -10,6 +10,7 @@ import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
+import com.x7ubi.kurswahl.student.choice.service.StudentChoiceResultService;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,13 @@ public class StudentChoiceController {
 
     private final StudentChoiceService studentChoiceService;
 
+    private final StudentChoiceResultService studentChoiceResultService;
+
     private final JwtUtils jwtUtils;
 
-    public StudentChoiceController(StudentChoiceService studentChoiceService, JwtUtils jwtUtils) {
+    public StudentChoiceController(StudentChoiceService studentChoiceService, StudentChoiceResultService studentChoiceResultService, JwtUtils jwtUtils) {
         this.studentChoiceService = studentChoiceService;
+        this.studentChoiceResultService = studentChoiceResultService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -141,6 +145,24 @@ public class StudentChoiceController {
 
             List<SubjectTapeResponse> responses = this.studentChoiceService.getTapesOfSubjects(username);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/choiceResult")
+    @StudentRequired
+    public ResponseEntity<?> getChoiceResult(@RequestHeader("Authorization") String authorization) {
+        try {
+            String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+            logger.info(String.format("Getting result from %s", username));
+
+            ChoiceResponse response = this.studentChoiceResultService.getStudentChoiceResult(username);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

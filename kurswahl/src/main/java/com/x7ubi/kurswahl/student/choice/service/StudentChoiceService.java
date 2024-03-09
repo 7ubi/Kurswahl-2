@@ -89,10 +89,8 @@ public class StudentChoiceService {
             choice.setReleaseYear(Year.now().getValue());
             choice.setChoiceClasses(new HashSet<>());
 
-            this.choiceRepo.save(choice);
-
-            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
-                    alterStudentChoiceRequest.getChoiceNumber(), student.getStudentId(), Year.now().getValue()).get();
+            choice = this.choiceRepo.save(choice);
+            
             student.getChoices().add(choice);
             this.studentRepo.save(student);
 
@@ -209,9 +207,9 @@ public class StudentChoiceService {
     public List<ChoiceResponse> getChoices(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
 
-        List<Choice> choices = this.choiceRepo.findAll().stream().filter(choice -> choice.getReleaseYear() ==
-                Year.now().getValue() && Objects.equals(student.getStudentId(), choice.getStudent().getStudentId()) &&
-                (choice.getChoiceNumber() == 1 || choice.getChoiceNumber() == 2)).toList();
+        List<Choice> choices = this.choiceRepo.findAllByStudent_StudentIdAndReleaseYear(student.getStudentId(),
+                Year.now().getValue()).stream().filter(choice -> choice.getChoiceNumber() == 1 ||
+                choice.getChoiceNumber() == 2).toList();
 
         if (choices.size() < 2) {
             throw new EntityNotFoundException(ErrorMessage.NOT_ENOUGH_CHOICES);

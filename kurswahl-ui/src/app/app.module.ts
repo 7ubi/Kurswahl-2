@@ -87,6 +87,7 @@ import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from
 import {
   TeacherCsvImportDialogComponent
 } from "./component/admin/user/teacher/show-teachers/teacher-csv-import-dialog/teacher-csv-import-dialog.component";
+import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
 
 @NgModule({
   declarations: [
@@ -135,6 +136,7 @@ import {
     ChoiceResultComponent,
     CsvImportDialogComponent,
     TeacherCsvImportDialogComponent,
+    ShowResultComponent,
   ],
   imports: [
     BrowserModule,
