@@ -48,7 +48,11 @@
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
               <div class="example-element-detail"
                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                The symbol for {{ element.name }}
+                <div class="detail-container">
+                  <div class="choice" *ngFor="let student of element.studentSurveillanceResponses">
+                    {{ student.firstname }} {{ student.surname }}
+                  </div>
+                </div>
               </div>
             </td>
           </ng-container>
