@@ -6,10 +6,18 @@ import {ChoiceResultResponse, ClassStudentsResponse} from "../../admin.responses
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-choice-result',
   templateUrl: './choice-result.component.html',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
   styleUrl: './choice-result.component.css'
 })
 export class ChoiceResultComponent implements OnDestroy {
@@ -22,7 +30,7 @@ export class ChoiceResultComponent implements OnDestroy {
   displayedColumns: string[];
   dataSource!: MatTableDataSource<ClassStudentsResponse>;
   selection = new SelectionModel<ClassStudentsResponse>(true, []);
-  expandedElement?: ClassStudentsResponse;
+  expandedElement: ClassStudentsResponse | null = null;
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
 
   loadedResults = false;
