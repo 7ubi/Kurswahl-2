@@ -4,24 +4,55 @@
   <div class="center">
     <div class="choice-container">
       <div class="class">
-        <mat-expansion-panel style="margin-bottom: 5px;" *ngFor="let c of results?.classStudentsResponses">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ c.name }}
-            </mat-panel-title>
+        <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
+               matSort (matSortChange)="sortData($event)">
 
-            <mat-panel-description>
-              {{ c.teacherResponse.firstname }} {{ c.teacherResponse.surname }} - {{ c.teacherResponse.abbreviation }}
-            </mat-panel-description>
+          <ng-container matColumnDef="Auswählen">
+            <th *matHeaderCellDef mat-header-cell>
+              <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </th>
+            <td *matCellDef="let row" mat-cell>
+              <mat-checkbox (change)="$event ? selection.toggle(row) : null"
+                            (click)="$event.stopPropagation()"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
 
-            <mat-panel-description>
-              {{ c.tapeName }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div class="choice" *ngFor="let student of c.studentSurveillanceResponses">
-            {{ student.firstname }} {{ student.surname }}
-          </div>
-        </mat-expansion-panel>
+          <ng-container matColumnDef="Kurs">
+            <th mat-header-cell *matHeaderCellDef> Kurs</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Lehrer">
+            <th mat-header-cell *matHeaderCellDef> Kurs</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.teacherResponse.firstname }} {{ element.teacherResponse.surname }}
+              - {{ element.teacherResponse.abbreviation }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Band">
+            <th mat-header-cell *matHeaderCellDef> Band</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.tapeName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="expandedDetail">
+            <mat-cell *matCellDef="let detail">
+              The symbol for {{ detail.name }}
+            </mat-cell>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr class="choice element-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       </div>
       <div class="class">
         <div class="rules not-fulfilled" *ngIf="results?.studentsNotFulfilledRules!.length > 0">
@@ -55,7 +86,9 @@
              *ngIf="results?.studentsNotFulfilledRules!.length === 0 && results?.studentsNotChosen!.length === 0">
           <h2>Alle Schüler haben die Wahlbedingungen erfüllt.</h2>
         </div>
-
+        <button (click)="exportResult()" color="primary" mat-raised-button style="margin-right: 5px">
+          Ergebnisse exportieren
+        </button>
       </div>
     </div>
   </div>

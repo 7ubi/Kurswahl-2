@@ -88,6 +88,7 @@ import {
   TeacherCsvImportDialogComponent
 } from "./component/admin/user/teacher/show-teachers/teacher-csv-import-dialog/teacher-csv-import-dialog.component";
 import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
+import {MatRipple} from "@angular/material/core";
 
 @NgModule({
   declarations: [
@@ -164,7 +165,8 @@ import {ShowResultComponent} from "./component/student/choice/show-result/show-r
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,
-    MatDialogTitle
+    MatDialogTitle,
+    MatRipple
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [
