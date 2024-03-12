@@ -11,6 +11,7 @@
 }
 
 .detail-container {
+  width: 100%;
   display: grid;
 }
 
@@ -76,4 +77,8 @@
 
 tr.example-detail-row {
   height: 0;
+}
+
+.mat-column-expansion {
+  width: 14px;
 }

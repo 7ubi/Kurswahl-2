@@ -4,25 +4,57 @@
   <div class="center">
     <div class="choice-container">
       <div class="class">
-        <mat-expansion-panel style="margin-bottom: 5px;" *ngFor="let c of classes">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ c.name }}
-            </mat-panel-title>
+        <table mat-table [dataSource]="dataSourceClassStudents!" multiTemplateDataRows class="mat-elevation-z8"
+               matSortActive="name"
+               matSortDirection="asc" matSort (matSortChange)="sortData($event)">
 
-            <mat-panel-description>
-              {{ c.teacherResponse.firstname }} {{ c.teacherResponse.surname }} - {{ c.teacherResponse.abbreviation }}
-            </mat-panel-description>
+          <ng-container matColumnDef="expansion">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <mat-icon>{{ expandedElement.includes(element) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
+            </td>
+          </ng-container>
 
-            <mat-panel-description>
-              {{ c.tapeName }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div (click)="openChoice(student.studentId)" class="choice"
-               *ngFor="let student of c.studentSurveillanceResponses">
-            {{ student.firstname }} {{ student.surname }}
-          </div>
-        </mat-expansion-panel>
+          <ng-container matColumnDef="Kurs">
+            <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Kurs</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Lehrer">
+            <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.teacherResponse.firstname }} {{ element.teacherResponse.surname }}
+              - {{ element.teacherResponse.abbreviation }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Band">
+            <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Band</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.tapeName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsClassStudents.length">
+              <div class="example-element-detail detail-container"
+                   [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
+                <div class="choice" (click)="openChoice(student.studentId)"
+                     *ngFor="let student of element.studentSurveillanceResponses">
+                  {{ student.firstname }} {{ student.surname }}
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsClassStudents"></tr>
+          <tr class="choice element-row" mat-row *matRowDef="let element; columns: displayedColumnsClassStudents;"
+              [class.example-expanded-row]="expandedElement.includes(element)"
+              (click)="expandElement(element)"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        </table>
       </div>
 
       <div class="class">
@@ -47,7 +79,7 @@
           </mat-expansion-panel>
           <div class="choice-table">
             <div class="table-header-group">
-              <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSourceChoiceTable!" class="mat-elevation-z8">
 
                 <ng-container matColumnDef="Band">
                   <th mat-header-cell *matHeaderCellDef> Band</th>
@@ -98,8 +130,8 @@
                   </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsChoiceTable"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsChoiceTable;"></tr>
               </table>
             </div>
           </div>

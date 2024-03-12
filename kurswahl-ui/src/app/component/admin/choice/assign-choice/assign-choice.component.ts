@@ -10,10 +10,19 @@ import {
 } from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-assign-choice',
   templateUrl: './assign-choice.component.html',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
   styleUrl: './assign-choice.component.css'
 })
 export class AssignChoiceComponent implements OnDestroy {
@@ -28,8 +37,12 @@ export class AssignChoiceComponent implements OnDestroy {
   selectedTape?: ChoiceTapeResponse;
   studentChoice?: StudentChoiceResponse;
 
-  dataSource!: MatTableDataSource<ChoiceTable>;
-  displayedColumns: string[];
+  expandedElement: ClassStudentsResponse[] = [];
+  dataSourceClassStudents!: MatTableDataSource<ClassStudentsResponse>;
+  displayedColumnsClassStudents: string[];
+
+  dataSourceChoiceTable?: MatTableDataSource<ChoiceTable>;
+  displayedColumnsChoiceTable: string[];
 
   loadedClasses = false;
 
@@ -42,7 +55,8 @@ export class AssignChoiceComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute) {
 
-    this.displayedColumns = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
+    this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band'];
+    this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
@@ -66,6 +80,7 @@ export class AssignChoiceComponent implements OnDestroy {
     this.httpService.get<ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => {
         this.classes = response;
+        this.dataSourceClassStudents = new MatTableDataSource(this.classes);
         this.loadedClasses = true;
       });
 
@@ -82,7 +97,10 @@ export class AssignChoiceComponent implements OnDestroy {
   }
 
   openChoice(studentId: number) {
-    this.loadedChoice = true;
+    this.loadedChoice = false;
+    this.studentChoice = undefined;
+    this.choiceTables = [];
+    this.dataSourceChoiceTable = undefined;
     this.httpService.get <StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
       response => {
         if (this.year === response.year) {
@@ -119,7 +137,7 @@ export class AssignChoiceComponent implements OnDestroy {
       this.choiceTables?.push(choiceTable);
     });
 
-    this.dataSource = new MatTableDataSource(this.choiceTables);
+    this.dataSourceChoiceTable = new MatTableDataSource(this.choiceTables);
   }
 
   assignChoice(element: ClassChoiceResponse) {
@@ -163,6 +181,36 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
       });
+    }
+  }
+
+  sortData(sort: Sort) {
+    this.dataSourceClassStudents.data = this.dataSourceClassStudents.data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'name':
+          return this.compare(a.name, b.name, isAsc);
+        case 'teacher':
+          return this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
+        case 'tape':
+          return this.compare(a.tapeName, b.tapeName, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  expandElement(element: ClassStudentsResponse) {
+    const index = this.expandedElement.indexOf(element);
+
+    if (index < 0) {
+      this.expandedElement.push(element);
+    } else {
+      this.expandedElement.splice(index);
     }
   }
 }

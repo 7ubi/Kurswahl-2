@@ -33,7 +33,6 @@ export class ChoiceResultComponent implements OnDestroy {
   dataSource!: MatTableDataSource<ClassStudentsResponse>;
   selection = new SelectionModel<ClassStudentsResponse>(true, []);
   expandedElement: ClassStudentsResponse[] = [];
-  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
 
   loadedResults = false;
 
@@ -41,7 +40,7 @@ export class ChoiceResultComponent implements OnDestroy {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute) {
-    this.displayedColumns = ['Auswählen', 'Kurs', 'Lehrer', 'Band'];
+    this.displayedColumns = ['expansion', 'Auswählen', 'Kurs', 'Lehrer', 'Band'];
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
