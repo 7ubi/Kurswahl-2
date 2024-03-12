@@ -10,6 +10,10 @@
   cursor: pointer;
 }
 
+.mat-column-expansion {
+  width: 14px;
+}
+
 .rule {
   width: 100%;
   font-size: 14px;
@@ -36,7 +40,7 @@
   padding: 18px 24px;
   margin-bottom: 5px;
   border-radius: 3px;
-  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 1px rgba(0, 0, 0, 0.14), 0px 1px 7px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 7px 1px rgba(0, 0, 0, 0.12);
 }
 
 .table-header-group {
@@ -72,4 +76,18 @@
 .alternative {
   display: flex;
   justify-content: space-evenly;
+}
+
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+}
+
+
+tr.example-detail-row {
+  height: 0;
 }
