@@ -10,6 +10,10 @@
   justify-content: space-evenly;
 }
 
+.detail-container {
+  display: grid;
+}
+
 .class {
   width: 45%;
 }
@@ -41,4 +45,35 @@
   background-color: var(--warn);
   filter: brightness(85%);
   cursor: pointer;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  min-width: 300px;
+}
+
+.element-row {
+  position: relative;
+  cursor: pointer;
+}
+
+.element-row:hover {
+  filter: brightness(95%);
+}
+
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+
+tr.example-detail-row {
+  height: 0;
 }

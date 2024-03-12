@@ -1,4 +1,4 @@
-import {Component, Input, numberAttribute} from '@angular/core';
+import {Component, Input, numberAttribute, OnInit} from '@angular/core';
 import {ClassResponse} from "../../../../admin.responses";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
@@ -12,7 +12,7 @@ import {SelectionModel} from "@angular/cdk/collections";
   templateUrl: './class-table.component.html',
   styleUrls: ['./class-table.component.css']
 })
-export class ClassTableComponent {
+export class ClassTableComponent implements OnInit {
   @Input({required: true, transform: numberAttribute}) year!: number;
 
   classResponses!: ClassResponse[];
@@ -68,7 +68,7 @@ export class ClassTableComponent {
   }
 
   applySearch($event: KeyboardEvent) {
-    const filterValue = (event?.target as HTMLInputElement).value;
+    const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
