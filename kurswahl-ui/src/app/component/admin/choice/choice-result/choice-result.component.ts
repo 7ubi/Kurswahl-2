@@ -7,6 +7,8 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 @Component({
   selector: 'app-choice-result',
@@ -91,7 +93,35 @@ export class ChoiceResultComponent implements OnDestroy {
   }
 
   exportResult() {
+    if (this.selection.selected.length > 0) {
+      const doc = new jsPDF();
 
+      const head = ['Vorname', 'Nachname', 'Klasse'];
+
+      let firstElement = true;
+      this.selection.selected.forEach(classStudents => {
+        if (!firstElement) {
+          doc.addPage();
+        } else {
+          firstElement = false;
+        }
+
+        const info: {}[] = [];
+        classStudents.studentSurveillanceResponses.forEach(student =>
+          info.push([student.firstname, student.surname, student.name]));
+
+        autoTable(doc, {
+          head: [[classStudents.name]]
+        });
+        autoTable(doc, {
+          startY: 21,
+          head: [head],
+          body: info,
+        });
+      });
+
+      doc.save(`Ergebnisse.pdf`);
+    }
   }
 
   sortData(sort: Sort) {

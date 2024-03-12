@@ -4,65 +4,75 @@
   <div class="center">
     <div class="choice-container">
       <div class="class">
-        <table mat-table [dataSource]="dataSource!" multiTemplateDataRows class="mat-elevation-z8" matSortActive="name"
-               matSortDirection="asc" matSort (matSortChange)="sortData($event)">
+        <div class="bulk-actions">
+          <button (click)="exportResult()" [disabled]="selection.isEmpty()" class="bulk-actions-icons" color="primary"
+                  mat-mini-fab [matTooltip]="'Ausgewählte Kurse als PDF ausdrucken'">
+            <mat-icon>printer</mat-icon>
+          </button>
+        </div>
 
-          <ng-container matColumnDef="Auswählen">
-            <th *matHeaderCellDef mat-header-cell>
-              <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()">
-              </mat-checkbox>
-            </th>
-            <td *matCellDef="let row" mat-cell>
-              <mat-checkbox (change)="$event ? selection.toggle(row) : null"
-                            (click)="$event.stopPropagation()"
-                            [checked]="selection.isSelected(row)">
-              </mat-checkbox>
-            </td>
-          </ng-container>
+        <div>
+          <table mat-table [dataSource]="dataSource!" multiTemplateDataRows class="mat-elevation-z8"
+                 matSortActive="name"
+                 matSortDirection="asc" matSort (matSortChange)="sortData($event)">
 
-          <ng-container matColumnDef="Kurs">
-            <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Kurs</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.name }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="Auswählen">
+              <th *matHeaderCellDef mat-header-cell>
+                <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td *matCellDef="let row" mat-cell>
+                <mat-checkbox (change)="$event ? selection.toggle(row) : null"
+                              (click)="$event.stopPropagation()"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="Lehrer">
-            <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.teacherResponse.firstname }} {{ element.teacherResponse.surname }}
-              - {{ element.teacherResponse.abbreviation }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="Kurs">
+              <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Kurs</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.name }}
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="Band">
-            <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Band</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.tapeName }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="Lehrer">
+              <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.teacherResponse.firstname }} {{ element.teacherResponse.surname }}
+                - {{ element.teacherResponse.abbreviation }}
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="expandedDetail">
-            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-              <div class="example-element-detail"
-                   [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
-                <div class="detail-container">
-                  <div class="choice" *ngFor="let student of element.studentSurveillanceResponses">
-                    {{ student.firstname }} {{ student.surname }}
+            <ng-container matColumnDef="Band">
+              <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Band</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.tapeName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+              <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                <div class="example-element-detail"
+                     [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
+                  <div class="detail-container">
+                    <div class="choice" *ngFor="let student of element.studentSurveillanceResponses">
+                      {{ student.firstname }} {{ student.surname }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-          </ng-container>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr class="choice element-row" mat-row *matRowDef="let element; columns: displayedColumns;"
-              [class.example-expanded-row]="expandedElement.includes(element)"
-              (click)="expandElement(element)"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="choice element-row" mat-row *matRowDef="let element; columns: displayedColumns;"
+                [class.example-expanded-row]="expandedElement.includes(element)"
+                (click)="expandElement(element)"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+          </table>
+        </div>
       </div>
       <div class="class">
         <div class="rules not-fulfilled" *ngIf="results?.studentsNotFulfilledRules!.length > 0">
@@ -96,9 +106,6 @@
              *ngIf="results?.studentsNotFulfilledRules!.length === 0 && results?.studentsNotChosen!.length === 0">
           <h2>Alle Schüler haben die Wahlbedingungen erfüllt.</h2>
         </div>
-        <button (click)="exportResult()" color="primary" mat-raised-button style="margin-right: 5px">
-          Ergebnisse exportieren
-        </button>
       </div>
     </div>
   </div>
