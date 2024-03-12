@@ -30,7 +30,7 @@ export class ChoiceResultComponent implements OnDestroy {
   displayedColumns: string[];
   dataSource!: MatTableDataSource<ClassStudentsResponse>;
   selection = new SelectionModel<ClassStudentsResponse>(true, []);
-  expandedElement: ClassStudentsResponse | null = null;
+  expandedElement: ClassStudentsResponse[] = [];
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
 
   loadedResults = false;
@@ -94,7 +94,33 @@ export class ChoiceResultComponent implements OnDestroy {
 
   }
 
-  sortData($event: Sort) {
+  sortData(sort: Sort) {
+    this.dataSource.data = this.dataSource.data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'name':
+          return this.compare(a.name, b.name, isAsc);
+        case 'teacher':
+          return this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
+        case 'tape':
+          return this.compare(a.tapeName, b.tapeName, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
 
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  expandElement(element: ClassStudentsResponse) {
+    const index = this.expandedElement.indexOf(element);
+
+    if (index < 0) {
+      this.expandedElement.push(element);
+    } else {
+      this.expandedElement.splice(index);
+    }
   }
 }
