@@ -18,6 +18,14 @@ Kurswahlsystem für die Qualifikationsphase einer Oberstufe
 
 [Kursverwaltung](https://7ubi.atlassian.net/wiki/external/NDAzODA5ZThjNjk0NDliYWFjZTc0YmFkMWNlYjQ1Yzk)
 
+[Wahlverwaltung](https://7ubi.atlassian.net/wiki/external/ZWRjOTc4OGFmOWU5NGNkMmI2Njc1NTQ1NTNlOTFmNTM)
+
+### Schüler
+
+[Wahl tätigen](https://7ubi.atlassian.net/wiki/external/MDAxMWIxYzhiN2IyNDM4YjhlOWJiOTE2NWM5Njg1ZTI)
+
+[Wahl einsehen](https://7ubi.atlassian.net/wiki/external/MGNmM2EzNzAyZTY5NDMwMWE0MTdmZmY5NjJhNjEzOTY)
+
 ## Pipeline
 
 [Pipeline](https://7ubi.atlassian.net/wiki/external/MzQyMGNhMGY1NzkzNDFkZjhjOTRhOGYxNjI5MDk3MGY)
