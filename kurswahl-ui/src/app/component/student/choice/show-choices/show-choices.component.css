@@ -1,7 +1,15 @@
-.headline {
-  text-align: left;
+.header {
+  text-align: center;
+  font-size: 25px;
+  padding: 10px 0;
 }
 
 .next.headline {
   margin-top: 20px;
+}
+
+.headline {
+  display: flex;
+  justify-content: space-between;
+  justify-items: center;
 }

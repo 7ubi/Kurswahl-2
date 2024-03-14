@@ -20,4 +20,8 @@ export class ShowChoicesComponent {
       this.choiceResponses = response;
     }, () => this.router.navigate(['student']));
   }
+
+  editChoice(number: number) {
+    this.router.navigate(['student', 'choice', number])
+  }
 }
