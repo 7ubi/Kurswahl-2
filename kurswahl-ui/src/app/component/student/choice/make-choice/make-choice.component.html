@@ -2,7 +2,8 @@
 
 <div class="container">
   <div class="center">
-    <app-choice-table [choiceResponse]="choiceResponse" (selectedTapeOutput)="selectTape($event)"></app-choice-table>
+    <app-choice-table [tapeClassResponses]="tapeClassResponses" [choiceResponse]="choiceResponse"
+                      (selectedTapeOutput)="selectTape($event)"></app-choice-table>
 
     <div class="classes-tables">
       <div class="classes-table">

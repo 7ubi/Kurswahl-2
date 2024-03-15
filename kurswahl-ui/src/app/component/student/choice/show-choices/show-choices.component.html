@@ -5,15 +5,17 @@
     <div *ngFor="let choice of choiceResponses; index as i">
 
       <div class="bulk-actions headline {{ i !== 0 ? 'next': '' }}">
-        <div style="" class="header">{{ i + 1 }}. Wahl</div>
+        <div class="header">{{ choice.choiceNumber }}. Wahl</div>
         <button (click)="editChoice(choice.choiceNumber)" class="bulk-actions-icons" color="primary"
                 mat-mini-fab [matTooltip]="'Wahl bearbeiten'">
           <mat-icon>mode_edit</mat-icon>
         </button>
       </div>
-      <app-choice-table [choiceResponse]="choice" [selectable]="false"></app-choice-table>
+      <app-choice-table [tapeClassResponses]="tapeClassResponses" [choiceResponse]="choice"
+                        [selectable]="false"></app-choice-table>
     </div>
 
+    <button mat-raised-button style="margin-top: 10px" (click)="exportChoices()" color="primary">Drucken</button>
 
   </div>
 </div>
