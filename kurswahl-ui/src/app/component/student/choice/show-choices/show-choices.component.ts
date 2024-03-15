@@ -53,7 +53,7 @@ export class ShowChoicesComponent {
         if (firstChoice) {
           item[1] = firstChoice.name;
         }
-        const secondChoice = this.choiceResponses[0].classChoiceResponses
+        const secondChoice = this.choiceResponses[1].classChoiceResponses
           .find(element => element.tapeId === tape.tapeId);
         if (secondChoice) {
           item[2] = secondChoice.name;
