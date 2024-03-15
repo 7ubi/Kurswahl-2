@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 import {ChoiceResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "../lesson-table";
 import {MatTableDataSource} from "@angular/material/table";
-import {HttpService} from "../../../../service/http.service";
 
 @Component({
   selector: 'app-choice-table',
@@ -13,30 +12,21 @@ export class ChoiceTableComponent implements OnChanges {
   readonly maxHours = 15;
 
   @Input() choiceResponse?: ChoiceResponse;
+  @Input() tapeClassResponses!: TapeClassResponse[];
   @Input() selectable = true;
   @Output() selectedTapeOutput = new EventEmitter<TapeClassResponse>();
 
   lessons: LessonTable[] = [];
   dataSource!: MatTableDataSource<LessonTable>;
   displayedColumns: string[];
-  tapeClassResponses!: TapeClassResponse[];
   selectedTape?: TapeClassResponse;
 
-  constructor(private httpService: HttpService) {
-    this.loadTapes();
+  constructor() {
     this.displayedColumns = ['Stunde', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.updateTable();
-  }
-
-  private loadTapes() {
-    this.httpService.get<TapeClassResponse[]>(`/api/student/tapeClasses`, response => {
-      this.tapeClassResponses = response;
-
-      this.updateTable();
-    });
   }
 
   private generateTable() {

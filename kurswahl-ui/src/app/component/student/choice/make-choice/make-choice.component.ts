@@ -21,6 +21,7 @@ export class MakeChoiceComponent implements OnDestroy {
   choiceNumber: number | null | undefined;
   subjectTapeResponses!: SubjectTapeResponse[];
   choiceResponse!: ChoiceResponse;
+  tapeClassResponses!: TapeClassResponse[];
 
   selectedTape?: TapeClassResponse;
 
@@ -31,6 +32,8 @@ export class MakeChoiceComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.loadTapes();
+
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ActivationEnd) {
         if (this.choiceNumber != Number(this.route.snapshot.paramMap.get('choiceNumber'))) {
@@ -44,6 +47,12 @@ export class MakeChoiceComponent implements OnDestroy {
     });
 
     this.loadSubjects();
+  }
+
+  private loadTapes() {
+    this.httpService.get<TapeClassResponse[]>(`/api/student/tapeClasses`, response => {
+      this.tapeClassResponses = response;
+    }, () => this.router.navigate(['student']));
   }
 
   ngOnDestroy(): void {
