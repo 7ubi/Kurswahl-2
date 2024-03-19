@@ -1,6 +1,7 @@
 package com.x7ubi.kurswahl.admin.settings.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
+import com.x7ubi.kurswahl.admin.settings.request.EditClassSizeRequest;
 import com.x7ubi.kurswahl.admin.settings.response.ClassSizeSettingResponse;
 import com.x7ubi.kurswahl.admin.settings.service.AdminSettingsService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
@@ -8,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -31,6 +30,19 @@ public class AdminSettingsController {
 
         try {
             ClassSizeSettingResponse responses = this.adminSettingsService.getClassSizeSettings();
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/classSize")
+    @AdminRequired
+    public ResponseEntity<?> editClassSizeSetting(@RequestBody EditClassSizeRequest editClassSizeRequest) {
+        logger.info("Editing class size warning and critical size from settings");
+
+        try {
+            ClassSizeSettingResponse responses = this.adminSettingsService.editClassSizeSettings(editClassSizeRequest);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);

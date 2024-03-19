@@ -36,4 +36,19 @@ public class SettingsService {
             return this.settingRepo.save(setting);
         }
     }
+
+    public void saveSetting(String name, Integer newValue) {
+
+        Optional<Setting> settingOptional = this.settingRepo.findSettingByName(name);
+
+        Setting setting;
+        if (settingOptional.isPresent()) {
+            setting = settingOptional.get();
+        } else {
+            setting = new Setting();
+            setting.setName(name);
+        }
+        setting.setValue(newValue);
+        this.settingRepo.save(setting);
+    }
 }
