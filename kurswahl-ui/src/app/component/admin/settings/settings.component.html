@@ -1,0 +1,32 @@
+<app-hero title="Einstellungen"></app-hero>
+
+<form [formGroup]="settingsForm">
+  <div class="container">
+    <div class="center">
+      <div class="bulk-actions">
+        <button class="bulk-actions-icons" color="primary" mat-mini-fab [matTooltip]="'Speicher'"
+                [disabled]="!hasChanges" (click)="saveSettings()">
+          <mat-icon>save</mat-icon>
+        </button>
+      </div>
+      <div class="setting-container">
+        <div class="setting">
+          <span class="setting-heading">Einstellungen zur Kursgröße</span>
+        </div>
+        <div class="setting">
+          <mat-form-field class="full-width">
+            <mat-label>Kursgröße Warnung</mat-label>
+            <input matInput formControlName="warning" name="warning" id="warning" type="number"
+                   (keyup)="onChangeInput()">
+          </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <mat-label>Kursgröße Kritisch</mat-label>
+            <input matInput formControlName="critical" name="critical" id="critical" type="number"
+                   (keyup)="onChangeInput()">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

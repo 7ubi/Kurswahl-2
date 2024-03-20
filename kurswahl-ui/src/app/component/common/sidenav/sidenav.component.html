@@ -22,7 +22,7 @@
   </div>
   <mat-list-item>
     <mat-icon class="side-nav-icon">search</mat-icon>
-    <b>Wahl Überwachung</b>
+    <b>Wahlüberwachung</b>
   </mat-list-item>
   <div class="submenu">
     <mat-list-item (click)="navigateTo('/admin/choiceSurveillance')" class="side-nav-item"> Überwachung</mat-list-item>
@@ -33,6 +33,14 @@
     <mat-list-item (click)="navigateTo('/admin/result/11')" class="side-nav-item"> Ergebnisse Jahrgang 11
     </mat-list-item>
     <mat-list-item (click)="navigateTo('/admin/result/12')" class="side-nav-item"> Ergebnisse Jahrgang 12
+    </mat-list-item>
+  </div>
+  <mat-list-item>
+    <mat-icon class="side-nav-icon">settings</mat-icon>
+    <b>Einstellungen</b>
+  </mat-list-item>
+  <div class="submenu">
+    <mat-list-item (click)="navigateTo('/admin/settings')" class="side-nav-item"> Einstellungen
     </mat-list-item>
   </div>
 </mat-nav-list>
