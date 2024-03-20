@@ -37,7 +37,7 @@ public class SettingsService {
         }
     }
 
-    public void saveSetting(String name, Integer newValue) {
+    public Setting updateSetting(String name, Integer newValue) {
 
         Optional<Setting> settingOptional = this.settingRepo.findSettingByName(name);
 
@@ -49,6 +49,6 @@ public class SettingsService {
             setting.setName(name);
         }
         setting.setValue(newValue);
-        this.settingRepo.save(setting);
+        return this.settingRepo.save(setting);
     }
 }

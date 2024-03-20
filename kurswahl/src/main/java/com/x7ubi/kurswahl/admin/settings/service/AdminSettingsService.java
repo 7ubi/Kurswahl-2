@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.settings.service;
 
 import com.x7ubi.kurswahl.admin.settings.request.EditClassSizeRequest;
 import com.x7ubi.kurswahl.admin.settings.response.ClassSizeSettingResponse;
+import com.x7ubi.kurswahl.common.models.Setting;
 import com.x7ubi.kurswahl.common.settings.service.SettingsService;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,15 @@ public class AdminSettingsService {
     }
 
     public ClassSizeSettingResponse editClassSizeSettings(EditClassSizeRequest editClassSizeRequest) {
+        ClassSizeSettingResponse response = new ClassSizeSettingResponse();
 
-        this.settingsService.saveSetting(SettingsService.CLASS_SIZE_WARNING, editClassSizeRequest.getClassSizeWarning());
-        this.settingsService.saveSetting(SettingsService.CLASS_SIZE_CRITICAL, editClassSizeRequest.getClassSizeCritical());
-        
-        return getClassSizeSettings();
+        Setting classSizeWarning = this.settingsService.updateSetting(SettingsService.CLASS_SIZE_WARNING,
+                editClassSizeRequest.getClassSizeWarning());
+        response.setClassSizeWarning(classSizeWarning.getValue());
+        Setting classSizeCritical = this.settingsService.updateSetting(SettingsService.CLASS_SIZE_CRITICAL,
+                editClassSizeRequest.getClassSizeCritical());
+        response.setClassSizeCritical(classSizeCritical.getValue());
+
+        return response;
     }
 }
