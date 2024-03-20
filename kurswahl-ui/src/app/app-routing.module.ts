@@ -53,6 +53,7 @@ import {ChoiceSurveillanceComponent} from "./component/admin/choice/choice-surve
 import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assign-choice.component";
 import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
 import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
+import {SettingsComponent} from "./component/admin/settings/settings.component";
 
 const routes: Routes = [
   {
@@ -195,6 +196,10 @@ const routes: Routes = [
       {
         path: 'result/:year',
         component: ChoiceResultComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
       },
     ]
   },

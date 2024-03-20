@@ -1,0 +1,23 @@
+.setting-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  background-color: white;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 7px 1px rgba(0, 0, 0, 0.12);
+}
+
+.setting {
+  padding: 10px;
+  width: 50%;
+}
+
+.setting-heading {
+  font-size: 16px;
+  text-align: left;
+  float: left;
+}
+
+.full-width {
+  width: 100%;
+}

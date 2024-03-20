@@ -139,6 +139,11 @@ export interface ChoiceResultResponse {
   readonly classStudentsResponses: ClassStudentsResponse[];
 }
 
+export interface ClassSizeSettingResponse {
+  readonly classSizeWarning: number;
+  readonly classSizeCritical: number;
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

@@ -89,6 +89,7 @@ import {
 } from "./component/admin/user/teacher/show-teachers/teacher-csv-import-dialog/teacher-csv-import-dialog.component";
 import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
 import {MatRipple} from "@angular/material/core";
+import {SettingsComponent} from "./component/admin/settings/settings.component";
 
 @NgModule({
   declarations: [
@@ -138,6 +139,7 @@ import {MatRipple} from "@angular/material/core";
     CsvImportDialogComponent,
     TeacherCsvImportDialogComponent,
     ShowResultComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
