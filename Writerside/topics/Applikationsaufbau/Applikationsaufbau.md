@@ -1,3 +1,3 @@
 # Applikationsaufbau
 
-Beschreibt, welche Seite welche Funktionalitäten hat.
+Dieser Bereich beschreibt, welche Seite welche Funktionalitäten hat.
