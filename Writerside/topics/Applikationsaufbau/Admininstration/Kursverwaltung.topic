@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic id="Kursverwaltung"
+       title="Kursverwaltung"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd">
+    <title>
+        Kursverwaltung
+    </title>
+    <chapter id="fachbereich" title="Fachbereich">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutze Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Fachbereiche
+                </td>
+                <td>
+                    <list>
+                        <li>Zu Fachbereich erstellen weiterleiten</li>
+                        <li><p>Fachbereich löschen</p>
+                            <list>
+                                <li>Wenn Fachbereich gelöscht wird, werden alle Fächer gelöscht, die den gegebenen
+                                    Fachbereich haben
+                                </li>
+                            </list>
+                        </li>
+                        <li>Zu Fachbereich bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/subjectAreas
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjectAreas</li>
+                        <li>DELETE: /api/admin/subjectArea?subjectAreaId=id</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fachbereich erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Fachbereich erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                            </list>
+                        </li>
+
+                    </list>
+                </td>
+                <td>
+                    /admin/subjectAreas/create
+                </td>
+                <td>
+                    <list>
+                        <li>POST: /api/admin/subjectArea</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fachbereich bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Ausgewählter Fachbereich wird geladen</li>
+                        <li>Fachbereich bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                            </list>
+                        </li>
+
+                    </list>
+                </td>
+                <td>
+                    /admin/subjectAreas/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET /api/admin/subjectArea?subjectAreaId=id</li>
+                        <li>PUT /api/admin/subjectArea?subjectAreaId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+</topic>
