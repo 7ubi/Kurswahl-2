@@ -7,7 +7,7 @@
     <title>
         Kursverwaltung
     </title>
-    <chapter id="fachbereich" title="Fachbereich">
+    <chapter collapsible="true" id="fachbereich" title="Fachbereich">
         <table>
             <tr>
                 <td>
@@ -47,6 +47,7 @@
                     <list>
                         <li>GET: /api/admin/subjectAreas</li>
                         <li>DELETE: /api/admin/subjectArea?subjectAreaId=id</li>
+                        <li>DELETE: /api/admin/subjectAreas</li>
                     </list>
                 </td>
             </tr>
@@ -95,8 +96,200 @@
                 </td>
                 <td>
                     <list>
-                        <li>GET /api/admin/subjectArea?subjectAreaId=id</li>
-                        <li>PUT /api/admin/subjectArea?subjectAreaId=id</li>
+                        <li>GET: /api/admin/subjectArea?subjectAreaId=id</li>
+                        <li>PUT: /api/admin/subjectArea?subjectAreaId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="fach" title="Fach">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutze Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Fächer
+                </td>
+                <td>
+                    <list>
+                        <li>Fächer können nach Fachbereichen gefiltert werden</li>
+                        <li>Zu Fach erstellen weiterleiten</li>
+                        <li>Fach löschen</li>
+                        <li>Zu Fach bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/subjects
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjects</li>
+                        <li>GET: /api/admin/subjectAreas</li>
+                        <li>DELETE: /api/admin/subject?subjectId=id</li>
+                        <li>DELETE: /api/admin/subjects</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fach erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Fach erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Fachbereich</li>
+                            </list>
+                        </li>
+
+                    </list>
+                </td>
+                <td>
+                    /admin/subjects/create
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjectAreas</li>
+                        <li>POST: /api/admin/subject</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fach bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Ausgewähltes Fach wird geladen</li>
+                        <li>Fach bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Fachbereich</li>
+                            </list>
+                        </li>
+
+                    </list>
+                </td>
+                <td>
+                    /admin/subjects/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjectAreas</li>
+                        <li>GET: /api/admin/subject?subject=id</li>
+                        <li>PUT: /api/admin/subject?subject=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="klasse" title="Klasse">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutze Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Klassen
+                </td>
+                <td>
+                    <list>
+                        <li>Zu Klasse erstellen weiterleiten</li>
+                        <li>Klasse löschen</li>
+                        <li>Zu Klasse bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/studentClasses
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/studentClasses</li>
+                        <li>DELETE: /api/admin/studentClass?studentClassId=id</li>
+                        <li>DELETE: /api/admin/studentClasses</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Klasse erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Lehrer</li>
+                        <li>Klasse erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang, wobei Jahrgang 11 E-Phase ist und Jahrgang 12 Q1/2-Phase ist</li>
+                                <li>Lehrer</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/studentClasses/create
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/teachers</li>
+                        <li>POST: /api/admin/studentClass</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Klasse bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Lehrer</li>
+                        <li>Lädt ausgewählte Klasse</li>
+                        <li>Klasse erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang, wobei Jahrgang 11 E-Phase ist und Jahrgang 12 Q1/2-Phase ist</li>
+                                <li>Lehrer</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/studentClasses/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/studentClass?studentClassId=id</li>
+                        <li>GET: /api/admin/teachers</li>
+                        <li>PUT: /api/admin/studentClass?studentClassId=id</li>
                     </list>
                 </td>
             </tr>
