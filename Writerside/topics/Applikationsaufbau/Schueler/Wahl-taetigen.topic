@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       id="Wahl-taetigen" title="Wahl tätigen">
+
+    <title>
+        Wahl tätigen
+    </title>
+    <chapter id="wahl" title="Wahl tätigen">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Stundenplan
+                </td>
+                <td>
+                    <list>
+                        <li>Aufgeteilt in 1. und 2. Wahl</li>
+                        <li>Alle Bänder des Jahrgangs werden in einem Stundenplan angezeigt</li>
+                        <li>Beim Klick auf ein Band werden unter dem Stundenplan alle Kurse des Bands angezeigt</li>
+                    </list>
+                </td>
+                <td>
+                    /student/choice/:choiceNumber
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/student/choice?choiceNumber</li>
+                        <li>GET: /api/student/tapeClasses</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Auswahl der Kurse
+                </td>
+                <td>
+                    <list>
+                        <li>Beim Klicken auf einen Kurs wird dieser Kurs zur Wahl hinzugefügt</li>
+                        <li>Wenn das Band, bzw. das Fach schon vorher gewählt wurde, wird die vorherige Wahl entfernt,
+                            sodass es keine Dopplung gibt
+                        </li>
+                        <li>Beim Kilck auf “Band nicht belegen” wird die Wahl für das Band entfernt</li>
+                    </list>
+                </td>
+                <td>
+                    /student/choice/:choiceNumber
+                </td>
+                <td>
+                    <list>
+                        <li>PUT: /api/student/choice</li>
+                        <li>DELETE: /api/student/choice</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Anzeigen der Fächer
+                </td>
+                <td>
+                    <list>
+                        <li>Zeigt welche Fächer auf welchen Bändern sind, sodass man sie einfacher finden kann</li>
+                    </list>
+                </td>
+                <td>
+                    /student/choice/:choiceNumber
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/student/subjectTapes</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Nicht erfüllte Wahlbedingungen
+                </td>
+                <td>
+                    <list>
+                        <li>Zeigt alle Wahlbedingungen an, die nicht erfüllt sind</li>
+                        <li>Beim Ausklappen wird angezeigt, wie man diese erfüllen kann</li>
+                        <li>Wenn nicht alle Wahlbedingungen erfüllt sind, kann man nicht zur 2. Wahl / zur ansicht der
+                            beiden Wahlen
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /student/choice/:choiceNumber
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/student/subjectTapes</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+
+</topic>

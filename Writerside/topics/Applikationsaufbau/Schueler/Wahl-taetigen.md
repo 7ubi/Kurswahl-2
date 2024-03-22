@@ -1,3 +1,0 @@
-# Wahl tätigen
-
-Start typing here...

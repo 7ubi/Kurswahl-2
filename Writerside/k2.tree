@@ -13,8 +13,8 @@
             <toc-element topic="Wahlueberwachung.topic"/>
         </toc-element>
         <toc-element topic="Schueler.md">
-            <toc-element topic="Wahl-einsehen.md"/>
-            <toc-element topic="Wahl-taetigen.md"/>
+            <toc-element topic="Wahl-taetigen.topic"/>
+            <toc-element topic="Wahl-einsehen.topic"/>
         </toc-element>
     </toc-element>
     <toc-element topic="Datenbank-Aufbau.md"/>

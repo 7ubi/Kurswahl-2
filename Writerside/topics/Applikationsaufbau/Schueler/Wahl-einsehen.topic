@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       id="Wahl-einsehen" title="Wahl einsehen">
+
+    <title>
+        Wahl einsehen
+    </title>
+    <chapter collapsible="true" id="wahl" title="1. / 2. Wahl">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht 1. / 2. Wahl
+                </td>
+                <td>
+                    <list>
+                        <li>Einsicht in die 1. und 2. Wahl als Stundenplan, um diese zu überprüfen</li>
+                        <li>Exportieren der 1. und 2. Wahl als PDF</li>
+                    </list>
+                </td>
+                <td>
+                    /student/choices
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/student/choices</li>
+                        <li>GET: /api/student/tapeClasses</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="ergebnis" title="Wahlergebnis">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Wahlergebnis
+                </td>
+                <td>
+                    <list>
+                        <li>Einsicht in das Wahlergebnis als Stundenplan, um diese zu überprüfen</li>
+                    </list>
+                </td>
+                <td>
+                    /student/choiceResult
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/student/choiceResult</li>
+                        <li>GET: /api/student/tapeClasses</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+</topic>
