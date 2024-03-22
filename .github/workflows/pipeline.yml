@@ -54,6 +54,7 @@ jobs:
   deploy:
     name: Deploy to Production Environment
     runs-on: self-hosted
+    if: github.event_name != 'pull_request'
     needs:
       - build
     environment:
@@ -61,7 +62,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        if: github.event_name != 'pull_request'
       - name: Start docker-compose
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -70,12 +70,12 @@ jobs:
           export JWT_SECRET="$env:JWT_SECRET"
           docker-compose down
           docker-compose up --build -d
-        if: github.event_name != 'pull_request'
   buildDocs:
     runs-on: ubuntu-latest
     name: Build Documentation
     needs:
       - deploy
+    if: github.event_name != 'pull_request'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
