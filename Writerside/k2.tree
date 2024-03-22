@@ -8,7 +8,7 @@
     <toc-element topic="about.md"/>
     <toc-element topic="Applikationsaufbau.md">
         <toc-element topic="Administration.md">
-            <toc-element topic="Nutzerverwaltung.md"/>
+            <toc-element topic="Nutzerverwaltung.topic"/>
             <toc-element topic="Kursverwaltung.topic"/>
             <toc-element topic="Wahlueberwachung.md"/>
         </toc-element>
