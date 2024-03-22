@@ -20,7 +20,7 @@
                     <control>Adresse</control>
                 </td>
                 <td>
-                    <control>Genutze Endpunkte</control>
+                    <control>Genutzte Endpunkte</control>
                 </td>
             </tr>
             <tr>
@@ -116,7 +116,7 @@
                     <control>Adresse</control>
                 </td>
                 <td>
-                    <control>Genutze Endpunkte</control>
+                    <control>Genutzte Endpunkte</control>
                 </td>
             </tr>
             <tr>
@@ -212,7 +212,7 @@
                     <control>Adresse</control>
                 </td>
                 <td>
-                    <control>Genutze Endpunkte</control>
+                    <control>Genutzte Endpunkte</control>
                 </td>
             </tr>
             <tr>
@@ -272,7 +272,7 @@
                     <list>
                         <li>Lädt alle Lehrer</li>
                         <li>Lädt ausgewählte Klasse</li>
-                        <li>Klasse erstellen</li>
+                        <li>Klasse bearbeiten</li>
                         <li><p>Attribute</p>
                             <list>
                                 <li>Name</li>
@@ -290,6 +290,359 @@
                         <li>GET: /api/admin/studentClass?studentClassId=id</li>
                         <li>GET: /api/admin/teachers</li>
                         <li>PUT: /api/admin/studentClass?studentClassId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="band" title="Band">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Bänder
+                </td>
+                <td>
+                    <list>
+                        <li>Ansicht ist in zwei Tabellen aufgeteilt: Jahrgang 11 (E-Phase), Jahrgang 12 (Q-Phase)</li>
+                        <li>Zu Band erstellen weiterleiten</li>
+                        <li><p>Bänder löschen</p>
+                            <list>
+                                <li>Alle Kurse mit diesem Band werden auch gelöscht</li>
+                                <li>Alle Stunden mit diesem Band werden auch gelöscht</li>
+                            </list>
+                        </li>
+                        <li>Zu Band bearbeiten weiterleiten</li>
+                        <li>Zu Bändern zuweisen weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/tapes
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/tapes?year=11</li>
+                        <li>GET: /api/admin/tapes?year=12</li>
+                        <li>DELETE: /api/admin/tape?tapeId=id</li>
+                        <li>DELETE: /api/admin/tapes</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Band erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Band erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang, wobei Jahrgang 11 E-Phase ist und Jahrgang 12 Q1/2-Phase ist</li>
+                                <li>Ist LK</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/tapes/create
+                </td>
+                <td>
+                    <list>
+                        <li>POST: /api/admin/tape</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Band bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt ausgewähltes Band</li>
+                        <li>Band bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang, wobei Jahrgang 11 E-Phase ist und Jahrgang 12 Q1/2-Phase ist</li>
+                                <li>Ist LK</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/tapes/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/tape?tapeId=id</li>
+                        <li>PUT: /api/admin/tape?tapeId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="stunden" title="Stunden">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Stunden / Bänder zuweisen
+                </td>
+                <td>
+                    <list>
+                        <li>Ansicht aller Stunden aller Bänder eines Jahrgangs in einer Tabelle</li>
+                        <li><p>Auswählen eines Bands</p>
+                            <list>
+                                <li>Leeres Feld → Stunde wird zu Band hinzugefügt</li>
+                                <li>Von ausgewählten Band belegtes Feld → Stunden wird von Band entfernt</li>
+                                <li>Von nicht ausgewählten Band belegtes Feld → Fehler</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/lessons/:year
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/tapes?year=year</li>
+                        <li>POST: /api/admin/lesson?tapeId=tapeId</li>
+                        <li>DELETE: /api/admin/lesson?lessonId=lessonId</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="kurs" title="Kurs">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Kurse
+                </td>
+                <td>
+                    <list>
+                        <li>Ansicht ist in zwei Tabellen aufgeteilt: Jahrgang 11 (E-Phase), Jahrgang 12 (Q-Phase)</li>
+                        <li>Zu Kurs erstellen weiterleiten</li>
+                        <li>Kurse löschen</li>
+                        <li>Zu Kurs bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/classes
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/classes?year=11</li>
+                        <li>GET: /api/admin/classes?year=12</li>
+                        <li>DELETE: /api/admin/class?classId=id</li>
+                        <li>DELETE: /api/admin/classes</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kurs erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Lehrer</li>
+                        <li>Lädt alle Fächer</li>
+                        <li>Lädt Bänder, je nachdem welcher Jahrgang ausgewählt wird</li>
+                        <li>Kurs erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Fach</li>
+                                <li>Lehrer</li>
+                                <li>Jahrgang</li>
+                                <li>Band</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/classes/create
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/teachers</li>
+                        <li>GET: /api/admin/subjects</li>
+                        <li>GET: /api/admin/tapes?year=Jahrgang</li>
+                        <li>POST: /api/admin/class</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kurs bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt ausgewählten Kurs</li>
+                        <li>Lädt alle Lehrer</li>
+                        <li>Lädt alle Fächer</li>
+                        <li>Lädt Bänder, je nachdem welcher Jahrgang ausgewählt wird</li>
+                        <li>Kurs erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Fach</li>
+                                <li>Lehrer</li>
+                                <li>Jahrgang</li>
+                                <li>Band</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/classes/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/class?classId=id</li>
+                        <li>GET: /api/admin/teachers</li>
+                        <li>GET: /api/admin/subjects</li>
+                        <li>GET: /api/admin/tapes?year=Jahrgang</li>
+                        <li>PUT: /api/admin/class?classId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="wahlbedingungen" title="Wahlbedingungen">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Wahlbedingungen
+                </td>
+                <td>
+                    <list>
+                        <li>Ansicht ist in zwei Tabellen aufgeteilt: Jahrgang 11 (E-Phase), Jahrgang 12 (Q-Phase)</li>
+                        <li>Zu Wahlbedingungen erstellen weiterleiten</li>
+                        <li>Kurse löschen</li>
+                        <li>Zu Wahlbedingungen bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/rules
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/rules?year=11</li>
+                        <li>GET: /api/admin/rules?year=12</li>
+                        <li>DELETE: /api/admin/rule?ruleId=id</li>
+                        <li>DELETE: /api/admin/rules</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Wahlbedingungen erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Fächer</li>
+                        <li>Wahlbedingungen erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang</li>
+                                <li>Fächer</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/rules/create
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjects</li>
+                        <li>POST: /api/admin/rule</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Wahlbedingung bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt ausgewählte Wahlbedingung</li>
+                        <li>Lädt alle Fächer</li>
+                        <li>Wahlbedingung erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Name</li>
+                                <li>Jahrgang</li>
+                                <li>Fächer</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/rules/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/subjects</li>
+                        <li>GET: /api/admin/rule?ruleId=id</li>
+                        <li>PUT: /api/admin/rule?ruleId=id</li>
                     </list>
                 </td>
             </tr>
