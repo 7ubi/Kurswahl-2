@@ -10,7 +10,7 @@
         <toc-element topic="Administration.md">
             <toc-element topic="Nutzerverwaltung.topic"/>
             <toc-element topic="Kursverwaltung.topic"/>
-            <toc-element topic="Wahlueberwachung.md"/>
+            <toc-element topic="Wahlueberwachung.topic"/>
         </toc-element>
         <toc-element topic="Schueler.md">
             <toc-element topic="Wahl-einsehen.md"/>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       id="Wahlueberwachung" title="Wahlüberwachung">
+
+    <title>
+        Wahlüberwachung
+    </title>
+
+    <chapter collapsible="true" id="ueberwachung" title="Überwachung">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Stunden / Bänder zuweisen
+                </td>
+                <td>
+                    <list>
+                        <li><p>Anzeige aller Schüler</p>
+                            <list>
+                                <li>Möglichkeit nach Klasse zu filtern</li>
+                            </list>
+                        </li>
+                        <li><p>Angezeigt wird</p>
+                            <list>
+                                <li>ob der Schüler gewählt hat → Überprüft wird, ob der Schüler eine erst und zweit Wahl
+                                    hat
+                                </li>
+                                <li>ob der Schüler alle Wahlbedingungen erfüllt hat → Überprüft wird, ob der Schüler
+                                    alle Wahlbedingungen in der erst und zweit Wahl erfüllt hat
+                                </li>
+                            </list>
+                        </li>
+                        <li>Bei Klick auf Schüler weiterleiten zur Zuteilung des Schülers im jeweiligen Jahrgang</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/choiceSurveillance
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/choiceSurveillance</li>
+                        <li>GET: /api/admin/studentClasses</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="zuteilung" title="Zuteilung Jahrgang 11 / 12">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Anzeige aller Kurse
+                </td>
+                <td>
+                    <list>
+                        <li>Alle Kurse des Jahrgangs werden angezeigt</li>
+                        <li><p>Angezeigte Felder (sortierbar nach)</p>
+                            <list>
+                                <li>Kursname</li>
+                                <li>Lehrer</li>
+                                <li>Band</li>
+                            </list>
+                        </li>
+                        <li>Bei Klick auf einen Kurs werden alle Schüler angezeigt, die den Kurs angewählt oder als
+                            alternative haben
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/assignChoices?year
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/classesStudents?year</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Zuweisung der Kurse bei einem Schüler
+                </td>
+                <td>
+                    <list>
+                        <li>Nicht erfüllte Wahlbedingungen des Wahlergebnisses werden angezeigt, wenn nicht alle erfüllt
+                            sind
+                        </li>
+                        <li><p>Nach Bändern sortiert werden die Kurse der erst, zweit Wahl und die Alternative des
+                            Schülers angezeigt</p>
+                            <list>
+                                <li>Markiert werden alle Kurse die final ausgewählt sind</li>
+                                <li>Durch Klick auf einen Kurs werden diese ausgewählt, bzw. abgewählt</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/assignChoices?year
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/choiceTapes?year</li>
+                        <li>PUT: /api/admin/assignChoice?choiceClassId</li>
+                        <li>DELETE: /api/admin/assignChoice?choiceClassId</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="ergebnisse" title="Ergebnisse Jahrgang 11 / 12">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Anzeige aller Kurse
+                </td>
+                <td>
+                    <list>
+                        <li>Alle Kurse des Jahrgangs werden angezeigt</li>
+                        <li><p>Angezeigte Felder (sortierbar nach)</p>
+                            <list>
+                                <li>Kursname</li>
+                                <li>Lehrer</li>
+                                <li>Band</li>
+                            </list>
+                        </li>
+                        <li>Bei Klick auf einen Kurs werden alle Schüler angezeigt, die den Kurs belegen
+                        </li>
+                        <li><p>Ergebnisse als PDF exportieren</p>
+                            <list>
+                                <li>Ausgewählte Kurse kommen in die PDF</li>
+                                <li>Für jeden Kurs gibt es eine Seite</li>
+                                <li><p>Auf der Seite</p>
+                                    <list>
+                                        <li>Kursname</li>
+                                        <li>Schüler: Vorname, Nachname, Klasse</li>
+                                    </list>
+                                </li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/result?year
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/result?year</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Anzeige der Wahlbedingungen
+                </td>
+                <td>
+                    <list>
+                        <li><p>Möglichkeiten</p>
+                            <list>
+                                <li>Alle Schüler haben alle Wahlbedingungen erfüllt</li>
+                                <li>Schüler haben die Wahlbedingungen nicht erfüllt</li>
+                                <li>Schüler haben nicht gewählt → Haben keine 1., 2. Wahl oder Alternative</li>
+                            </list>
+                        </li>
+                        <li>Bei Klick auf Schüler weiterleiten zur Zuteilung des Schülers im jeweiligen Jahrgang</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/result?year
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+</topic>

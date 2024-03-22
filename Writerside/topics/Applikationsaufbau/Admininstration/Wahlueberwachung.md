@@ -1,3 +1,0 @@
-# Wahlüberwachung
-
-Start typing here...
