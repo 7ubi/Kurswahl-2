@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic id="Pipeline"
+       title="Pipeline"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd">
+
+    <title>
+        Pipeline
+    </title>
+    <chapter id="aufbau" title="Pipeline Aufbau">
+        <table>
+            <tr>
+                <td>
+                    <control>Stage</control>
+                </td>
+                <td>
+                    <control>Runner</control>
+                </td>
+                <td>
+                    <control>Bedingung</control>
+                </td>
+                <td>
+                    <control>Beschreibung</control>
+                </td>
+            </tr>
+            <tr>
+                <td>Build and Test</td>
+                <td>Github Runner</td>
+                <td>
+                    <list>
+                        <li>Pull Request</li>
+                        <li>Main Branch</li>
+                    </list>
+                </td>
+                <td>
+                    <list>
+                        <li>Baut das Backend und führt alle Tests aus</li>
+                        <li>Bei Fehlern in Tests failed dieses Stage</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>Sonarcloud</td>
+                <td>Github Runner</td>
+                <td>
+                    <list>
+                        <li>Build and Test passed</li>
+                        <li>Pull Request</li>
+                        <li>Main Branch</li>
+                    </list>
+                </td>
+                <td>
+                    <list>
+                        <li>Führt Sonarcloud Analyse durch</li>
+                        <li><a
+                                href="https://sonarcloud.io/project/overview?id=7ubi_Kurswahl-2">https://sonarcloud.io/project/overview?id=7ubi_Kurswahl-2</a>
+                        </li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>Deployment</td>
+                <td>Selfhosted Runner</td>
+                <td>
+                    <list>
+                        <li>Build and Test passed</li>
+                        <li>Main Branch</li>
+                    </list>
+                </td>
+                <td>
+                    <list>
+                        <li>Führt den Deployment Prozess auf der Testumgebung aus</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter id="process" title="Deployment Prozess">
+        <chapter id="step1" title="Schritte 1: Exportieren Variablen">
+            <table>
+                <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        Funktion
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        JWT_SECRET
+                    </td>
+                    <td>Passwort für die MySql Datenbank</td>
+                </tr>
+                <tr>
+                    <td>
+                        DB_PASSWORD_KURSWAHL
+                    </td>
+                    <td>Geheimnis das verwendet wird, um Passwörter gehashed zu speichern</td>
+                </tr>
+            </table>
+        </chapter>
+        <chapter id="step2" title="Schritt 2: Starten docker-compose">
+            <table>
+                <tr>
+                    <td>
+                        <control>Container Name</control>
+                    </td>
+                    <td>
+                        <control>Beschreibung</control>
+                    </td>
+                    <td>
+                        <control>Netzwerk</control>
+                    </td>
+                    <td>
+                        <control>Volume</control>
+                    </td>
+                    <td>
+                        <control>Port</control>
+                    </td>
+                    <td>
+                        <control>Abhängigkeit</control>
+                    </td>
+                </tr>
+                <tr>
+                    <td>kurswahl_dbcontainer</td>
+                    <td>MySql Datenbank</td>
+                    <td>springmysql-net</td>
+                    <td>kurswahl-db:/var/lib/mysql</td>
+                    <td>
+                        <list>
+                            <li>Öffentlich: 3360</li>
+                            <li>Netzwerk: 3306</li>
+                        </list>
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>kurswahl_backendcontainer</td>
+                    <td>Spring Boot Backend</td>
+                    <td>
+                        <list>
+                            <li>springmysql-net</li>
+                            <li>backend</li>
+                        </list>
+                    </td>
+                    <td>-</td>
+                    <td>
+                        <list>
+                            <li>Öffentlich: 8008</li>
+                            <li>Netzwerk: 8080</li>
+                        </list>
+                    </td>
+                    <td>kurswahl_dbcontainer</td>
+                </tr>
+                <tr>
+                    <td>kurswahl_frontendcontainer</td>
+                    <td>
+                        <list>
+                            <li>Angular Frontend</li>
+                            <li>Routing zum Backend mit nginx</li>
+                        </list>
+                    </td>
+                    <td>backend</td>
+                    <td>./kurswahl-ui:/usr/src/app</td>
+                    <td>
+                        <list>
+                            <li>Öffentlich: 4300</li>
+                            <li>Netzwerk: 80</li>
+                        </list>
+                    </td>
+                    <td>kurswahl_backendcontainer</td>
+                </tr>
+            </table>
+        </chapter>
+    </chapter>
+</topic>

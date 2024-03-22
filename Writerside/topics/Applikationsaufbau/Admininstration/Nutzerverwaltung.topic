@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       id="Nutzerverwaltung" title="Nutzerverwaltung">
+
+    <title>
+        Nutzerverwaltung
+    </title>
+
+    <chapter collapsible="true" id="admin" title="Administratoren">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Admins
+                </td>
+                <td>
+                    <list>
+                        <li>Zu Admin erstellen weiterleiten</li>
+                        <li>Admin löschen</li>
+                        <li>Admin Passwort zurücksetzen</li>
+                        <li>Zu Admin bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/admins
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/admins</li>
+                        <li>DELETE: /api/admin/admin?adminId=id</li>
+                        <li>DELETE: /api/admin/admins</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Admin erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Admin erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/admins/create
+                </td>
+                <td>
+                    <list>
+                        <li>POST: /api/admin/admin</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Admin bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Ausgewählter Admin wird geladen</li>
+                        <li>Admin bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/admins/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/admin?adminId=id</li>
+                        <li>PUT: /api/admin/admin?adminId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+    <chapter collapsible="true" id="schueler" title="Schüler">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Schüler
+                </td>
+                <td>
+                    <list>
+                        <li>Nach Klasse Filtern</li>
+                        <li>Zu Schüler erstellen weiterleiten</li>
+                        <li>Schüler löschen</li>
+                        <li>Schüler Passwort zurücksetzen</li>
+                        <li>Zu Schüler bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/students
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/students</li>
+                        <li>GET: /api/admin/studentClasses</li>
+                        <li>DELETE: /api/admin/student?studentId=id</li>
+                        <li>DELETE: /api/admin/students</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Schüler importieren / exportieren
+                </td>
+                <td>
+                    <list>
+                        <li>
+                            <p>Schüler aus Datei importieren</p>
+                            <list>
+                                <li>Datei muss eine UTF-8 kodierte CSV Datei sein.</li>
+                                <li>
+                                    Alle Zeilen werden importiert, das heißt Zeilen mit den Spalten Titeln müssen
+                                    entfernt werden.
+                                </li>
+                                <li>Format: Klasse;Nachname;Vorname</li>
+                                <li>Jahrgang muss ausgewählt werden</li>
+                            </list>
+                        </li>
+                        <li>
+                            <p>Schüler als PDF exportieren → Nach Klassen filter exportieren</p>
+
+                            <list>
+                                <li>Felder: Klasse, Vorname, Nachname, generiertes Passwort</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/students
+                </td>
+                <td>
+                    <list>
+                        <li>POST: /api/admin/csvStudents</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Schüler erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Klassen</li>
+                        <li>Schüler erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                                <li>Klasse</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/students/create
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/studentClasses</li>
+                        <li>POST: /api/admin/student</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Schüler bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Lädt alle Klassen</li>
+                        <li>Lädt ausgewählten Schüler</li>
+                        <li>Schüler bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                                <li>Klasse</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/students/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/studentClasses</li>
+                        <li>GET: /api/admin/student?studentId=id</li>
+                        <li>PUT: /api/admin/student?studentId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+
+    <chapter collapsible="true" id="lehrer" title="Lehrer">
+        <table>
+            <tr>
+                <td>
+                    <control>Name</control>
+                </td>
+                <td>
+                    <control>Funktionen</control>
+                </td>
+                <td>
+                    <control>Adresse</control>
+                </td>
+                <td>
+                    <control>Genutzte Endpunkte</control>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Ansicht Lehrer
+                </td>
+                <td>
+                    <list>
+                        <li>Zu Lehrer erstellen weiterleiten</li>
+                        <li><p>Lehrer löschen</p>
+                            <list>
+                                <li>Kann nicht gelöscht werden, wenn ein Lehrer noch eine Klasse leitet</li>
+                            </list>
+                        </li>
+                        <li>Lehrer Passwort zurücksetzen</li>
+                        <li>Zu Lehrer bearbeiten weiterleiten</li>
+                    </list>
+                </td>
+                <td>
+                    /admin/teachers
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/teachers</li>
+                        <li>DELETE: /api/admin/teacher?teacherId=id</li>
+                        <li>DELETE: /api/admin/teachers</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lehrer erstellen
+                </td>
+                <td>
+                    <list>
+                        <li>Lehrer erstellen</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                                <li>Kürzel</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/teachers/create
+                </td>
+                <td>
+                    <list>
+                        <li>POST: /api/admin/teacher</li>
+                    </list>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lehrer bearbeiten
+                </td>
+                <td>
+                    <list>
+                        <li>Ausgewählter Lehrer wird geladen</li>
+                        <li>Lehrer bearbeiten</li>
+                        <li><p>Attribute</p>
+                            <list>
+                                <li>Vorname</li>
+                                <li>Nachname</li>
+                                <li>Kürzel</li>
+                            </list>
+                        </li>
+                    </list>
+                </td>
+                <td>
+                    /admin/teachers/edit/:id
+                </td>
+                <td>
+                    <list>
+                        <li>GET: /api/admin/teacher?teacherId=id</li>
+                        <li>PUT: /api/admin/teacher?teacherId=id</li>
+                    </list>
+                </td>
+            </tr>
+        </table>
+    </chapter>
+</topic>

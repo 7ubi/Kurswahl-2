@@ -6,30 +6,3 @@ Kurswahlsystem für die Qualifikationsphase einer Oberstufe
 
 # Dokumentation
 
-## Datenbank Aufbau
-
-[ER-Diagramm](https://7ubi.atlassian.net/wiki/external/NTFjZmM1MmI5N2M2NDY4Zjk0MjVkMWRlNTkwNWIzMjA)
-
-## Applikationsaufbau
-
-### Administration
-
-[Nutzerverwaltung](https://7ubi.atlassian.net/wiki/external/ZjQwYWEzNzM5NmNhNDhlYTg0YzU3MWM2MzM3NGFmYjg)
-
-[Kursverwaltung](https://7ubi.atlassian.net/wiki/external/NDAzODA5ZThjNjk0NDliYWFjZTc0YmFkMWNlYjQ1Yzk)
-
-[Wahlverwaltung](https://7ubi.atlassian.net/wiki/external/ZWRjOTc4OGFmOWU5NGNkMmI2Njc1NTQ1NTNlOTFmNTM)
-
-### Schüler
-
-[Wahl tätigen](https://7ubi.atlassian.net/wiki/external/MDAxMWIxYzhiN2IyNDM4YjhlOWJiOTE2NWM5Njg1ZTI)
-
-[Wahl einsehen](https://7ubi.atlassian.net/wiki/external/MGNmM2EzNzAyZTY5NDMwMWE0MTdmZmY5NjJhNjEzOTY)
-
-## Pipeline
-
-[Pipeline](https://7ubi.atlassian.net/wiki/external/MzQyMGNhMGY1NzkzNDFkZjhjOTRhOGYxNjI5MDk3MGY)
-
-[Runner](https://7ubi.atlassian.net/wiki/external/NzU1ZjVjZDEyZjM1NGYxMWE0NTEyMDJjODVhNzA1NzY)
-
-[Deployment Prozess](https://7ubi.atlassian.net/wiki/external/ZDk0NzkzMzZjZDI1NDY3ODllM2U5NTVlYzI2YzViYjg)
