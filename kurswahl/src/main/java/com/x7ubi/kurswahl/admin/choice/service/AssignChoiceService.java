@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.rule.service.RuleService;
+import com.x7ubi.kurswahl.common.settings.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,11 +46,14 @@ public class AssignChoiceService {
 
     private final RuleService ruleService;
 
+    private final SettingsService settingsService;
+
     public static final Integer ALTERNATE_CHOICE_NUMBER = 3;
 
     public AssignChoiceService(ClassRepo classRepo, ChoiceClassRepo choiceClassRepo, ClassStudentsMapper
             classStudentsMapper, StudentChoiceMapper studentChoiceMapper, StudentRepo studentRepo, ChoiceRepo
-                                       choiceRepo, TapeRepo tapeRepo, ChoiceTapeMapper choiceTapeMapper, RuleService ruleService) {
+                                       choiceRepo, TapeRepo tapeRepo, ChoiceTapeMapper choiceTapeMapper,
+                               RuleService ruleService, SettingsService settingsService) {
         this.classRepo = classRepo;
         this.choiceClassRepo = choiceClassRepo;
         this.classStudentsMapper = classStudentsMapper;
@@ -59,6 +63,7 @@ public class AssignChoiceService {
         this.tapeRepo = tapeRepo;
         this.choiceTapeMapper = choiceTapeMapper;
         this.ruleService = ruleService;
+        this.settingsService = settingsService;
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +72,7 @@ public class AssignChoiceService {
         classes.forEach(c -> {
             List<Student> students = new ArrayList<>();
             c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
-                if (students.contains(choiceClass.getChoice().getStudent())) {
+                if (students.contains(choiceClass.getChoice().getStudent()) || !choiceClass.isSelected()) {
                     return false;
                 }
                 students.add(choiceClass.getChoice().getStudent());
@@ -77,10 +82,12 @@ public class AssignChoiceService {
 
         logger.info(String.format("Filtered Students, who chose classes in year %s", year));
 
-        return this.classStudentsMapper.classesToClassChoiceResponses(classes);
+        List<ClassStudentsResponse> response = this.classStudentsMapper.classesToClassChoiceResponses(classes);
+        ChoiceHelper.setClassStudentsResponseWarnings(response, settingsService);
+        return response;
     }
 
-    public StudentChoicesResponse getStundetChoices(Long studentId) throws EntityNotFoundException {
+    public StudentChoicesResponse getStudentChoices(Long studentId) throws EntityNotFoundException {
 
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
@@ -109,7 +116,7 @@ public class AssignChoiceService {
 
         deselectChoiceClassSameTapeOrSubject(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -150,7 +157,7 @@ public class AssignChoiceService {
 
         this.choiceClassRepo.save(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -181,10 +188,8 @@ public class AssignChoiceService {
             choice.setReleaseYear(Year.now().getValue());
             choice.setChoiceClasses(new HashSet<>());
 
-            this.choiceRepo.save(choice);
+            choice = this.choiceRepo.save(choice);
 
-            choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(
-                    ALTERNATE_CHOICE_NUMBER, student.getStudentId(), Year.now().getValue()).get();
             student.getChoices().add(choice);
             this.studentRepo.save(student);
 
@@ -205,7 +210,7 @@ public class AssignChoiceService {
 
         deselectChoiceClassSameTapeOrSubject(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -230,6 +235,6 @@ public class AssignChoiceService {
         this.choiceRepo.save(choiceClass.getChoice());
         this.choiceClassRepo.delete(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 }

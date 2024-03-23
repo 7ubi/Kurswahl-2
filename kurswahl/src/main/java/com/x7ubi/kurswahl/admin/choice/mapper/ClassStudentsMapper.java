@@ -5,9 +5,7 @@ import com.x7ubi.kurswahl.admin.choice.response.StudentSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 

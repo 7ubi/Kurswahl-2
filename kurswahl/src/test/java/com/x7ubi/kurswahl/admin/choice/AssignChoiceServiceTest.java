@@ -140,6 +140,7 @@ public class AssignChoiceServiceTest {
             ChoiceClass choiceClass = new ChoiceClass();
             choiceClass.setChoice(_choice);
             choiceClass.setaClass(c);
+            choiceClass.setSelected(true);
             this.choiceClassRepo.save(choiceClass);
 
             _choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(choiceNumber,
@@ -271,7 +272,7 @@ public class AssignChoiceServiceTest {
                 student.getStudentId(), Year.now().getValue()).get();
 
         // When
-        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.getStundetChoices(student.getStudentId());
+        StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.getStudentChoices(student.getStudentId());
 
         // Then
         Assertions.assertEquals(studentChoicesResponse.getStudentId(), student.getStudentId());
@@ -309,7 +310,7 @@ public class AssignChoiceServiceTest {
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.assignChoiceService.getStundetChoices(student.getStudentId() + 3));
+                this.assignChoiceService.getStudentChoices(student.getStudentId() + 3));
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.STUDENT_NOT_FOUND);

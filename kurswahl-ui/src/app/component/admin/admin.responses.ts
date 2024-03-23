@@ -100,6 +100,8 @@ export interface ClassStudentsResponse {
   readonly teacherResponse: TeacherResponse;
   readonly studentSurveillanceResponses: StudentSurveillanceResponse[];
   readonly tapeName: string;
+  readonly sizeWarning: boolean;
+  readonly sizeCritical: boolean;
 }
 
 export interface StudentChoiceResponse extends StudentSurveillanceResponse {

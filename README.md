@@ -6,3 +6,4 @@ Kurswahlsystem für die Qualifikationsphase einer Oberstufe
 
 # Dokumentation
 
+Dokumentation kann unter [documentation.kurswahl.7ubi.de](https://documentation.kurswahl.7ubi.de) gefunden werden
