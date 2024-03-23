@@ -14,6 +14,10 @@ public class ClassStudentsResponse {
 
     private String tapeName;
 
+    private boolean isSizeWarning;
+
+    private boolean isSizeCritical;
+
     public String getName() {
         return name;
     }
@@ -44,5 +48,21 @@ public class ClassStudentsResponse {
 
     public void setTapeName(String tapeName) {
         this.tapeName = tapeName;
+    }
+
+    public boolean isSizeWarning() {
+        return isSizeWarning;
+    }
+
+    public void setSizeWarning(boolean sizeWarning) {
+        isSizeWarning = sizeWarning;
+    }
+
+    public boolean isSizeCritical() {
+        return isSizeCritical;
+    }
+
+    public void setSizeCritical(boolean sizeCritical) {
+        isSizeCritical = sizeCritical;
     }
 }
