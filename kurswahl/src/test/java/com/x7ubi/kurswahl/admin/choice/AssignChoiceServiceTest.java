@@ -140,6 +140,7 @@ public class AssignChoiceServiceTest {
             ChoiceClass choiceClass = new ChoiceClass();
             choiceClass.setChoice(_choice);
             choiceClass.setaClass(c);
+            choiceClass.setSelected(true);
             this.choiceClassRepo.save(choiceClass);
 
             _choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(choiceNumber,
