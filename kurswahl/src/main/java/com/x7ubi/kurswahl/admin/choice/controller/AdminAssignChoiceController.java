@@ -47,7 +47,7 @@ public class AdminAssignChoiceController {
         logger.info("Load Choices of Student");
 
         try {
-            StudentChoicesResponse responses = this.assignChoiceService.getStundetChoices(studentId);
+            StudentChoicesResponse responses = this.assignChoiceService.getStudentChoices(studentId);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

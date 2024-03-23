@@ -67,7 +67,7 @@ public class AssignChoiceService {
         classes.forEach(c -> {
             List<Student> students = new ArrayList<>();
             c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
-                if (students.contains(choiceClass.getChoice().getStudent())) {
+                if (students.contains(choiceClass.getChoice().getStudent()) || !choiceClass.isSelected()) {
                     return false;
                 }
                 students.add(choiceClass.getChoice().getStudent());
@@ -80,7 +80,7 @@ public class AssignChoiceService {
         return this.classStudentsMapper.classesToClassChoiceResponses(classes);
     }
 
-    public StudentChoicesResponse getStundetChoices(Long studentId) throws EntityNotFoundException {
+    public StudentChoicesResponse getStudentChoices(Long studentId) throws EntityNotFoundException {
 
         Optional<Student> studentOptional = this.studentRepo.findStudentByStudentId(studentId);
 
@@ -109,7 +109,7 @@ public class AssignChoiceService {
 
         deselectChoiceClassSameTapeOrSubject(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -150,7 +150,7 @@ public class AssignChoiceService {
 
         this.choiceClassRepo.save(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -205,7 +205,7 @@ public class AssignChoiceService {
 
         deselectChoiceClassSameTapeOrSubject(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 
     @Transactional
@@ -230,6 +230,6 @@ public class AssignChoiceService {
         this.choiceRepo.save(choiceClass.getChoice());
         this.choiceClassRepo.delete(choiceClass);
 
-        return getStundetChoices(choiceClass.getChoice().getStudent().getStudentId());
+        return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
     }
 }
