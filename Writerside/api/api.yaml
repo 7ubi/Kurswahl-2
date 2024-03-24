@@ -1,0 +1,1712 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/student/choice:
+    get:
+      tags:
+      - student-choice-controller
+      operationId: getChoice_1
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: choiceNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - student-choice-controller
+      operationId: alterChoice
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlterStudentChoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - student-choice-controller
+      operationId: deleteClassFromChoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteClassFromChoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/resetPasswords:
+    put:
+      tags:
+      - auth-rest-controller
+      operationId: resetPasswords
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/resetPassword:
+    put:
+      tags:
+      - auth-rest-controller
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/changePassword:
+    put:
+      tags:
+      - auth-rest-controller
+      operationId: changePassword
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/teacher:
+    get:
+      tags:
+      - admin-teacher-controller
+      operationId: getTeacher_1
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-teacher-controller
+      operationId: editTeacher
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-teacher-controller
+      operationId: createTeacher
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-teacher-controller
+      operationId: deleteTeacher
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/tape:
+    get:
+      tags:
+      - admin-tape-controller
+      operationId: getTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-tape-controller
+      operationId: editTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TapeCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-tape-controller
+      operationId: createTape
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TapeCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-tape-controller
+      operationId: deleteTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/subject:
+    get:
+      tags:
+      - admin-subject-controller
+      operationId: getSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-subject-controller
+      operationId: editSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-subject-controller
+      operationId: createSubject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-subject-controller
+      operationId: deleteSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/subjectArea:
+    get:
+      tags:
+      - admin-subject-area-controller
+      operationId: getSubjectArea
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-subject-area-controller
+      operationId: editSubjectArea
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectAreaCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-subject-area-controller
+      operationId: createSubjectArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectAreaCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-subject-area-controller
+      operationId: deleteSubjectArea_1
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/student:
+    get:
+      tags:
+      - admin-student-controller
+      operationId: getStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-student-controller
+      operationId: editStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-student-controller
+      operationId: createStudent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-student-controller
+      operationId: deleteStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/studentClass:
+    get:
+      tags:
+      - admin-student-class-controller
+      operationId: getStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-student-class-controller
+      operationId: editStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentClassCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-student-class-controller
+      operationId: createStudentClass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentClassCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-student-class-controller
+      operationId: deleteStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/rule:
+    get:
+      tags:
+      - admin-rule-controller
+      operationId: getRule
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-rule-controller
+      operationId: editRule
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-rule-controller
+      operationId: createRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-rule-controller
+      operationId: deleteRule_1
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/class:
+    get:
+      tags:
+      - admin-class-controller
+      operationId: getClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-class-controller
+      operationId: editClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-class-controller
+      operationId: createClass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-class-controller
+      operationId: deleteClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/classSize:
+    get:
+      tags:
+      - admin-settings-controller
+      operationId: getClassSizeSetting
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-settings-controller
+      operationId: editClassSizeSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditClassSizeRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/assignChoice:
+    put:
+      tags:
+      - admin-assign-choice-controller
+      operationId: assignChoice
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-assign-choice-controller
+      operationId: assignAlternateChoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlternateChoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-assign-choice-controller
+      operationId: deleteChoiceSelection
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/admin:
+    get:
+      tags:
+      - admin-admin-controller
+      description: Gets Admin
+      operationId: getAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "302":
+          description: FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+      - admin-admin-controller
+      description: Edit Admin
+      operationId: editAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-admin-controller
+      description: Signs up new Admin
+      operationId: createAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSignupRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-admin-controller
+      operationId: deleteAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/standardAdmin:
+    post:
+      tags:
+      - auth-rest-controller
+      operationId: createStandardAdmin
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/login:
+    post:
+      tags:
+      - auth-rest-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/lesson:
+    post:
+      tags:
+      - admin-lesson-controller
+      operationId: createLesson
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-lesson-controller
+      operationId: deleteLesson
+      parameters:
+      - name: lessonId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/csvTeachers:
+    post:
+      tags:
+      - admin-teacher-controller
+      operationId: importCsv
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/csvStudents:
+    post:
+      tags:
+      - admin-student-controller
+      operationId: importStudentsFromCsv
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCsvRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/student/tapeClasses:
+    get:
+      tags:
+      - student-choice-controller
+      operationId: getTapeClasses
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/student/subjectTapes:
+    get:
+      tags:
+      - student-choice-controller
+      operationId: getSubjectTapes
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/student/choices:
+    get:
+      tags:
+      - student-choice-controller
+      operationId: getChoice
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/student/choiceResult:
+    get:
+      tags:
+      - student-choice-controller
+      operationId: getChoiceResult
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/teachers:
+    get:
+      tags:
+      - admin-teacher-controller
+      operationId: getTeacher
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-teacher-controller
+      operationId: deleteTeachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/tapes:
+    get:
+      tags:
+      - admin-tape-controller
+      operationId: getAllTapes
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-tape-controller
+      operationId: deleteTapes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/subjects:
+    get:
+      tags:
+      - admin-subject-controller
+      operationId: getSubjects
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-subject-controller
+      operationId: deleteSubjects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/subjectAreas:
+    get:
+      tags:
+      - admin-subject-area-controller
+      operationId: getSubjectAreas
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-subject-area-controller
+      operationId: deleteSubjectArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/students:
+    get:
+      tags:
+      - admin-student-controller
+      operationId: getStudents
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-student-controller
+      operationId: deleteStudents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/studentClasses:
+    get:
+      tags:
+      - admin-student-class-controller
+      operationId: getAllStudentClasses
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-student-class-controller
+      operationId: deleteStudentClasses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/studentChoices:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      operationId: getStudentChoices
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/rules:
+    get:
+      tags:
+      - admin-rule-controller
+      operationId: getRules
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-rule-controller
+      operationId: deleteRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/result:
+    get:
+      tags:
+      - admin-choice-result-controller
+      operationId: getResultsForYear
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/classes:
+    get:
+      tags:
+      - admin-class-controller
+      operationId: getAllClasses
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-class-controller
+      operationId: deleteClasses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/classesStudents:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      operationId: getClassesWithChoices
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/choiceTapes:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      operationId: getTapes
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/choiceSurveillance:
+    get:
+      tags:
+      - admin-choice-surveillance-controller
+      operationId: getChoiceSurveillanceForStudents
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/admins:
+    get:
+      tags:
+      - admin-admin-controller
+      operationId: getAdmins
+      responses:
+        "302":
+          description: Found
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-admin-controller
+      operationId: deleteAdmins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/alternativeChoice:
+    delete:
+      tags:
+      - admin-assign-choice-controller
+      operationId: deleteAlternativeChoiceClass
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    AlterStudentChoiceRequest:
+      type: object
+      properties:
+        choiceNumber:
+          type: integer
+          format: int32
+        classId:
+          type: integer
+          format: int64
+    PasswordResetRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+    TeacherSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+        abbreviation:
+          type: string
+    TapeCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        lk:
+          type: boolean
+    SubjectCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectAreaId:
+          type: integer
+          format: int64
+    SubjectAreaCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+    StudentSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+        studentClassId:
+          type: integer
+          format: int64
+    StudentClassCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        teacherId:
+          type: integer
+          format: int64
+    RuleCreationRequest:
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int32
+        name:
+          type: string
+        subjectIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+    ClassCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        teacherId:
+          type: integer
+          format: int64
+        subjectId:
+          type: integer
+          format: int64
+        tapeId:
+          type: integer
+          format: int64
+    EditClassSizeRequest:
+      type: object
+      properties:
+        classSizeWarning:
+          type: integer
+          format: int32
+        classSizeCritical:
+          type: integer
+          format: int32
+    AdminSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LessonCreationRequest:
+      type: object
+      properties:
+        day:
+          type: integer
+          format: int32
+        hour:
+          type: integer
+          format: int32
+        tapeId:
+          type: integer
+          format: int64
+    StudentCsvRequest:
+      type: object
+      properties:
+        csv:
+          type: string
+        year:
+          type: integer
+          format: int32
+    AlternateChoiceRequest:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        studentId:
+          type: integer
+          format: int64
+    AdminResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: test.test
+        firstname:
+          type: string
+          example: Max
+        surname:
+          type: string
+          example: Mustermann
+        generatedPassword:
+          type: string
+          example: password123
+        adminId:
+          type: integer
+          format: int64
+          example: 1
+    DeleteClassFromChoiceRequest:
+      type: object
+      properties:
+        choiceId:
+          type: integer
+          format: int64
+        classId:
+          type: integer
+          format: int64

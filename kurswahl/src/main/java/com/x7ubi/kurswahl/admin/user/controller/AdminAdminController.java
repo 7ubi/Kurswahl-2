@@ -4,8 +4,13 @@ import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.user.request.AdminSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
 import com.x7ubi.kurswahl.admin.user.service.AdminCreationService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,105 +33,84 @@ public class AdminAdminController {
 
     @PostMapping("/admin")
     @AdminRequired
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(description = "Signs up new Admin")
     public ResponseEntity<?> createAdmin(
             @RequestBody AdminSignupRequest signupRequest
     ) {
         logger.info("Signing up new Admin");
-        try {
-            this.adminCreationService.registerAdmin(signupRequest);
+        this.adminCreationService.registerAdmin(signupRequest);
 
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/admin")
     @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Edit Admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Admin could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> editAdmin(
             @RequestParam Long adminId,
             @RequestBody AdminSignupRequest signupRequest
-    ) {
+    ) throws EntityNotFoundException {
         logger.info("Editing Admin");
-        try {
-            this.adminCreationService.editAdmin(adminId, signupRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        this.adminCreationService.editAdmin(adminId, signupRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/admin")
     @AdminRequired
+    @ResponseStatus(HttpStatus.FOUND)
+    @Operation(description = "Gets Admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "FOUND", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = AdminResponse.class), examples = @ExampleObject)}),
+            @ApiResponse(responseCode = "404", description = "Admin could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> getAdmin(
             @RequestParam Long adminId
-    ) {
+    ) throws EntityNotFoundException {
         logger.info("Getting Admin");
-        try {
-            AdminResponse response = this.adminCreationService.getAdmin(adminId);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        AdminResponse response = this.adminCreationService.getAdmin(adminId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/admin")
     @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteAdmin(
             @RequestParam Long adminId
-    ) {
+    ) throws EntityNotFoundException {
         logger.info("Deleting Admin");
 
-        try {
-            List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmin(adminId);
-            return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmin(adminId);
+        return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
     }
 
     @GetMapping("/admins")
     @AdminRequired
+    @ResponseStatus(HttpStatus.FOUND)
     public ResponseEntity<?> getAdmins() {
         logger.info("Getting all Admins");
-        try {
-            List<AdminResponse> adminResponses = this.adminCreationService.getAllAdmins();
+        List<AdminResponse> adminResponses = this.adminCreationService.getAllAdmins();
 
-            return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
     }
 
     @DeleteMapping("/admins")
     @AdminRequired
-    public ResponseEntity<?> deleteAdmins(@RequestBody List<Long> adminIds) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> deleteAdmins(@RequestBody List<Long> adminIds) throws EntityNotFoundException {
         logger.info("Deleting Admins");
-        try {
-            List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmins(adminIds);
+        List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmins(adminIds);
 
-            return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(adminResponses);
     }
-
 }
