@@ -4,8 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema
 public class AdminResponse extends UserResponse {
-
-    @Schema(type = "Long", example = "1")
+    
     Long adminId;
 
     public AdminResponse() {

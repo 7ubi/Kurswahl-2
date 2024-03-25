@@ -6,8 +6,8 @@ import com.x7ubi.kurswahl.admin.user.response.AdminResponse;
 import com.x7ubi.kurswahl.admin.user.service.AdminCreationService;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,21 +27,24 @@ public class AdminAdminController {
 
     private final AdminCreationService adminCreationService;
 
-    public AdminAdminController(AdminCreationService adminCreationService) {
-        this.adminCreationService = adminCreationService;
-    }
-
     @PostMapping("/admin")
     @AdminRequired
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Signs up new Admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Signed up new Admin")
+    })
     public ResponseEntity<?> createAdmin(
             @RequestBody AdminSignupRequest signupRequest
     ) {
         logger.info("Signing up new Admin");
         this.adminCreationService.registerAdmin(signupRequest);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    public AdminAdminController(AdminCreationService adminCreationService) {
+        this.adminCreationService = adminCreationService;
     }
 
     @PutMapping("/admin")
@@ -65,11 +68,11 @@ public class AdminAdminController {
 
     @GetMapping("/admin")
     @AdminRequired
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Gets Admin")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "FOUND", content =
-                    {@Content(mediaType = "application/json", schema = @Schema(implementation = AdminResponse.class), examples = @ExampleObject)}),
+            @ApiResponse(responseCode = "200", description = "Found Admin", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = AdminResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Admin could not be found.", content =
                     {@Content(mediaType = "application/json", schema =
                     @Schema(implementation = String.class))})
@@ -85,6 +88,14 @@ public class AdminAdminController {
     @DeleteMapping("/admin")
     @AdminRequired
     @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deletes Admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted Admin", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = AdminResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Admin could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> deleteAdmin(
             @RequestParam Long adminId
     ) throws EntityNotFoundException {
@@ -96,7 +107,13 @@ public class AdminAdminController {
 
     @GetMapping("/admins")
     @AdminRequired
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Get all Admins")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all Admins", content =
+                    {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = AdminResponse.class)))})
+    })
     public ResponseEntity<?> getAdmins() {
         logger.info("Getting all Admins");
         List<AdminResponse> adminResponses = this.adminCreationService.getAllAdmins();
@@ -107,6 +124,15 @@ public class AdminAdminController {
     @DeleteMapping("/admins")
     @AdminRequired
     @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Delete List of Admins")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted List of Admins", content =
+                    {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = AdminResponse.class)))}),
+            @ApiResponse(responseCode = "404", description = "An Admin could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> deleteAdmins(@RequestBody List<Long> adminIds) throws EntityNotFoundException {
         logger.info("Deleting Admins");
         List<AdminResponse> adminResponses = this.adminCreationService.deleteAdmins(adminIds);

@@ -136,6 +136,7 @@ paths:
     get:
       tags:
       - admin-teacher-controller
+      description: Getting Teacher
       operationId: getTeacher_1
       parameters:
       - name: teacherId
@@ -145,15 +146,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Teacher could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
     put:
       tags:
       - admin-teacher-controller
+      description: Editing Teacher
       operationId: editTeacher
       parameters:
       - name: teacherId
@@ -169,8 +177,14 @@ paths:
               $ref: '#/components/schemas/TeacherSignupRequest'
         required: true
       responses:
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited Teacher
           content:
             '*/*':
               schema:
@@ -178,6 +192,7 @@ paths:
     post:
       tags:
       - admin-teacher-controller
+      description: Signing up new Teacher
       operationId: createTeacher
       requestBody:
         content:
@@ -186,8 +201,8 @@ paths:
               $ref: '#/components/schemas/TeacherSignupRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Signed up new Teacher
           content:
             '*/*':
               schema:
@@ -195,6 +210,7 @@ paths:
     delete:
       tags:
       - admin-teacher-controller
+      description: Getting Teacher
       operationId: deleteTeacher
       parameters:
       - name: teacherId
@@ -204,12 +220,25 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Teacher could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
+        "409":
+          description: "Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/tape:
     get:
       tags:
@@ -448,6 +477,7 @@ paths:
     get:
       tags:
       - admin-student-controller
+      description: Getting Student
       operationId: getStudent
       parameters:
       - name: studentId
@@ -458,14 +488,21 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Found Student
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-student-controller
+      description: Editing Student
       operationId: editStudent
       parameters:
       - name: studentId
@@ -481,8 +518,14 @@ paths:
               $ref: '#/components/schemas/StudentSignupRequest'
         required: true
       responses:
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited Student
           content:
             '*/*':
               schema:
@@ -490,6 +533,7 @@ paths:
     post:
       tags:
       - admin-student-controller
+      description: Signing up new Student
       operationId: createStudent
       requestBody:
         content:
@@ -498,8 +542,14 @@ paths:
               $ref: '#/components/schemas/StudentSignupRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: StudentClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "201":
+          description: Signed up new Student
           content:
             '*/*':
               schema:
@@ -507,6 +557,7 @@ paths:
     delete:
       tags:
       - admin-student-controller
+      description: Deleting Student
       operationId: deleteStudent
       parameters:
       - name: studentId
@@ -517,11 +568,19 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted Student
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/studentClass:
     get:
       tags:
@@ -853,18 +912,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "302":
-          description: FOUND
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminResponse'
         "404":
           description: Admin could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Found Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
     put:
       tags:
       - admin-admin-controller
@@ -909,7 +968,7 @@ paths:
         required: true
       responses:
         "201":
-          description: Created
+          description: Signed up new Admin
           content:
             '*/*':
               schema:
@@ -917,6 +976,7 @@ paths:
     delete:
       tags:
       - admin-admin-controller
+      description: Deletes Admin
       operationId: deleteAdmin
       parameters:
       - name: adminId
@@ -927,11 +987,17 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted Admin
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/auth/standardAdmin:
     post:
       tags:
@@ -1002,6 +1068,7 @@ paths:
     post:
       tags:
       - admin-teacher-controller
+      description: Importing Teachers from csv file
       operationId: importCsv
       requestBody:
         content:
@@ -1010,16 +1077,19 @@ paths:
               type: string
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created Teachers from csv
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
   /api/admin/csvStudents:
     post:
       tags:
       - admin-student-controller
+      description: Importing Students from csv file
       operationId: importStudentsFromCsv
       requestBody:
         content:
@@ -1028,12 +1098,14 @@ paths:
               $ref: '#/components/schemas/StudentCsvRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created Students from csv
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
   /api/student/tapeClasses:
     get:
       tags:
@@ -1110,17 +1182,21 @@ paths:
     get:
       tags:
       - admin-teacher-controller
+      description: Getting all teachers
       operationId: getTeacher
       responses:
         "200":
-          description: OK
+          description: Found all Teachers
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
     delete:
       tags:
       - admin-teacher-controller
+      description: Deleting list of Teachers
       operationId: deleteTeachers
       requestBody:
         content:
@@ -1132,12 +1208,27 @@ paths:
                 format: int64
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: A Teacher could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "409":
+          description: "A Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted selected Teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
   /api/admin/tapes:
     get:
       tags:
@@ -1245,17 +1336,21 @@ paths:
     get:
       tags:
       - admin-student-controller
+      description: Getting all Students
       operationId: getStudents
       responses:
         "200":
-          description: OK
+          description: Found all Students
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
     delete:
       tags:
       - admin-student-controller
+      description: Deleting list of Students
       operationId: deleteStudents
       requestBody:
         content:
@@ -1268,11 +1363,19 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted selected Students
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: A student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/studentClasses:
     get:
       tags:
@@ -1475,17 +1578,21 @@ paths:
     get:
       tags:
       - admin-admin-controller
+      description: Get all Admins
       operationId: getAdmins
       responses:
-        "302":
-          description: Found
+        "200":
+          description: Found all Admins
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminResponse'
     delete:
       tags:
       - admin-admin-controller
+      description: Delete List of Admins
       operationId: deleteAdmins
       requestBody:
         content:
@@ -1498,11 +1605,19 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted List of Admins
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: An Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/alternativeChoice:
     delete:
       tags:
@@ -1661,6 +1776,25 @@ components:
         tapeId:
           type: integer
           format: int64
+    TeacherResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        teacherId:
+          type: integer
+          format: int64
+        abbreviation:
+          type: string
     StudentCsvRequest:
       type: object
       properties:
@@ -1669,6 +1803,45 @@ components:
         year:
           type: integer
           format: int32
+    StudentClassResponse:
+      type: object
+      properties:
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentResponse'
+        teacher:
+          $ref: '#/components/schemas/TeacherResponse'
+        year:
+          type: integer
+          format: int32
+        releaseYear:
+          type: integer
+          format: int32
+    StudentResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassResponse:
+          $ref: '#/components/schemas/StudentClassResponse'
     AlternateChoiceRequest:
       type: object
       properties:
@@ -1684,23 +1857,17 @@ components:
         userId:
           type: integer
           format: int64
-          example: 1
         username:
           type: string
-          example: test.test
         firstname:
           type: string
-          example: Max
         surname:
           type: string
-          example: Mustermann
         generatedPassword:
           type: string
-          example: password123
         adminId:
           type: integer
           format: int64
-          example: 1
     DeleteClassFromChoiceRequest:
       type: object
       properties:
