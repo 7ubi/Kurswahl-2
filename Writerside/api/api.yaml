@@ -74,6 +74,7 @@ paths:
     put:
       tags:
       - auth-rest-controller
+      description: Resetting Password of User List
       operationId: resetPasswords
       requestBody:
         content:
@@ -85,15 +86,22 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Reset Password of Users.
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/auth/resetPassword:
     put:
       tags:
       - auth-rest-controller
+      description: Resetting Password of User
       operationId: resetPassword
       requestBody:
         content:
@@ -102,8 +110,14 @@ paths:
               $ref: '#/components/schemas/PasswordResetRequest'
         required: true
       responses:
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Reset Password of User.
           content:
             '*/*':
               schema:
@@ -112,6 +126,7 @@ paths:
     put:
       tags:
       - auth-rest-controller
+      description: Changing Password of User
       operationId: changePassword
       parameters:
       - name: Authorization
@@ -127,11 +142,23 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Changed Password of User.
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Old Password was not correct
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/teacher:
     get:
       tags:
@@ -177,18 +204,18 @@ paths:
               $ref: '#/components/schemas/TeacherSignupRequest'
         required: true
       responses:
-        "404":
-          description: Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Edited Teacher
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     post:
       tags:
       - admin-teacher-controller
@@ -226,12 +253,6 @@ paths:
             application/json:
               schema:
                 type: string
-        "200":
-          description: Found Teacher
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeacherResponse'
         "409":
           description: "Teacher could not be deleted, because it is still used in\
             \ a StudentClass."
@@ -239,6 +260,12 @@ paths:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
   /api/admin/tape:
     get:
       tags:
@@ -567,6 +594,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Deleted Student
           content:
@@ -575,12 +608,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentResponse'
-        "404":
-          description: Student could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
   /api/admin/studentClass:
     get:
       tags:
@@ -943,18 +970,18 @@ paths:
               $ref: '#/components/schemas/AdminSignupRequest'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: object
         "404":
           description: Admin could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
     post:
       tags:
       - admin-admin-controller
@@ -986,26 +1013,28 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Deleted Admin
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminResponse'
         "404":
           description: Admin could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Deleted Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
   /api/auth/standardAdmin:
     post:
       tags:
       - auth-rest-controller
+      description: Creating Standard Admin
       operationId: createStandardAdmin
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created Standard Admin. The username ist admin. The Password
+            can be found in the logs.
           content:
             '*/*':
               schema:
@@ -1014,6 +1043,7 @@ paths:
     post:
       tags:
       - auth-rest-controller
+      description: Logging in User
       operationId: login
       requestBody:
         content:
@@ -1022,12 +1052,18 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "401":
+          description: Bad credentials. User was not logged in
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: User was logged in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
   /api/admin/lesson:
     post:
       tags:
@@ -1208,12 +1244,6 @@ paths:
                 format: int64
         required: true
       responses:
-        "404":
-          description: A Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "409":
           description: "A Teacher could not be deleted, because it is still used in\
             \ a StudentClass."
@@ -1229,6 +1259,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: A Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/tapes:
     get:
       tags:
@@ -1764,6 +1800,29 @@ components:
           type: string
         password:
           type: string
+    JwtResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        type:
+          type: string
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          type: string
+          enum:
+          - ADMIN
+          - TEACHER
+          - STUDENT
+          - NOROLE
+        name:
+          type: string
+        changedPassword:
+          type: boolean
     LessonCreationRequest:
       type: object
       properties:
