@@ -10,6 +10,7 @@ paths:
     get:
       tags:
       - student-choice-controller
+      description: Getting choice of Students
       operationId: getChoice_1
       parameters:
       - name: Authorization
@@ -24,15 +25,22 @@ paths:
           type: integer
           format: int32
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Student could not be found
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
     put:
       tags:
       - student-choice-controller
+      description: Altering Choice of Student
       operationId: alterChoice
       parameters:
       - name: Authorization
@@ -47,15 +55,28 @@ paths:
               $ref: '#/components/schemas/AlterStudentChoiceRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Student could not be found
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Altered Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
+        "401":
+          description: Student can only alter a Choice with Choice number 1 or 2
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - student-choice-controller
+      description: Deleting class from choice of Students
       operationId: deleteClassFromChoice
       requestBody:
         content:
@@ -64,12 +85,18 @@ paths:
               $ref: '#/components/schemas/DeleteClassFromChoiceRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Class was not in Student's choice.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Deleted class Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
   /api/auth/resetPasswords:
     put:
       tags:
@@ -173,18 +200,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Teacher
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-teacher-controller
@@ -247,6 +274,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
         "404":
           description: Teacher could not be found.
           content:
@@ -260,12 +293,6 @@ paths:
             application/json:
               schema:
                 type: string
-        "200":
-          description: Found Teacher
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeacherResponse'
   /api/admin/tape:
     get:
       tags:
@@ -594,12 +621,6 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Student could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Deleted Student
           content:
@@ -608,6 +629,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/studentClass:
     get:
       tags:
@@ -1052,18 +1079,18 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
-        "401":
-          description: Bad credentials. User was not logged in
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: User was logged in.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JwtResponse'
+        "401":
+          description: Bad credentials. User was not logged in
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/lesson:
     post:
       tags:
@@ -1146,6 +1173,7 @@ paths:
     get:
       tags:
       - student-choice-controller
+      description: Getting all tapes for Student's year
       operationId: getTapeClasses
       parameters:
       - name: Authorization
@@ -1155,15 +1183,24 @@ paths:
           type: string
       responses:
         "200":
-          description: OK
+          description: Found all tapes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeClassResponse'
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
   /api/student/subjectTapes:
     get:
       tags:
       - student-choice-controller
+      description: Getting all subjects with the tapes they are on for Student's year
       operationId: getSubjectTapes
       parameters:
       - name: Authorization
@@ -1173,15 +1210,24 @@ paths:
           type: string
       responses:
         "200":
-          description: OK
+          description: Got all subjects with the tapes they are on for Student's year
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectTapeResponse'
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
   /api/student/choices:
     get:
       tags:
       - student-choice-controller
+      description: Getting choices of Student
       operationId: getChoice
       parameters:
       - name: Authorization
@@ -1191,15 +1237,24 @@ paths:
           type: string
       responses:
         "200":
-          description: OK
+          description: Found Choices of Student
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceResponse'
+        "404":
+          description: Student does not have a first and second choice
+          content:
+            application/json:
+              schema:
+                type: string
   /api/student/choiceResult:
     get:
       tags:
       - student-choice-controller
+      description: Getting results of Student
       operationId: getChoiceResult
       parameters:
       - name: Authorization
@@ -1208,12 +1263,20 @@ paths:
         schema:
           type: string
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Student could not be found
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found results of Student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceResponse'
   /api/admin/teachers:
     get:
       tags:
@@ -1684,6 +1747,48 @@ components:
         classId:
           type: integer
           format: int64
+    ChoiceResponse:
+      type: object
+      properties:
+        choiceId:
+          type: integer
+          format: int64
+        choiceNumber:
+          type: integer
+          format: int32
+        classChoiceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassChoiceResponse'
+        ruleResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleResponse'
+    ClassChoiceResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tapeId:
+          type: integer
+          format: int64
+    RuleResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectResponse'
+    SubjectResponse:
+      type: object
+      properties:
+        name:
+          type: string
     PasswordResetRequest:
       type: object
       properties:
@@ -1910,6 +2015,55 @@ components:
         studentId:
           type: integer
           format: int64
+    ClassResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+    LessonResponse:
+      type: object
+      properties:
+        day:
+          type: integer
+          format: int32
+        hour:
+          type: integer
+          format: int32
+    TapeClassResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        classResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassResponse'
+        lessonResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonResponse'
+    SubjectTapeResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        tapeResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/TapeResponse'
+    TapeResponse:
+      type: object
+      properties:
+        name:
+          type: string
     AdminResponse:
       type: object
       properties:
