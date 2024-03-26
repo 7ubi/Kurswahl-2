@@ -6,7 +6,6 @@ import com.x7ubi.kurswahl.admin.user.request.StudentSignupRequest;
 import com.x7ubi.kurswahl.admin.user.response.StudentResponse;
 import com.x7ubi.kurswahl.admin.user.service.StudentCreationService;
 import com.x7ubi.kurswahl.admin.user.service.StudentCsvService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -90,7 +89,7 @@ public class AdminStudentController {
                     {@Content(mediaType = "application/json", schema =
                     @Schema(implementation = String.class))})
     })
-    public ResponseEntity<?> getStudent(@RequestParam Long studentId) throws EntityNotFoundException {
+    public ResponseEntity<StudentResponse> getStudent(@RequestParam Long studentId) throws EntityNotFoundException {
         logger.info("Getting Student");
 
         StudentResponse response = this.studentCreationService.getStudent(studentId);
@@ -109,7 +108,7 @@ public class AdminStudentController {
                     {@Content(mediaType = "application/json", schema =
                     @Schema(implementation = String.class))})
     })
-    public ResponseEntity<?> deleteStudent(@RequestParam Long studentId) throws EntityNotFoundException {
+    public ResponseEntity<List<StudentResponse>> deleteStudent(@RequestParam Long studentId) throws EntityNotFoundException {
         logger.info("Deleting Student");
 
         List<StudentResponse> response = this.studentCreationService.deleteStudent(studentId);
@@ -125,7 +124,7 @@ public class AdminStudentController {
                     {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = StudentResponse.class)))})
     })
-    public ResponseEntity<?> getStudents() {
+    public ResponseEntity<List<StudentResponse>> getStudents() {
         logger.info("Getting all Students");
 
         List<StudentResponse> responses = this.studentCreationService.getAllStudents();
@@ -145,21 +144,13 @@ public class AdminStudentController {
                     {@Content(mediaType = "application/json", schema =
                     @Schema(implementation = String.class))})
     })
-    public ResponseEntity<?> deleteStudents(
+    public ResponseEntity<List<StudentResponse>> deleteStudents(
             @RequestBody List<Long> studentIds
-    ) {
+    ) throws EntityNotFoundException {
         logger.info("Deleting Students");
 
-        try {
-            List<StudentResponse> response = this.studentCreationService.deleteStudents(studentIds);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<StudentResponse> response = this.studentCreationService.deleteStudents(studentIds);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/csvStudents")
@@ -171,7 +162,7 @@ public class AdminStudentController {
                     {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = StudentResponse.class)))})
     })
-    public ResponseEntity<?> importStudentsFromCsv(@RequestBody StudentCsvRequest studentCsvRequest) {
+    public ResponseEntity<List<StudentResponse>> importStudentsFromCsv(@RequestBody StudentCsvRequest studentCsvRequest) {
         logger.info("Importing Students from csv");
 
         List<StudentResponse> response = this.studentCsvService.importCsv(studentCsvRequest);

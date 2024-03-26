@@ -25,18 +25,18 @@ paths:
           type: integer
           format: int32
       responses:
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Choice of Student
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChoiceResponse'
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - student-choice-controller
@@ -55,12 +55,6 @@ paths:
               $ref: '#/components/schemas/AlterStudentChoiceRequest'
         required: true
       responses:
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Altered Choice of Student
           content:
@@ -69,6 +63,12 @@ paths:
                 $ref: '#/components/schemas/ChoiceResponse'
         "401":
           description: Student can only alter a Choice with Choice number 1 or 2
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Student could not be found
           content:
             application/json:
               schema:
@@ -85,18 +85,18 @@ paths:
               $ref: '#/components/schemas/DeleteClassFromChoiceRequest'
         required: true
       responses:
-        "404":
-          description: Class was not in Student's choice.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Deleted class Choice of Student
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChoiceResponse'
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
   /api/auth/resetPasswords:
     put:
       tags:
@@ -200,18 +200,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Found Teacher
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeacherResponse'
         "404":
           description: Teacher could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
     put:
       tags:
       - admin-teacher-controller
@@ -274,18 +274,6 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Found Teacher
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeacherResponse'
-        "404":
-          description: Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "409":
           description: "Teacher could not be deleted, because it is still used in\
             \ a StudentClass."
@@ -293,6 +281,18 @@ paths:
             application/json:
               schema:
                 type: string
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
   /api/admin/tape:
     get:
       tags:
@@ -902,6 +902,7 @@ paths:
     put:
       tags:
       - admin-assign-choice-controller
+      description: Assigning ChoiceClass to student
       operationId: assignChoice
       parameters:
       - name: choiceClassId
@@ -911,15 +912,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: ChoiceClass could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Assigned ChoiceClass to student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
     post:
       tags:
       - admin-assign-choice-controller
+      description: Assigning alternate Choice to student
       operationId: assignAlternateChoice
       requestBody:
         content:
@@ -928,15 +936,22 @@ paths:
               $ref: '#/components/schemas/AlternateChoiceRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Class could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Assigned alternate Choice to student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
     delete:
       tags:
       - admin-assign-choice-controller
+      description: Deleting ChoiceClass selection from student
       operationId: deleteChoiceSelection
       parameters:
       - name: choiceClassId
@@ -947,11 +962,17 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleting ChoiceClass selection from student
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: ChoiceClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/admin:
     get:
       tags:
@@ -966,18 +987,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Admin could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Admin
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-admin-controller
@@ -997,18 +1018,18 @@ paths:
               $ref: '#/components/schemas/AdminSignupRequest'
         required: true
       responses:
-        "404":
-          description: Admin could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: OK
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     post:
       tags:
       - admin-admin-controller
@@ -1040,18 +1061,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Admin could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Deleted Admin
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/auth/standardAdmin:
     post:
       tags:
@@ -1236,6 +1257,12 @@ paths:
         schema:
           type: string
       responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Found Choices of Student
           content:
@@ -1244,12 +1271,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ChoiceResponse'
-        "404":
-          description: Student does not have a first and second choice
-          content:
-            application/json:
-              schema:
-                type: string
   /api/student/choiceResult:
     get:
       tags:
@@ -1263,12 +1284,6 @@ paths:
         schema:
           type: string
       responses:
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found results of Student
           content:
@@ -1277,6 +1292,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ChoiceResponse'
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/teachers:
     get:
       tags:
@@ -1307,9 +1328,8 @@ paths:
                 format: int64
         required: true
       responses:
-        "409":
-          description: "A Teacher could not be deleted, because it is still used in\
-            \ a StudentClass."
+        "404":
+          description: A Teacher could not be found.
           content:
             application/json:
               schema:
@@ -1322,8 +1342,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeacherResponse'
-        "404":
-          description: A Teacher could not be found.
+        "409":
+          description: "A Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
           content:
             application/json:
               schema:
@@ -1461,6 +1482,12 @@ paths:
                 format: int64
         required: true
       responses:
+        "404":
+          description: A student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Deleted selected Students
           content:
@@ -1469,12 +1496,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentResponse'
-        "404":
-          description: A student could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
   /api/admin/studentClasses:
     get:
       tags:
@@ -1511,6 +1532,7 @@ paths:
     get:
       tags:
       - admin-assign-choice-controller
+      description: Getting choices of student
       operationId: getStudentChoices
       parameters:
       - name: studentId
@@ -1520,12 +1542,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Student could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found Choices of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
   /api/admin/rules:
     get:
       tags:
@@ -1569,6 +1597,7 @@ paths:
     get:
       tags:
       - admin-choice-result-controller
+      description: Get results
       operationId: getResultsForYear
       parameters:
       - name: year
@@ -1579,11 +1608,11 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Got results
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ChoiceResultResponse'
   /api/admin/classes:
     get:
       tags:
@@ -1627,7 +1656,8 @@ paths:
     get:
       tags:
       - admin-assign-choice-controller
-      operationId: getClassesWithChoices
+      description: Get all classes with students
+      operationId: getClassesWithStudents
       parameters:
       - name: year
         in: query
@@ -1637,15 +1667,18 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Found all classes with Students
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassStudentsResponse'
   /api/admin/choiceTapes:
     get:
       tags:
       - admin-assign-choice-controller
+      description: Get all tapes by year
       operationId: getTapes
       parameters:
       - name: year
@@ -1656,23 +1689,28 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Found all tapes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceTapeResponse'
   /api/admin/choiceSurveillance:
     get:
       tags:
       - admin-choice-surveillance-controller
+      description: Get choice surveillance
       operationId: getChoiceSurveillanceForStudents
       responses:
         "200":
-          description: OK
+          description: Got if students have chosen and fulfilled the rules.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceSurveillanceResponse'
   /api/admin/admins:
     get:
       tags:
@@ -1721,6 +1759,7 @@ paths:
     delete:
       tags:
       - admin-assign-choice-controller
+      description: Deleting alternate Choice from student
       operationId: deleteAlternativeChoiceClass
       parameters:
       - name: choiceClassId
@@ -1731,11 +1770,17 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted alternate Choice from student
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: ChoiceClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
 components:
   schemas:
     AlterStudentChoiceRequest:
@@ -1750,9 +1795,6 @@ components:
     ChoiceResponse:
       type: object
       properties:
-        choiceId:
-          type: integer
-          format: int64
         choiceNumber:
           type: integer
           format: int32
@@ -1760,21 +1802,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ClassChoiceResponse'
-        ruleResponses:
-          type: array
-          items:
-            $ref: '#/components/schemas/RuleResponse'
     ClassChoiceResponse:
       type: object
       properties:
         classId:
           type: integer
           format: int64
+        choiceClassId:
+          type: integer
+          format: int64
+        selected:
+          type: boolean
         name:
           type: string
         tapeId:
           type: integer
           format: int64
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
     RuleResponse:
       type: object
       properties:
@@ -1891,6 +1936,58 @@ components:
         classSizeCritical:
           type: integer
           format: int32
+    StudentChoicesResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        ruleResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleResponse'
+        choiceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChoiceResponse'
+    TeacherResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        teacherId:
+          type: integer
+          format: int64
+        abbreviation:
+          type: string
     AdminSignupRequest:
       type: object
       properties:
@@ -1940,25 +2037,6 @@ components:
         tapeId:
           type: integer
           format: int64
-    TeacherResponse:
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int64
-        username:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        generatedPassword:
-          type: string
-        teacherId:
-          type: integer
-          format: int64
-        abbreviation:
-          type: string
     StudentCsvRequest:
       type: object
       properties:
@@ -2064,6 +2142,99 @@ components:
       properties:
         name:
           type: string
+    ChoiceResultResponse:
+      type: object
+      properties:
+        studentsNotFulfilledRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        studentsNotChosen:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        classStudentsResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassStudentsResponse'
+    ClassStudentsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+        studentSurveillanceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        tapeName:
+          type: string
+        sizeWarning:
+          type: boolean
+        sizeCritical:
+          type: boolean
+    StudentSurveillanceResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+    ChoiceTapeClassResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+    ChoiceTapeResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        choiceTapeClassResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChoiceTapeClassResponse'
+        choiceTapeClassResponse:
+          type: array
+          writeOnly: true
+          items:
+            $ref: '#/components/schemas/ChoiceTapeClassResponse'
+    ChoiceSurveillanceResponse:
+      type: object
+      properties:
+        studentSurveillanceResponse:
+          $ref: '#/components/schemas/StudentSurveillanceResponse'
+        chosen:
+          type: boolean
+        fulfilledRules:
+          type: boolean
     AdminResponse:
       type: object
       properties:
