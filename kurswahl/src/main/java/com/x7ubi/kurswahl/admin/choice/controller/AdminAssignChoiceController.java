@@ -81,7 +81,7 @@ public class AdminAssignChoiceController {
                     {@Content(mediaType = "application/json", schema =
                     @Schema(implementation = String.class))})
     })
-    public ResponseEntity<?> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) throws EntityNotFoundException {
+    public ResponseEntity<StudentChoicesResponse> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) throws EntityNotFoundException {
         logger.info("Assigning alternate Choice to Student");
 
         StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(alternateChoiceRequest);

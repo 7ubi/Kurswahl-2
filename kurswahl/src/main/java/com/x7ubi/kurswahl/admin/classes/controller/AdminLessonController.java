@@ -4,9 +4,14 @@ import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.LessonCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.TapeResponse;
 import com.x7ubi.kurswahl.admin.classes.service.LessonCreationService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,39 +34,43 @@ public class AdminLessonController {
 
     @PostMapping("lesson")
     @AdminRequired
-    public ResponseEntity<?> createLesson(@RequestBody LessonCreationRequest lessonCreationRequest) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Creating new lesson")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Created new lesson", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TapeResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Tape could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Lesson is not available.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<List<TapeResponse>> createLesson(@RequestBody LessonCreationRequest lessonCreationRequest) throws EntityNotFoundException, EntityCreationException {
         logger.info("Creating new Lesson");
 
-        try {
-            List<TapeResponse> responses = this.lessonCreationService.createLesson(lessonCreationRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityCreationException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<TapeResponse> responses = this.lessonCreationService.createLesson(lessonCreationRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @DeleteMapping("lesson")
     @AdminRequired
-    public ResponseEntity<?> deleteLesson(@RequestParam Long lessonId) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deleting lesson")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted lesson", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TapeResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Lesson could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<List<TapeResponse>> deleteLesson(@RequestParam Long lessonId) throws EntityNotFoundException {
 
         logger.info("Deleting Lesson");
 
-        try {
-            List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lessonId);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lessonId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 }

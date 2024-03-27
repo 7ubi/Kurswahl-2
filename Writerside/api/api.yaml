@@ -25,18 +25,18 @@ paths:
           type: integer
           format: int32
       responses:
-        "200":
-          description: Found Choice of Student
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChoiceResponse'
         "404":
           description: Student could not be found
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Found Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
     put:
       tags:
       - student-choice-controller
@@ -55,6 +55,12 @@ paths:
               $ref: '#/components/schemas/AlterStudentChoiceRequest'
         required: true
       responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Altered Choice of Student
           content:
@@ -63,12 +69,6 @@ paths:
                 $ref: '#/components/schemas/ChoiceResponse'
         "401":
           description: Student can only alter a Choice with Choice number 1 or 2
-          content:
-            application/json:
-              schema:
-                type: string
-        "404":
-          description: Student could not be found
           content:
             application/json:
               schema:
@@ -85,18 +85,18 @@ paths:
               $ref: '#/components/schemas/DeleteClassFromChoiceRequest'
         required: true
       responses:
+        "404":
+          description: Class was not in Student's choice.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Deleted class Choice of Student
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChoiceResponse'
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
   /api/auth/resetPasswords:
     put:
       tags:
@@ -200,18 +200,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Teacher
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-teacher-controller
@@ -281,22 +281,23 @@ paths:
             application/json:
               schema:
                 type: string
-        "404":
-          description: Teacher could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Teacher
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/tape:
     get:
       tags:
       - admin-tape-controller
+      description: Getting tape
       operationId: getTape
       parameters:
       - name: tapeId
@@ -307,14 +308,21 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Found tape
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-tape-controller
+      description: Editing tape
       operationId: editTape
       parameters:
       - name: tapeId
@@ -331,14 +339,27 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Edited tape
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Tape already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     post:
       tags:
       - admin-tape-controller
+      description: Create new tape
       operationId: createTape
       requestBody:
         content:
@@ -347,15 +368,22 @@ paths:
               $ref: '#/components/schemas/TapeCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created new tape
           content:
             '*/*':
               schema:
                 type: object
+        "400":
+          description: Tape already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-tape-controller
+      description: Deleting tape
       operationId: deleteTape
       parameters:
       - name: tapeId
@@ -366,15 +394,24 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted tape
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/subject:
     get:
       tags:
       - admin-subject-controller
+      description: Getting subject
       operationId: getSubject
       parameters:
       - name: subjectId
@@ -384,15 +421,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Subject could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found subject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectResponse'
     put:
       tags:
       - admin-subject-controller
+      description: Editing subject
       operationId: editSubject
       parameters:
       - name: subjectId
@@ -408,15 +452,28 @@ paths:
               $ref: '#/components/schemas/SubjectCreationRequest'
         required: true
       responses:
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited subject
           content:
             '*/*':
               schema:
                 type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     post:
       tags:
       - admin-subject-controller
+      description: Create new subject
       operationId: createSubject
       requestBody:
         content:
@@ -425,15 +482,28 @@ paths:
               $ref: '#/components/schemas/SubjectCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "201":
+          description: Created new subject
           content:
             '*/*':
               schema:
                 type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-subject-controller
+      description: Deleting subject
       operationId: deleteSubject
       parameters:
       - name: subjectId
@@ -444,15 +514,24 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted subject
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/subjectArea:
     get:
       tags:
       - admin-subject-area-controller
+      description: Getting subject area
       operationId: getSubjectArea
       parameters:
       - name: subjectAreaId
@@ -462,15 +541,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Subject area could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found subject area
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectAreaResponse'
     put:
       tags:
       - admin-subject-area-controller
+      description: Editing subject area
       operationId: editSubjectArea
       parameters:
       - name: subjectAreaId
@@ -486,15 +572,28 @@ paths:
               $ref: '#/components/schemas/SubjectAreaCreationRequest'
         required: true
       responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited subject area
           content:
             '*/*':
               schema:
                 type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     post:
       tags:
       - admin-subject-area-controller
+      description: Create new subject area
       operationId: createSubjectArea
       requestBody:
         content:
@@ -503,15 +602,22 @@ paths:
               $ref: '#/components/schemas/SubjectAreaCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created new subject area
           content:
             '*/*':
               schema:
                 type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-subject-area-controller
+      description: Deleting subject area
       operationId: deleteSubjectArea_1
       parameters:
       - name: subjectAreaId
@@ -521,12 +627,20 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Subject area could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Deleted subject area
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
   /api/admin/student:
     get:
       tags:
@@ -596,18 +710,18 @@ paths:
               $ref: '#/components/schemas/StudentSignupRequest'
         required: true
       responses:
-        "404":
-          description: StudentClass could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "201":
           description: Signed up new Student
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: StudentClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-student-controller
@@ -639,6 +753,7 @@ paths:
     get:
       tags:
       - admin-student-class-controller
+      description: Getting student class
       operationId: getStudentClass
       parameters:
       - name: studentClassId
@@ -649,14 +764,21 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Found student class
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     put:
       tags:
       - admin-student-class-controller
+      description: Editing student class
       operationId: editStudentClass
       parameters:
       - name: studentClassId
@@ -672,8 +794,20 @@ paths:
               $ref: '#/components/schemas/StudentClassCreationRequest'
         required: true
       responses:
+        "400":
+          description: A student class with this name already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited student class
           content:
             '*/*':
               schema:
@@ -681,6 +815,7 @@ paths:
     post:
       tags:
       - admin-student-class-controller
+      description: Create a new student class
       operationId: createStudentClass
       requestBody:
         content:
@@ -689,15 +824,28 @@ paths:
               $ref: '#/components/schemas/StudentClassCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "400":
+          description: A student class with this name already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "201":
+          description: Created new student class
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-student-class-controller
+      description: Deleting student class
       operationId: deleteStudentClass
       parameters:
       - name: studentClassId
@@ -708,15 +856,24 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted student class
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/rule:
     get:
       tags:
       - admin-rule-controller
+      description: Getting rule
       operationId: getRule
       parameters:
       - name: ruleId
@@ -726,15 +883,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Rule could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
     put:
       tags:
       - admin-rule-controller
+      description: Editing rule
       operationId: editRule
       parameters:
       - name: ruleId
@@ -750,15 +914,28 @@ paths:
               $ref: '#/components/schemas/RuleCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Rule could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "400":
+          description: Rule already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
     post:
       tags:
       - admin-rule-controller
+      description: Getting rule
       operationId: createRule
       requestBody:
         content:
@@ -767,8 +944,20 @@ paths:
               $ref: '#/components/schemas/RuleCreationRequest'
         required: true
       responses:
+        "400":
+          description: Rule already exists.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Found rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        "201":
+          description: Created
           content:
             '*/*':
               schema:
@@ -776,6 +965,7 @@ paths:
     delete:
       tags:
       - admin-rule-controller
+      description: Deleting rule
       operationId: deleteRule_1
       parameters:
       - name: ruleId
@@ -786,15 +976,24 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted rule
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
+        "404":
+          description: Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/class:
     get:
       tags:
       - admin-class-controller
+      description: Getting class
       operationId: getClass
       parameters:
       - name: classId
@@ -804,15 +1003,22 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Class could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Found class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassResponse'
     put:
       tags:
       - admin-class-controller
+      description: Editing class
       operationId: editClass
       parameters:
       - name: classId
@@ -828,8 +1034,14 @@ paths:
               $ref: '#/components/schemas/ClassCreationRequest'
         required: true
       responses:
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
-          description: OK
+          description: Edited class
           content:
             '*/*':
               schema:
@@ -837,6 +1049,7 @@ paths:
     post:
       tags:
       - admin-class-controller
+      description: Create a new class
       operationId: createClass
       requestBody:
         content:
@@ -845,15 +1058,22 @@ paths:
               $ref: '#/components/schemas/ClassCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created new class
           content:
             '*/*':
               schema:
                 type: object
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-class-controller
+      description: Deleting class
       operationId: deleteClass
       parameters:
       - name: classId
@@ -864,11 +1084,19 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Deleted class
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
+        "404":
+          description: Class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/classSize:
     get:
       tags:
@@ -936,18 +1164,18 @@ paths:
               $ref: '#/components/schemas/AlternateChoiceRequest'
         required: true
       responses:
-        "404":
-          description: Class could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Assigned alternate Choice to student
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-assign-choice-controller
@@ -987,18 +1215,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Found Admin
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminResponse'
         "404":
           description: Admin could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Found Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
     put:
       tags:
       - admin-admin-controller
@@ -1061,18 +1289,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Deleted Admin
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminResponse'
         "404":
           description: Admin could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Deleted Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
   /api/auth/standardAdmin:
     post:
       tags:
@@ -1116,6 +1344,7 @@ paths:
     post:
       tags:
       - admin-lesson-controller
+      description: Creating new lesson
       operationId: createLesson
       requestBody:
         content:
@@ -1124,15 +1353,30 @@ paths:
               $ref: '#/components/schemas/LessonCreationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "400":
+          description: Lesson is not available.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Created new lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - admin-lesson-controller
+      description: Deleting lesson
       operationId: deleteLesson
       parameters:
       - name: lessonId
@@ -1142,12 +1386,20 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Lesson could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Deleted lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
   /api/admin/csvTeachers:
     post:
       tags:
@@ -1203,6 +1455,12 @@ paths:
         schema:
           type: string
       responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Found all tapes
           content:
@@ -1211,12 +1469,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TapeClassResponse'
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
   /api/student/subjectTapes:
     get:
       tags:
@@ -1230,6 +1482,12 @@ paths:
         schema:
           type: string
       responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Got all subjects with the tapes they are on for Student's year
           content:
@@ -1238,12 +1496,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SubjectTapeResponse'
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
   /api/student/choices:
     get:
       tags:
@@ -1258,7 +1510,7 @@ paths:
           type: string
       responses:
         "404":
-          description: Student could not be found
+          description: Student does not have a first and second choice
           content:
             application/json:
               schema:
@@ -1284,6 +1536,12 @@ paths:
         schema:
           type: string
       responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
         "200":
           description: Found results of Student
           content:
@@ -1292,12 +1550,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ChoiceResponse'
-        "404":
-          description: Student could not be found
-          content:
-            application/json:
-              schema:
-                type: string
   /api/admin/teachers:
     get:
       tags:
@@ -1328,8 +1580,9 @@ paths:
                 format: int64
         required: true
       responses:
-        "404":
-          description: A Teacher could not be found.
+        "409":
+          description: "A Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
           content:
             application/json:
               schema:
@@ -1342,9 +1595,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeacherResponse'
-        "409":
-          description: "A Teacher could not be deleted, because it is still used in\
-            \ a StudentClass."
+        "404":
+          description: A Teacher could not be found.
           content:
             application/json:
               schema:
@@ -1353,6 +1605,7 @@ paths:
     get:
       tags:
       - admin-tape-controller
+      description: Getting all tapes from year
       operationId: getAllTapes
       parameters:
       - name: year
@@ -1363,14 +1616,17 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Found all tapes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
     delete:
       tags:
       - admin-tape-controller
+      description: Deleting list of tapes
       operationId: deleteTapes
       requestBody:
         content:
@@ -1383,26 +1639,38 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted tapes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/subjects:
     get:
       tags:
       - admin-subject-controller
+      description: Getting all subjects
       operationId: getSubjects
       responses:
         "200":
-          description: OK
+          description: Found all subjects
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
     delete:
       tags:
       - admin-subject-controller
+      description: Deleting list of subjects
       operationId: deleteSubjects
       requestBody:
         content:
@@ -1415,26 +1683,38 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted subjects
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/subjectAreas:
     get:
       tags:
       - admin-subject-area-controller
+      description: Getting all subject areas
       operationId: getSubjectAreas
       responses:
         "200":
-          description: OK
+          description: Found all subject areas
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
     delete:
       tags:
       - admin-subject-area-controller
+      description: Deleting list of subject areas
       operationId: deleteSubjectArea
       requestBody:
         content:
@@ -1446,12 +1726,20 @@ paths:
                 format: int64
         required: true
       responses:
-        "200":
-          description: OK
+        "404":
+          description: Subject area could not be found.
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: string
+        "200":
+          description: Deleted subject areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
   /api/admin/students:
     get:
       tags:
@@ -1482,12 +1770,6 @@ paths:
                 format: int64
         required: true
       responses:
-        "404":
-          description: A student could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Deleted selected Students
           content:
@@ -1496,21 +1778,31 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: A student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/studentClasses:
     get:
       tags:
       - admin-student-class-controller
+      description: Getting all student classes
       operationId: getAllStudentClasses
       responses:
         "200":
-          description: OK
+          description: Found all student classes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
     delete:
       tags:
       - admin-student-class-controller
+      description: Deleting list of student classes
       operationId: deleteStudentClasses
       requestBody:
         content:
@@ -1523,11 +1815,19 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted student classes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/studentChoices:
     get:
       tags:
@@ -1542,22 +1842,23 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Student could not be found.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: Found Choices of Student
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/rules:
     get:
       tags:
       - admin-rule-controller
+      description: Getting all rules by year
       operationId: getRules
       parameters:
       - name: year
@@ -1568,14 +1869,17 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Found all rules
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
     delete:
       tags:
       - admin-rule-controller
+      description: Deleting list of rules
       operationId: deleteRule
       requestBody:
         content:
@@ -1588,11 +1892,19 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted rules
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
+        "404":
+          description: A Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/result:
     get:
       tags:
@@ -1617,6 +1929,7 @@ paths:
     get:
       tags:
       - admin-class-controller
+      description: Getting all classes
       operationId: getAllClasses
       parameters:
       - name: year
@@ -1627,14 +1940,17 @@ paths:
           format: int32
       responses:
         "200":
-          description: OK
+          description: Found all classes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
     delete:
       tags:
       - admin-class-controller
+      description: Deleting list of classes
       operationId: deleteClasses
       requestBody:
         content:
@@ -1647,11 +1963,19 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Deleted list of classes
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
+        "404":
+          description: A class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
   /api/admin/classesStudents:
     get:
       tags:
@@ -1769,18 +2093,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Deleted alternate Choice from student
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StudentChoicesResponse'
         "404":
           description: ChoiceClass could not be found.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: Deleted alternate Choice from student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
 components:
   schemas:
     AlterStudentChoiceRequest:
@@ -1913,6 +2237,14 @@ components:
           items:
             type: integer
             format: int64
+    SubjectAreaResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectAreaId:
+          type: integer
+          format: int64
     ClassCreationRequest:
       type: object
       properties:
@@ -2037,6 +2369,38 @@ components:
         tapeId:
           type: integer
           format: int64
+    LessonResponse:
+      type: object
+      properties:
+        lessonId:
+          type: integer
+          format: int64
+        day:
+          type: integer
+          format: int32
+        hour:
+          type: integer
+          format: int32
+    TapeResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        releaseYear:
+          type: integer
+          format: int32
+        lessonResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonResponse'
+        lk:
+          type: boolean
     StudentCsvRequest:
       type: object
       properties:
@@ -2103,15 +2467,10 @@ components:
           type: string
         teacherResponse:
           $ref: '#/components/schemas/TeacherResponse'
-    LessonResponse:
-      type: object
-      properties:
-        day:
-          type: integer
-          format: int32
-        hour:
-          type: integer
-          format: int32
+        subjectResponse:
+          $ref: '#/components/schemas/SubjectResponse'
+        tapeResponse:
+          $ref: '#/components/schemas/TapeResponse'
     TapeClassResponse:
       type: object
       properties:
@@ -2137,11 +2496,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TapeResponse'
-    TapeResponse:
-      type: object
-      properties:
-        name:
-          type: string
     ChoiceResultResponse:
       type: object
       properties:
