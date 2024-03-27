@@ -1,0 +1,2617 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/student/choice:
+    get:
+      tags:
+      - student-choice-controller
+      description: Getting choice of Students
+      operationId: getChoice_1
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: choiceNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
+    put:
+      tags:
+      - student-choice-controller
+      description: Altering Choice of Student
+      operationId: alterChoice
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlterStudentChoiceRequest'
+        required: true
+      responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Altered Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
+        "401":
+          description: Student can only alter a Choice with Choice number 1 or 2
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - student-choice-controller
+      description: Deleting class from choice of Students
+      operationId: deleteClassFromChoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteClassFromChoiceRequest'
+        required: true
+      responses:
+        "404":
+          description: Class was not in Student's choice.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted class Choice of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResponse'
+  /api/auth/resetPasswords:
+    put:
+      tags:
+      - auth-rest-controller
+      description: Resetting Password of User List
+      operationId: resetPasswords
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      responses:
+        "200":
+          description: Reset Password of Users.
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/auth/resetPassword:
+    put:
+      tags:
+      - auth-rest-controller
+      description: Resetting Password of User
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      responses:
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Reset Password of User.
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/changePassword:
+    put:
+      tags:
+      - auth-rest-controller
+      description: Changing Password of User
+      operationId: changePassword
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+        required: true
+      responses:
+        "200":
+          description: Changed Password of User.
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: User could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Old Password was not correct
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/teacher:
+    get:
+      tags:
+      - admin-teacher-controller
+      description: Getting Teacher
+      operationId: getTeacher_1
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+      - admin-teacher-controller
+      description: Editing Teacher
+      operationId: editTeacher
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: Edited Teacher
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-teacher-controller
+      description: Signing up new Teacher
+      operationId: createTeacher
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherSignupRequest'
+        required: true
+      responses:
+        "201":
+          description: Signed up new Teacher
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-teacher-controller
+      description: Getting Teacher
+      operationId: deleteTeacher
+      parameters:
+      - name: teacherId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "409":
+          description: "Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found Teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/tape:
+    get:
+      tags:
+      - admin-tape-controller
+      description: Getting tape
+      operationId: getTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found tape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+      - admin-tape-controller
+      description: Editing tape
+      operationId: editTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TapeCreationRequest'
+        required: true
+      responses:
+        "200":
+          description: Edited tape
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Tape already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-tape-controller
+      description: Create new tape
+      operationId: createTape
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TapeCreationRequest'
+        required: true
+      responses:
+        "201":
+          description: Created new tape
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Tape already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-tape-controller
+      description: Deleting tape
+      operationId: deleteTape
+      parameters:
+      - name: tapeId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted tape
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/subject:
+    get:
+      tags:
+      - admin-subject-controller
+      description: Getting subject
+      operationId: getSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found subject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectResponse'
+    put:
+      tags:
+      - admin-subject-controller
+      description: Editing subject
+      operationId: editSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCreationRequest'
+        required: true
+      responses:
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited subject
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-subject-controller
+      description: Create new subject
+      operationId: createSubject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCreationRequest'
+        required: true
+      responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "201":
+          description: Created new subject
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-subject-controller
+      description: Deleting subject
+      operationId: deleteSubject
+      parameters:
+      - name: subjectId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted subject
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/subjectArea:
+    get:
+      tags:
+      - admin-subject-area-controller
+      description: Getting subject area
+      operationId: getSubjectArea
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found subject area
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectAreaResponse'
+    put:
+      tags:
+      - admin-subject-area-controller
+      description: Editing subject area
+      operationId: editSubjectArea
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectAreaCreationRequest'
+        required: true
+      responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited subject area
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-subject-area-controller
+      description: Create new subject area
+      operationId: createSubjectArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectAreaCreationRequest'
+        required: true
+      responses:
+        "201":
+          description: Created new subject area
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Subject area already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-subject-area-controller
+      description: Deleting subject area
+      operationId: deleteSubjectArea_1
+      parameters:
+      - name: subjectAreaId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted subject area
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
+  /api/admin/student:
+    get:
+      tags:
+      - admin-student-controller
+      description: Getting Student
+      operationId: getStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+      - admin-student-controller
+      description: Editing Student
+      operationId: editStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentSignupRequest'
+        required: true
+      responses:
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited Student
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-student-controller
+      description: Signing up new Student
+      operationId: createStudent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentSignupRequest'
+        required: true
+      responses:
+        "201":
+          description: Signed up new Student
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: StudentClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-student-controller
+      description: Deleting Student
+      operationId: deleteStudent
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted Student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/studentClass:
+    get:
+      tags:
+      - admin-student-class-controller
+      description: Getting student class
+      operationId: getStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found student class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+      - admin-student-class-controller
+      description: Editing student class
+      operationId: editStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentClassCreationRequest'
+        required: true
+      responses:
+        "400":
+          description: A student class with this name already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited student class
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-student-class-controller
+      description: Create a new student class
+      operationId: createStudentClass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentClassCreationRequest'
+        required: true
+      responses:
+        "400":
+          description: A student class with this name already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "201":
+          description: Created new student class
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-student-class-controller
+      description: Deleting student class
+      operationId: deleteStudentClass
+      parameters:
+      - name: studentClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted student class
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/rule:
+    get:
+      tags:
+      - admin-rule-controller
+      description: Getting rule
+      operationId: getRule
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+    put:
+      tags:
+      - admin-rule-controller
+      description: Editing rule
+      operationId: editRule
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleCreationRequest'
+        required: true
+      responses:
+        "404":
+          description: Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Rule already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+    post:
+      tags:
+      - admin-rule-controller
+      description: Getting rule
+      operationId: createRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleCreationRequest'
+        required: true
+      responses:
+        "400":
+          description: Rule already exists.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-rule-controller
+      description: Deleting rule
+      operationId: deleteRule_1
+      parameters:
+      - name: ruleId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted rule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
+        "404":
+          description: Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/class:
+    get:
+      tags:
+      - admin-class-controller
+      description: Getting class
+      operationId: getClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassResponse'
+    put:
+      tags:
+      - admin-class-controller
+      description: Editing class
+      operationId: editClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassCreationRequest'
+        required: true
+      responses:
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Edited class
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - admin-class-controller
+      description: Create a new class
+      operationId: createClass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassCreationRequest'
+        required: true
+      responses:
+        "201":
+          description: Created new class
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-class-controller
+      description: Deleting class
+      operationId: deleteClass
+      parameters:
+      - name: classId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleted class
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
+        "404":
+          description: Class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/classSize:
+    get:
+      tags:
+      - admin-settings-controller
+      operationId: getClassSizeSetting
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - admin-settings-controller
+      operationId: editClassSizeSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditClassSizeRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/admin/assignChoice:
+    put:
+      tags:
+      - admin-assign-choice-controller
+      description: Assigning ChoiceClass to student
+      operationId: assignChoice
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: ChoiceClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Assigned ChoiceClass to student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
+    post:
+      tags:
+      - admin-assign-choice-controller
+      description: Assigning alternate Choice to student
+      operationId: assignAlternateChoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlternateChoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: Assigned alternate Choice to student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-assign-choice-controller
+      description: Deleting ChoiceClass selection from student
+      operationId: deleteChoiceSelection
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Deleting ChoiceClass selection from student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: ChoiceClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/admin:
+    get:
+      tags:
+      - admin-admin-controller
+      description: Gets Admin
+      operationId: getAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+    put:
+      tags:
+      - admin-admin-controller
+      description: Edit Admin
+      operationId: editAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - admin-admin-controller
+      description: Signs up new Admin
+      operationId: createAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSignupRequest'
+        required: true
+      responses:
+        "201":
+          description: Signed up new Admin
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - admin-admin-controller
+      description: Deletes Admin
+      operationId: deleteAdmin
+      parameters:
+      - name: adminId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+  /api/auth/standardAdmin:
+    post:
+      tags:
+      - auth-rest-controller
+      description: Creating Standard Admin
+      operationId: createStandardAdmin
+      responses:
+        "201":
+          description: Created Standard Admin. The username ist admin. The Password
+            can be found in the logs.
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/login:
+    post:
+      tags:
+      - auth-rest-controller
+      description: Logging in User
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: User was logged in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        "401":
+          description: Bad credentials. User was not logged in
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/lesson:
+    post:
+      tags:
+      - admin-lesson-controller
+      description: Creating new lesson
+      operationId: createLesson
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonCreationRequest'
+        required: true
+      responses:
+        "400":
+          description: Lesson is not available.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Created new lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - admin-lesson-controller
+      description: Deleting lesson
+      operationId: deleteLesson
+      parameters:
+      - name: lessonId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Lesson could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+  /api/admin/csvTeachers:
+    post:
+      tags:
+      - admin-teacher-controller
+      description: Importing Teachers from csv file
+      operationId: importCsv
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "201":
+          description: Created Teachers from csv
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
+  /api/admin/csvStudents:
+    post:
+      tags:
+      - admin-student-controller
+      description: Importing Students from csv file
+      operationId: importStudentsFromCsv
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCsvRequest'
+        required: true
+      responses:
+        "201":
+          description: Created Students from csv
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+  /api/student/tapeClasses:
+    get:
+      tags:
+      - student-choice-controller
+      description: Getting all tapes for Student's year
+      operationId: getTapeClasses
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found all tapes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeClassResponse'
+  /api/student/subjectTapes:
+    get:
+      tags:
+      - student-choice-controller
+      description: Getting all subjects with the tapes they are on for Student's year
+      operationId: getSubjectTapes
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Got all subjects with the tapes they are on for Student's year
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectTapeResponse'
+  /api/student/choices:
+    get:
+      tags:
+      - student-choice-controller
+      description: Getting choices of Student
+      operationId: getChoice
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Student does not have a first and second choice
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found Choices of Student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceResponse'
+  /api/student/choiceResult:
+    get:
+      tags:
+      - student-choice-controller
+      description: Getting results of Student
+      operationId: getChoiceResult
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Student could not be found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Found results of Student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceResponse'
+  /api/admin/teachers:
+    get:
+      tags:
+      - admin-teacher-controller
+      description: Getting all teachers
+      operationId: getTeacher
+      responses:
+        "200":
+          description: Found all Teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
+    delete:
+      tags:
+      - admin-teacher-controller
+      description: Deleting list of Teachers
+      operationId: deleteTeachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "409":
+          description: "A Teacher could not be deleted, because it is still used in\
+            \ a StudentClass."
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted selected Teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherResponse'
+        "404":
+          description: A Teacher could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/tapes:
+    get:
+      tags:
+      - admin-tape-controller
+      description: Getting all tapes from year
+      operationId: getAllTapes
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Found all tapes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+    delete:
+      tags:
+      - admin-tape-controller
+      description: Deleting list of tapes
+      operationId: deleteTapes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted tapes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TapeResponse'
+        "404":
+          description: Tape could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/subjects:
+    get:
+      tags:
+      - admin-subject-controller
+      description: Getting all subjects
+      operationId: getSubjects
+      responses:
+        "200":
+          description: Found all subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
+    delete:
+      tags:
+      - admin-subject-controller
+      description: Deleting list of subjects
+      operationId: deleteSubjects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectResponse'
+        "404":
+          description: Subject could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/subjectAreas:
+    get:
+      tags:
+      - admin-subject-area-controller
+      description: Getting all subject areas
+      operationId: getSubjectAreas
+      responses:
+        "200":
+          description: Found all subject areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
+    delete:
+      tags:
+      - admin-subject-area-controller
+      description: Deleting list of subject areas
+      operationId: deleteSubjectArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "404":
+          description: Subject area could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted subject areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectAreaResponse'
+  /api/admin/students:
+    get:
+      tags:
+      - admin-student-controller
+      description: Getting all Students
+      operationId: getStudents
+      responses:
+        "200":
+          description: Found all Students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+    delete:
+      tags:
+      - admin-student-controller
+      description: Deleting list of Students
+      operationId: deleteStudents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted selected Students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        "404":
+          description: A student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/studentClasses:
+    get:
+      tags:
+      - admin-student-class-controller
+      description: Getting all student classes
+      operationId: getAllStudentClasses
+      responses:
+        "200":
+          description: Found all student classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
+    delete:
+      tags:
+      - admin-student-class-controller
+      description: Deleting list of student classes
+      operationId: deleteStudentClasses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted student classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentClassResponse'
+        "404":
+          description: Student class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/studentChoices:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      description: Getting choices of student
+      operationId: getStudentChoices
+      parameters:
+      - name: studentId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found Choices of Student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
+        "404":
+          description: Student could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/rules:
+    get:
+      tags:
+      - admin-rule-controller
+      description: Getting all rules by year
+      operationId: getRules
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Found all rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
+    delete:
+      tags:
+      - admin-rule-controller
+      description: Deleting list of rules
+      operationId: deleteRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleResponse'
+        "404":
+          description: A Rule could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/result:
+    get:
+      tags:
+      - admin-choice-result-controller
+      description: Get results
+      operationId: getResultsForYear
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Got results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoiceResultResponse'
+  /api/admin/classes:
+    get:
+      tags:
+      - admin-class-controller
+      description: Getting all classes
+      operationId: getAllClasses
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Found all classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
+    delete:
+      tags:
+      - admin-class-controller
+      description: Deleting list of classes
+      operationId: deleteClasses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted list of classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassResponse'
+        "404":
+          description: A class could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/classesStudents:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      description: Get all classes with students
+      operationId: getClassesWithStudents
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Found all classes with Students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassStudentsResponse'
+  /api/admin/choiceTapes:
+    get:
+      tags:
+      - admin-assign-choice-controller
+      description: Get all tapes by year
+      operationId: getTapes
+      parameters:
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Found all tapes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceTapeResponse'
+  /api/admin/choiceSurveillance:
+    get:
+      tags:
+      - admin-choice-surveillance-controller
+      description: Get choice surveillance
+      operationId: getChoiceSurveillanceForStudents
+      responses:
+        "200":
+          description: Got if students have chosen and fulfilled the rules.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoiceSurveillanceResponse'
+  /api/admin/admins:
+    get:
+      tags:
+      - admin-admin-controller
+      description: Get all Admins
+      operationId: getAdmins
+      responses:
+        "200":
+          description: Found all Admins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminResponse'
+    delete:
+      tags:
+      - admin-admin-controller
+      description: Delete List of Admins
+      operationId: deleteAdmins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        required: true
+      responses:
+        "200":
+          description: Deleted List of Admins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminResponse'
+        "404":
+          description: An Admin could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/admin/alternativeChoice:
+    delete:
+      tags:
+      - admin-assign-choice-controller
+      description: Deleting alternate Choice from student
+      operationId: deleteAlternativeChoiceClass
+      parameters:
+      - name: choiceClassId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: ChoiceClass could not be found.
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Deleted alternate Choice from student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChoicesResponse'
+components:
+  schemas:
+    AlterStudentChoiceRequest:
+      type: object
+      properties:
+        choiceNumber:
+          type: integer
+          format: int32
+        classId:
+          type: integer
+          format: int64
+    ChoiceResponse:
+      type: object
+      properties:
+        choiceNumber:
+          type: integer
+          format: int32
+        classChoiceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassChoiceResponse'
+    ClassChoiceResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        choiceClassId:
+          type: integer
+          format: int64
+        selected:
+          type: boolean
+        name:
+          type: string
+        tapeId:
+          type: integer
+          format: int64
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+    RuleResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectResponse'
+    SubjectResponse:
+      type: object
+      properties:
+        name:
+          type: string
+    PasswordResetRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+    TeacherSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+        abbreviation:
+          type: string
+    TapeCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        lk:
+          type: boolean
+    SubjectCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectAreaId:
+          type: integer
+          format: int64
+    SubjectAreaCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+    StudentSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+        studentClassId:
+          type: integer
+          format: int64
+    StudentClassCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        teacherId:
+          type: integer
+          format: int64
+    RuleCreationRequest:
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int32
+        name:
+          type: string
+        subjectIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+    SubjectAreaResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        subjectAreaId:
+          type: integer
+          format: int64
+    ClassCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        teacherId:
+          type: integer
+          format: int64
+        subjectId:
+          type: integer
+          format: int64
+        tapeId:
+          type: integer
+          format: int64
+    EditClassSizeRequest:
+      type: object
+      properties:
+        classSizeWarning:
+          type: integer
+          format: int32
+        classSizeCritical:
+          type: integer
+          format: int32
+    StudentChoicesResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        ruleResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleResponse'
+        choiceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChoiceResponse'
+    TeacherResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        teacherId:
+          type: integer
+          format: int64
+        abbreviation:
+          type: string
+    AdminSignupRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    JwtResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        type:
+          type: string
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          type: string
+          enum:
+          - ADMIN
+          - TEACHER
+          - STUDENT
+          - NOROLE
+        name:
+          type: string
+        changedPassword:
+          type: boolean
+    LessonCreationRequest:
+      type: object
+      properties:
+        day:
+          type: integer
+          format: int32
+        hour:
+          type: integer
+          format: int32
+        tapeId:
+          type: integer
+          format: int64
+    LessonResponse:
+      type: object
+      properties:
+        lessonId:
+          type: integer
+          format: int64
+        day:
+          type: integer
+          format: int32
+        hour:
+          type: integer
+          format: int32
+    TapeResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+        releaseYear:
+          type: integer
+          format: int32
+        lessonResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonResponse'
+        lk:
+          type: boolean
+    StudentCsvRequest:
+      type: object
+      properties:
+        csv:
+          type: string
+        year:
+          type: integer
+          format: int32
+    StudentClassResponse:
+      type: object
+      properties:
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentResponse'
+        teacher:
+          $ref: '#/components/schemas/TeacherResponse'
+        year:
+          type: integer
+          format: int32
+        releaseYear:
+          type: integer
+          format: int32
+    StudentResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassResponse:
+          $ref: '#/components/schemas/StudentClassResponse'
+    AlternateChoiceRequest:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        studentId:
+          type: integer
+          format: int64
+    ClassResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+        subjectResponse:
+          $ref: '#/components/schemas/SubjectResponse'
+        tapeResponse:
+          $ref: '#/components/schemas/TapeResponse'
+    TapeClassResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        classResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassResponse'
+        lessonResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonResponse'
+    SubjectTapeResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        tapeResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/TapeResponse'
+    ChoiceResultResponse:
+      type: object
+      properties:
+        studentsNotFulfilledRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        studentsNotChosen:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        classStudentsResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassStudentsResponse'
+    ClassStudentsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+        studentSurveillanceResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSurveillanceResponse'
+        tapeName:
+          type: string
+        sizeWarning:
+          type: boolean
+        sizeCritical:
+          type: boolean
+    StudentSurveillanceResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        studentId:
+          type: integer
+          format: int64
+        studentClassId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        year:
+          type: integer
+          format: int32
+    ChoiceTapeClassResponse:
+      type: object
+      properties:
+        classId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        teacherResponse:
+          $ref: '#/components/schemas/TeacherResponse'
+    ChoiceTapeResponse:
+      type: object
+      properties:
+        tapeId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        choiceTapeClassResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChoiceTapeClassResponse'
+        choiceTapeClassResponse:
+          type: array
+          writeOnly: true
+          items:
+            $ref: '#/components/schemas/ChoiceTapeClassResponse'
+    ChoiceSurveillanceResponse:
+      type: object
+      properties:
+        studentSurveillanceResponse:
+          $ref: '#/components/schemas/StudentSurveillanceResponse'
+        chosen:
+          type: boolean
+        fulfilledRules:
+          type: boolean
+    AdminResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        generatedPassword:
+          type: string
+        adminId:
+          type: integer
+          format: int64
+    DeleteClassFromChoiceRequest:
+      type: object
+      properties:
+        choiceId:
+          type: integer
+          format: int64
+        classId:
+          type: integer
+          format: int64

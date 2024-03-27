@@ -4,9 +4,14 @@ import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.classes.request.SubjectAreaCreationRequest;
 import com.x7ubi.kurswahl.admin.classes.response.SubjectAreaResponse;
 import com.x7ubi.kurswahl.admin.classes.service.SubjectAreaCreationService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,109 +33,117 @@ public class AdminSubjectAreaController {
 
     @PostMapping("/subjectArea")
     @AdminRequired
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(description = "Create new subject area")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created new subject area"),
+            @ApiResponse(responseCode = "400", description = "Subject area already exists.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> createSubjectArea(
             @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
-    ) {
+    ) throws EntityCreationException {
         logger.info("Creating new Subject area");
 
-        try {
-            this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (EntityCreationException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        this.subjectAreaCreationService.createSubjectArea(subjectAreaCreationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/subjectArea")
     @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Editing subject area")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Edited subject area"),
+            @ApiResponse(responseCode = "400", description = "Subject area already exists.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "404", description = "Subject area could not be found.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
+    })
     public ResponseEntity<?> editSubjectArea(
             @RequestParam Long subjectAreaId,
             @RequestBody SubjectAreaCreationRequest subjectAreaCreationRequest
-    ) {
+    ) throws EntityCreationException, EntityNotFoundException {
         logger.info("Editing Subject area");
 
-        try {
-            this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (EntityCreationException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        this.subjectAreaCreationService.editSubjectArea(subjectAreaId, subjectAreaCreationRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> getSubjectArea(
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting subject area")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found subject area", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectAreaResponse.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Subject area could not be found.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<SubjectAreaResponse> getSubjectArea(
             @RequestParam Long subjectAreaId
-    ) {
+    ) throws EntityNotFoundException {
         logger.info("Getting Subject area");
-        try {
-            SubjectAreaResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+
+        SubjectAreaResponse response = this.subjectAreaCreationService.getSubjectArea(subjectAreaId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/subjectArea")
     @AdminRequired
-    public ResponseEntity<?> deleteSubjectArea(@RequestParam Long subjectAreaId) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deleting subject area")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted subject area", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = SubjectAreaResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Subject area could not be found.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<List<SubjectAreaResponse>> deleteSubjectArea(@RequestParam Long subjectAreaId) throws EntityNotFoundException {
         logger.info("Deleting Subject area");
 
-        try {
-            List<SubjectAreaResponse> response = this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<SubjectAreaResponse> response = this.subjectAreaCreationService.deleteSubjectArea(subjectAreaId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/subjectAreas")
-    public ResponseEntity<?> getSubjectAreas() {
+    @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting all subject areas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all subject areas", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = SubjectAreaResponse.class)))
+            })
+    })
+    public ResponseEntity<List<SubjectAreaResponse>> getSubjectAreas() {
         logger.info("Getting all Subject areas");
-        try {
-            List<SubjectAreaResponse> response = this.subjectAreaCreationService.getAllSubjectAreas();
 
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<SubjectAreaResponse> response = this.subjectAreaCreationService.getAllSubjectAreas();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/subjectAreas")
     @AdminRequired
-    public ResponseEntity<?> deleteSubjectArea(@RequestBody List<Long> subjectAreaIds) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deleting list of subject areas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted subject areas", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = SubjectAreaResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Subject area could not be found.", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<List<SubjectAreaResponse>> deleteSubjectArea(@RequestBody List<Long> subjectAreaIds) throws EntityNotFoundException {
         logger.info("Deleting Subject areas");
 
-        try {
-            List<SubjectAreaResponse> response = this.subjectAreaCreationService.deleteSubjectAreas(subjectAreaIds);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (EntityNotFoundException e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<SubjectAreaResponse> response = this.subjectAreaCreationService.deleteSubjectAreas(subjectAreaIds);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

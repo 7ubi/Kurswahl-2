@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChoiceResultResponse {
-    private List<StudentSurveillanceResponse> studentsNotFulfilledRules = new ArrayList<>();
+    private final List<StudentSurveillanceResponse> studentsNotFulfilledRules = new ArrayList<>();
 
-    private List<StudentSurveillanceResponse> studentsNotChosen = new ArrayList<>();
+    private final List<StudentSurveillanceResponse> studentsNotChosen = new ArrayList<>();
 
     private List<ClassStudentsResponse> classStudentsResponses;
 

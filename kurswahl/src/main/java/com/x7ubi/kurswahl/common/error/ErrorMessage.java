@@ -31,7 +31,7 @@ public class ErrorMessage {
     public static final String TEACHER_STUDENT_CLASS = "Lehrer ist noch Leiter eine(r) Klasse(n)";
 
     public static final String INTERNAL_SERVER_ERROR = "Interner Server Fehler";
-    public static final Object UNAUTHORIZED = "Nutzername oder Passwort ist falsch";
+    public static final String UNAUTHORIZED = "Nutzername oder Passwort ist falsch";
 
     public static final String INVALID_CHOICE_NUMBER = "Wahlen mit dieser Wahlnummer können nicht von Schülern bearbeitet werden.";
     public static final String CHOICE_NOT_FOUND = "Wahl konnte nicht gefunden werden.";

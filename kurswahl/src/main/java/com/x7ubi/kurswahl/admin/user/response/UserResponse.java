@@ -11,7 +11,8 @@ public class UserResponse {
 
     private String generatedPassword;
 
-    public UserResponse() {}
+    public UserResponse() {
+    }
 
     public Long getUserId() {
         return userId;

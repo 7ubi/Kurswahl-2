@@ -1,10 +1,14 @@
 package com.x7ubi.kurswahl.admin.user.response;
 
-public class AdminResponse extends UserResponse {
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema
+public class AdminResponse extends UserResponse {
+    
     Long adminId;
 
-    public AdminResponse() {}
+    public AdminResponse() {
+    }
 
     public Long getAdminId() {
         return adminId;

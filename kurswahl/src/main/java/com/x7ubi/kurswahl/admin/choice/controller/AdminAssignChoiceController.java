@@ -6,8 +6,13 @@ import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
 import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,102 +35,126 @@ public class AdminAssignChoiceController {
 
     @GetMapping("/classesStudents")
     @AdminRequired
-    public ResponseEntity<?> getClassesWithChoices(@RequestParam Integer year) {
-        logger.info("Classes with choices");
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Get all classes with students")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all classes with Students", content =
+                    {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ClassStudentsResponse.class)))})
+    })
+    public ResponseEntity<List<ClassStudentsResponse>> getClassesWithStudents(@RequestParam Integer year) {
+        logger.info("Classes with students");
 
-        try {
-            List<ClassStudentsResponse> responses = this.assignChoiceService.getClassesWithStudents(year);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<ClassStudentsResponse> responses = this.assignChoiceService.getClassesWithStudents(year);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @GetMapping("/studentChoices")
     @AdminRequired
-    public ResponseEntity<?> getStudentChoices(@RequestParam Long studentId) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting choices of student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Choices of Student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Student could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentChoicesResponse> getStudentChoices(@RequestParam Long studentId) throws EntityNotFoundException {
         logger.info("Load Choices of Student");
 
-        try {
-            StudentChoicesResponse responses = this.assignChoiceService.getStudentChoices(studentId);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        StudentChoicesResponse responses = this.assignChoiceService.getStudentChoices(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @PostMapping("/assignChoice")
     @AdminRequired
-    public ResponseEntity<?> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Assigning alternate Choice to student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Assigned alternate Choice to student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Student could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "404", description = "Class could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentChoicesResponse> assignAlternateChoice(@RequestBody AlternateChoiceRequest alternateChoiceRequest) throws EntityNotFoundException {
         logger.info("Assigning alternate Choice to Student");
 
-        try {
-            StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(alternateChoiceRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        StudentChoicesResponse responses = this.assignChoiceService.assignAlternateChoice(alternateChoiceRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @PutMapping("/assignChoice")
     @AdminRequired
-    public ResponseEntity<?> assignChoice(@RequestParam Long choiceClassId) {
-        logger.info("Assigning Choice to Student");
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Assigning ChoiceClass to student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Assigned ChoiceClass to student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "ChoiceClass could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentChoicesResponse> assignChoice(@RequestParam Long choiceClassId) throws EntityNotFoundException {
+        logger.info("Assigning ChoiceClass to Student");
 
-        try {
-            StudentChoicesResponse responses = this.assignChoiceService.assignChoice(choiceClassId);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        StudentChoicesResponse responses = this.assignChoiceService.assignChoice(choiceClassId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @DeleteMapping("/assignChoice")
     @AdminRequired
-    public ResponseEntity<?> deleteChoiceSelection(@RequestParam Long choiceClassId) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deleting ChoiceClass selection from student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleting ChoiceClass selection from student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "ChoiceClass could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentChoicesResponse> deleteChoiceSelection(@RequestParam Long choiceClassId) throws EntityNotFoundException {
         logger.info("Deleting Choice Selection from Student");
 
-        try {
-            StudentChoicesResponse responses = this.assignChoiceService.deleteChoiceSelection(choiceClassId);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        StudentChoicesResponse responses = this.assignChoiceService.deleteChoiceSelection(choiceClassId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @DeleteMapping("/alternativeChoice")
     @AdminRequired
-    public ResponseEntity<?> deleteAlternativeChoiceClass(@RequestParam Long choiceClassId) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Deleting alternate Choice from student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted alternate Choice from student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "ChoiceClass could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))}),
+    })
+    public ResponseEntity<StudentChoicesResponse> deleteAlternativeChoiceClass(@RequestParam Long choiceClassId) throws EntityNotFoundException {
         logger.info("Deleting Alternative Choice Class");
 
-        try {
-            StudentChoicesResponse responses = this.assignChoiceService.deleteAlternativeChoiceClass(choiceClassId);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        StudentChoicesResponse responses = this.assignChoiceService.deleteAlternativeChoiceClass(choiceClassId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
     @GetMapping("/choiceTapes")
     @AdminRequired
-    public ResponseEntity<?> getTapes(@RequestParam Integer year) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Get all tapes by year")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all tapes", content =
+                    {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ChoiceTapeResponse.class)))})
+    })
+    public ResponseEntity<List<ChoiceTapeResponse>> getTapes(@RequestParam Integer year) {
         logger.info("Getting Tapes");
 
-        try {
-            List<ChoiceTapeResponse> responses = this.assignChoiceService.getTapes(year);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        List<ChoiceTapeResponse> responses = this.assignChoiceService.getTapes(year);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 }
