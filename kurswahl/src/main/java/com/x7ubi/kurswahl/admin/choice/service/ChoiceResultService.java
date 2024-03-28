@@ -11,6 +11,7 @@ import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
 import com.x7ubi.kurswahl.common.repository.StudentRepo;
 import com.x7ubi.kurswahl.common.rule.service.RuleService;
+import com.x7ubi.kurswahl.common.settings.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -37,15 +38,19 @@ public class ChoiceResultService {
 
     private final RuleService ruleService;
 
+    private final SettingsService settingsService;
+
     public ChoiceResultService(ClassRepo classRepo, StudentRepo studentRepo, RuleSetRepo ruleSetRepo,
                                ClassStudentsMapper classStudentsMapper,
-                               StudentSurveillanceMapper studentSurveillanceMapper, RuleService ruleService) {
+                               StudentSurveillanceMapper studentSurveillanceMapper, RuleService ruleService,
+                               SettingsService settingsService) {
         this.classRepo = classRepo;
         this.studentRepo = studentRepo;
         this.ruleSetRepo = ruleSetRepo;
         this.classStudentsMapper = classStudentsMapper;
         this.studentSurveillanceMapper = studentSurveillanceMapper;
         this.ruleService = ruleService;
+        this.settingsService = settingsService;
     }
 
     @Transactional(readOnly = true)
@@ -86,6 +91,7 @@ public class ChoiceResultService {
         });
         logger.info("Generated results");
 
+
         return choiceResultResponse;
     }
 
@@ -96,5 +102,6 @@ public class ChoiceResultService {
         logger.info(String.format("Filtered Students, who chose classes in year %s", year));
 
         choiceResultResponse.setClassStudentsResponses(this.classStudentsMapper.classesToClassChoiceResponses(classes));
+        ChoiceHelper.setClassStudentsResponseWarnings(choiceResultResponse.getClassStudentsResponses(), settingsService);
     }
 }

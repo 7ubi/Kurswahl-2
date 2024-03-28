@@ -24,8 +24,8 @@ body {
   border-radius: 10px;
   padding: 20px 30px;
   box-sizing: border-box;
-  width: 80%;
-  margin: 30px 10% 0 10%;
+  width: 95%;
+  margin: auto;
   text-align: center;
 }
 
@@ -41,7 +41,7 @@ body {
   background-color: white;
   display: flex;
   justify-content: left;
-  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 1px rgba(0, 0, 0, 0.14), 0px 1px 7px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 7px 1px rgba(0, 0, 0, 0.12);
 }
 
 .bulk-actions-icons {
@@ -57,7 +57,7 @@ body {
   justify-content: center;
   align-items: center;
   background: white;
-  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 1px rgba(0, 0, 0, 0.14), 0px 1px 7px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 7px 1px rgba(0, 0, 0, 0.12);
 }
 
 .spinner {
