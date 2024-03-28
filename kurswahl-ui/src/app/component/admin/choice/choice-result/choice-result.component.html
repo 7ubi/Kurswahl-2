@@ -22,7 +22,7 @@
                 <mat-icon>{{ expandedElement.includes(element) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
               </td>
             </ng-container>
-            
+
             <ng-container matColumnDef="Auswählen">
               <th *matHeaderCellDef mat-header-cell>
                 <mat-checkbox (change)="$event ? toggleAllRows() : null"
@@ -70,6 +70,22 @@
                     </div>
                   </div>
                 </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Status">
+              <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Status</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon *ngIf="!element.sizeWarning && !element.sizeCritical" style="color: var(--primary)"
+                          [matTooltip]="'Kursgröße ist akzeptabel'">
+                  done
+                </mat-icon>
+                <mat-icon *ngIf="element.sizeWarning && !element.sizeCritical" style="color: var(--accent)"
+                          [matTooltip]="'Kurs ist möglicherweise zu voll'">warning
+                </mat-icon>
+                <mat-icon *ngIf="element.sizeCritical" style="color: var(--warn)" [matTooltip]="'Kurs ist zu voll'">
+                  error
+                </mat-icon>
               </td>
             </ng-container>
 
