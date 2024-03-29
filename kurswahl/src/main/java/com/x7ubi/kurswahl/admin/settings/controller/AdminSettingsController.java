@@ -1,10 +1,14 @@
 package com.x7ubi.kurswahl.admin.settings.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
-import com.x7ubi.kurswahl.admin.settings.request.EditClassSizeRequest;
-import com.x7ubi.kurswahl.admin.settings.response.ClassSizeSettingResponse;
+import com.x7ubi.kurswahl.admin.settings.request.EditSettingsRequest;
+import com.x7ubi.kurswahl.admin.settings.response.SettingsResponse;
 import com.x7ubi.kurswahl.admin.settings.service.AdminSettingsService;
-import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,29 +27,34 @@ public class AdminSettingsController {
         this.adminSettingsService = adminSettingsService;
     }
 
-    @GetMapping("/classSize")
+    @GetMapping("/settings")
     @AdminRequired
-    public ResponseEntity<?> getClassSizeSetting() {
-        logger.info("Getting class size warning and critical size from settings");
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting Settings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Settings", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = SettingsResponse.class))
+            }),
+    })
+    public ResponseEntity<SettingsResponse> getClassSizeSetting() {
+        logger.info("Getting settings");
 
-        try {
-            ClassSizeSettingResponse responses = this.adminSettingsService.getClassSizeSettings();
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        SettingsResponse responses = this.adminSettingsService.getSettings();
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
-    @PutMapping("/classSize")
+    @PutMapping("/settings")
     @AdminRequired
-    public ResponseEntity<?> editClassSizeSetting(@RequestBody EditClassSizeRequest editClassSizeRequest) {
-        logger.info("Editing class size warning and critical size from settings");
+    @Operation(description = "Editing Settings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Edited Settings", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = SettingsResponse.class))
+            }),
+    })
+    public ResponseEntity<SettingsResponse> editClassSizeSetting(@RequestBody EditSettingsRequest editSettingsRequest) {
+        logger.info("Editing settings");
 
-        try {
-            ClassSizeSettingResponse responses = this.adminSettingsService.editClassSizeSettings(editClassSizeRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.INTERNAL_SERVER_ERROR);
-        }
+        SettingsResponse responses = this.adminSettingsService.editSettings(editSettingsRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 }

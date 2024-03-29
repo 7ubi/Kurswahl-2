@@ -3,6 +3,7 @@ package com.x7ubi.kurswahl.student.choice.controller;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
+import com.x7ubi.kurswahl.student.authentication.ChoiceOpenRequired;
 import com.x7ubi.kurswahl.student.authentication.StudentRequired;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
@@ -46,16 +47,17 @@ public class StudentChoiceController {
     @PutMapping("/choice")
     @StudentRequired
     @ResponseStatus(HttpStatus.OK)
+    @ChoiceOpenRequired
     @Operation(description = "Altering Choice of Student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Altered Choice of Student", content =
                     {@Content(mediaType = "application/json", schema = @Schema(implementation = ChoiceResponse.class))}),
             @ApiResponse(responseCode = "401", description = "Student can only alter a Choice with Choice number 1 or 2", content =
-                    {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))}),
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
             @ApiResponse(responseCode = "404", description = "Student could not be found", content =
-                    {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))})
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "403", description = "Student can not chose at this time", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
     })
     public ResponseEntity<ChoiceResponse> alterChoice(@RequestHeader("Authorization") String authorization,
                                                       @RequestBody AlterStudentChoiceRequest alterStudentChoiceRequest)
@@ -70,14 +72,16 @@ public class StudentChoiceController {
 
     @GetMapping("/choice")
     @StudentRequired
+    @ChoiceOpenRequired
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Getting choice of Students")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Choice of Student", content =
                     {@Content(mediaType = "application/json", schema = @Schema(implementation = ChoiceResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Student could not be found", content =
-                    {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))})
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "403", description = "Student can not chose at this time", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
     })
     public ResponseEntity<ChoiceResponse> getChoice(@RequestHeader("Authorization") String authorization,
                                                     @RequestParam Integer choiceNumber) throws EntityNotFoundException {
@@ -90,17 +94,18 @@ public class StudentChoiceController {
 
     @DeleteMapping("/choice")
     @StudentRequired
+    @ChoiceOpenRequired
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Deleting class from choice of Students")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted class Choice of Student", content =
                     {@Content(mediaType = "application/json", schema = @Schema(implementation = ChoiceResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Student could not be found", content =
-                    {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))}),
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
             @ApiResponse(responseCode = "404", description = "Class was not in Student's choice.", content =
-                    {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))})
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "403", description = "Student can not chose at this time", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
     })
     public ResponseEntity<?> deleteClassFromChoice(@RequestBody DeleteClassFromChoiceRequest
                                                            deleteClassFromChoiceRequest) throws EntityNotFoundException {

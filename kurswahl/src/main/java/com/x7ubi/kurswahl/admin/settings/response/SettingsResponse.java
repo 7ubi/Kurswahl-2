@@ -1,10 +1,12 @@
 package com.x7ubi.kurswahl.admin.settings.response;
 
-public class ClassSizeSettingResponse {
+public class SettingsResponse {
 
     private Integer classSizeWarning;
 
     private Integer classSizeCritical;
+
+    private boolean choiceOpen;
 
     public Integer getClassSizeWarning() {
         return classSizeWarning;
@@ -20,5 +22,13 @@ public class ClassSizeSettingResponse {
 
     public void setClassSizeCritical(Integer classSizeCritical) {
         this.classSizeCritical = classSizeCritical;
+    }
+
+    public boolean isChoiceOpen() {
+        return choiceOpen;
+    }
+
+    public void setChoiceOpen(boolean choiceOpen) {
+        this.choiceOpen = choiceOpen;
     }
 }

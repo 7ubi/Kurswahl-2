@@ -90,6 +90,7 @@ import {
 import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
 import {MatRipple} from "@angular/material/core";
 import {SettingsComponent} from "./component/admin/settings/settings.component";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -168,7 +169,8 @@ import {SettingsComponent} from "./component/admin/settings/settings.component";
     MatDialogClose,
     MatDialogContent,
     MatDialogTitle,
-    MatRipple
+    MatRipple,
+    MatSlideToggle
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [
