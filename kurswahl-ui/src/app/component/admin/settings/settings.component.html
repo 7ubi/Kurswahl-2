@@ -27,6 +27,16 @@
           </mat-form-field>
         </div>
       </div>
+      <div class="setting-container">
+        <div class="setting">
+          <span class="setting-heading">Einstellungen zur Wahl</span>
+        </div>
+        <div class="setting">
+          <mat-slide-toggle formControlName="choiceOpen" name="choiceOpen" id="choice-open" style="float: left"
+                            (change)="onChangeInput()">Schüler können wählen
+          </mat-slide-toggle>
+        </div>
+      </div>
     </div>
   </div>
 </form>

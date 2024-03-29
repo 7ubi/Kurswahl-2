@@ -1,8 +1,8 @@
 package com.x7ubi.kurswahl.admin.settings;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
-import com.x7ubi.kurswahl.admin.settings.request.EditClassSizeRequest;
-import com.x7ubi.kurswahl.admin.settings.response.ClassSizeSettingResponse;
+import com.x7ubi.kurswahl.admin.settings.request.EditSettingsRequest;
+import com.x7ubi.kurswahl.admin.settings.response.SettingsResponse;
 import com.x7ubi.kurswahl.admin.settings.service.AdminSettingsService;
 import com.x7ubi.kurswahl.common.settings.service.SettingsService;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +18,7 @@ public class AdminSettingsServiceTest {
     @Test
     public void testGetClassSizeSettings() {
         // When
-        ClassSizeSettingResponse result = this.adminSettingsService.getClassSizeSettings();
+        SettingsResponse result = this.adminSettingsService.getSettings();
 
         // Then
         Assertions.assertEquals(result.getClassSizeWarning(), SettingsService.CLASS_SIZE_WARNING_DEFAULT_VALUE);
@@ -28,12 +28,12 @@ public class AdminSettingsServiceTest {
     @Test
     public void testEditClassSizeSettings() {
         // Given
-        EditClassSizeRequest editClassSizeRequest = new EditClassSizeRequest();
-        editClassSizeRequest.setClassSizeWarning(3);
-        editClassSizeRequest.setClassSizeCritical(5);
+        EditSettingsRequest editSettingsRequest = new EditSettingsRequest();
+        editSettingsRequest.setClassSizeWarning(3);
+        editSettingsRequest.setClassSizeCritical(5);
 
         // When
-        ClassSizeSettingResponse result = this.adminSettingsService.editClassSizeSettings(editClassSizeRequest);
+        SettingsResponse result = this.adminSettingsService.editSettings(editSettingsRequest);
 
         // Then
         Assertions.assertEquals(result.getClassSizeWarning(), 3);
