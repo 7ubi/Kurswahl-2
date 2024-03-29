@@ -1,6 +1,7 @@
-package com.x7ubi.kurswahl.common.exception;
+package com.x7ubi.kurswahl.common.exception.handler;
 
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

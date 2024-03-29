@@ -39,4 +39,5 @@ public class ErrorMessage {
     public static final String NOT_ENOUGH_CHOICES = "Bitte tätige eine erst und zweit Wahl.";
     public static final String RULE_ALREADY_EXISTS = "Eine Regel mit diesem Namen existiert bereits in diesem Jahrgang.";
     public static final String RULE_NOT_FOUND = "Regel konnte nicht gefunden werden.";
+    public static final String CHOICE_DISABLED = "Schüler können aktuell nicht wählen.";
 }
