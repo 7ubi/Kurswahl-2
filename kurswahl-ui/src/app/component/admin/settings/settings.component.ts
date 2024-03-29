@@ -38,7 +38,10 @@ export class SettingsComponent {
 
   saveSettings() {
     this.httpService.put<ClassSizeSettingResponse>('/api/admin/classSize', this.getEditClassSizeRequest(),
-      response => this.classSizeSettingResponse = response);
+      response => {
+        this.classSizeSettingResponse = response;
+        this.hasChanges = false;
+      });
   }
 
   private getEditClassSizeRequest() {

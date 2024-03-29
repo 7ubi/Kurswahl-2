@@ -6,6 +6,8 @@ import java.util.List;
 
 public class ClassStudentsResponse {
 
+    private Long classId;
+
     private String name;
 
     private TeacherResponse teacherResponse;
@@ -17,6 +19,14 @@ public class ClassStudentsResponse {
     private boolean isSizeWarning;
 
     private boolean isSizeCritical;
+
+    public Long getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Long classId) {
+        this.classId = classId;
+    }
 
     public String getName() {
         return name;

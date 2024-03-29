@@ -50,6 +50,8 @@ export class AssignChoiceComponent implements OnDestroy {
 
   choiceTables?: ChoiceTable[];
 
+  lastSort: Sort | null = null;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -71,6 +73,7 @@ export class AssignChoiceComponent implements OnDestroy {
           this.classes = undefined;
           this.initialStudent = Number(this.route.snapshot.paramMap.get('studentId'));
           this.loadClasses();
+          this.loadTapes();
         }
       }
     });
@@ -82,8 +85,28 @@ export class AssignChoiceComponent implements OnDestroy {
         this.classes = response;
         this.dataSourceClassStudents = new MatTableDataSource(this.classes);
         this.loadedClasses = true;
-      });
+        if (this.lastSort) {
+          this.sortData(this.lastSort);
+        } else {
+          this.dataSourceClassStudents.data
+            = this.dataSourceClassStudents.data.sort((a, b) => this.compare(a.name, b.name, true));
+        }
 
+        const newExpandedElements: ClassStudentsResponse[] = [];
+
+        this.expandedElement.forEach(element => {
+          const newElement = this.classes?.filter(c => c.classId === element.classId);
+
+          if (newElement && newElement[0]) {
+            newExpandedElements.push(newElement[0]);
+          }
+        });
+
+        this.expandedElement = newExpandedElements;
+      });
+  }
+
+  private loadTapes() {
     this.httpService.get<ChoiceTapeResponse[]>(`/api/admin/choiceTapes?year=${this.year}`, response => {
       this.tapes = response;
       if (this.initialStudent) {
@@ -145,6 +168,7 @@ export class AssignChoiceComponent implements OnDestroy {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
         this.studentChoice = response;
         this.generateChoiceTable();
+        this.loadClasses();
       });
     }
 
@@ -152,6 +176,7 @@ export class AssignChoiceComponent implements OnDestroy {
       this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
         this.studentChoice = response;
         this.generateChoiceTable();
+        this.loadClasses();
       });
     }
   }
@@ -161,6 +186,7 @@ export class AssignChoiceComponent implements OnDestroy {
       response => {
         this.studentChoice = response;
         this.generateChoiceTable();
+        this.loadClasses();
       });
   }
 
