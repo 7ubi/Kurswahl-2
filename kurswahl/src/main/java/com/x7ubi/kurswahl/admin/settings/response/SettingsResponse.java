@@ -8,6 +8,8 @@ public class SettingsResponse {
 
     private boolean choiceOpen;
 
+    private boolean resultOpen;
+
     public Integer getClassSizeWarning() {
         return classSizeWarning;
     }
@@ -30,5 +32,13 @@ public class SettingsResponse {
 
     public void setChoiceOpen(boolean choiceOpen) {
         this.choiceOpen = choiceOpen;
+    }
+
+    public boolean isResultOpen() {
+        return resultOpen;
+    }
+
+    public void setResultOpen(boolean resultOpen) {
+        this.resultOpen = resultOpen;
     }
 }

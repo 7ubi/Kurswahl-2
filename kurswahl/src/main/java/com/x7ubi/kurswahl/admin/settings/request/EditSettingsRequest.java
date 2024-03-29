@@ -8,6 +8,8 @@ public class EditSettingsRequest {
 
     private boolean choiceOpen;
 
+    private boolean resultOpen;
+
     public Integer getClassSizeWarning() {
         return classSizeWarning;
     }
@@ -30,5 +32,13 @@ public class EditSettingsRequest {
 
     public void setChoiceOpen(boolean choiceOpen) {
         this.choiceOpen = choiceOpen;
+    }
+
+    public boolean isResultOpen() {
+        return resultOpen;
+    }
+
+    public void setResultOpen(boolean resultOpen) {
+        this.resultOpen = resultOpen;
     }
 }

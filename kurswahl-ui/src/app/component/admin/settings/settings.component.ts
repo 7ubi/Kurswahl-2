@@ -21,7 +21,8 @@ export class SettingsComponent {
     this.settingsForm = this.formBuilder.group({
       warning: ['', [Validators.required, Validators.min(0)]],
       critical: ['', [Validators.required, Validators.min(0)]],
-      choiceOpen: ['', [Validators.required]]
+      choiceOpen: ['', [Validators.required]],
+      resultOpen: ['', [Validators.required]]
     });
 
     this.httpService.get<ClassSizeSettingResponse>('/api/admin/settings', response => {
@@ -29,6 +30,7 @@ export class SettingsComponent {
       this.settingsForm.controls['warning'].setValue(this.classSizeSettingResponse.classSizeWarning);
       this.settingsForm.controls['critical'].setValue(this.classSizeSettingResponse.classSizeCritical);
       this.settingsForm.controls['choiceOpen'].setValue(this.classSizeSettingResponse.choiceOpen);
+      this.settingsForm.controls['resultOpen'].setValue(this.classSizeSettingResponse.resultOpen);
     });
   }
 
@@ -36,7 +38,8 @@ export class SettingsComponent {
     console.log(this.settingsForm.get('choiceOpen')?.value, this.classSizeSettingResponse?.choiceOpen)
     this.hasChanges = (this.settingsForm.get('warning')?.value !== this.classSizeSettingResponse?.classSizeWarning
         || this.settingsForm.get('critical')?.value !== this.classSizeSettingResponse?.classSizeCritical
-        || this.settingsForm.get('choiceOpen')?.value !== this.classSizeSettingResponse?.choiceOpen)
+        || this.settingsForm.get('choiceOpen')?.value !== this.classSizeSettingResponse?.choiceOpen
+        || this.settingsForm.get('resultOpen')?.value !== this.classSizeSettingResponse?.resultOpen)
       && this.settingsForm.valid;
   }
 
@@ -52,7 +55,8 @@ export class SettingsComponent {
     return {
       classSizeWarning: this.settingsForm.get('warning')?.value,
       classSizeCritical: this.settingsForm.get('critical')?.value,
-      choiceOpen: this.settingsForm.get('choiceOpen')?.value
+      choiceOpen: this.settingsForm.get('choiceOpen')?.value,
+      resultOpen: this.settingsForm.get('resultOpen')?.value
     };
   }
 }
