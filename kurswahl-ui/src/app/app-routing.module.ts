@@ -54,6 +54,7 @@ import {AssignChoiceComponent} from "./component/admin/choice/assign-choice/assi
 import {ChoiceResultComponent} from "./component/admin/choice/choice-result/choice-result.component";
 import {ShowResultComponent} from "./component/student/choice/show-result/show-result.component";
 import {SettingsComponent} from "./component/admin/settings/settings.component";
+import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy.component";
 
 const routes: Routes = [
   {
@@ -64,6 +65,10 @@ const routes: Routes = [
     path: 'changePassword',
     component: ChangePasswordComponent,
     canActivate: mapToCanActivate([LoginRequired])
+  },
+  {
+    path: 'dataPrivacy',
+    component: DataPrivacyComponent
   },
   {
     path: 'admin',

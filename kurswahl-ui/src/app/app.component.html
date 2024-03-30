@@ -18,12 +18,24 @@
   >
     <app-sidenav></app-sidenav>
 
-    <div style="position: absolute; bottom: 0; background-color: white">
-      Kurswahl {{ version }} - © Tobias Renner {{ year }}
+    <div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <router-outlet></router-outlet>
+    <div style="margin-bottom: 2.5rem">
+      <router-outlet></router-outlet>
+    </div>
+    <footer class="footer">
+      <div class="footer-element">
+        <a class="footer-link" routerLink="dataPrivacy">Datenschutz</a>
+      </div>
+      <div class="footer-element">
+        Kurswahl&#64;{{ version }}
+      </div>
+      <div class="footer-element">
+        © Tobias Renner {{ year }}
+      </div>
+    </footer>
+
   </mat-sidenav-content>
 </mat-sidenav-container>
-

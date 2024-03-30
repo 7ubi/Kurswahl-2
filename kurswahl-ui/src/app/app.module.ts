@@ -91,6 +91,7 @@ import {ShowResultComponent} from "./component/student/choice/show-result/show-r
 import {MatRipple} from "@angular/material/core";
 import {SettingsComponent} from "./component/admin/settings/settings.component";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy.component";
 
 @NgModule({
   declarations: [
@@ -140,7 +141,8 @@ import {MatSlideToggle} from "@angular/material/slide-toggle";
     CsvImportDialogComponent,
     TeacherCsvImportDialogComponent,
     ShowResultComponent,
-    SettingsComponent
+    SettingsComponent,
+    DataPrivacyComponent
   ],
   imports: [
     BrowserModule,
