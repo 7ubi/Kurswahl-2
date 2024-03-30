@@ -45,7 +45,7 @@ public class AdminSettingsService {
         response.setChoiceOpen(BooleanUtils.toBoolean(choiceOpen.getValue()));
         Setting resultOpen = this.settingsService.updateSetting(SettingsService.RESULT_OPEN,
                 editSettingsRequest.isResultOpen());
-        response.setChoiceOpen(BooleanUtils.toBoolean(resultOpen.getValue()));
+        response.setResultOpen(BooleanUtils.toBoolean(resultOpen.getValue()));
 
         return response;
     }

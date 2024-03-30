@@ -5,7 +5,6 @@ import com.x7ubi.kurswahl.admin.settings.request.EditSettingsRequest;
 import com.x7ubi.kurswahl.admin.settings.response.SettingsResponse;
 import com.x7ubi.kurswahl.admin.settings.service.AdminSettingsService;
 import com.x7ubi.kurswahl.common.settings.service.SettingsService;
-import org.apache.commons.lang3.BooleanUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,8 @@ public class AdminSettingsServiceTest {
         // Then
         Assertions.assertEquals(result.getClassSizeWarning(), SettingsService.CLASS_SIZE_WARNING_DEFAULT_VALUE);
         Assertions.assertEquals(result.getClassSizeCritical(), SettingsService.CLASS_SIZE_CRITICAL_DEFAULT_VALUE);
-        Assertions.assertTrue(BooleanUtils.toBoolean(result.isChoiceOpen()));
+        Assertions.assertTrue(result.isChoiceOpen());
+        Assertions.assertFalse(result.isResultOpen());
     }
 
     @Test
@@ -34,6 +34,7 @@ public class AdminSettingsServiceTest {
         editSettingsRequest.setClassSizeWarning(3);
         editSettingsRequest.setClassSizeCritical(5);
         editSettingsRequest.setChoiceOpen(false);
+        editSettingsRequest.setResultOpen(true);
 
         // When
         SettingsResponse result = this.adminSettingsService.editSettings(editSettingsRequest);
@@ -41,6 +42,7 @@ public class AdminSettingsServiceTest {
         // Then
         Assertions.assertEquals(result.getClassSizeWarning(), 3);
         Assertions.assertEquals(result.getClassSizeCritical(), 5);
-        Assertions.assertFalse(BooleanUtils.toBoolean(result.isChoiceOpen()));
+        Assertions.assertFalse(result.isChoiceOpen());
+        Assertions.assertTrue(result.isResultOpen());
     }
 }

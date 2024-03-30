@@ -192,7 +192,9 @@ public class StudentChoiceController {
                             array = @ArraySchema(schema = @Schema(implementation = ChoiceResponse.class)))}),
             @ApiResponse(responseCode = "404", description = "Student could not be found", content =
                     {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = String.class))})
+                    @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "403", description = "Student can not view results at this time", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
     })
     public ResponseEntity<?> getChoiceResult(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
