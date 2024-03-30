@@ -12,22 +12,22 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ChoiceOpenRequiredAspect {
+public class ResultOpenRequiredAspect {
 
     private final SettingsService settingsService;
 
-    public ChoiceOpenRequiredAspect(SettingsService settingsService) {
+    public ResultOpenRequiredAspect(SettingsService settingsService) {
         this.settingsService = settingsService;
     }
 
-    @Pointcut("@annotation(com.x7ubi.kurswahl.student.authentication.ChoiceOpenRequired)")
-    private void choiceOpenRequiredAnnotation() {
+    @Pointcut("@annotation(com.x7ubi.kurswahl.student.authentication.ResultOpenRequired)")
+    private void resultOpenRequiredAnnotation() {
     }
 
-    @Around("com.x7ubi.kurswahl.student.authentication.ChoiceOpenRequiredAspect.choiceOpenRequiredAnnotation()")
+    @Around("com.x7ubi.kurswahl.student.authentication.ResultOpenRequiredAspect.resultOpenRequiredAnnotation()")
     public Object choiceOpenRequired(ProceedingJoinPoint pjp) throws Throwable {
-        if (!BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.CHOICE_OPEN, true).getValue())) {
-            throw new DisabledException(ErrorMessage.CHOICE_DISABLED);
+        if (!BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.RESULT_OPEN, false).getValue())) {
+            throw new DisabledException(ErrorMessage.RESULT_DISABLED);
         }
 
         return pjp.proceed();
