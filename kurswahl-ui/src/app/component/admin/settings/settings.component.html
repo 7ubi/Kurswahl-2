@@ -31,10 +31,18 @@
         <div class="setting">
           <span class="setting-heading">Einstellungen zur Wahl</span>
         </div>
-        <div class="setting">
-          <mat-slide-toggle formControlName="choiceOpen" name="choiceOpen" id="choice-open" style="float: left"
-                            (change)="onChangeInput()">Schüler können wählen
-          </mat-slide-toggle>
+        <div class="setting" style="display: grid">
+          <div class="full-width">
+            <mat-slide-toggle formControlName="choiceOpen" name="choiceOpen" id="choice-open"
+                              style="float: left"
+                              (change)="onChangeInput()">Schüler können wählen
+            </mat-slide-toggle>
+          </div>
+          <div class="full-width">
+            <mat-slide-toggle formControlName="resultOpen" name="resultOpen" id="result-open" style="float: left"
+                              (change)="onChangeInput()">Schüler können das Ergebnis einsehen
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
     </div>
