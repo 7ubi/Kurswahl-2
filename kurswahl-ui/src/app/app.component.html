@@ -21,21 +21,23 @@
     <div>
     </div>
   </mat-sidenav>
+  <mat-sidenav-content style="height: calc(100% - 64px)">
+    <router-outlet style="height: 100%"></router-outlet>
+
+  </mat-sidenav-content>
   <mat-sidenav-content>
-    <div style="margin-bottom: 2.5rem">
-      <router-outlet></router-outlet>
-    </div>
     <footer class="footer">
-      <div class="footer-element">
-        <a class="footer-link" routerLink="dataPrivacy">Datenschutz</a>
-      </div>
-      <div class="footer-element">
-        Kurswahl&#64;{{ version }}
-      </div>
-      <div class="footer-element">
-        © Tobias Renner {{ year }}
+      <div>
+        <div class="footer-element">
+          <a class="footer-element" routerLink="dataPrivacy">Datenschutz</a>
+        </div>
+        <div class="footer-element">
+          <span>Kurswahl&#64;{{ version }}</span>
+        </div>
+        <div class="footer-element">
+          <span>© Tobias Renner {{ year }}</span>
+        </div>
       </div>
     </footer>
-
   </mat-sidenav-content>
 </mat-sidenav-container>
