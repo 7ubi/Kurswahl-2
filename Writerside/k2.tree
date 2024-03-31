@@ -19,5 +19,6 @@
     </toc-element>
     <toc-element topic="Datenbank-Aufbau.md"/>
     <toc-element topic="Pipeline.topic"/>
+    <toc-element topic="Datenschutz.topic"/>
     <toc-element topic="API_Reference.topic"/>
 </instance-profile>
