@@ -10,7 +10,7 @@ public class RuleSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "rule_set_id")
     private Long ruleSetId;
 
     @Column(nullable = false)

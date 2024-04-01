@@ -10,24 +10,25 @@ public class Class {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "class_id")
     private Long classId;
 
     @Column(length = 100, nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = false)
+    @JoinColumn(name = "tape_id", unique = false)
     private Tape tape;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn()
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "aClass")
     private Set<ChoiceClass> choiceClasses;
 
     public Class() {

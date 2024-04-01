@@ -9,16 +9,16 @@ import java.util.Set;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "teacher_id")
     private Long teacherId;
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher")
     private Set<Class> classes;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher")
     private Set<StudentClass> studentClasses;
 
     @Column(nullable = false)

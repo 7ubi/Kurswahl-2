@@ -10,18 +10,17 @@ public class Rule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "rule_id")
     private Long ruleId;
 
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn()
-    private Set<Subject> subjects;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "rule")
+    private Set<SubjectRule> subjectRules;
 
     @ManyToOne()
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "rule_set_id")
     private RuleSet ruleSet;
 
     public Long getRuleId() {
@@ -40,12 +39,12 @@ public class Rule {
         this.name = name;
     }
 
-    public Set<Subject> getSubjects() {
-        return subjects;
+    public Set<SubjectRule> getSubjectRules() {
+        return subjectRules;
     }
 
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
+    public void setSubjectRules(Set<SubjectRule> subjectRules) {
+        this.subjectRules = subjectRules;
     }
 
     public RuleSet getRuleSet() {

@@ -74,6 +74,9 @@ public class ChoiceResultServiceTest {
 
     private Rule otherRule;
 
+    @Autowired
+    private SubjetRuleRepo subjetRuleRepo;
+
     @BeforeEach
     public void setupTest() {
         setupTapes();
@@ -123,13 +126,13 @@ public class ChoiceResultServiceTest {
         choice.setChoiceClasses(new HashSet<>());
         choice.setStudent(student);
 
-        this.choiceRepo.save(choice);
+        choice = this.choiceRepo.save(choice);
 
         choice = getChoice(c, selected, choiceNumber, choice);
         choice = getChoice(bc, selected, choiceNumber, choice);
 
         student.getChoices().add(choice);
-        this.studentRepo.save(student);
+        student = this.studentRepo.save(student);
     }
 
     private Choice getChoice(Class c, boolean selected, Integer choiceNumber, Choice choice) {
@@ -147,7 +150,7 @@ public class ChoiceResultServiceTest {
             this.choiceRepo.save(choice);
 
             c.getChoiceClasses().add(choiceClass);
-            this.classRepo.save(c);
+            c = this.classRepo.save(c);
         }
         return choice;
     }
@@ -160,7 +163,7 @@ public class ChoiceResultServiceTest {
         tape.setLk(true);
         tape.setaClass(new HashSet<>());
 
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
     }
 
     public void setupSubjects() {
@@ -173,7 +176,7 @@ public class ChoiceResultServiceTest {
         subject = new Subject();
         subject.setName("test");
         subject.setSubjectArea(subjectArea);
-        this.subjectRepo.save(subject);
+        subject = this.subjectRepo.save(subject);
         subjectArea.getSubjects().add(subject);
     }
 
@@ -191,26 +194,27 @@ public class ChoiceResultServiceTest {
         teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
     }
 
-    private void setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
+    private Class setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
         c = new Class();
         c.setName(name);
         c.setTape(tape);
         c.setSubject(subject);
         c.setTeacher(teacher);
-        this.classRepo.save(c);
+        c.setChoiceClasses(new HashSet<>());
+        c = this.classRepo.save(c);
 
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
         teacher.getClasses().add(c);
-        this.teacherRepo.save(teacher);
+        teacher = this.teacherRepo.save(teacher);
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
         subject.setClasses(new HashSet<>());
         subject.getClasses().add(c);
-        this.subjectRepo.save(subject);
+        subject = this.subjectRepo.save(subject);
 
-        tape = tapeRepo.findTapeByNameAndYearAndReleaseYear(tape.getName(), tape.getYear(), tape.getReleaseYear()).get();
         tape.getaClass().add(c);
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
+
+        return c;
     }
 
     private void setupRuleSet() {
@@ -236,7 +240,13 @@ public class ChoiceResultServiceTest {
     }
 
     private void addSubjectToRule() {
-        rule.getSubjects().add(subject);
+        SubjectRule subjectRule = new SubjectRule();
+        subjectRule.setSubject(subject);
+        subjectRule.setRule(rule);
+
+        subjectRule = this.subjetRuleRepo.save(subjectRule);
+
+        rule.getSubjectRules().add(subjectRule);
         ruleRepo.save(rule);
     }
 
@@ -245,10 +255,8 @@ public class ChoiceResultServiceTest {
         // Given
         Integer year = 11;
         setupRuleSet();
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test other", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test other").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test other", tape, teacher, subject);
         setupChoice(aClass, bClass, true, 1);
 
         // When
@@ -257,7 +265,7 @@ public class ChoiceResultServiceTest {
         // Then
         Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
         response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
-        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), "test");
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
                 .getStudentId(), student.getStudentId());
@@ -270,10 +278,8 @@ public class ChoiceResultServiceTest {
         // Given
         Integer year = 11;
         setupRuleSet();
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test other", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test other").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test other", tape, teacher, subject);
         setupChoice(aClass, bClass, false, 1);
 
         // When
@@ -282,7 +288,7 @@ public class ChoiceResultServiceTest {
         // Then
         Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
         response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
-        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), "test");
         Assertions.assertTrue(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().isEmpty());
 
         Assertions.assertEquals(response.getStudentsNotFulfilledRules().size(), 1);
@@ -296,10 +302,8 @@ public class ChoiceResultServiceTest {
     public void testGetResultsEmptyRuleSet() {
         // Given
         Integer year = 11;
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test other", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test other").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test other", tape, teacher, subject);
         setupChoice(aClass, bClass, true, 1);
 
         // When
@@ -308,7 +312,7 @@ public class ChoiceResultServiceTest {
         // Then
         Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
         response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
-        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), "test");
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
                 .getStudentId(), student.getStudentId());
@@ -323,14 +327,9 @@ public class ChoiceResultServiceTest {
     public void testGetResultsChosen() {
         // Given
         Integer year = 11;
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test other", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test other").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test other", tape, teacher, subject);
         setupChoice(aClass, bClass, true, 1);
-        this.student = this.studentRepo.findStudentByUser_Username(student.getUser().getUsername()).get();
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test other").get();
         setupChoice(aClass, bClass, false, 2);
 
         // When
@@ -339,7 +338,7 @@ public class ChoiceResultServiceTest {
         // Then
         Assertions.assertEquals(response.getClassStudentsResponses().size(), 2);
         response.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
-        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), aClass.getName());
+        Assertions.assertEquals(response.getClassStudentsResponses().get(0).getName(), "test");
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().size(), 1);
         Assertions.assertEquals(response.getClassStudentsResponses().get(0).getStudentSurveillanceResponses().get(0)
                 .getStudentId(), student.getStudentId());

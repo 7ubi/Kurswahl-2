@@ -10,16 +10,17 @@ public class StudentClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "student_class_id")
     private Long studentClassId;
 
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "studentClass")
     private Set<Student> students;
 
     @ManyToOne
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @Column(nullable = false)
@@ -28,7 +29,8 @@ public class StudentClass {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    public StudentClass() {}
+    public StudentClass() {
+    }
 
     public Long getStudentClassId() {
         return studentClassId;

@@ -9,16 +9,17 @@ import java.util.Set;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "student_id")
     private Long studentId;
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_class_id")
     private StudentClass studentClass;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private Set<Choice> choices;
 
     public Student() {

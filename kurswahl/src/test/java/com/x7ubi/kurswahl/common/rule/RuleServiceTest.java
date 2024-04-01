@@ -3,10 +3,7 @@ package com.x7ubi.kurswahl.common.rule;
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
-import com.x7ubi.kurswahl.common.repository.RuleRepo;
-import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
-import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
-import com.x7ubi.kurswahl.common.repository.SubjectRepo;
+import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.common.rule.service.RuleService;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +31,9 @@ public class RuleServiceTest {
 
     @Autowired
     private SubjectAreaRepo subjectAreaRepo;
+
+    @Autowired
+    private SubjetRuleRepo subjetRuleRepo;
 
     private Student student;
 
@@ -171,7 +171,13 @@ public class RuleServiceTest {
     }
 
     private void addSubjectToRule() {
-        rule.getSubjects().add(subject);
+        SubjectRule subjectRule = new SubjectRule();
+        subjectRule.setSubject(subject);
+        subjectRule.setRule(rule);
+
+        subjectRule = this.subjetRuleRepo.save(subjectRule);
+
+        rule.getSubjectRules().add(subjectRule);
         ruleRepo.save(rule);
     }
 

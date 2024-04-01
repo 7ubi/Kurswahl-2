@@ -7,12 +7,11 @@ import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
-import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.Subject;
 import com.x7ubi.kurswahl.common.models.SubjectArea;
-import com.x7ubi.kurswahl.common.repository.RuleRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectRepo;
+import com.x7ubi.kurswahl.common.repository.SubjetRuleRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,16 +34,15 @@ public class SubjectCreationService {
 
     private final ClassCreationService classCreationService;
 
-    private final RuleRepo ruleRepo;
+    private final SubjetRuleRepo subjetRuleRepo;
 
     protected SubjectCreationService(SubjectAreaRepo subjectAreaRepo, SubjectRepo subjectRepo,
-                                     SubjectMapper subjectMapper, ClassCreationService classCreationService,
-                                     RuleRepo ruleRepo) {
+                                     SubjectMapper subjectMapper, ClassCreationService classCreationService, SubjetRuleRepo subjetRuleRepo) {
         this.subjectAreaRepo = subjectAreaRepo;
         this.subjectRepo = subjectRepo;
         this.subjectMapper = subjectMapper;
         this.classCreationService = classCreationService;
-        this.ruleRepo = ruleRepo;
+        this.subjetRuleRepo = subjetRuleRepo;
     }
 
     @Transactional
@@ -114,12 +112,7 @@ public class SubjectCreationService {
         for (Class aclass : classes) {
             classCreationService.deleteClassHelper(aclass.getClassId());
         }
-        List<Rule> rules = new ArrayList<>(subject.getRules());
-        this.subjectRepo.save(subject);
-        for (Rule rule : rules) {
-            rule.getSubjects().remove(subject);
-            ruleRepo.save(rule);
-        }
+        this.subjetRuleRepo.deleteAll(subject.getSubjectRules());
         this.subjectRepo.delete(subject);
 
         logger.info(String.format("Deleted subject %s", subject.getName()));

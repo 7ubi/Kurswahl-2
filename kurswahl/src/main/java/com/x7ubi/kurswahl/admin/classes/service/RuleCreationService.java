@@ -9,9 +9,11 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.RuleSet;
 import com.x7ubi.kurswahl.common.models.Subject;
+import com.x7ubi.kurswahl.common.models.SubjectRule;
 import com.x7ubi.kurswahl.common.repository.RuleRepo;
 import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
 import com.x7ubi.kurswahl.common.repository.SubjectRepo;
+import com.x7ubi.kurswahl.common.repository.SubjetRuleRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,11 +33,14 @@ public class RuleCreationService {
 
     private final RuleMapper ruleMapper;
 
-    public RuleCreationService(RuleSetRepo ruleSetRepo, RuleRepo ruleRepo, SubjectRepo subjectRepo, RuleMapper ruleMapper) {
+    private final SubjetRuleRepo subjetRuleRepo;
+
+    public RuleCreationService(RuleSetRepo ruleSetRepo, RuleRepo ruleRepo, SubjectRepo subjectRepo, RuleMapper ruleMapper, SubjetRuleRepo subjetRuleRepo) {
         this.ruleSetRepo = ruleSetRepo;
         this.ruleRepo = ruleRepo;
         this.subjectRepo = subjectRepo;
         this.ruleMapper = ruleMapper;
+        this.subjetRuleRepo = subjetRuleRepo;
     }
 
     @Transactional
@@ -48,7 +53,7 @@ public class RuleCreationService {
 
         Rule rule = this.ruleMapper.ruleRequestToRule(ruleCreationRequest);
         rule.setRuleSet(ruleSet);
-        rule.setSubjects(new HashSet<>());
+        rule.setSubjectRules(new HashSet<>());
 
         ruleSet.getRules().add(rule);
         this.ruleRepo.saveAndFlush(rule);
@@ -69,8 +74,13 @@ public class RuleCreationService {
             return;
         }
         Subject subject = subjectOptional.get();
-        subject.getRules().add(rule);
-        rule.getSubjects().add(subject);
+        SubjectRule subjectRule = new SubjectRule();
+        subjectRule.setRule(rule);
+        subjectRule.setSubject(subject);
+
+        subjectRule = this.subjetRuleRepo.save(subjectRule);
+
+        subject.getSubjectRules().add(subjectRule);
         this.subjectRepo.saveAndFlush(subject);
     }
 
@@ -138,15 +148,15 @@ public class RuleCreationService {
             rule.setRuleSet(ruleSet);
         }
 
-        for (Subject subject : rule.getSubjects()) {
+        for (SubjectRule subjectRule : rule.getSubjectRules()) {
             if (ruleCreationRequest.getSubjectIds().stream().noneMatch(subjectId ->
-                    Objects.equals(subject.getSubjectId(), subjectId))) {
-                removeSubjectFromRule(subject, rule);
+                    Objects.equals(subjectRule.getSubject().getSubjectId(), subjectId))) {
+                removeSubjectFromRule(subjectRule, rule);
             }
         }
 
         for (Long subjectId : ruleCreationRequest.getSubjectIds()) {
-            if (rule.getSubjects().stream().noneMatch(subject -> Objects.equals(subject.getSubjectId(), subjectId))) {
+            if (rule.getSubjectRules().stream().noneMatch(subjectRule -> Objects.equals(subjectRule.getSubject().getSubjectId(), subjectId))) {
                 addSubjectToRule(subjectId, rule);
             }
         }
@@ -155,11 +165,9 @@ public class RuleCreationService {
     }
 
     @Transactional
-    protected void removeSubjectFromRule(Subject subject, Rule rule) {
-        subject.getRules().remove(rule);
-        subjectRepo.save(subject);
-        rule.getSubjects().remove(subject);
-        ruleRepo.save(rule);
+    protected void removeSubjectFromRule(SubjectRule subjectRule, Rule rule) {
+        rule.getSubjectRules().remove(subjectRule);
+        this.subjetRuleRepo.delete(subjectRule);
     }
 
     @Transactional
@@ -172,10 +180,7 @@ public class RuleCreationService {
     public Integer deleteRuleHelper(Long ruleId) throws EntityNotFoundException {
         Rule rule = getRuleById(ruleId);
 
-        for (Subject subject : rule.getSubjects()) {
-            subject.getRules().remove(rule);
-            subjectRepo.save(subject);
-        }
+        this.subjetRuleRepo.deleteAll(rule.getSubjectRules());
 
         rule.getRuleSet().getRules().remove(rule);
         ruleSetRepo.save(rule.getRuleSet());

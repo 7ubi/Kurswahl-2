@@ -8,7 +8,7 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "lesson_id")
     private Long lessonId;
 
     @Column(nullable = false)
@@ -18,9 +18,11 @@ public class Lesson {
     private Integer hour;
 
     @ManyToOne()
+    @JoinColumn(nullable = false, name = "tape_id")
     private Tape tape;
 
-    public Lesson() {}
+    public Lesson() {
+    }
 
     public Long getLessonId() {
         return lessonId;
