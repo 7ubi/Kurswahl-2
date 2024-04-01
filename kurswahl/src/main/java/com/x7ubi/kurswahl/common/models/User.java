@@ -3,6 +3,7 @@ package com.x7ubi.kurswahl.common.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER")
@@ -28,7 +29,11 @@ public class User implements Serializable {
     @Column(nullable = true, length = 100)
     private String generatedPassword;
 
-    public User() {}
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<AddresseeMessage> addresseeMessage;
+
+    public User() {
+    }
 
     public User(String username, String firstname, String surname, String password) {
         this.username = username;
@@ -83,5 +88,13 @@ public class User implements Serializable {
 
     public void setGeneratedPassword(String generatedPassword) {
         this.generatedPassword = generatedPassword;
+    }
+
+    public Set<AddresseeMessage> getAddresseeMessage() {
+        return addresseeMessage;
+    }
+
+    public void setAddresseeMessage(Set<AddresseeMessage> addresseeMessage) {
+        this.addresseeMessage = addresseeMessage;
     }
 }
