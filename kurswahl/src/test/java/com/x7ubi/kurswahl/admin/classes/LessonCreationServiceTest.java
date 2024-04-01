@@ -132,12 +132,10 @@ public class LessonCreationServiceTest {
 
     @Test
     public void deleteLesson() throws EntityNotFoundException {
-        List<Lesson> lessons1 = this.lessonRepo.findAll();
         // When
         List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lesson.getLessonId());
 
         // Then
-        List<Lesson> lessons = this.lessonRepo.findAll();
         Assertions.assertEquals(responses.size(), 1);
         Assertions.assertEquals(responses.get(0).getTapeId(), tape.getTapeId());
         Assertions.assertFalse(this.lessonRepo.existsByDayAndHourAndTape_YearAndTape_ReleaseYear(
