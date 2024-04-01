@@ -10,22 +10,21 @@ public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "subject_id")
     private Long subjectId;
 
     @Column(length = 100, nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "subject")
     private Set<Class> classes;
 
     @ManyToOne()
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "subject_area_id")
     private SubjectArea subjectArea;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn()
-    private Set<Rule> rules;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "subject")
+    private Set<SubjectRule> subjectRules;
 
     public Subject() {
     }
@@ -62,11 +61,11 @@ public class Subject {
         this.subjectArea = subjectArea;
     }
 
-    public Set<Rule> getRules() {
-        return rules;
+    public Set<SubjectRule> getSubjectRules() {
+        return subjectRules;
     }
 
-    public void setRules(Set<Rule> rules) {
-        this.rules = rules;
+    public void setSubjectRules(Set<SubjectRule> subjectRules) {
+        this.subjectRules = subjectRules;
     }
 }

@@ -10,7 +10,7 @@ public class Choice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "choice_id")
     private Long choiceId;
 
     @Column(nullable = false)
@@ -19,12 +19,11 @@ public class Choice {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn()
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_id")
     private Student student;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn()
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "choice")
     private Set<ChoiceClass> choiceClasses;
 
     public Choice() {

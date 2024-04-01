@@ -126,7 +126,7 @@ public class AssignChoiceServiceTest {
         this.studentClassRepo.save(studentClass);
     }
 
-    private void setupChoice(Choice _choice, Integer choiceNumber, Class c) {
+    private Choice setupChoice(Choice _choice, Integer choiceNumber, Class c) {
 
         _choice = new Choice();
         _choice.setChoiceNumber(choiceNumber);
@@ -154,6 +154,8 @@ public class AssignChoiceServiceTest {
         }
         student.getChoices().add(_choice);
         this.studentRepo.save(student);
+
+        return _choice;
     }
 
     private void setupTapes() {
@@ -207,41 +209,38 @@ public class AssignChoiceServiceTest {
         teacher = new Teacher();
         teacher.setAbbreviation("NN");
         teacher.setUser(user);
+        teacher.setClasses(new HashSet<>());
 
-        this.teacherRepo.save(teacher);
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
+        teacher = this.teacherRepo.save(teacher);
     }
 
-    private void setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
+    private Class setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
         c = new Class();
         c.setName(name);
         c.setTape(tape);
         c.setSubject(subject);
         c.setTeacher(teacher);
+        c.setChoiceClasses(new HashSet<>());
         this.classRepo.save(c);
 
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
         teacher.getClasses().add(c);
-        this.teacherRepo.save(teacher);
+        teacher = this.teacherRepo.save(teacher);
 
-        subject = subjectRepo.findSubjectByName(subject.getName()).get();
         subject.setClasses(new HashSet<>());
         subject.getClasses().add(c);
-        this.subjectRepo.save(subject);
+        subject = this.subjectRepo.save(subject);
 
-        tape = tapeRepo.findTapeByNameAndYearAndReleaseYear(tape.getName(), tape.getYear(), tape.getReleaseYear()).get();
         tape.getaClass().add(c);
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
+
+        return c;
     }
 
     @Test
     public void testGetClassesWithStudents() {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
         setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
 
         Integer year = 11;
 
@@ -260,16 +259,9 @@ public class AssignChoiceServiceTest {
     @Test
     public void testGetStundetChoices() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
         setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
         setupChoice(secondChoice, 2, aClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
 
         // When
         StudentChoicesResponse studentChoicesResponse = this.assignChoiceService.getStudentChoices(student.getStudentId());
@@ -297,16 +289,9 @@ public class AssignChoiceServiceTest {
     @Test
     public void testGetStundetChoicesStudentNotFound() {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
         setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
         setupChoice(secondChoice, 2, aClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
@@ -319,11 +304,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignChoice() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        choice = setupChoice(choice, 1, aClass);
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
 
         // When
@@ -343,11 +325,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignChoiceChoiceClassNotFound() {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        choice = setupChoice(choice, 1, aClass);
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
 
         // When
@@ -361,17 +340,11 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignChoiceSameSubject() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test 2", otherTape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test 2").get();
-        setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(secondChoice, 2, bClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test 2", otherTape, teacher, subject);
+        choice = setupChoice(choice, 1, aClass);
+        secondChoice = setupChoice(secondChoice, 2, bClass);
+
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
 
         // When
@@ -401,17 +374,10 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignChoiceSameTape() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test 2", tape, teacher, otherSubject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test 2").get();
-        setupChoice(choice, 1, aClass);
-        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
-                student.getStudentId(), Year.now().getValue()).get();
-        this.student = this.studentRepo.findStudentByUser_Username("test.student").get();
-        setupChoice(secondChoice, 2, bClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test 2", tape, teacher, otherSubject);
+        choice = setupChoice(choice, 1, aClass);
+        secondChoice = setupChoice(secondChoice, 2, bClass);
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(choice.getChoiceId());
 
         // When
@@ -441,11 +407,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testDeleteChoiceSelection() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(secondChoice, 2, aClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        secondChoice = setupChoice(secondChoice, 2, aClass);
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(secondChoice.getChoiceId());
 
         // When
@@ -465,11 +428,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testDeleteChoiceSelectionChoiceClassNotFound() {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(secondChoice, 2, aClass);
-        secondChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(2,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        secondChoice = setupChoice(secondChoice, 2, aClass);
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(secondChoice.getChoiceId());
 
         // When
@@ -483,8 +443,7 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoice() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
         setupChoice(alternativeChoice, 3, null);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
@@ -508,8 +467,7 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoiceCreatesChoice() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
         alternateChoiceRequest.setStudentId(this.student.getStudentId());
@@ -532,10 +490,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoiceSameSubject() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test 2", otherTape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test 2").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test 2", otherTape, teacher, subject);
         setupChoice(choice, 1, aClass);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
@@ -569,10 +525,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoiceSameTape() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test 2", tape, teacher, otherSubject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test 2").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test 2", tape, teacher, otherSubject);
         setupChoice(choice, 1, aClass);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
@@ -606,8 +560,7 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoiceClassNotFound() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
         alternateChoiceRequest.setStudentId(this.student.getStudentId());
@@ -624,8 +577,7 @@ public class AssignChoiceServiceTest {
     @Test
     public void testAssignAlternativeChoiceStudentNotFound() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
 
         AlternateChoiceRequest alternateChoiceRequest = new AlternateChoiceRequest();
         alternateChoiceRequest.setStudentId(this.student.getStudentId() + 3);
@@ -642,10 +594,8 @@ public class AssignChoiceServiceTest {
     @Test
     public void testGetTapes() {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        setupClasses(bClass, "test 2", otherTape, teacher, otherSubject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        this.bClass = this.classRepo.findClassByName("test 2").get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        bClass = setupClasses(bClass, "test 2", otherTape, teacher, otherSubject);
 
         // When
         List<ChoiceTapeResponse> choiceTapeResponses = this.assignChoiceService.getTapes(11);
@@ -673,11 +623,9 @@ public class AssignChoiceServiceTest {
     @Test
     public void testDeleteAlternativeChoiceClass() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(alternativeChoice, 3, aClass);
-        alternativeChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(3,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        alternativeChoice = setupChoice(alternativeChoice, 3, aClass);
+
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(alternativeChoice.getChoiceId());
 
         // When
@@ -692,11 +640,9 @@ public class AssignChoiceServiceTest {
     @Test
     public void testDeleteAlternativeChoiceClassChoiceClassNotFound() throws EntityNotFoundException {
         // Given
-        setupClasses(aClass, "test", tape, teacher, subject);
-        this.aClass = this.classRepo.findClassByName("test").get();
-        setupChoice(alternativeChoice, 3, aClass);
-        alternativeChoice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(3,
-                student.getStudentId(), Year.now().getValue()).get();
+        aClass = setupClasses(aClass, "test", tape, teacher, subject);
+        alternativeChoice = setupChoice(alternativeChoice, 3, aClass);
+
         List<ChoiceClass> choiceClasses = this.choiceClassRepo.findAllByChoice_ChoiceId(alternativeChoice.getChoiceId());
 
         // When

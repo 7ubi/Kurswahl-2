@@ -10,16 +10,17 @@ public class SubjectArea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "subject_area_id")
     private Long subjectAreaId;
 
     @Column(length = 100)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "subjectArea")
     private Set<Subject> subjects;
 
-    public SubjectArea() {}
+    public SubjectArea() {
+    }
 
     public Long getSubjectAreaId() {
         return subjectAreaId;

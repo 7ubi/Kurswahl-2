@@ -7,14 +7,8 @@ import com.x7ubi.kurswahl.admin.classes.service.RuleCreationService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
-import com.x7ubi.kurswahl.common.models.Rule;
-import com.x7ubi.kurswahl.common.models.RuleSet;
-import com.x7ubi.kurswahl.common.models.Subject;
-import com.x7ubi.kurswahl.common.models.SubjectArea;
-import com.x7ubi.kurswahl.common.repository.RuleRepo;
-import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
-import com.x7ubi.kurswahl.common.repository.SubjectAreaRepo;
-import com.x7ubi.kurswahl.common.repository.SubjectRepo;
+import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.repository.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +47,9 @@ public class RuleCreationServiceTest {
 
     private Rule otherRule;
 
+    @Autowired
+    private SubjetRuleRepo subjetRuleRepo;
+
     @BeforeEach
     public void setupTest() {
         SubjectArea subjectArea = new SubjectArea();
@@ -62,13 +59,13 @@ public class RuleCreationServiceTest {
         subject.setName("Subject");
         subject.setSubjectArea(subjectArea);
 
-        subjectAreaRepo.save(subjectArea);
-        subjectRepo.save(subject);
+        subjectArea = subjectAreaRepo.save(subjectArea);
+        subject = subjectRepo.save(subject);
 
         otherSubject = new Subject();
         otherSubject.setName("Subject Other");
         otherSubject.setSubjectArea(subjectArea);
-        subjectRepo.save(otherSubject);
+        otherSubject = subjectRepo.save(otherSubject);
     }
 
     private void setupRuleSet() {
@@ -110,7 +107,13 @@ public class RuleCreationServiceTest {
     }
 
     private void addSubjectToRule() {
-        rule.getSubjects().add(subject);
+        SubjectRule subjectRule = new SubjectRule();
+        subjectRule.setSubject(subject);
+        subjectRule.setRule(rule);
+
+        subjectRule = this.subjetRuleRepo.save(subjectRule);
+
+        rule.getSubjectRules().add(subjectRule);
         ruleRepo.save(rule);
     }
 
@@ -131,16 +134,16 @@ public class RuleCreationServiceTest {
         rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
-        Assertions.assertEquals(rule.getSubjects().size(), 1);
-        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), subject.getSubjectId());
+        Assertions.assertEquals(rule.getSubjectRules().size(), 1);
+        Assertions.assertEquals(rule.getSubjectRules().stream().findFirst().get().getSubject().getSubjectId(), subject.getSubjectId());
 
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
         Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertEquals(subject.getRules().size(), 1);
-        Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(subject.getSubjectRules().size(), 1);
+        Assertions.assertEquals(subject.getSubjectRules().stream().findFirst().get().getRule().getRuleId(), rule.getRuleId());
     }
 
     @Test
@@ -161,16 +164,16 @@ public class RuleCreationServiceTest {
         rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
-        Assertions.assertEquals(rule.getSubjects().size(), 1);
-        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), subject.getSubjectId());
+        Assertions.assertEquals(rule.getSubjectRules().size(), 1);
+        Assertions.assertEquals(rule.getSubjectRules().stream().findFirst().get().getSubject().getSubjectId(), subject.getSubjectId());
 
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
         Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertEquals(subject.getRules().size(), 1);
-        Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(subject.getSubjectRules().size(), 1);
+        Assertions.assertEquals(subject.getSubjectRules().stream().findFirst().get().getRule().getRuleId(), rule.getRuleId());
     }
 
     @Test
@@ -211,24 +214,22 @@ public class RuleCreationServiceTest {
         rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 11).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
-        Assertions.assertEquals(rule.getSubjects().size(), 1);
-        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), subject.getSubjectId());
+        Assertions.assertEquals(rule.getSubjectRules().size(), 1);
+        Assertions.assertEquals(rule.getSubjectRules().stream().findFirst().get().getSubject().getSubjectId(), subject.getSubjectId());
 
         ruleSet = ruleSetRepo.findRuleSetByYear(11).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
         Assertions.assertEquals(ruleSet.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertEquals(subject.getRules().size(), 1);
-        Assertions.assertEquals(subject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(subject.getSubjectRules().size(), 1);
+        Assertions.assertEquals(subject.getSubjectRules().stream().findFirst().get().getRule().getRuleId(), rule.getRuleId());
     }
 
     @Test
     public void testEditRule() throws EntityCreationException, EntityNotFoundException {
         // Given
         setupRuleSet();
-        subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
         setupRule();
         addSubjectToRule();
 
@@ -244,8 +245,8 @@ public class RuleCreationServiceTest {
         rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 12).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
-        Assertions.assertEquals(rule.getSubjects().size(), 1);
-        Assertions.assertEquals(rule.getSubjects().stream().findFirst().get().getSubjectId(), otherSubject.getSubjectId());
+        Assertions.assertEquals(rule.getSubjectRules().size(), 1);
+        Assertions.assertEquals(rule.getSubjectRules().stream().findFirst().get().getSubject().getSubjectId(), otherSubject.getSubjectId());
 
         ruleSet = ruleSetRepo.findRuleSetByYear(12).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
@@ -255,11 +256,11 @@ public class RuleCreationServiceTest {
         Assertions.assertTrue(ruleSet.getRules().isEmpty());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertTrue(subject.getRules().isEmpty());
+        Assertions.assertTrue(subject.getSubjectRules().isEmpty());
 
         otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
-        Assertions.assertEquals(otherSubject.getRules().size(), 1);
-        Assertions.assertEquals(otherSubject.getRules().stream().findFirst().get().getRuleId(), rule.getRuleId());
+        Assertions.assertEquals(otherSubject.getSubjectRules().size(), 1);
+        Assertions.assertEquals(otherSubject.getSubjectRules().stream().findFirst().get().getRule().getRuleId(), rule.getRuleId());
     }
 
     @Test
@@ -282,7 +283,7 @@ public class RuleCreationServiceTest {
         rule = ruleRepo.findRuleByNameAndRuleSet_Year(ruleCreationRequest.getName(), 12).get();
         Assertions.assertEquals(rule.getName(), ruleCreationRequest.getName());
         Assertions.assertEquals(rule.getRuleSet().getYear(), ruleCreationRequest.getYear());
-        Assertions.assertTrue(rule.getSubjects().isEmpty());
+        Assertions.assertTrue(rule.getSubjectRules().isEmpty());
 
         ruleSet = ruleSetRepo.findRuleSetByYear(12).get();
         Assertions.assertEquals(ruleSet.getRules().size(), 1);
@@ -292,10 +293,10 @@ public class RuleCreationServiceTest {
         Assertions.assertTrue(ruleSet.getRules().isEmpty());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertTrue(subject.getRules().isEmpty());
+        Assertions.assertTrue(subject.getSubjectRules().isEmpty());
 
         otherSubject = subjectRepo.findSubjectByName(otherSubject.getName()).get();
-        Assertions.assertTrue(otherSubject.getRules().isEmpty());
+        Assertions.assertTrue(otherSubject.getSubjectRules().isEmpty());
     }
 
     @Test
@@ -419,7 +420,7 @@ public class RuleCreationServiceTest {
         Assertions.assertTrue(ruleSet.getRules().isEmpty());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertTrue(subject.getRules().isEmpty());
+        Assertions.assertTrue(subject.getSubjectRules().isEmpty());
     }
 
     @Test
@@ -458,7 +459,7 @@ public class RuleCreationServiceTest {
         Assertions.assertTrue(ruleSet.getRules().isEmpty());
 
         subject = subjectRepo.findSubjectByName(subject.getName()).get();
-        Assertions.assertTrue(subject.getRules().isEmpty());
+        Assertions.assertTrue(subject.getSubjectRules().isEmpty());
     }
 
     @Test

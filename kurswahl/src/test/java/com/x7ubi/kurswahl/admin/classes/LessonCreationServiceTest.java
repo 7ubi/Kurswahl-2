@@ -45,16 +45,16 @@ public class LessonCreationServiceTest {
         tape.setReleaseYear(Year.now().getValue());
         tape.setLk(false);
 
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
 
         lesson = new Lesson();
         lesson.setDay(0);
         lesson.setHour(0);
         lesson.setTape(tape);
-        lessonRepo.save(lesson);
+        lesson = lessonRepo.save(lesson);
         tape.setLessons(new HashSet<>());
         tape.getLessons().add(lesson);
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
     }
 
     @Test
@@ -111,7 +111,6 @@ public class LessonCreationServiceTest {
     @Test
     public void createLessonWrongTapeId() {
         // Given
-        tape = this.tapeRepo.findTapeByNameAndYearAndReleaseYear("GK 1", 11, Year.now().getValue()).get();
         LessonCreationRequest lessonCreationRequest = new LessonCreationRequest();
         lessonCreationRequest.setDay(0);
         lessonCreationRequest.setHour(0);
@@ -133,9 +132,6 @@ public class LessonCreationServiceTest {
 
     @Test
     public void deleteLesson() throws EntityNotFoundException {
-        // Given
-        lesson = this.lessonRepo.findLessonByDayAndHour(lesson.getDay(), lesson.getHour()).get();
-
         // When
         List<TapeResponse> responses = this.lessonCreationService.deleteLesson(lesson.getLessonId());
 

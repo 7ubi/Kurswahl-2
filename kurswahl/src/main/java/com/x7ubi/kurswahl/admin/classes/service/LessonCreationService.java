@@ -14,6 +14,7 @@ import com.x7ubi.kurswahl.common.repository.TapeRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +63,7 @@ public class LessonCreationService {
                 tape.getReleaseYear()));
     }
 
+    @Transactional
     public List<TapeResponse> deleteLesson(Long lessonId) throws EntityNotFoundException {
         Optional<Lesson> lessonOptional = this.lessonRepo.findLessonByLessonId(lessonId);
 

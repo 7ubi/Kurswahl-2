@@ -182,7 +182,7 @@ public class StudentChoiceServiceTest {
         tape.setLk(false);
         tape.setaClass(new HashSet<>());
 
-        tapeRepo.save(tape);
+        tape = tapeRepo.save(tape);
 
         otherTape = new Tape();
         otherTape.setName("LK 1");
@@ -191,28 +191,28 @@ public class StudentChoiceServiceTest {
         otherTape.setLk(true);
         otherTape.setaClass(new HashSet<>());
 
-        tapeRepo.save(otherTape);
+        otherTape = tapeRepo.save(otherTape);
     }
 
     public void setupSubjects() {
         SubjectArea subjectArea = new SubjectArea();
         subjectArea.setName("Subject Area");
 
-        this.subjectAreaRepo.save(subjectArea);
+        subjectArea = this.subjectAreaRepo.save(subjectArea);
         subjectArea = this.subjectAreaRepo.findSubjectAreaByName(subjectArea.getName()).get();
 
         subject = new Subject();
         subject.setName("test");
         subject.setSubjectArea(subjectArea);
-        this.subjectRepo.save(subject);
+        subject = this.subjectRepo.save(subject);
         subjectArea.getSubjects().add(subject);
 
         subjectOther = new Subject();
         subjectOther.setName("test other");
         subjectOther.setSubjectArea(subjectArea);
-        this.subjectRepo.save(subjectOther);
+        subjectOther = this.subjectRepo.save(subjectOther);
         subjectArea.getSubjects().add(subjectOther);
-        this.subjectAreaRepo.save(subjectArea);
+        subjectArea = this.subjectAreaRepo.save(subjectArea);
     }
 
     public void setupTeachers() {
@@ -224,9 +224,10 @@ public class StudentChoiceServiceTest {
         teacher = new Teacher();
         teacher.setAbbreviation("NN");
         teacher.setUser(user);
+        teacher.setClasses(new HashSet<>());
+        teacher.setStudentClasses(new HashSet<>());
 
-        this.teacherRepo.save(teacher);
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
+        teacher = this.teacherRepo.save(teacher);
     }
 
     private void setupClasses(Class c, String name, Tape tape, Teacher teacher, Subject subject) {
@@ -235,18 +236,15 @@ public class StudentChoiceServiceTest {
         c.setTape(tape);
         c.setSubject(subject);
         c.setTeacher(teacher);
-        this.classRepo.save(c);
+        c = this.classRepo.save(c);
 
-        teacher = this.teacherRepo.findTeacherByUser_Username(teacher.getUser().getUsername()).get();
         teacher.getClasses().add(c);
         this.teacherRepo.save(teacher);
 
-        subject = subjectRepo.findSubjectByName(subject.getName()).get();
         subject.setClasses(new HashSet<>());
         subject.getClasses().add(c);
         this.subjectRepo.save(subject);
 
-        tape = tapeRepo.findTapeByNameAndYearAndReleaseYear(tape.getName(), tape.getYear(), tape.getReleaseYear()).get();
         tape.getaClass().add(c);
         tapeRepo.save(tape);
     }

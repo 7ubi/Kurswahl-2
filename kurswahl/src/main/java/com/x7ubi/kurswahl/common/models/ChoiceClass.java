@@ -12,11 +12,11 @@ public class ChoiceClass {
     private Long choiceClassId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn()
+    @JoinColumn(name = "class_id")
     Class aClass;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn()
+    @JoinColumn(name = "choice_id")
     Choice choice;
 
     @Column(nullable = false)

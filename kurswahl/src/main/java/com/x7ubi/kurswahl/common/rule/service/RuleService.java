@@ -3,7 +3,7 @@ package com.x7ubi.kurswahl.common.rule.service;
 import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Rule;
 import com.x7ubi.kurswahl.common.models.RuleSet;
-import com.x7ubi.kurswahl.common.models.Subject;
+import com.x7ubi.kurswahl.common.models.SubjectRule;
 import com.x7ubi.kurswahl.common.repository.RuleSetRepo;
 import com.x7ubi.kurswahl.common.rule.response.RuleResponse;
 import com.x7ubi.kurswahl.student.choice.mapper.ChoiceRuleMapper;
@@ -43,6 +43,7 @@ public class RuleService {
         return this.choiceRuleMapper.rulesToRuleResponses(ruleSet.get().getRules().stream().toList());
     }
 
+    @Transactional(readOnly = true)
     public List<RuleResponse> getRulesByChoiceClasses(Integer year, Set<ChoiceClass> choiceClasses) {
         Optional<RuleSet> ruleSet = this.ruleSetRepo.findRuleSetByYear(year);
         if (ruleSet.isEmpty()) {
@@ -52,9 +53,9 @@ public class RuleService {
 
         for (Rule rule : ruleSet.get().getRules()) {
             boolean ruleFulfilled = false;
-            for (Subject subject : rule.getSubjects()) {
+            for (SubjectRule subjectRule : rule.getSubjectRules()) {
                 if (choiceClasses.stream().anyMatch(choiceClass -> Objects.equals(choiceClass.getaClass().getSubject()
-                        .getSubjectId(), subject.getSubjectId()))) {
+                        .getSubjectId(), subjectRule.getSubject().getSubjectId()))) {
                     ruleFulfilled = true;
                     break;
                 }
@@ -81,9 +82,9 @@ public class RuleService {
     public Boolean getRulesFulfilled(RuleSet ruleSet, Set<ChoiceClass> choiceClasses) {
         for (Rule rule : ruleSet.getRules()) {
             boolean fulfilled = false;
-            for (Subject subject : rule.getSubjects()) {
+            for (SubjectRule subjectRule : rule.getSubjectRules()) {
                 if (choiceClasses.stream().anyMatch(c -> Objects.equals(c.getaClass().getSubject().getSubjectId(),
-                        subject.getSubjectId()))) {
+                        subjectRule.getSubject().getSubjectId()))) {
                     fulfilled = true;
                     break;
                 }

@@ -10,7 +10,7 @@ public class Tape {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "tape_id")
     private Long tapeId;
 
     @Column(nullable = false)
@@ -25,13 +25,14 @@ public class Tape {
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "tape")
     private Set<Class> aClass;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "tape")
     private Set<Lesson> lessons;
 
-    public Tape() {}
+    public Tape() {
+    }
 
     public Long getTapeId() {
         return tapeId;
