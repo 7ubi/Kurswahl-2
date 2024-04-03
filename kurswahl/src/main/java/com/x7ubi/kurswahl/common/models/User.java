@@ -29,6 +29,9 @@ public class User implements Serializable {
     @Column(nullable = true, length = 100)
     private String generatedPassword;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "sender")
+    private Set<Message> sentMessages;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<AddresseeMessage> addresseeMessage;
 
@@ -88,6 +91,14 @@ public class User implements Serializable {
 
     public void setGeneratedPassword(String generatedPassword) {
         this.generatedPassword = generatedPassword;
+    }
+
+    public Set<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(Set<Message> sentMessages) {
+        this.sentMessages = sentMessages;
     }
 
     public Set<AddresseeMessage> getAddresseeMessage() {

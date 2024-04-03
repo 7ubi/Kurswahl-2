@@ -9,7 +9,7 @@ import java.util.Set;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "message_id")
     private Long messageId;
 
     @Column(nullable = false, length = 100)
@@ -19,6 +19,7 @@ public class Message {
     private String message;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User sender;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "message")

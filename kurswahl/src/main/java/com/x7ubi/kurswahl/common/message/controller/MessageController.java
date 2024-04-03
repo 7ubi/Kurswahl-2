@@ -1,5 +1,6 @@
 package com.x7ubi.kurswahl.common.message.controller;
 
+import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
@@ -26,7 +27,7 @@ public class MessageController {
 
     @PostMapping("/message")
     public ResponseEntity<?> createMessage(@RequestHeader("Authorization") String authorization,
-                                           @RequestBody CreateMessageRequest createMessageRequest) {
+                                           @RequestBody CreateMessageRequest createMessageRequest) throws EntityNotFoundException {
         logger.info("Creating new Message");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
