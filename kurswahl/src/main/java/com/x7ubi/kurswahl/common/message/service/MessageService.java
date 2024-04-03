@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.mapper.MessageMapper;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
+import com.x7ubi.kurswahl.common.message.response.MessageResponse;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
 import com.x7ubi.kurswahl.common.models.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,6 +63,12 @@ public class MessageService {
         }
 
         this.messageRepo.save(message);
+    }
+
+    public List<MessageResponse> getMessages(String username) throws EntityNotFoundException {
+        User user = getUser(username);
+
+        return this.messageMapper.mapMessagesToMessageResponses(user.getAddresseeMessage());
     }
 
     private User getUser(String username) throws EntityNotFoundException {

@@ -13,11 +13,11 @@ public class AddresseeMessage {
     private Long addresseeMessageId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "messageId")
+    @JoinColumn(name = "message_id")
     private Message message;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Long getAddresseeMessageId() {
