@@ -41,4 +41,5 @@ public class ErrorMessage {
     public static final String RULE_NOT_FOUND = "Regel konnte nicht gefunden werden.";
     public static final String CHOICE_DISABLED = "Schüler können aktuell nicht wählen.";
     public static final String RESULT_DISABLED = "Schüler können die Ergebnisse aktuell nicht einsehen.";
+    public static final String MESSAGE_NOT_FOUND = "Nachricht konnte nicht gefunden werden";
 }

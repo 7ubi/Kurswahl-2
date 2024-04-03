@@ -22,14 +22,18 @@ public interface MessageMapper {
     @Mapping(target = "addresseeMessage", ignore = true)
     Message mapCreateMessageRequestToMessage(CreateMessageRequest createMessageRequest);
 
-    List<MessageResponse> mapMessagesToMessageResponses(Set<AddresseeMessage> messages);
+    List<MessageResponse> mapAddresseeMessagesToMessageResponses(Set<AddresseeMessage> addresseeMessages);
 
     @Mapping(source = "message.messageId", target = "messageId")
     @Mapping(source = "message.message", target = "message")
     @Mapping(source = "message.title", target = "title")
     @Mapping(source = "message.sender", target = "senderResponse")
     @Mapping(source = "message.addresseeMessage", target = "addresseeResponses")
-    MessageResponse mapMessageToMessageResponse(AddresseeMessage message);
+    MessageResponse mapAddresseeMessageToMessageResponse(AddresseeMessage addresseeMessage);
+
+    @Mapping(source = "sender", target = "senderResponse")
+    @Mapping(source = "addresseeMessage", target = "addresseeResponses")
+    MessageResponse mapMessageToMessageResponse(Message message);
 
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "user.username", target = "username")

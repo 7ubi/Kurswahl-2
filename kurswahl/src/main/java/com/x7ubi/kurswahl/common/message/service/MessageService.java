@@ -65,10 +65,19 @@ public class MessageService {
         this.messageRepo.save(message);
     }
 
+    public MessageResponse getMessage(Long messageId) throws EntityNotFoundException {
+        Optional<Message> messageOptional = this.messageRepo.findMessageByMessageId(messageId);
+        if (messageOptional.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessage.MESSAGE_NOT_FOUND);
+        }
+
+        return this.messageMapper.mapMessageToMessageResponse(messageOptional.get());
+    }
+
     public List<MessageResponse> getMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
 
-        return this.messageMapper.mapMessagesToMessageResponses(user.getAddresseeMessage());
+        return this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
     }
 
     private User getUser(String username) throws EntityNotFoundException {

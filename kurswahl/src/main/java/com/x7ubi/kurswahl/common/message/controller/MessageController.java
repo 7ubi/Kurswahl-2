@@ -39,9 +39,18 @@ public class MessageController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/message")
+    public ResponseEntity<?> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
+        logger.info("Getting Message");
+
+        MessageResponse responses = this.messageService.getMessage(messageId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
     @GetMapping("/messages")
     public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
-        logger.info("Creating new Message");
+        logger.info("Getting Messages");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
         List<MessageResponse> responses = this.messageService.getMessages(username);
