@@ -31,6 +31,8 @@ public interface MessageMapper {
     @Mapping(source = "message.addresseeMessage", target = "addresseeResponses")
     MessageResponse mapAddresseeMessageToMessageResponse(AddresseeMessage addresseeMessage);
 
+    List<MessageResponse> mapMessagesToMessageResponses(Set<Message> messages);
+
     @Mapping(source = "sender", target = "senderResponse")
     @Mapping(source = "addresseeMessage", target = "addresseeResponses")
     MessageResponse mapMessageToMessageResponse(Message message);

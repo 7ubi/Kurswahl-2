@@ -57,4 +57,14 @@ public class MessageController {
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
+
+    @GetMapping("/messages/sent")
+    public ResponseEntity<?> getSentMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
+        logger.info("Getting sent Messages");
+
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        List<MessageResponse> responses = this.messageService.getSentMessages(username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
 }

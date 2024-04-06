@@ -89,4 +89,10 @@ public class MessageService {
 
         return userOptional.get();
     }
+
+    public List<MessageResponse> getSentMessages(String username) throws EntityNotFoundException {
+        User user = getUser(username);
+
+        return this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
+    }
 }
