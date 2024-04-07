@@ -23,7 +23,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD_KURSWAHL}'
       BEZKODER_APP_JWTSECRET: '${JWT_SECRET}'
     volumes:
-      - './kurswahl:/usr/src/app'
+      - kurswahl-backend:/usr/src/app
     ports:
       - '8008:8080'
     networks:
@@ -36,7 +36,7 @@ services:
     container_name: kurswahl_frontendcontainer
     build: ./kurswahl-ui
     volumes:
-      - './kurswahl-ui:/usr/src/app'
+      - kurswahl-ui:/usr/src/app
     restart: always
     depends_on:
       - backend
@@ -51,3 +51,5 @@ networks:
 
 volumes:
   kurswahl-db:
+  kurswahl-ui:
+  kurswahl-backend:
