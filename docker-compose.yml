@@ -24,6 +24,9 @@ services:
       BEZKODER_APP_JWTSECRET: '${JWT_SECRET}'
     volumes:
       - kurswahl-backend:/usr/src/app
+      - kurswahl-backend-projects:/var/lib/jelastic/PROJECTS
+      - kurswahl-backend-vcs:/var/lib/jelastic/vcs
+      - kurswahl-backend-maven-conf:/opt/maven/conf
     ports:
       - '8008:8080'
     networks:
@@ -53,3 +56,6 @@ volumes:
   kurswahl-db:
   kurswahl-ui:
   kurswahl-backend:
+  kurswahl-backend-projects:
+  kurswahl-backend-vcs:
+  kurswahl-backend-maven-conf:
