@@ -6,6 +6,9 @@ import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,8 +33,16 @@ public class MessageController {
     }
 
     @PostMapping("/message")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(description = "Creating new Message")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Creating a new Message."),
+            @ApiResponse(responseCode = "404", description = "User could not be found."),
+            @ApiResponse(responseCode = "400", description = "Title or Message is too long")
+    })
     public ResponseEntity<?> createMessage(@RequestHeader("Authorization") String authorization,
-                                           @RequestBody CreateMessageRequest createMessageRequest) throws EntityNotFoundException, EntityCreationException {
+                                           @RequestBody CreateMessageRequest createMessageRequest)
+            throws EntityNotFoundException, EntityCreationException {
         logger.info("Creating new Message");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
@@ -41,6 +52,12 @@ public class MessageController {
     }
 
     @GetMapping("/message")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting Message by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Message by id."),
+            @ApiResponse(responseCode = "404", description = "Message could not be found")
+    })
     public ResponseEntity<?> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
         logger.info("Getting Message");
 
@@ -50,6 +67,12 @@ public class MessageController {
     }
 
     @GetMapping("/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting Messages, that user received")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Messages."),
+            @ApiResponse(responseCode = "404", description = "User could not be found.")
+    })
     public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
         logger.info("Getting Messages");
 
@@ -60,6 +83,12 @@ public class MessageController {
     }
 
     @GetMapping("/messages/sent")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting Messages, that user sent")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Messages."),
+            @ApiResponse(responseCode = "404", description = "User could not be found.")
+    })
     public ResponseEntity<?> getSentMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
         logger.info("Getting sent Messages");
 

@@ -8,5 +8,4 @@ import java.util.Optional;
 public interface MessageRepo extends JpaRepository<Message, Long> {
 
     Optional<Message> findMessageByMessageId(Long messageId);
-
 }

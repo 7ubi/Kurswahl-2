@@ -12,6 +12,8 @@ import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AddresseeMessageRepo;
 import com.x7ubi.kurswahl.common.repository.MessageRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,8 @@ public class MessageService {
     public static final int MAX_TITLE_LENGTH = 100;
 
     public static final int MAX_MESSAGE_LENGTH = 1000;
+
+    private final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
     private final UserRepo userRepo;
 
@@ -68,6 +72,8 @@ public class MessageService {
 
             message.getAddresseeMessage().add(addresseeMessage);
         }
+
+        logger.info(String.format("Message %s was created by %s", message.getTitle(), message.getSender().getUsername()));
 
         this.messageRepo.save(message);
     }
