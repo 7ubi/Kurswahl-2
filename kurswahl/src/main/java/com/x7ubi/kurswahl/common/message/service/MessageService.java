@@ -88,6 +88,7 @@ public class MessageService {
         }
     }
 
+    @Transactional(readOnly = true)
     public MessageResponse getMessage(Long messageId) throws EntityNotFoundException {
         Optional<Message> messageOptional = this.messageRepo.findMessageByMessageId(messageId);
         if (messageOptional.isEmpty()) {
@@ -97,10 +98,18 @@ public class MessageService {
         return this.messageMapper.mapMessageToMessageResponse(messageOptional.get());
     }
 
+    @Transactional(readOnly = true)
     public List<MessageResponse> getMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
 
         return this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MessageResponse> getSentMessages(String username) throws EntityNotFoundException {
+        User user = getUser(username);
+
+        return this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
     }
 
     private User getUser(String username) throws EntityNotFoundException {
@@ -111,11 +120,5 @@ public class MessageService {
         }
 
         return userOptional.get();
-    }
-
-    public List<MessageResponse> getSentMessages(String username) throws EntityNotFoundException {
-        User user = getUser(username);
-
-        return this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
     }
 }

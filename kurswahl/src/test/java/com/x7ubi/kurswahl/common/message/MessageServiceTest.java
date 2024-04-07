@@ -5,9 +5,12 @@ import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
+import com.x7ubi.kurswahl.common.message.response.MessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
+import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
 import com.x7ubi.kurswahl.common.models.User;
+import com.x7ubi.kurswahl.common.repository.AddresseeMessageRepo;
 import com.x7ubi.kurswahl.common.repository.MessageRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import org.junit.Assert;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @KurswahlServiceTest
 public class MessageServiceTest {
@@ -29,11 +33,16 @@ public class MessageServiceTest {
     private MessageRepo messageRepo;
 
     @Autowired
+    private AddresseeMessageRepo addresseeMessageRepo;
+
+    @Autowired
     private UserRepo userRepo;
 
     private User sender;
 
     private User addressee;
+
+    private Message message;
 
     @BeforeEach
     public void setupTests() {
@@ -51,6 +60,23 @@ public class MessageServiceTest {
         addressee.setUsername("addressee.addressee");
         addressee.setPassword("password");
         addressee = this.userRepo.save(addressee);
+    }
+
+    private void setupMessage() {
+        message = new Message();
+        message.setTitle("Title");
+        message.setMessage("Example Message");
+        message.setSender(sender);
+        message = this.messageRepo.save(message);
+
+        AddresseeMessage addresseeMessage = new AddresseeMessage();
+        addresseeMessage.setMessage(message);
+        addresseeMessage.setUser(addressee);
+        addresseeMessage = this.addresseeMessageRepo.save(addresseeMessage);
+
+        message.setAddresseeMessage(Set.of(addresseeMessage));
+
+        message = this.messageRepo.save(message);
     }
 
     @Test
@@ -135,5 +161,109 @@ public class MessageServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.MESSAGE_TOO_LONG);
+    }
+
+    @Test
+    public void testGetMessage() throws EntityNotFoundException {
+        // Given
+        setupMessage();
+
+        // When
+        MessageResponse messageResponse = this.messageService.getMessage(message.getMessageId());
+
+        // Then
+        Assertions.assertEquals(messageResponse.getMessageId(), message.getMessageId());
+        Assertions.assertEquals(messageResponse.getTitle(), message.getTitle());
+        Assertions.assertEquals(messageResponse.getMessage(), message.getMessage());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUserId(), sender.getUserId());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUsername(), sender.getUsername());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().size(), 1);
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUserId(), addressee.getUserId());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUsername(), addressee.getUsername());
+    }
+
+    @Test
+    public void testGetMessageNotFound() {
+        // Given
+        setupMessage();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.messageService.getMessage(message.getMessageId() + 3));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.MESSAGE_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetMessages() throws EntityNotFoundException {
+        // Given
+        setupMessage();
+
+        // When
+        List<MessageResponse> messageResponses = this.messageService.getMessages(addressee.getUsername());
+
+        // Then
+        Assertions.assertEquals(messageResponses.size(), 1);
+
+        MessageResponse messageResponse = messageResponses.get(0);
+
+        Assertions.assertEquals(messageResponse.getMessageId(), message.getMessageId());
+        Assertions.assertEquals(messageResponse.getTitle(), message.getTitle());
+        Assertions.assertEquals(messageResponse.getMessage(), message.getMessage());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUserId(), sender.getUserId());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUsername(), sender.getUsername());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().size(), 1);
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUserId(), addressee.getUserId());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUsername(), addressee.getUsername());
+    }
+
+    @Test
+    public void testGetMessagesAddresseeNotFound() {
+        // Given
+        setupMessage();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.messageService.getMessages("not found"));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.USER_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetSentMessages() throws EntityNotFoundException {
+        // Given
+        setupMessage();
+
+        // When
+        List<MessageResponse> messageResponses = this.messageService.getSentMessages(sender.getUsername());
+
+        // Then
+        Assertions.assertEquals(messageResponses.size(), 1);
+
+        MessageResponse messageResponse = messageResponses.get(0);
+
+        Assertions.assertEquals(messageResponse.getMessageId(), message.getMessageId());
+        Assertions.assertEquals(messageResponse.getTitle(), message.getTitle());
+        Assertions.assertEquals(messageResponse.getMessage(), message.getMessage());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUserId(), sender.getUserId());
+        Assertions.assertEquals(messageResponse.getSenderResponse().getUsername(), sender.getUsername());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().size(), 1);
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUserId(), addressee.getUserId());
+        Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUsername(), addressee.getUsername());
+    }
+
+    @Test
+    public void testGetSentMessagesSenderNotFound() {
+        // Given
+        setupMessage();
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.messageService.getSentMessages("not found"));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.USER_NOT_FOUND);
     }
 }
