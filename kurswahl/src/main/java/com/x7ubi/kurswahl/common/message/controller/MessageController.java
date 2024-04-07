@@ -7,6 +7,9 @@ import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
@@ -37,8 +40,12 @@ public class MessageController {
     @Operation(description = "Creating new Message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Creating a new Message."),
-            @ApiResponse(responseCode = "404", description = "User could not be found."),
-            @ApiResponse(responseCode = "400", description = "Title or Message is too long")
+            @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Title or Message is too long", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
     })
     public ResponseEntity<?> createMessage(@RequestHeader("Authorization") String authorization,
                                            @RequestBody CreateMessageRequest createMessageRequest)
@@ -55,10 +62,14 @@ public class MessageController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Getting Message by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Message by id."),
-            @ApiResponse(responseCode = "404", description = "Message could not be found")
+            @ApiResponse(responseCode = "200", description = "Found Message by id.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Message could not be found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
     })
-    public ResponseEntity<?> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
+    public ResponseEntity<MessageResponse> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
         logger.info("Getting Message");
 
         MessageResponse responses = this.messageService.getMessage(messageId);
@@ -70,10 +81,14 @@ public class MessageController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Getting Messages, that user received")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Messages."),
-            @ApiResponse(responseCode = "404", description = "User could not be found.")
+            @ApiResponse(responseCode = "200", description = "Found Messages.", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
     })
-    public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
+    public ResponseEntity<List<MessageResponse>> getMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
         logger.info("Getting Messages");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
@@ -86,10 +101,14 @@ public class MessageController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Getting Messages, that user sent")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Messages."),
-            @ApiResponse(responseCode = "404", description = "User could not be found.")
+            @ApiResponse(responseCode = "200", description = "Found Messages.", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
     })
-    public ResponseEntity<?> getSentMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
+    public ResponseEntity<List<MessageResponse>> getSentMessages(@RequestHeader("Authorization") String authorization) throws EntityNotFoundException {
         logger.info("Getting sent Messages");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
