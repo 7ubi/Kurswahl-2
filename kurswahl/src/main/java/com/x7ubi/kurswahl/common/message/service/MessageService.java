@@ -1,6 +1,7 @@
 package com.x7ubi.kurswahl.common.message.service;
 
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.mapper.MessageMapper;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
@@ -21,6 +22,10 @@ import java.util.Optional;
 @Service
 public class MessageService {
 
+    public static final int MAX_TITLE_LENGTH = 100;
+
+    public static final int MAX_MESSAGE_LENGTH = 1000;
+
     private final UserRepo userRepo;
 
     private final MessageRepo messageRepo;
@@ -37,8 +42,10 @@ public class MessageService {
     }
 
     @Transactional
-    public void createMessage(String username, CreateMessageRequest createMessageRequest) throws EntityNotFoundException {
+    public void createMessage(String username, CreateMessageRequest createMessageRequest) throws EntityNotFoundException, EntityCreationException {
         User sender = getUser(username);
+
+        verifyCreateMessageRequest(createMessageRequest);
 
         Message message = this.messageMapper.mapCreateMessageRequestToMessage(createMessageRequest);
         message.setSender(sender);
@@ -63,6 +70,16 @@ public class MessageService {
         }
 
         this.messageRepo.save(message);
+    }
+
+    private void verifyCreateMessageRequest(CreateMessageRequest createMessageRequest) throws EntityCreationException {
+        if (createMessageRequest.getTitle().length() > MAX_TITLE_LENGTH) {
+            throw new EntityCreationException(ErrorMessage.MESSAGE_TITLE_TOO_LONG);
+        }
+
+        if (createMessageRequest.getMessage().length() > MAX_MESSAGE_LENGTH) {
+            throw new EntityCreationException(ErrorMessage.MESSAGE_TOO_LONG);
+        }
     }
 
     public MessageResponse getMessage(Long messageId) throws EntityNotFoundException {

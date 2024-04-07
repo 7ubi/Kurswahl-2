@@ -24,7 +24,7 @@ public class CreateMessageRequest {
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     public List<Long> getAddresseeIds() {
         return addresseeIds;
     }
