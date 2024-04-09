@@ -92,6 +92,9 @@ import {MatRipple} from "@angular/material/core";
 import {SettingsComponent} from "./component/admin/settings/settings.component";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy.component";
+import {ShowMessagesComponent} from "./component/common/message/show-messages/show-messages.component";
+import {ShowMessagesSentComponent} from "./component/common/message/show-messages-sent/show-messages-sent.component";
+import {CreateMessageComponent} from "./component/common/message/create-message/create-message.component";
 
 @NgModule({
   declarations: [
@@ -142,7 +145,10 @@ import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy
     TeacherCsvImportDialogComponent,
     ShowResultComponent,
     SettingsComponent,
-    DataPrivacyComponent
+    DataPrivacyComponent,
+    ShowMessagesComponent,
+    ShowMessagesSentComponent,
+    CreateMessageComponent
   ],
   imports: [
     BrowserModule,
