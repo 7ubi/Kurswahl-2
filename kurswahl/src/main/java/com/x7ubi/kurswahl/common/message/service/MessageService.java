@@ -94,8 +94,9 @@ public class MessageService {
         if (messageOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.MESSAGE_NOT_FOUND);
         }
+        Message message = messageOptional.get();
 
-        return this.messageMapper.mapMessageToMessageResponse(messageOptional.get());
+        return this.messageMapper.mapMessageToMessageResponse(message);
     }
 
     @Transactional(readOnly = true)

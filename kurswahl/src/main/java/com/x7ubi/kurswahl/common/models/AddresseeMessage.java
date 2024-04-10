@@ -20,6 +20,9 @@ public class AddresseeMessage {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
+    private boolean readMessage = false;
+
     public Long getAddresseeMessageId() {
         return addresseeMessageId;
     }
@@ -42,5 +45,13 @@ public class AddresseeMessage {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isReadMessage() {
+        return readMessage;
+    }
+
+    public void setReadMessage(boolean readMessage) {
+        this.readMessage = readMessage;
     }
 }
