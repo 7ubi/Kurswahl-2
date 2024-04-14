@@ -69,10 +69,11 @@ public class MessageController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
             })
     })
-    public ResponseEntity<MessageResponse> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
+    public ResponseEntity<MessageResponse> getMessage(@RequestHeader("Authorization") String authorization, @RequestParam Long messageId) throws EntityNotFoundException {
         logger.info("Getting Message");
 
-        MessageResponse responses = this.messageService.getMessage(messageId);
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        MessageResponse responses = this.messageService.getMessage(messageId, username);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }

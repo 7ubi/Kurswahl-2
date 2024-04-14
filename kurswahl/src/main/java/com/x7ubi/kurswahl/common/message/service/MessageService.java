@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -88,13 +89,22 @@ public class MessageService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public MessageResponse getMessage(Long messageId) throws EntityNotFoundException {
+    @Transactional
+    public MessageResponse getMessage(Long messageId, String username) throws EntityNotFoundException {
         Optional<Message> messageOptional = this.messageRepo.findMessageByMessageId(messageId);
         if (messageOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.MESSAGE_NOT_FOUND);
         }
         Message message = messageOptional.get();
+
+        User user = getUser(username);
+        Optional<AddresseeMessage> addresseeMessageOptional = message.getAddresseeMessage().stream().filter(addresseeMessage ->
+                Objects.equals(addresseeMessage.getUser().getUserId(), user.getUserId())).findFirst();
+        if (addresseeMessageOptional.isPresent()) {
+            AddresseeMessage addresseeMessage = addresseeMessageOptional.get();
+            addresseeMessage.setReadMessage(true);
+            this.addresseeMessageRepo.save(addresseeMessage);
+        }
 
         return this.messageMapper.mapMessageToMessageResponse(message);
     }
