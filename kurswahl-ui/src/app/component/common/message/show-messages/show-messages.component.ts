@@ -1,10 +1,41 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MatTableDataSource} from "@angular/material/table";
+import {MessageResponse} from "../../common.response";
+import {HttpService} from "../../../../service/http.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-show-messages',
   templateUrl: './show-messages.component.html',
   styleUrl: './show-messages.component.css'
 })
-export class ShowMessagesComponent {
+export class ShowMessagesComponent implements OnInit {
+  messageResponses!: MessageResponse[];
+  dataSource!: MatTableDataSource<MessageResponse>;
+  displayedColumns: string[];
+  loadedMessages: boolean = false;
 
+  constructor(
+    private httpService: HttpService,
+    private router: Router
+  ) {
+    this.displayedColumns = ['Titel', 'Absender', 'Nachricht'];
+  }
+
+  ngOnInit(): void {
+    this.httpService.get<MessageResponse[]>('/api/common/messages', response => {
+      this.messageResponses = response;
+      this.dataSource = new MatTableDataSource(this.messageResponses);
+      this.loadedMessages = true;
+
+    });
+  }
+
+  createMessage() {
+
+  }
+
+  applyFilter($event: KeyboardEvent) {
+
+  }
 }

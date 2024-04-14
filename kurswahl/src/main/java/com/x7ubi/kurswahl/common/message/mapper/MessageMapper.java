@@ -29,6 +29,7 @@ public interface MessageMapper {
     @Mapping(source = "message.title", target = "title")
     @Mapping(source = "message.sender", target = "senderResponse")
     @Mapping(source = "message.addresseeMessage", target = "addresseeResponses")
+    @Mapping(source = "message.date", target = "date")
     MessageResponse mapAddresseeMessageToMessageResponse(AddresseeMessage addresseeMessage);
 
     List<MessageResponse> mapMessagesToMessageResponses(Set<Message> messages);
