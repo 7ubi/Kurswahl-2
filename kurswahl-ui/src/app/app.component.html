@@ -5,7 +5,19 @@
   <span>Kurswahl</span>
   <span class="example-spacer"></span>
   <span *ngIf="isLoggedIn()">
-    <button (click)="logout()" mat-icon-button class="example-icon">
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [routerLink]="'/changePassword'">
+        Passwort ändern
+      </button>
+      <button mat-menu-item [routerLink]="'/messages'">
+        Nachrichten
+      </button>
+    </mat-menu>
+    <button (click)="logout()" mat-icon-button>
       <mat-icon>input</mat-icon>
     </button>
   </span>
