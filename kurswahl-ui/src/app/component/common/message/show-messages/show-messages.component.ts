@@ -27,7 +27,6 @@ export class ShowMessagesComponent implements OnInit {
       this.messageResponses = response;
       this.dataSource = new MatTableDataSource(this.messageResponses);
       this.loadedMessages = true;
-
     });
   }
 
@@ -36,6 +35,7 @@ export class ShowMessagesComponent implements OnInit {
   }
 
   applyFilter($event: KeyboardEvent) {
-
+    const filterValue = ($event?.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

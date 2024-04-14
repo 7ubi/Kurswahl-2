@@ -2,3 +2,8 @@
   display: flex;
   justify-content: space-between;
 }
+
+.message:hover {
+  background-color: #eeeeee;
+  cursor: pointer;
+}
