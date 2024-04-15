@@ -95,6 +95,8 @@ import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy
 import {ShowMessagesComponent} from "./component/common/message/show-messages/show-messages.component";
 import {ShowMessagesSentComponent} from "./component/common/message/show-messages-sent/show-messages-sent.component";
 import {CreateMessageComponent} from "./component/common/message/create-message/create-message.component";
+import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -148,7 +150,8 @@ import {CreateMessageComponent} from "./component/common/message/create-message/
     DataPrivacyComponent,
     ShowMessagesComponent,
     ShowMessagesSentComponent,
-    CreateMessageComponent
+    CreateMessageComponent,
+    ShowMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -178,7 +181,10 @@ import {CreateMessageComponent} from "./component/common/message/create-message/
     MatDialogContent,
     MatDialogTitle,
     MatRipple,
-    MatSlideToggle
+    MatSlideToggle,
+    MatCard,
+    MatCardContent,
+    MatCardHeader
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

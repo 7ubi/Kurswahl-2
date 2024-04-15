@@ -38,4 +38,8 @@ export class ShowMessagesComponent implements OnInit {
     const filterValue = ($event?.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
+  showMessage(messageId: string) {
+    this.router.navigate(['/message', messageId]);
+  }
 }

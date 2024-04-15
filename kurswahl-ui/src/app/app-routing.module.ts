@@ -56,6 +56,7 @@ import {ShowResultComponent} from "./component/student/choice/show-result/show-r
 import {SettingsComponent} from "./component/admin/settings/settings.component";
 import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy.component";
 import {ShowMessagesComponent} from "./component/common/message/show-messages/show-messages.component";
+import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
 
 const routes: Routes = [
   {
@@ -70,6 +71,11 @@ const routes: Routes = [
   {
     path: 'messages',
     component: ShowMessagesComponent,
+    canActivate: mapToCanActivate([LoginRequired])
+  },
+  {
+    path: 'message/:id',
+    component: ShowMessageComponent,
     canActivate: mapToCanActivate([LoginRequired])
   },
   {

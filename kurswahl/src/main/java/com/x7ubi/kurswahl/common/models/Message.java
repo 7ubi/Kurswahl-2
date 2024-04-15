@@ -26,7 +26,7 @@ public class Message {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "message")
     private Set<AddresseeMessage> addresseeMessage;
 
-    @Column(nullable = false)
+    @Column()
     private LocalDateTime date = LocalDateTime.now();
 
     public Long getMessageId() {
