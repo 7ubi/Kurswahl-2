@@ -1,0 +1,12 @@
+<app-hero title="Nachricht"></app-hero>
+<div class="container">
+  <div class="center">
+    <mat-card>
+      <mat-card-header>Titel: {{ messageResponse?.title }}</mat-card-header>
+      <mat-card-header>
+        Von: {{ messageResponse?.senderResponse?.firstname }} {{ messageResponse?.senderResponse?.surname }}
+      </mat-card-header>
+      <mat-card-content style="text-align: left; padding-top: 30px">{{ messageResponse?.message }}</mat-card-content>
+    </mat-card>
+  </div>
+</div>
