@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.mapper.MessageMapper;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
 import com.x7ubi.kurswahl.common.models.User;
@@ -131,5 +132,11 @@ public class MessageService {
         }
 
         return userOptional.get();
+    }
+
+    public List<UserMessageResponse> getUsers() {
+        List<User> users = this.userRepo.findAll();
+
+        return this.messageMapper.mapUserToUserMessageResponse(users);
     }
 }

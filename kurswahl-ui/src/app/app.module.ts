@@ -97,6 +97,7 @@ import {ShowMessagesSentComponent} from "./component/common/message/show-message
 import {CreateMessageComponent} from "./component/common/message/create-message/create-message.component";
 import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
 import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
+import {MatAutocomplete} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -184,7 +185,8 @@ import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
     MatSlideToggle,
     MatCard,
     MatCardContent,
-    MatCardHeader
+    MatCardHeader,
+    MatAutocomplete
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

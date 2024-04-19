@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.common.message.response.MessageResponse;
 import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
+import com.x7ubi.kurswahl.common.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -43,4 +44,6 @@ public interface MessageMapper {
     @Mapping(source = "user.firstname", target = "firstname")
     @Mapping(source = "user.surname", target = "surname")
     UserMessageResponse mapAddresseeMessageToUserMessageResponse(AddresseeMessage addresseeMessage);
+
+    List<UserMessageResponse> mapUserToUserMessageResponse(List<User> user);
 }

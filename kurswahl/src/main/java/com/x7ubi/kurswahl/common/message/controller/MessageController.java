@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -114,6 +115,25 @@ public class MessageController {
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
         List<MessageResponse> responses = this.messageService.getSentMessages(username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
+    @GetMapping("/users")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting Messages, that user received")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Messages.", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
+    })
+    public ResponseEntity<List<UserMessageResponse>> getUsers() {
+        logger.info("Getting Messages");
+
+        List<UserMessageResponse> responses = this.messageService.getUsers();
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }

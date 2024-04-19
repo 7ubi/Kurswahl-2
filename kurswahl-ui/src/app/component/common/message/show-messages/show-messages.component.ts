@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MessageResponse} from "../../common.response";
 import {HttpService} from "../../../../service/http.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-show-messages',
@@ -17,7 +17,8 @@ export class ShowMessagesComponent implements OnInit {
 
   constructor(
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.displayedColumns = ['Titel', 'Absender', 'Nachricht'];
   }
@@ -31,7 +32,7 @@ export class ShowMessagesComponent implements OnInit {
   }
 
   createMessage() {
-
+    this.router.navigate(['create'], {relativeTo: this.route});
   }
 
   applyFilter($event: KeyboardEvent) {
