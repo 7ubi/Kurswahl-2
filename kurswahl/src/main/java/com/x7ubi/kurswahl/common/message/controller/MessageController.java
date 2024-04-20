@@ -121,19 +121,17 @@ public class MessageController {
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(description = "Getting Messages, that user received")
+    @Operation(description = "Getting all Users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Messages.", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
-            }),
-            @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            @ApiResponse(responseCode = "200", description = "Found all users.", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserMessageResponse.class)))
             })
     })
-    public ResponseEntity<List<UserMessageResponse>> getUsers() {
-        logger.info("Getting Messages");
+    public ResponseEntity<List<UserMessageResponse>> getUsers(@RequestHeader("Authorization") String authorization) {
+        logger.info("Getting Users");
 
-        List<UserMessageResponse> responses = this.messageService.getUsers();
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        List<UserMessageResponse> responses = this.messageService.getUsers(username);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }

@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
@@ -267,5 +268,15 @@ public class MessageServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.USER_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetUsers() {
+        // When
+        List<UserMessageResponse> response = this.messageService.getUsers(sender.getUsername());
+
+        // Then
+        Assertions.assertEquals(response.size(), 1);
+        Assertions.assertEquals(response.get(0).getUsername(), addressee.getUsername());
     }
 }

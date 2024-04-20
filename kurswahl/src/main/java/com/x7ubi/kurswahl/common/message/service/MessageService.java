@@ -134,8 +134,9 @@ public class MessageService {
         return userOptional.get();
     }
 
-    public List<UserMessageResponse> getUsers() {
+    public List<UserMessageResponse> getUsers(String username) {
         List<User> users = this.userRepo.findAll();
+        users.removeIf(user -> user.getUsername().equals(username));
 
         return this.messageMapper.mapUserToUserMessageResponse(users);
     }
