@@ -3,6 +3,16 @@
 <div class="container">
   <div class="center">
     <div class="header">
+      <form [formGroup]="shownMessages">
+        <mat-form-field>
+          <mat-label>Nachrichten Anzeigen</mat-label>
+          <mat-select formControlName="mode" (selectionChange)="changeShownMessages()">
+            <mat-option value="{{ ShowMessageModes.ALL }}"> {{ ShowMessageModes.ALL }}</mat-option>
+            <mat-option value="{{ ShowMessageModes.UNREAD }}"> {{ ShowMessageModes.UNREAD }}</mat-option>
+            <mat-option value="{{ ShowMessageModes.SENT }}"> {{ ShowMessageModes.SENT }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
       <mat-form-field>
         <mat-label>Suche</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>

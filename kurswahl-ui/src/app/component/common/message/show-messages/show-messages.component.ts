@@ -3,6 +3,13 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MessageResponse} from "../../common.response";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder, FormGroup} from '@angular/forms';
+
+export enum ShowMessageModes {
+  ALL = "Empfange",
+  UNREAD = "Ungelesene",
+  SENT = "Gesendete"
+}
 
 @Component({
   selector: 'app-show-messages',
@@ -10,17 +17,28 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrl: './show-messages.component.css'
 })
 export class ShowMessagesComponent implements OnInit {
-  messageResponses!: MessageResponse[];
+
+  protected readonly ShowMessageModes = ShowMessageModes;
+
+  messageResponses?: MessageResponse[];
+  unreadMessageResponses?: MessageResponse[];
+  sentMessageResponses?: MessageResponse[];
   dataSource!: MatTableDataSource<MessageResponse>;
   displayedColumns: string[];
   loadedMessages: boolean = false;
+  shownMessages: FormGroup;
 
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder
   ) {
     this.displayedColumns = ['Titel', 'Absender', 'Nachricht'];
+
+    this.shownMessages = this.formBuilder.group({
+      mode: [ShowMessageModes.ALL]
+    });
   }
 
   ngOnInit(): void {
@@ -42,5 +60,27 @@ export class ShowMessagesComponent implements OnInit {
 
   showMessage(messageId: string) {
     this.router.navigate(['/message', messageId]);
+  }
+
+  changeShownMessages() {
+    const mode = this.shownMessages.get('mode')?.value;
+
+    if (mode === ShowMessageModes.ALL) {
+      this.dataSource = new MatTableDataSource(this.messageResponses);
+    } else if (mode === ShowMessageModes.UNREAD) {
+      if (!this.unreadMessageResponses) {
+        this.unreadMessageResponses = this.messageResponses?.filter(message => !message.readMessage);
+      }
+      this.dataSource = new MatTableDataSource(this.unreadMessageResponses);
+    } else if (mode === ShowMessageModes.SENT) {
+      if (!this.sentMessageResponses) {
+        this.httpService.get<MessageResponse[]>('/api/common/messages/sent', response => {
+          this.sentMessageResponses = response;
+          this.dataSource = new MatTableDataSource(this.sentMessageResponses);
+        });
+      } else {
+        this.dataSource = new MatTableDataSource(this.sentMessageResponses);
+      }
+    }
   }
 }
