@@ -23,7 +23,7 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User sender;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "message")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "message", cascade = CascadeType.REMOVE)
     private Set<AddresseeMessage> addresseeMessage;
 
     @Column()

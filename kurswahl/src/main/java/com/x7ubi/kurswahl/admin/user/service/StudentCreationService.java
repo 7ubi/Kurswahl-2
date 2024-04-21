@@ -43,10 +43,14 @@ public class StudentCreationService {
 
     private final StudentMapper studentMapper;
 
+    private final MessageRepo messageRepo;
+
+    private final AddresseeMessageRepo addresseeMessageRepo;
+
     protected StudentCreationService(StudentRepo studentRepo, UserRepo userRepo, StudentClassRepo studentClassRepo,
                                      ChoiceRepo choiceRepo, ClassRepo classRepo, ChoiceClassRepo choiceClassRepo,
                                      PasswordEncoder passwordEncoder, UsernameService usernameService,
-                                     StudentMapper studentMapper) {
+                                     StudentMapper studentMapper, MessageRepo messageRepo, AddresseeMessageRepo addresseeMessageRepo) {
         this.studentRepo = studentRepo;
         this.userRepo = userRepo;
         this.studentClassRepo = studentClassRepo;
@@ -56,6 +60,8 @@ public class StudentCreationService {
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
         this.studentMapper = studentMapper;
+        this.messageRepo = messageRepo;
+        this.addresseeMessageRepo = addresseeMessageRepo;
     }
 
     @Transactional
@@ -119,6 +125,7 @@ public class StudentCreationService {
         return this.studentMapper.studentToStudentResponse(student);
     }
 
+    @Transactional
     public List<StudentResponse> deleteStudent(Long studentId) throws EntityNotFoundException {
 
         deleteStudentHelper(studentId);
@@ -126,6 +133,7 @@ public class StudentCreationService {
         return this.getAllStudents();
     }
 
+    @Transactional
     protected void deleteStudentHelper(Long studentId) throws EntityNotFoundException {
         Student student = getStudentFromId(studentId);
 
@@ -151,12 +159,18 @@ public class StudentCreationService {
             this.choiceRepo.delete(choice);
         }
 
+        this.messageRepo.deleteAll(studentUser.getSentMessages());
+        this.addresseeMessageRepo.deleteAll(studentUser.getAddresseeMessage());
+        studentUser.getSentMessages().clear();
+        studentUser.getAddresseeMessage().clear();
+
         logger.info(String.format("Deleted Student %s", studentUser.getUsername()));
 
         this.studentRepo.delete(student);
         this.userRepo.delete(studentUser);
     }
 
+    @Transactional
     public List<StudentResponse> deleteStudents(List<Long> studentIds) throws EntityNotFoundException {
         for (Long studentId : studentIds) {
             deleteStudentHelper(studentId);

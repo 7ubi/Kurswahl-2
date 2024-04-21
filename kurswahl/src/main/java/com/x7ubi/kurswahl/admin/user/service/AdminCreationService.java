@@ -8,12 +8,15 @@ import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
+import com.x7ubi.kurswahl.common.repository.AddresseeMessageRepo;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
+import com.x7ubi.kurswahl.common.repository.MessageRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,13 +36,19 @@ public class AdminCreationService {
 
     private final AdminMapper adminMapper;
 
+    private final MessageRepo messageRepo;
+
+    private final AddresseeMessageRepo addresseeMessageRepo;
+
     protected AdminCreationService(AdminRepo adminRepo, UserRepo userRepo, PasswordEncoder passwordEncoder,
-                                   UsernameService usernameService, AdminMapper adminMapper) {
+                                   UsernameService usernameService, AdminMapper adminMapper, MessageRepo messageRepo, AddresseeMessageRepo addresseeMessageRepo) {
         this.adminRepo = adminRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
         this.adminMapper = adminMapper;
+        this.messageRepo = messageRepo;
+        this.addresseeMessageRepo = addresseeMessageRepo;
     }
 
     public void registerAdmin(AdminSignupRequest signupRequest) {
@@ -68,15 +77,22 @@ public class AdminCreationService {
         logger.info(String.format("Admin %s was edited", admin.getUser().getUsername()));
     }
 
+    @Transactional
     public List<AdminResponse> deleteAdmin(Long adminId) throws EntityNotFoundException {
         deleteAdminHelper(adminId);
 
         return getAllAdmins();
     }
 
-    private void deleteAdminHelper(Long adminId) throws EntityNotFoundException {
+    @Transactional
+    protected void deleteAdminHelper(Long adminId) throws EntityNotFoundException {
         Admin admin = getAdminFromId(adminId);
         User adminUser = admin.getUser();
+
+        this.messageRepo.deleteAll(adminUser.getSentMessages());
+        this.addresseeMessageRepo.deleteAll(adminUser.getAddresseeMessage());
+        adminUser.getSentMessages().clear();
+        adminUser.getAddresseeMessage().clear();
 
         logger.info(String.format("Deleted Admin %s", adminUser.getUsername()));
 
@@ -91,6 +107,7 @@ public class AdminCreationService {
         return this.adminMapper.adminToAdminResponse(admin);
     }
 
+    @Transactional
     public List<AdminResponse> deleteAdmins(List<Long> adminIds) throws EntityNotFoundException {
 
         for (Long adminId : adminIds) {

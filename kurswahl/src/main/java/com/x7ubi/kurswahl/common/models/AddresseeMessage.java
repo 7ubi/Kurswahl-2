@@ -12,7 +12,7 @@ public class AddresseeMessage {
     @Column(nullable = false, updatable = false)
     private Long addresseeMessageId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "message_id")
     private Message message;
 

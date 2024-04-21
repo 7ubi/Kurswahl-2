@@ -6,6 +6,12 @@
       <mat-card-header>
         Von: {{ messageResponse?.senderResponse?.firstname }} {{ messageResponse?.senderResponse?.surname }}
       </mat-card-header>
+      <mat-card-header>
+        <span>An: <span *ngFor="let addressee of messageResponse?.addresseeResponses; let i = index;">
+        {{ addressee.firstname }} {{ addressee.surname }} {{ i < messageResponse?.addresseeResponses!.length - 1 ? ', ' : '' }}
+          </span>
+        </span>
+      </mat-card-header>
       <mat-card-content
         style="text-align: left; padding-top: 30px; white-space: pre-line">{{ messageResponse?.message }}
       </mat-card-content>
