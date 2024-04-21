@@ -9,12 +9,15 @@ import com.x7ubi.kurswahl.common.exception.EntityDependencyException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Teacher;
 import com.x7ubi.kurswahl.common.models.User;
+import com.x7ubi.kurswahl.common.repository.AddresseeMessageRepo;
+import com.x7ubi.kurswahl.common.repository.MessageRepo;
 import com.x7ubi.kurswahl.common.repository.TeacherRepo;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +37,19 @@ public class TeacherCreationService {
 
     private final TeacherMapper teacherMapper;
 
+    private final MessageRepo messageRepo;
+
+    private final AddresseeMessageRepo addresseeMessageRepo;
+
     public TeacherCreationService(TeacherRepo teacherRepo, UserRepo userRepo, PasswordEncoder passwordEncoder,
-                                  UsernameService usernameService, TeacherMapper teacherMapper) {
+                                  UsernameService usernameService, TeacherMapper teacherMapper, MessageRepo messageRepo, AddresseeMessageRepo addresseeMessageRepo) {
         this.teacherRepo = teacherRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.usernameService = usernameService;
         this.teacherMapper = teacherMapper;
+        this.messageRepo = messageRepo;
+        this.addresseeMessageRepo = addresseeMessageRepo;
     }
 
     public void registerTeacher(TeacherSignupRequest teacherSignupRequest) {
@@ -77,17 +86,24 @@ public class TeacherCreationService {
         return this.teacherMapper.teacherToTeacherResponse(teacher);
     }
 
+    @Transactional
     public List<TeacherResponse> deleteTeacher(Long teacherId) throws EntityNotFoundException, EntityDependencyException {
         deleteTeacherHelper(teacherId);
 
         return getAllTeachers();
     }
 
-    private void deleteTeacherHelper(Long teacherId) throws EntityNotFoundException, EntityDependencyException {
+    @Transactional
+    protected void deleteTeacherHelper(Long teacherId) throws EntityNotFoundException, EntityDependencyException {
         Teacher teacher = getTeacherFromTeacherId(teacherId);
         getStudentClassesTeacher(teacher);
         getClassesTeacher(teacher);
         User teacherUser = teacher.getUser();
+
+        this.messageRepo.deleteAll(teacherUser.getSentMessages());
+        this.addresseeMessageRepo.deleteAll(teacherUser.getAddresseeMessage());
+        teacherUser.getSentMessages().clear();
+        teacherUser.getAddresseeMessage().clear();
 
         logger.info(String.format("Deleted Teacher %s", teacherUser.getUsername()));
 
@@ -115,6 +131,7 @@ public class TeacherCreationService {
         return teacherOptional.get();
     }
 
+    @Transactional
     public List<TeacherResponse> deleteTeachers(List<Long> teacherIds)
             throws EntityDependencyException, EntityNotFoundException {
         for (Long teacherId : teacherIds) {

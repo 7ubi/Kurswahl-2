@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -69,10 +70,11 @@ public class MessageController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
             })
     })
-    public ResponseEntity<MessageResponse> getMessage(@RequestParam Long messageId) throws EntityNotFoundException {
+    public ResponseEntity<MessageResponse> getMessage(@RequestHeader("Authorization") String authorization, @RequestParam Long messageId) throws EntityNotFoundException {
         logger.info("Getting Message");
 
-        MessageResponse responses = this.messageService.getMessage(messageId);
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        MessageResponse responses = this.messageService.getMessage(messageId, username);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
@@ -113,6 +115,23 @@ public class MessageController {
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
         List<MessageResponse> responses = this.messageService.getSentMessages(username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
+    @GetMapping("/users")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting all Users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all users.", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserMessageResponse.class)))
+            })
+    })
+    public ResponseEntity<List<UserMessageResponse>> getUsers(@RequestHeader("Authorization") String authorization) {
+        logger.info("Getting Users");
+
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        List<UserMessageResponse> responses = this.messageService.getUsers(username);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }

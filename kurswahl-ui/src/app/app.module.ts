@@ -92,6 +92,11 @@ import {MatRipple} from "@angular/material/core";
 import {SettingsComponent} from "./component/admin/settings/settings.component";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy.component";
+import {ShowMessagesComponent} from "./component/common/message/show-messages/show-messages.component";
+import {CreateMessageComponent} from "./component/common/message/create-message/create-message.component";
+import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
+import {MatAutocomplete} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -142,7 +147,10 @@ import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy
     TeacherCsvImportDialogComponent,
     ShowResultComponent,
     SettingsComponent,
-    DataPrivacyComponent
+    DataPrivacyComponent,
+    ShowMessagesComponent,
+    CreateMessageComponent,
+    ShowMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -172,7 +180,11 @@ import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy
     MatDialogContent,
     MatDialogTitle,
     MatRipple,
-    MatSlideToggle
+    MatSlideToggle,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatAutocomplete
   ],
   providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
   exports: [

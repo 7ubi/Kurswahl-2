@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.common.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -22,8 +23,11 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User sender;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "message")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "message", cascade = CascadeType.REMOVE)
     private Set<AddresseeMessage> addresseeMessage;
+
+    @Column()
+    private LocalDateTime date = LocalDateTime.now();
 
     public Long getMessageId() {
         return messageId;
@@ -63,5 +67,13 @@ public class Message {
 
     public void setAddresseeMessage(Set<AddresseeMessage> addresseeMessage) {
         this.addresseeMessage = addresseeMessage;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

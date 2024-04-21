@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.mapper.MessageMapper;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
 import com.x7ubi.kurswahl.common.models.User;
@@ -17,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MessageService {
@@ -88,28 +87,41 @@ public class MessageService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public MessageResponse getMessage(Long messageId) throws EntityNotFoundException {
+    @Transactional
+    public MessageResponse getMessage(Long messageId, String username) throws EntityNotFoundException {
         Optional<Message> messageOptional = this.messageRepo.findMessageByMessageId(messageId);
         if (messageOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.MESSAGE_NOT_FOUND);
         }
+        Message message = messageOptional.get();
 
-        return this.messageMapper.mapMessageToMessageResponse(messageOptional.get());
+        User user = getUser(username);
+        Optional<AddresseeMessage> addresseeMessageOptional = message.getAddresseeMessage().stream().filter(addresseeMessage ->
+                Objects.equals(addresseeMessage.getUser().getUserId(), user.getUserId())).findFirst();
+        if (addresseeMessageOptional.isPresent()) {
+            AddresseeMessage addresseeMessage = addresseeMessageOptional.get();
+            addresseeMessage.setReadMessage(true);
+            this.addresseeMessageRepo.save(addresseeMessage);
+        }
+
+        return this.messageMapper.mapMessageToMessageResponse(message);
     }
 
     @Transactional(readOnly = true)
     public List<MessageResponse> getMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
-
-        return this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
+        List<MessageResponse> messageResponses = this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
+        messageResponses.sort(Comparator.comparing(MessageResponse::getDate).reversed());
+        return messageResponses;
     }
 
     @Transactional(readOnly = true)
     public List<MessageResponse> getSentMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
 
-        return this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
+        List<MessageResponse> messageResponses = this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
+        messageResponses.sort(Comparator.comparing(MessageResponse::getDate).reversed());
+        return messageResponses;
     }
 
     private User getUser(String username) throws EntityNotFoundException {
@@ -120,5 +132,12 @@ public class MessageService {
         }
 
         return userOptional.get();
+    }
+
+    public List<UserMessageResponse> getUsers(String username) {
+        List<User> users = this.userRepo.findAll();
+        users.removeIf(user -> user.getUsername().equals(username));
+
+        return this.messageMapper.mapUserToUserMessageResponse(users);
     }
 }

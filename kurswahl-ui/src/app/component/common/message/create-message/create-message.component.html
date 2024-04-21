@@ -1,0 +1,28 @@
+<app-hero title="Nachricht erstellen"></app-hero>
+<form [formGroup]="createMessageForm" (ngSubmit)="createMessage()">
+  <div class="container">
+    <div class="center">
+      <mat-form-field class="example-full-width">
+        <mat-label>Titel</mat-label>
+        <input matInput #title formControlName="title" name="title" id="title" type="text" maxlength="100">
+        <mat-hint align="end" class="hint" style="font-size: 17px">{{ title.value.length }} / 100
+        </mat-hint>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>An</mat-label>
+        <mat-select formControlName="addressee" multiple>
+          <mat-option *ngFor="let user of users"
+                      value="{{user.userId}}"> {{ user.firstname }} {{ user.surname }} ({{ user.username }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Nachricht</mat-label>
+        <textarea matInput #message formControlName="message" name="message" id="message" maxlength="1000"></textarea>
+        <mat-hint align="end" class="hint" style="font-size: 17px">{{ message.value.length }} / 1000
+        </mat-hint>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Nachricht schicken</button>
+    </div>
+  </div>
+</form>

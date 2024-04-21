@@ -1,0 +1,52 @@
+<app-hero title="Nachrichten"></app-hero>
+
+<div class="container">
+  <div class="center">
+    <div class="header">
+      <form [formGroup]="shownMessages">
+        <mat-form-field>
+          <mat-label>Nachrichten Anzeigen</mat-label>
+          <mat-select formControlName="mode" (selectionChange)="changeShownMessages()">
+            <mat-option value="{{ ShowMessageModes.ALL }}"> {{ ShowMessageModes.ALL }}</mat-option>
+            <mat-option value="{{ ShowMessageModes.UNREAD }}"> {{ ShowMessageModes.UNREAD }}</mat-option>
+            <mat-option value="{{ ShowMessageModes.SENT }}"> {{ ShowMessageModes.SENT }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <mat-form-field>
+        <mat-label>Suche</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="createMessage()">Nachricht senden</button>
+    </div>
+    <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8">
+      <ng-container matColumnDef="Titel">
+        <th mat-header-cell *matHeaderCellDef> Titel</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Absender">
+        <th mat-header-cell *matHeaderCellDef> Absender</th>
+        <td mat-cell
+            *matCellDef="let element"> {{ element.senderResponse?.firstname }} {{ element.senderResponse?.surname }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Nachricht">
+        <th mat-header-cell *matHeaderCellDef> Nachricht</th>
+        <td mat-cell *matCellDef="let element"> {{ element.message }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row class="message {{ row.readMessage ? '': 'unread'}}" (click)="showMessage(row.messageId)"
+          *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="!loadedMessages" class="spinner-table">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+  </div>
+</div>

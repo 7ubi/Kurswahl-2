@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.message.request.CreateMessageRequest;
 import com.x7ubi.kurswahl.common.message.response.MessageResponse;
+import com.x7ubi.kurswahl.common.message.response.UserMessageResponse;
 import com.x7ubi.kurswahl.common.message.service.MessageService;
 import com.x7ubi.kurswahl.common.models.AddresseeMessage;
 import com.x7ubi.kurswahl.common.models.Message;
@@ -96,6 +97,7 @@ public class MessageServiceTest {
         Assertions.assertEquals(message.getMessage(), createMessageRequest.getMessage());
         Assertions.assertEquals(message.getAddresseeMessage().size(), 1);
         Assertions.assertEquals(message.getAddresseeMessage().stream().toList().get(0).getUser().getUserId(), addressee.getUserId());
+        Assertions.assertFalse(message.getAddresseeMessage().stream().toList().get(0).isReadMessage());
         Assertions.assertEquals(message.getSender().getUserId(), sender.getUserId());
     }
 
@@ -169,7 +171,7 @@ public class MessageServiceTest {
         setupMessage();
 
         // When
-        MessageResponse messageResponse = this.messageService.getMessage(message.getMessageId());
+        MessageResponse messageResponse = this.messageService.getMessage(message.getMessageId(), addressee.getUsername());
 
         // Then
         Assertions.assertEquals(messageResponse.getMessageId(), message.getMessageId());
@@ -180,6 +182,7 @@ public class MessageServiceTest {
         Assertions.assertEquals(messageResponse.getAddresseeResponses().size(), 1);
         Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUserId(), addressee.getUserId());
         Assertions.assertEquals(messageResponse.getAddresseeResponses().get(0).getUsername(), addressee.getUsername());
+        Assertions.assertTrue(messageResponse.isReadMessage());
     }
 
     @Test
@@ -189,7 +192,7 @@ public class MessageServiceTest {
 
         // When
         EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.messageService.getMessage(message.getMessageId() + 3));
+                this.messageService.getMessage(message.getMessageId() + 3, addressee.getUsername()));
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.MESSAGE_NOT_FOUND);
@@ -265,5 +268,15 @@ public class MessageServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.USER_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetUsers() {
+        // When
+        List<UserMessageResponse> response = this.messageService.getUsers(sender.getUsername());
+
+        // Then
+        Assertions.assertEquals(response.size(), 1);
+        Assertions.assertEquals(response.get(0).getUsername(), addressee.getUsername());
     }
 }
