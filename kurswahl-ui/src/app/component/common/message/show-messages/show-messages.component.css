@@ -7,3 +7,8 @@
   background-color: #eeeeee;
   cursor: pointer;
 }
+
+.message.unread {
+  background-color: var(--primary);
+  color: white;
+}

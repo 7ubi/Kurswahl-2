@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MessageService {
@@ -113,15 +110,18 @@ public class MessageService {
     @Transactional(readOnly = true)
     public List<MessageResponse> getMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
-
-        return this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
+        List<MessageResponse> messageResponses = this.messageMapper.mapAddresseeMessagesToMessageResponses(user.getAddresseeMessage());
+        messageResponses.sort(Comparator.comparing(MessageResponse::getDate).reversed());
+        return messageResponses;
     }
 
     @Transactional(readOnly = true)
     public List<MessageResponse> getSentMessages(String username) throws EntityNotFoundException {
         User user = getUser(username);
 
-        return this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
+        List<MessageResponse> messageResponses = this.messageMapper.mapMessagesToMessageResponses(user.getSentMessages());
+        messageResponses.sort(Comparator.comparing(MessageResponse::getDate).reversed());
+        return messageResponses;
     }
 
     private User getUser(String username) throws EntityNotFoundException {
