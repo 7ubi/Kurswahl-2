@@ -16,7 +16,7 @@ public class RuleSet {
     @Column(nullable = false)
     private Integer year;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "ruleSet")
     private Set<Rule> rules;
 
     public Long getRuleSetId() {
