@@ -3,6 +3,8 @@ package com.x7ubi.kurswahl.admin.choice.service;
 import com.x7ubi.kurswahl.admin.choice.mapper.ClassStudentsMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentSurveillanceMapper;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceResultResponse;
+import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
+import com.x7ubi.kurswahl.admin.choice.response.StudentSurveillanceResponse;
 import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.RuleSet;
@@ -91,7 +93,6 @@ public class ChoiceResultService {
         });
         logger.info("Generated results");
 
-
         return choiceResultResponse;
     }
 
@@ -102,6 +103,9 @@ public class ChoiceResultService {
         logger.info(String.format("Filtered Students, who chose classes in year %s", year));
 
         choiceResultResponse.setClassStudentsResponses(this.classStudentsMapper.classesToClassChoiceResponses(classes));
+        choiceResultResponse.getClassStudentsResponses().sort(Comparator.comparing(ClassStudentsResponse::getName));
+        choiceResultResponse.getClassStudentsResponses().forEach(classStudentsResponse ->
+                classStudentsResponse.getStudentSurveillanceResponses().sort(Comparator.comparing(StudentSurveillanceResponse::getSurname)));
         ChoiceHelper.setClassStudentsResponseWarnings(choiceResultResponse.getClassStudentsResponses(), settingsService);
     }
 }
