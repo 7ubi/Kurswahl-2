@@ -55,14 +55,14 @@
         </div>
         <div
           class="class"
-          *ngIf="choiceResponse.ruleResponses.length === 0">
+          *ngIf="choiceResponse && choiceResponse.ruleResponses && choiceResponse?.ruleResponses?.length === 0">
           Alle Wahlbedingungen wurden erfüllt
         </div>
       </div>
     </div>
 
     <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()"
-            [disabled]="choiceResponse.ruleResponses.length !== 0">
+            [disabled]="choiceResponse && choiceResponse.ruleResponses && choiceResponse.ruleResponses.length !== 0">
       {{ getNextStepText() }}
     </button>
   </div>

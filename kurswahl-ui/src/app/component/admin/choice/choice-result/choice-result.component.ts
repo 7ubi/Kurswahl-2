@@ -110,7 +110,7 @@ export class ChoiceResultComponent implements OnDestroy {
           info.push([student.firstname, student.surname, student.name]));
 
         autoTable(doc, {
-          head: [[classStudents.name]]
+          head: [[`${classStudents.name} - ${classStudents.teacherResponse.firstname} ${classStudents.teacherResponse.surname} (${classStudents.teacherResponse.abbreviation})  `]]
         });
         autoTable(doc, {
           startY: 21,
