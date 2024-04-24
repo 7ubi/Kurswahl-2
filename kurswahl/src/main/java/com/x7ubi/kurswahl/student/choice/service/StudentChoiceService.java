@@ -13,6 +13,7 @@ import com.x7ubi.kurswahl.student.choice.mapper.TapeClassMapper;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
+import com.x7ubi.kurswahl.student.choice.response.ClassResponse;
 import com.x7ubi.kurswahl.student.choice.response.SubjectTapeResponse;
 import com.x7ubi.kurswahl.student.choice.response.TapeClassResponse;
 import org.slf4j.Logger;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,7 +88,7 @@ public class StudentChoiceService {
             choice.setChoiceClasses(new HashSet<>());
 
             choice = this.choiceRepo.save(choice);
-            
+
             student.getChoices().add(choice);
             this.studentRepo.save(student);
 
@@ -158,17 +156,18 @@ public class StudentChoiceService {
         this.classRepo.save(aClass);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TapeClassResponse> getTapesForChoice(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
         List<Tape> tapes = this.tapeRepo.findAllByYearAndReleaseYear(student.getStudentClass().getYear(),
                 Year.now().getValue());
-
         logger.info(String.format("Found all Tapes of year %s", student.getStudentClass().getYear()));
-        return this.tapeClassMapper.tapesToTapeResponses(tapes);
+        List<TapeClassResponse> tapeClassResponses = this.tapeClassMapper.tapesToTapeResponses(tapes);
+        tapeClassResponses.forEach(tape -> tape.getClassResponses().sort(Comparator.comparing(ClassResponse::getName)));
+        return tapeClassResponses;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<SubjectTapeResponse> getTapesOfSubjects(String username) throws EntityNotFoundException {
         Student student = getStudent(username);
 
@@ -179,6 +178,7 @@ public class StudentChoiceService {
                         Objects.equals(c.getTape().getYear(), student.getStudentClass().getYear()) &&
                         Objects.equals(c.getTape().getReleaseYear(), Year.now().getValue())).collect(Collectors.toSet()))
         );
+        subjects.sort(Comparator.comparing(Subject::getName));
 
         return this.subjectTapeMapper.subjectsToSubjectTapeResponses(subjects);
     }
