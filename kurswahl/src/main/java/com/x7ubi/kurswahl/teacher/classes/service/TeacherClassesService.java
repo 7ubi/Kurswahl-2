@@ -29,9 +29,17 @@ public class TeacherClassesService {
     @Transactional(readOnly = true)
     public List<ClassResponse> getTeacherClasses(String username) {
         List<Class> classes = this.classRepo.findAllByTeacher_User_UsernameAndTape_ReleaseYear(username, Year.now().getValue());
-        classes.forEach(c -> c.setChoiceClasses(c.getChoiceClasses().stream().filter(ChoiceClass::isSelected).collect(Collectors.toSet())));
+        classes.forEach(c -> {
+            if (c.getChoiceClasses() != null) {
+                c.setChoiceClasses(c.getChoiceClasses().stream().filter(ChoiceClass::isSelected).collect(Collectors.toSet()));
+            }
+        });
         List<ClassResponse> classResponses = this.teacherClassesMapper.mapClassesToClassResponses(classes);
-        classResponses.forEach(classResponse -> classResponse.getStudentResponses().sort(Comparator.comparing(StudentResponse::getSurname)));
+        classResponses.forEach(classResponse -> {
+            if (classResponse.getStudentResponses() != null) {
+                classResponse.getStudentResponses().sort(Comparator.comparing(StudentResponse::getSurname));
+            }
+        });
         return classResponses;
     }
 }
