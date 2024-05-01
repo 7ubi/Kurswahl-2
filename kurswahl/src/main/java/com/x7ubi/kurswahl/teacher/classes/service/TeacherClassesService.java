@@ -4,8 +4,8 @@ import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.teacher.classes.mapper.TeacherClassesMapper;
-import com.x7ubi.kurswahl.teacher.classes.response.ClassResponse;
-import com.x7ubi.kurswahl.teacher.classes.response.StudentResponse;
+import com.x7ubi.kurswahl.teacher.classes.response.TeacherClassResponse;
+import com.x7ubi.kurswahl.teacher.classes.response.TeacherClassStudentResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +27,19 @@ public class TeacherClassesService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassResponse> getTeacherClasses(String username) {
+    public List<TeacherClassResponse> getTeacherClasses(String username) {
         List<Class> classes = this.classRepo.findAllByTeacher_User_UsernameAndTape_ReleaseYear(username, Year.now().getValue());
         classes.forEach(c -> {
             if (c.getChoiceClasses() != null) {
                 c.setChoiceClasses(c.getChoiceClasses().stream().filter(ChoiceClass::isSelected).collect(Collectors.toSet()));
             }
         });
-        List<ClassResponse> classResponses = this.teacherClassesMapper.mapClassesToClassResponses(classes);
-        classResponses.forEach(classResponse -> {
+        List<TeacherClassResponse> teacherClassRespons = this.teacherClassesMapper.mapClassesToClassResponses(classes);
+        teacherClassRespons.forEach(classResponse -> {
             if (classResponse.getStudentResponses() != null) {
-                classResponse.getStudentResponses().sort(Comparator.comparing(StudentResponse::getSurname));
+                classResponse.getStudentResponses().sort(Comparator.comparing(TeacherClassStudentResponse::getSurname));
             }
         });
-        return classResponses;
+        return teacherClassRespons;
     }
 }

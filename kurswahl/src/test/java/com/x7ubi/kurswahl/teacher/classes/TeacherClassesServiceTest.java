@@ -5,7 +5,7 @@ import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.ClassRepo;
 import com.x7ubi.kurswahl.teacher.classes.mapper.TeacherClassesMapper;
-import com.x7ubi.kurswahl.teacher.classes.response.ClassResponse;
+import com.x7ubi.kurswahl.teacher.classes.response.TeacherClassResponse;
 import com.x7ubi.kurswahl.teacher.classes.service.TeacherClassesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +70,7 @@ public class TeacherClassesServiceTest {
         when(classRepo.findAllByTeacher_User_UsernameAndTape_ReleaseYear(username, Year.now().getValue())).thenReturn(classes);
 
         // When
-        List<ClassResponse> result = teacherClassesService.getTeacherClasses(username);
+        List<TeacherClassResponse> result = teacherClassesService.getTeacherClasses(username);
 
         // Then
         Assertions.assertEquals(result.size(), 1);
@@ -87,7 +87,7 @@ public class TeacherClassesServiceTest {
         when(classRepo.findAllByTeacher_User_UsernameAndTape_ReleaseYear(username, Year.now().getValue())).thenReturn(classes);
 
         // When
-        List<ClassResponse> result = teacherClassesService.getTeacherClasses(username);
+        List<TeacherClassResponse> result = teacherClassesService.getTeacherClasses(username);
 
         // Then
         Assertions.assertEquals(result.size(), 1);
@@ -104,7 +104,7 @@ public class TeacherClassesServiceTest {
         when(classRepo.findAllByTeacher_User_UsernameAndTape_ReleaseYear(username, Year.now().getValue())).thenReturn(classes);
 
         // When
-        List<ClassResponse> result = teacherClassesService.getTeacherClasses(username);
+        List<TeacherClassResponse> result = teacherClassesService.getTeacherClasses(username);
 
         // Then
         Assertions.assertEquals(result.size(), 1);

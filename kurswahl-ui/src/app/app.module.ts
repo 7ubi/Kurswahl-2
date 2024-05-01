@@ -97,6 +97,8 @@ import {CreateMessageComponent} from "./component/common/message/create-message/
 import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
 import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 import {MatAutocomplete} from "@angular/material/autocomplete";
+import {ShowClassesTeacherComponent} from "./component/teacher/show-classes-teacher/show-classes-teacher.component";
+import {TeacherRequired} from "./routing-helper/teacher-required";
 
 @NgModule({
   declarations: [
@@ -150,7 +152,8 @@ import {MatAutocomplete} from "@angular/material/autocomplete";
     DataPrivacyComponent,
     ShowMessagesComponent,
     CreateMessageComponent,
-    ShowMessageComponent
+    ShowMessageComponent,
+    ShowClassesTeacherComponent
   ],
   imports: [
     BrowserModule,
@@ -186,7 +189,7 @@ import {MatAutocomplete} from "@angular/material/autocomplete";
     MatCardHeader,
     MatAutocomplete
   ],
-  providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired],
+  providers: [MatSnackBarModule, LoginRequired, AdminRequired, StudentRequired, TeacherRequired],
   exports: [
     HeroComponent
   ],

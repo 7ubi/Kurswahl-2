@@ -52,6 +52,8 @@ export class LoginComponent {
         this.router.navigate(['admin', 'admins']);
       } else if (response.role.toString() === Role.STUDENT.toString()) {
         this.router.navigate(['student']);
+      } else if (this.authenticationService.getRole() === Role.TEACHER.toString()) {
+        this.router.navigate(['teacher']);
       }
     });
   }

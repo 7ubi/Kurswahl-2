@@ -58,6 +58,8 @@ import {DataPrivacyComponent} from "./component/common/data-privacy/data-privacy
 import {ShowMessagesComponent} from "./component/common/message/show-messages/show-messages.component";
 import {ShowMessageComponent} from "./component/common/message/show-message/show-message.component";
 import {CreateMessageComponent} from "./component/common/message/create-message/create-message.component";
+import {TeacherRequired} from "./routing-helper/teacher-required";
+import {ShowClassesTeacherComponent} from "./component/teacher/show-classes-teacher/show-classes-teacher.component";
 
 const routes: Routes = [
   {
@@ -249,6 +251,16 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ShowResultComponent
       },
+    ]
+  },
+  {
+    path: 'teacher',
+    canActivate: mapToCanActivate([LoginRequired, TeacherRequired]),
+    children: [
+      {
+        path: '',
+        component: ShowClassesTeacherComponent
+      }
     ]
   },
   {
