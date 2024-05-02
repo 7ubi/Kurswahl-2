@@ -74,7 +74,7 @@ public class TeacherClassesServiceTest {
 
         // Then
         Assertions.assertEquals(result.size(), 1);
-        Assertions.assertEquals(result.get(0).getStudentResponses().size(), 1);
+        Assertions.assertEquals(result.get(0).getTeacherClassStudentResponses().size(), 1);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TeacherClassesServiceTest {
 
         // Then
         Assertions.assertEquals(result.size(), 1);
-        Assertions.assertTrue(result.get(0).getStudentResponses().isEmpty());
+        Assertions.assertTrue(result.get(0).getTeacherClassStudentResponses().isEmpty());
     }
 
     @Test
@@ -108,6 +108,6 @@ public class TeacherClassesServiceTest {
 
         // Then
         Assertions.assertEquals(result.size(), 1);
-        Assertions.assertNull(result.get(0).getStudentResponses());
+        Assertions.assertNull(result.get(0).getTeacherClassStudentResponses());
     }
 }

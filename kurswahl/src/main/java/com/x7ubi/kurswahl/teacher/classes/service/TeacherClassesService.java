@@ -36,8 +36,8 @@ public class TeacherClassesService {
         });
         List<TeacherClassResponse> teacherClassRespons = this.teacherClassesMapper.mapClassesToClassResponses(classes);
         teacherClassRespons.forEach(classResponse -> {
-            if (classResponse.getStudentResponses() != null) {
-                classResponse.getStudentResponses().sort(Comparator.comparing(TeacherClassStudentResponse::getSurname));
+            if (classResponse.getTeacherClassStudentResponses() != null) {
+                classResponse.getTeacherClassStudentResponses().sort(Comparator.comparing(TeacherClassStudentResponse::getSurname));
             }
         });
         return teacherClassRespons;

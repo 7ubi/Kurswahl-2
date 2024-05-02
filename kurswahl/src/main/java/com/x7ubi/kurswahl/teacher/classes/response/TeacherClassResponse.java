@@ -6,7 +6,7 @@ public class TeacherClassResponse {
 
     private String name;
 
-    private List<TeacherClassStudentResponse> teacherClassStudentRespons;
+    private List<TeacherClassStudentResponse> teacherClassStudentResponses;
 
     public String getName() {
         return name;
@@ -16,11 +16,11 @@ public class TeacherClassResponse {
         this.name = name;
     }
 
-    public List<TeacherClassStudentResponse> getStudentResponses() {
-        return teacherClassStudentRespons;
+    public List<TeacherClassStudentResponse> getTeacherClassStudentResponses() {
+        return teacherClassStudentResponses;
     }
 
-    public void setStudentResponses(List<TeacherClassStudentResponse> teacherClassStudentRespons) {
-        this.teacherClassStudentRespons = teacherClassStudentRespons;
+    public void setTeacherClassStudentResponses(List<TeacherClassStudentResponse> teacherClassStudentResponses) {
+        this.teacherClassStudentResponses = teacherClassStudentResponses;
     }
 }
