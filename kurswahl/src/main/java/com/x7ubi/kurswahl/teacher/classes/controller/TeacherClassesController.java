@@ -2,8 +2,14 @@ package com.x7ubi.kurswahl.teacher.classes.controller;
 
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.teacher.authentication.TeacherRequired;
-import com.x7ubi.kurswahl.teacher.classes.response.ClassResponse;
+import com.x7ubi.kurswahl.teacher.classes.response.TeacherClassResponse;
 import com.x7ubi.kurswahl.teacher.classes.service.TeacherClassesService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,11 +36,16 @@ public class TeacherClassesController {
     @GetMapping("/classes")
     @TeacherRequired
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ClassResponse>> getTeacherClasses(@RequestHeader("Authorization") String authorization) {
+    @Operation(description = "Getting all classes for teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all classes", content =
+                    {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TeacherClassResponse.class)))})
+    })
+    public ResponseEntity<List<TeacherClassResponse>> getTeacherClasses(@RequestHeader("Authorization") String authorization) {
         logger.info("Getting all classes for teacher");
 
         String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
-        List<ClassResponse> response = this.teacherClassesService.getTeacherClasses(username);
+        List<TeacherClassResponse> response = this.teacherClassesService.getTeacherClasses(username);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

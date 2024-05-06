@@ -58,6 +58,8 @@ export class ChangePasswordComponent {
         this.router.navigate(['admin', 'admins']);
       } else if (this.authenticationService.getRole() === Role.STUDENT.toString()) {
         this.router.navigate(['student']);
+      } else if (this.authenticationService.getRole() === Role.TEACHER.toString()) {
+        this.router.navigate(['teacher']);
       }
     });
   }

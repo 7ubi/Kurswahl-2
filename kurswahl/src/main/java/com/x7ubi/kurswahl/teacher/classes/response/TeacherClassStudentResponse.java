@@ -1,6 +1,6 @@
 package com.x7ubi.kurswahl.teacher.classes.response;
 
-public class StudentResponse {
+public class TeacherClassStudentResponse {
 
     private String firstname;
 
