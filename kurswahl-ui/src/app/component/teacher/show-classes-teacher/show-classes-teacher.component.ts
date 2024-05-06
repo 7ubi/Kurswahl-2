@@ -33,8 +33,24 @@ export class ShowClassesTeacherComponent implements OnInit {
     });
   }
 
-  sortData($event: Sort) {
+  sortData(sort: Sort, dataSource: MatTableDataSource<TeacherClassStudentResponse>) {
+    dataSource.data = dataSource.data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'surname':
+          return this.compare(a.surname, b.surname, isAsc);
+        case 'firstname':
+          return this.compare(a.firstname, b.firstname, isAsc);
+        case 'studentClass':
+          return this.compare(a.studentClassName, b.studentClassName, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
 
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 }
 

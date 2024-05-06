@@ -4,22 +4,23 @@
   <div class="center">
     <div *ngFor="let a of dataSources">
       <div class="header">
-        <h2 style="text-align: left; margin-top: 10px">{{ a.name }}</h2>
+        <h2 style="text-align: left; margin-top: 15px">{{ a.name }}</h2>
       </div>
-      <table mat-table [dataSource]="a.dataSource" class="mat-elevation-z8">
+      <table mat-table [dataSource]="a.dataSource" class="mat-elevation-z8" matSortActive="surname"
+             matSortDirection="asc" matSort (matSortChange)="sortData($event, a.dataSource)">
 
         <ng-container matColumnDef="Nachname">
-          <th mat-header-cell *matHeaderCellDef> Nachname</th>
+          <th mat-sort-header="surname" mat-header-cell *matHeaderCellDef> Nachname</th>
           <td mat-cell *matCellDef="let element"> {{ element.surname }}</td>
         </ng-container>
 
         <ng-container matColumnDef="Vorname">
-          <th mat-header-cell *matHeaderCellDef> Vorname</th>
+          <th mat-sort-header="firstname" mat-header-cell *matHeaderCellDef> Vorname</th>
           <td mat-cell *matCellDef="let element"> {{ element.firstname }}</td>
         </ng-container>
 
         <ng-container matColumnDef="Klasse">
-          <th mat-header-cell *matHeaderCellDef> Klasse</th>
+          <th mat-sort-header="studentClass" mat-header-cell *matHeaderCellDef> Klasse</th>
           <td mat-cell *matCellDef="let element"> {{ element.studentClassName }}</td>
         </ng-container>
 
