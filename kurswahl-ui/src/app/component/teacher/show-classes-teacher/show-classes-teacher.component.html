@@ -4,7 +4,7 @@
   <div class="center">
     <div *ngFor="let a of dataSources">
       <div class="header">
-        <h2 style="text-align: left; margin-top: 15px">{{ a.name }}</h2>
+        <h2 style="text-align: left; margin-top: 15px">{{ a.name }} - {{ a.tapeName }} (Jahrgang {{ a.year }})</h2>
       </div>
       <table mat-table [dataSource]="a.dataSource" class="mat-elevation-z8" matSortActive="surname"
              matSortDirection="asc" matSort (matSortChange)="sortData($event, a.dataSource)">

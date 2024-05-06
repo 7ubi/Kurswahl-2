@@ -6,6 +6,10 @@ public class TeacherClassResponse {
 
     private String name;
 
+    private Integer year;
+
+    private String tapeName;
+
     private List<TeacherClassStudentResponse> teacherClassStudentResponses;
 
     public String getName() {
@@ -14,6 +18,22 @@ public class TeacherClassResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public String getTapeName() {
+        return tapeName;
+    }
+
+    public void setTapeName(String tapeName) {
+        this.tapeName = tapeName;
     }
 
     public List<TeacherClassStudentResponse> getTeacherClassStudentResponses() {

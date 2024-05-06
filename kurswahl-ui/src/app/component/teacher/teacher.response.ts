@@ -6,5 +6,7 @@ export interface TeacherClassStudentResponse {
 
 export interface TeacherClassResponse {
   readonly name: string;
+  readonly year: number;
+  readonly tapeName: string;
   readonly teacherClassStudentResponses: TeacherClassStudentResponse[];
 }

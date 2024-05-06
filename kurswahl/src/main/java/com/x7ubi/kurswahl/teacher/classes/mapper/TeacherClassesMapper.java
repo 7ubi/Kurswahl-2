@@ -19,6 +19,8 @@ public interface TeacherClassesMapper {
     List<TeacherClassResponse> mapClassesToClassResponses(List<Class> classes);
 
     @Mapping(source = "choiceClasses", target = "teacherClassStudentResponses")
+    @Mapping(source = "tape.name", target = "tapeName")
+    @Mapping(source = "tape.year", target = "year")
     TeacherClassResponse mapClassToClassResponse(Class classEntity);
 
     @Mapping(source = "choice.student.user.firstname", target = "firstname")

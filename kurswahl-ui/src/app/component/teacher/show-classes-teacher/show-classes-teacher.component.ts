@@ -24,7 +24,7 @@ export class ShowClassesTeacherComponent implements OnInit {
       this.teacherClassResponses = response;
       this.teacherClassResponses.forEach(teacherClass => {
         console.log(teacherClass.teacherClassStudentResponses);
-        this.dataSources.push(new TeacherClassDataSource(teacherClass.name,
+        this.dataSources.push(new TeacherClassDataSource(teacherClass.name, teacherClass.tapeName, teacherClass.year,
           new MatTableDataSource(teacherClass.teacherClassStudentResponses)))
       });
       this.loadedClasses = true;
@@ -57,10 +57,14 @@ export class ShowClassesTeacherComponent implements OnInit {
 export class TeacherClassDataSource {
 
   name: string;
+  tapeName: string;
+  year: number;
   dataSource: MatTableDataSource<TeacherClassStudentResponse>;
 
-  constructor(name: string, dataSource: MatTableDataSource<TeacherClassStudentResponse>) {
+  constructor(name: string, tapeName: string, year: number, dataSource: MatTableDataSource<TeacherClassStudentResponse>) {
     this.name = name;
+    this.tapeName = tapeName;
+    this.year = year;
     this.dataSource = dataSource;
   }
 }
