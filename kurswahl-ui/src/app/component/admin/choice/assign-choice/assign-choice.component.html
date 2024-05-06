@@ -57,10 +57,9 @@
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsClassStudents.length">
               <div class="example-element-detail detail-container"
                    [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
-                <div class="choice" (click)="openChoice(student.studentId)"
-                     *ngFor="let student of element.studentSurveillanceResponses">
-                  {{ student.firstname }} {{ student.surname }}
-                </div>
+                <app-class-students-table
+                  [studentSurveillanceResponses]="element.studentSurveillanceResponses"
+                  [parent]="this"></app-class-students-table>
               </div>
             </td>
           </ng-container>

@@ -124,7 +124,7 @@ export class AssignChoiceComponent implements OnDestroy {
     this.studentChoice = undefined;
     this.choiceTables = [];
     this.dataSourceChoiceTable = undefined;
-    this.httpService.get <StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
+    this.httpService.get<StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
       response => {
         if (this.year === response.year) {
           this.studentChoice = response;
@@ -135,7 +135,7 @@ export class AssignChoiceComponent implements OnDestroy {
       });
   }
 
-  private generateChoiceTable() {
+  generateChoiceTable() {
     const firstChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 1);
     const secondChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 2);
     const alternative = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 3);
