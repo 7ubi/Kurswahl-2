@@ -4,6 +4,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
 import {AssignChoiceComponent} from "../assign-choice.component";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-class-students-table',
@@ -13,12 +14,13 @@ import {AssignChoiceComponent} from "../assign-choice.component";
 export class ClassStudentsTableComponent implements OnInit {
   @Input() studentSurveillanceResponses?: StudentSurveillanceResponse[];
   @Input() parent!: AssignChoiceComponent;
-
   dataSourceClassStudents!: MatTableDataSource<StudentSurveillanceResponse>;
   displayedColumnsClassStudents: string[];
 
+  selection = new SelectionModel<StudentSurveillanceResponse>(true, []);
+
   constructor(private httpService: HttpService) {
-    this.displayedColumnsClassStudents = ['Vorname', 'Nachname'];
+    this.displayedColumnsClassStudents = ['Auswählen', 'Vorname', 'Nachname'];
   }
 
   ngOnInit(): void {
@@ -59,5 +61,34 @@ export class ClassStudentsTableComponent implements OnInit {
           this.parent.generateChoiceTable();
         }
       });
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSourceClassStudents.filteredData.length;
+    return numSelected >= numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSourceClassStudents.filteredData);
+    this.parent.components.toArray().forEach(component => {
+      if (component !== this) {
+        component.selection.clear();
+      }
+    });
+  }
+
+  changeSelection($event: MouseEvent) {
+    $event.stopPropagation();
+    this.parent.components.toArray().forEach(component => {
+      if (component !== this) {
+        component.selection.clear();
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
@@ -12,6 +12,7 @@ import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Sort} from "@angular/material/sort";
+import {ClassStudentsTableComponent} from "./class-students-table/class-students-table.component";
 
 @Component({
   selector: 'app-assign-choice',
@@ -52,6 +53,8 @@ export class AssignChoiceComponent implements OnDestroy {
 
   lastSort: Sort | null = null;
 
+  @ViewChildren('cmp', {read: ClassStudentsTableComponent}) components!: QueryList<ClassStudentsTableComponent>;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -59,6 +62,7 @@ export class AssignChoiceComponent implements OnDestroy {
 
     this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Status'];
     this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
+
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
