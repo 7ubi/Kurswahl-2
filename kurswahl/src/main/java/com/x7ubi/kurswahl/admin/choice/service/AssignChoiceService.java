@@ -4,9 +4,7 @@ import com.x7ubi.kurswahl.admin.choice.mapper.ChoiceTapeMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.ClassStudentsMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentChoiceMapper;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
-import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
-import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
-import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
+import com.x7ubi.kurswahl.admin.choice.response.*;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
@@ -106,6 +104,51 @@ public class AssignChoiceService {
         StudentChoicesResponse studentChoicesResponse = this.studentChoiceMapper.studentToStudentChoicesResponse(studentOptional.get());
         studentChoicesResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choiceClasses));
         return studentChoicesResponse;
+    }
+
+    @Transactional(readOnly = true)
+    public StudentsChoicesResponse getStudentsChoices(List<Long> studentIds) {
+        List<Student> students = this.studentRepo.findAllByStudentIdIn(studentIds);
+
+        StudentsChoicesResponse studentsChoicesResponses = new StudentsChoicesResponse();
+
+        studentsChoicesResponses.setChoiceResponses(getChoicesInCommon(students));
+
+        List<StudentRuleResponse> studentRuleResponses = new ArrayList<>();
+        students.forEach(student -> {
+            StudentRuleResponse studentRuleResponse = this.studentChoiceMapper.studentToStudentRuleResponse(student);
+            Set<ChoiceClass> choiceClasses
+                    = this.choiceClassRepo.findAllByChoice_Student_StudentIdAndChoice_ReleaseYearAndSelected(student.getStudentId(),
+                    Year.now().getValue(), true);
+
+
+            studentRuleResponse.setRuleResponses(this.ruleService.getRulesByChoiceClasses(student.getStudentClass().getYear(), choiceClasses));
+            studentRuleResponses.add(studentRuleResponse);
+        });
+        studentsChoicesResponses.setStudentRuleResponses(studentRuleResponses);
+        return studentsChoicesResponses;
+    }
+
+    private List<ChoiceResponse> getChoicesInCommon(List<Student> students) {
+        List<ChoiceResponse> choiceResponses = List.of(new ChoiceResponse(), new ChoiceResponse(), new ChoiceResponse());
+        choiceResponses.get(0).setChoiceNumber(1);
+        choiceResponses.get(1).setChoiceNumber(2);
+        choiceResponses.get(2).setChoiceNumber(3);
+
+        students.get(0).getChoices().forEach(choice -> choiceResponses.get(choice.getChoiceNumber() - 1).setClassChoiceResponses(
+                this.studentChoiceMapper.choiceClassSetToClassChoiceResponseList(choice.getChoiceClasses())));
+
+        students.forEach(student -> student.getChoices().forEach(choice -> {
+            choiceResponses.get(choice.getChoiceNumber() - 1).getClassChoiceResponses().removeIf(
+                    classChoiceResponse ->
+                            choice.getChoiceClasses().stream().noneMatch(
+                                    choiceClass -> Objects.equals(choiceClass.getaClass().getClassId(),
+                                            classChoiceResponse.getClassId()) &&
+                                            Objects.equals(choiceClass.isSelected(), classChoiceResponse.isSelected()))
+            );
+        }));
+
+        return choiceResponses;
     }
 
     @Transactional

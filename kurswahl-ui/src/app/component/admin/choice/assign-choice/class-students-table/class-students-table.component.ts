@@ -76,6 +76,7 @@ export class ClassStudentsTableComponent implements OnInit {
     }
 
     this.selection.select(...this.dataSourceClassStudents.filteredData);
+    this.openChoices();
     this.parent.components.toArray().forEach(component => {
       if (component !== this) {
         component.selection.clear();
@@ -90,5 +91,22 @@ export class ClassStudentsTableComponent implements OnInit {
         component.selection.clear();
       }
     });
+
+    if (this.selection.selected.length > 1) {
+      this.openChoices();
+    }
+
+    if (this.selection.selected.length === 1) {
+      this.openChoice(this.selection.selected[0].studentId);
+    }
+  }
+
+  openChoices() {
+    const ids = this.selection.selected.map(student => student.studentId);
+
+    this.httpService.get<StudentChoiceResponse[]>(`/api/admin/studentsChoices?studentIds=${ids}`,
+      response => {
+        console.log(response)
+      });
   }
 }

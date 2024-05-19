@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
+import com.x7ubi.kurswahl.admin.choice.response.StudentsChoicesResponse;
 import com.x7ubi.kurswahl.admin.choice.service.AssignChoiceService;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +65,24 @@ public class AdminAssignChoiceController {
         logger.info("Load Choices of Student");
 
         StudentChoicesResponse responses = this.assignChoiceService.getStudentChoices(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
+    @GetMapping("/studentsChoices")
+    @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Getting choices of student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Choices of Student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentsChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Student could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentsChoicesResponse> getStudentsChoices(@RequestParam List<Long> studentIds) {
+        logger.info("Load Choices of Students");
+
+        StudentsChoicesResponse responses = this.assignChoiceService.getStudentsChoices(studentIds);
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
