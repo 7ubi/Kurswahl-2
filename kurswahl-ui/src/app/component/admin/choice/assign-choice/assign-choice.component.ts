@@ -3,10 +3,12 @@ import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
 import {
+  ChoiceResponse,
   ChoiceTapeResponse,
   ClassChoiceResponse,
   ClassStudentsResponse,
-  StudentChoiceResponse
+  StudentChoiceResponse,
+  StudentsChoicesResponse
 } from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
@@ -37,6 +39,7 @@ export class AssignChoiceComponent implements OnDestroy {
   tapes?: ChoiceTapeResponse[];
   selectedTape?: ChoiceTapeResponse;
   studentChoice?: StudentChoiceResponse;
+  studentsChoices?: StudentsChoicesResponse;
 
   expandedElement: ClassStudentsResponse[] = [];
   dataSourceClassStudents!: MatTableDataSource<ClassStudentsResponse>;
@@ -134,30 +137,30 @@ export class AssignChoiceComponent implements OnDestroy {
           this.studentChoice = response;
           this.loadedChoice = true;
 
-          this.generateChoiceTable();
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
         }
       });
   }
 
-  generateChoiceTable() {
-    const firstChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 1);
-    const secondChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 2);
-    const alternative = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 3);
+  generateChoiceTable(choiceResponse: ChoiceResponse[]) {
+    const firstChoice = choiceResponse.find(choice => choice.choiceNumber === 1);
+    const secondChoice = choiceResponse.find(choice => choice.choiceNumber === 2);
+    const alternative = choiceResponse.find(choice => choice.choiceNumber === 3);
 
     this.choiceTables = [];
 
     this.tapes?.forEach(tape => {
       let choiceTable = new ChoiceTable(tape);
 
-      if (firstChoice) {
+      if (firstChoice && firstChoice.classChoiceResponses) {
         choiceTable.firstChoice = firstChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
-      if (secondChoice) {
+      if (secondChoice && secondChoice.classChoiceResponses) {
         choiceTable.secondChoice = secondChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
-      if (alternative) {
+      if (alternative && alternative.classChoiceResponses) {
         choiceTable.alternativeChoice = alternative.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
@@ -171,7 +174,7 @@ export class AssignChoiceComponent implements OnDestroy {
     if (element && element.selected) {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
         this.studentChoice = response;
-        this.generateChoiceTable();
+        this.generateChoiceTable(this.studentChoice.choiceResponses);
         this.loadClasses();
       });
     }
@@ -179,7 +182,7 @@ export class AssignChoiceComponent implements OnDestroy {
     if (element && !element.selected) {
       this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
         this.studentChoice = response;
-        this.generateChoiceTable();
+        this.generateChoiceTable(this.studentChoice.choiceResponses);
         this.loadClasses();
       });
     }
@@ -189,7 +192,7 @@ export class AssignChoiceComponent implements OnDestroy {
     this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
       response => {
         this.studentChoice = response;
-        this.generateChoiceTable();
+        this.generateChoiceTable(this.studentChoice.choiceResponses);
         this.loadClasses();
       });
   }
@@ -209,7 +212,7 @@ export class AssignChoiceComponent implements OnDestroy {
     if (alternative) {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
         this.studentChoice = response;
-        this.generateChoiceTable();
+        this.generateChoiceTable(this.studentChoice.choiceResponses);
       });
     }
   }

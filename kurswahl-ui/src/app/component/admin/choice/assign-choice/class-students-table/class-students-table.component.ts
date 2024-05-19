@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {StudentChoiceResponse, StudentSurveillanceResponse} from "../../../admin.responses";
+import {StudentChoiceResponse, StudentsChoicesResponse, StudentSurveillanceResponse} from "../../../admin.responses";
 import {MatTableDataSource} from '@angular/material/table';
 import {Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
@@ -50,6 +50,7 @@ export class ClassStudentsTableComponent implements OnInit {
   openChoice(studentId: any) {
     this.parent.loadedChoice = false;
     this.parent.studentChoice = undefined;
+    this.parent.studentsChoices = undefined;
     this.parent.choiceTables = [];
     this.parent.dataSourceChoiceTable = undefined;
     this.httpService.get<StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
@@ -58,7 +59,7 @@ export class ClassStudentsTableComponent implements OnInit {
           this.parent.studentChoice = response;
           this.parent.loadedChoice = true;
 
-          this.parent.generateChoiceTable();
+          this.parent.generateChoiceTable(response.choiceResponses);
         }
       });
   }
@@ -104,9 +105,18 @@ export class ClassStudentsTableComponent implements OnInit {
   openChoices() {
     const ids = this.selection.selected.map(student => student.studentId);
 
-    this.httpService.get<StudentChoiceResponse[]>(`/api/admin/studentsChoices?studentIds=${ids}`,
+    this.parent.loadedChoice = false;
+    this.parent.studentsChoices = undefined;
+    this.parent.studentChoice = undefined;
+    this.parent.choiceTables = [];
+    this.parent.dataSourceChoiceTable = undefined;
+
+    this.httpService.get<StudentsChoicesResponse>(`/api/admin/studentsChoices?studentIds=${ids}`,
       response => {
-        console.log(response)
+        this.parent.studentsChoices = response;
+        this.parent.loadedChoice = true;
+
+        this.parent.generateChoiceTable(response.choiceResponses);
       });
   }
 }

@@ -139,12 +139,21 @@ public class AssignChoiceService {
                 this.studentChoiceMapper.choiceClassSetToClassChoiceResponseList(choice.getChoiceClasses())));
 
         students.forEach(student -> student.getChoices().forEach(choice -> {
+            if (choiceResponses.get(choice.getChoiceNumber() - 1).getClassChoiceResponses() == null) {
+                return;
+            }
+
             choiceResponses.get(choice.getChoiceNumber() - 1).getClassChoiceResponses().removeIf(
-                    classChoiceResponse ->
-                            choice.getChoiceClasses().stream().noneMatch(
-                                    choiceClass -> Objects.equals(choiceClass.getaClass().getClassId(),
-                                            classChoiceResponse.getClassId()) &&
-                                            Objects.equals(choiceClass.isSelected(), classChoiceResponse.isSelected()))
+                    classChoiceResponse -> {
+                        if (choice.getChoiceClasses() == null) {
+                            return false;
+                        }
+
+                        return choice.getChoiceClasses().stream().noneMatch(
+                                choiceClass -> Objects.equals(choiceClass.getaClass().getClassId(),
+                                        classChoiceResponse.getClassId()) &&
+                                        Objects.equals(choiceClass.isSelected(), classChoiceResponse.isSelected()));
+                    }
             );
         }));
 

@@ -73,7 +73,7 @@
       </div>
 
       <div class="class">
-        <div class="student-choice" *ngIf="studentChoice">
+        <div *ngIf="studentChoice">
           <div class="choice-header">{{ studentChoice.firstname }} {{ studentChoice.surname }}</div>
           <mat-expansion-panel *ngIf="studentChoice?.ruleResponses && studentChoice?.ruleResponses!.length > 0"
                                style="margin-bottom: 5px;">
@@ -92,63 +92,89 @@
               </span></span>
             </div>
           </mat-expansion-panel>
-          <div class="choice-table">
-            <div class="table-header-group">
-              <table mat-table [dataSource]="dataSourceChoiceTable!" class="mat-elevation-z8">
+        </div>
+        <div *ngIf="studentsChoices">
+          <div class="choice-header">
+           <span *ngFor="let student of studentsChoices.studentRuleResponses; index as index">
+            {{ student.firstname }} {{ student.surname }} {{ index < studentsChoices.studentRuleResponses.length - 1 ? ', ' : '' }}
+           </span>
+          </div>
+          <div *ngFor="let studentRule of studentsChoices.studentRuleResponses">
+            <mat-expansion-panel *ngIf="studentRule.ruleResponses && studentRule.ruleResponses.length > 0"
+                                 style="margin-bottom: 5px;">
+              <mat-expansion-panel-header>
+                <mat-panel-title style="color: var(--warn)">
+                  Nicht erfüllte Wahlbedingungen für {{ studentRule.firstname }} {{ studentRule.surname }}
+                </mat-panel-title>
+                <mat-panel-description style="color: var(--warn)">
+                  {{ studentRule.ruleResponses.length }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="rule" *ngFor="let rule of studentRule.ruleResponses">
+                {{ rule.name }} <span *ngIf="rule.subjectResponses && rule.subjectResponses!.length > 0">-
+              <span *ngFor="let subject of rule.subjectResponses; index as i">
+                {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+              </span></span>
+              </div>
+            </mat-expansion-panel>
+          </div>
+        </div>
+        <div class="choice-table">
+          <div class="table-header-group">
+            <table mat-table [dataSource]="dataSourceChoiceTable!" class="mat-elevation-z8">
 
-                <ng-container matColumnDef="Band">
-                  <th mat-header-cell *matHeaderCellDef> Band</th>
-                  <td mat-cell *matCellDef="let element"> {{ element.tape.name }}</td>
-                </ng-container>
+              <ng-container matColumnDef="Band">
+                <th mat-header-cell *matHeaderCellDef> Band</th>
+                <td mat-cell *matCellDef="let element"> {{ element.tape.name }}</td>
+              </ng-container>
 
-                <ng-container matColumnDef="1. Wahl">
-                  <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
-                  <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.firstChoice)"
-                      *matCellDef="let element"> {{ element.firstChoice?.name }}
-                  </td>
-                </ng-container>
+              <ng-container matColumnDef="1. Wahl">
+                <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
+                <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
+                    (click)="assignChoice(element.firstChoice)"
+                    *matCellDef="let element"> {{ element.firstChoice?.name }}
+                </td>
+              </ng-container>
 
-                <ng-container matColumnDef="2. Wahl">
-                  <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
-                  <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.secondChoice)"
-                      *matCellDef="let element"> {{ element.secondChoice?.name }}
-                  </td>
-                </ng-container>
+              <ng-container matColumnDef="2. Wahl">
+                <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
+                <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
+                    (click)="assignChoice(element.secondChoice)"
+                    *matCellDef="let element"> {{ element.secondChoice?.name }}
+                </td>
+              </ng-container>
 
-                <ng-container matColumnDef="Alternative">
-                  <th mat-header-cell *matHeaderCellDef> Alternative</th>
-                  <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.alternativeChoice)"
-                      *matCellDef="let element">
-                    {{ element.alternativeChoice?.name }}
-                  </td>
-                </ng-container>
+              <ng-container matColumnDef="Alternative">
+                <th mat-header-cell *matHeaderCellDef> Alternative</th>
+                <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
+                    (click)="assignChoice(element.alternativeChoice)"
+                    *matCellDef="let element">
+                  {{ element.alternativeChoice?.name }}
+                </td>
+              </ng-container>
 
-                <ng-container matColumnDef="Aktion">
-                  <th mat-header-cell *matHeaderCellDef></th>
-                  <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectTape(element.tape.tapeId)"
-                            aria-label="Example icon-button with a menu" style="float: right">
-                      <mat-icon>expand_more</mat-icon>
+              <ng-container matColumnDef="Aktion">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectTape(element.tape.tapeId)"
+                          aria-label="Example icon-button with a menu" style="float: right">
+                    <mat-icon>expand_more</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let c of selectedTape?.choiceTapeClassResponses"
+                            (click)="assignAlternative(c.classId)">
+                      {{ c.name }}
                     </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item *ngFor="let c of selectedTape?.choiceTapeClassResponses"
-                              (click)="assignAlternative(c.classId)">
-                        {{ c.name }}
-                      </button>
-                      <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
-                        Keine Alternative
-                      </button>
-                    </mat-menu>
-                  </td>
-                </ng-container>
+                    <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
+                      Keine Alternative
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsChoiceTable"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsChoiceTable;"></tr>
-              </table>
-            </div>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsChoiceTable"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsChoiceTable;"></tr>
+            </table>
           </div>
         </div>
 
