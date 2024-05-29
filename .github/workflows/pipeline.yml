@@ -53,13 +53,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   deploy:
     name: Deploy to Production Environment
-    runs-on: self-hosted
+    runs-on: ubuntu
     if: github.event_name != 'pull_request'
     needs:
       - build
     environment:
       name: production
-      url: https://test.kurswahl.7ubi.de
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
