@@ -50,13 +50,22 @@ public class RuleService {
             return new ArrayList<>();
         }
         List<Rule> rules = new ArrayList<>();
+        Set<ChoiceClass> usedChoiceClasses = new HashSet<>();
 
-        for (Rule rule : ruleSet.get().getRules()) {
+        List<Rule> ruleSetRules = new ArrayList<>(ruleSet.get().getRules().stream().toList());
+        ruleSetRules.sort(Comparator.comparing(Rule::getName));
+
+        for (Rule rule : ruleSetRules) {
             boolean ruleFulfilled = false;
             for (SubjectRule subjectRule : rule.getSubjectRules()) {
-                if (choiceClasses.stream().anyMatch(choiceClass -> Objects.equals(choiceClass.getaClass().getSubject()
-                        .getSubjectId(), subjectRule.getSubject().getSubjectId()))) {
+                Optional<ChoiceClass> matchingChoiceClass = choiceClasses.stream()
+                        .filter(choiceClass -> !usedChoiceClasses.contains(choiceClass))
+                        .filter(choiceClass -> Objects.equals(choiceClass.getaClass().getSubject().getSubjectId(), subjectRule.getSubject().getSubjectId()))
+                        .findFirst();
+
+                if (matchingChoiceClass.isPresent()) {
                     ruleFulfilled = true;
+                    usedChoiceClasses.add(matchingChoiceClass.get());
                     break;
                 }
             }

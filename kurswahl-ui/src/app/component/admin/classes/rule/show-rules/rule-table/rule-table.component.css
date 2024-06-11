@@ -4,10 +4,3 @@
   align-items: center;
 }
 
-.subject-chip {
-  background-color: var(--primary);
-  color: white;
-  border-radius: 16px;
-  padding: 9px;
-  margin-right: 5px;
-}
