@@ -131,7 +131,7 @@
               <ng-container matColumnDef="1. Wahl">
                 <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
                 <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
-                    (click)="assignChoice(element.firstChoice)"
+                    (click)="assignChoice(element.firstChoice, 1)"
                     *matCellDef="let element"> {{ element.firstChoice?.name }}
                 </td>
               </ng-container>
@@ -139,7 +139,7 @@
               <ng-container matColumnDef="2. Wahl">
                 <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
                 <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
-                    (click)="assignChoice(element.secondChoice)"
+                    (click)="assignChoice(element.secondChoice, 2)"
                     *matCellDef="let element"> {{ element.secondChoice?.name }}
                 </td>
               </ng-container>
@@ -147,7 +147,7 @@
               <ng-container matColumnDef="Alternative">
                 <th mat-header-cell *matHeaderCellDef> Alternative</th>
                 <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
-                    (click)="assignChoice(element.alternativeChoice)"
+                    (click)="assignChoice(element.alternativeChoice, 3)"
                     *matCellDef="let element">
                   {{ element.alternativeChoice?.name }}
                 </td>

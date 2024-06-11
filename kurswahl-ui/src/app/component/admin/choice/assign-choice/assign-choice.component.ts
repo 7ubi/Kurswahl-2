@@ -170,22 +170,42 @@ export class AssignChoiceComponent implements OnDestroy {
     this.dataSourceChoiceTable = new MatTableDataSource(this.choiceTables);
   }
 
-  assignChoice(element: ClassChoiceResponse) {
-    if (element && element.selected) {
-      this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
-        this.studentChoice = response;
-        this.generateChoiceTable(this.studentChoice.choiceResponses);
-        this.loadClasses();
-      });
+  assignChoice(element: ClassChoiceResponse, choiceNumber: number) {
+    if (this.studentChoice) {
+      if (element && element.selected) {
+        this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+      }
+
+      if (element && !element.selected) {
+        this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+      }
     }
 
-    if (element && !element.selected) {
-      this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
-        this.studentChoice = response;
-        this.generateChoiceTable(this.studentChoice.choiceResponses);
-        this.loadClasses();
-      });
+    if (this.studentsChoices) {
+      if (element && !element.selected) {
+        this.httpService.put<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAssignChoicesRequest(element.classId, choiceNumber), response => {
+          this.studentsChoices = response;
+          this.generateChoiceTable(this.studentsChoices.choiceResponses);
+          this.loadClasses();
+        });
+      }
     }
+  }
+
+  getAssignChoicesRequest(classId: number, choiceNumber: number) {
+    return {
+      studentIds: this.studentsChoices?.studentRuleResponses.map(s => s.studentId),
+      classId: classId,
+      choiceNumber: choiceNumber
+    };
   }
 
   assignAlternative(classId: number) {

@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.admin.choice.mapper.ChoiceTapeMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.ClassStudentsMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentChoiceMapper;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
+import com.x7ubi.kurswahl.admin.choice.request.AssignChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.response.*;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
@@ -288,5 +289,26 @@ public class AssignChoiceService {
         this.choiceClassRepo.delete(choiceClass);
 
         return getStudentChoices(choiceClass.getChoice().getStudent().getStudentId());
+    }
+
+    @Transactional
+    public StudentsChoicesResponse assignChoices(AssignChoicesRequest assignChoicesRequest) {
+        List<Student> students = this.studentRepo.findAllByStudentIdIn(assignChoicesRequest.getStudentIds());
+
+        students.forEach(student -> {
+            student.getChoices().forEach(choice -> {
+                if (!Objects.equals(choice.getChoiceNumber(), assignChoicesRequest.getChoiceNumber())) {
+                    return;
+                }
+                choice.getChoiceClasses().forEach(choiceClass -> {
+                    if (Objects.equals(assignChoicesRequest.getClassId(), choiceClass.getaClass().getClassId())) {
+                        choiceClass.setSelected(true);
+                        deselectChoiceClassSameTapeOrSubject(choiceClass);
+                    }
+                });
+            });
+        });
+
+        return getStudentsChoices(assignChoicesRequest.getStudentIds());
     }
 }

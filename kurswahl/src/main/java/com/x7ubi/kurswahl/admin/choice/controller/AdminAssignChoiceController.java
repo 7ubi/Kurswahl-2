@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.choice.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
+import com.x7ubi.kurswahl.admin.choice.request.AssignChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
 import com.x7ubi.kurswahl.admin.choice.response.StudentChoicesResponse;
@@ -122,6 +123,21 @@ public class AdminAssignChoiceController {
         logger.info("Assigning ChoiceClass to Student");
 
         StudentChoicesResponse responses = this.assignChoiceService.assignChoice(choiceClassId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
+    @PutMapping("/assignChoices")
+    @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Assigning classes to students")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Assigned classes to students", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentsChoicesResponse.class))})
+    })
+    public ResponseEntity<StudentsChoicesResponse> assignChoices(@RequestBody AssignChoicesRequest assignChoicesRequest) {
+        logger.info("Assigning ChoiceClasses to Students");
+
+        StudentsChoicesResponse responses = this.assignChoiceService.assignChoices(assignChoicesRequest);
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 
