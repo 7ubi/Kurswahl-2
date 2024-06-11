@@ -39,9 +39,9 @@
   <ng-container matColumnDef="Fächer">
     <th mat-header-cell *matHeaderCellDef> Fächer</th>
     <td mat-cell *matCellDef="let element">
-      <span *ngFor="let subject of element.subjectResponses"
-            class="subject-chip">{{ subject.name }}
-      </span>
+        <span *ngFor="let subject of element.subjectResponses; index as i">
+          {{ subject.name }}{{ i !== element.subjectResponses.length - 1 ? ', ' : '' }}
+        </span>
     </td>
   </ng-container>
 
