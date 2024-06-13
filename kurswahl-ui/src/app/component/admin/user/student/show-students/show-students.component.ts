@@ -183,10 +183,10 @@ export class ShowStudentsComponent implements OnInit {
     if (this.studentResponses!.length > 0) {
       const doc = new jsPDF();
 
-      const head = ['Klasse', 'Vorname', 'Nachname', 'Generiertes Password'];
+      const head = ['Klasse', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Password'];
       const info: {}[] = [];
       this.dataSource.filteredData.forEach(student =>
-        info.push([student.studentClassResponse.name, student.firstname, student.surname, student.generatedPassword]));
+        info.push([student.studentClassResponse.name, student.username, student.firstname, student.surname, student.generatedPassword]));
 
       autoTable(doc, {
         head: [head],
