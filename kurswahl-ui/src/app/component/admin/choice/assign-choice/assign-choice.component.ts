@@ -57,7 +57,7 @@ export class AssignChoiceComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute) {
 
-    this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Status'];
+    this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
     this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
 
     this.eventSubscription = router.events.subscribe(event => {
