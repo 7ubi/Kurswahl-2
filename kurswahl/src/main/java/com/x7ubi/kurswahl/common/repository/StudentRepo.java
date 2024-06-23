@@ -17,5 +17,7 @@ public interface StudentRepo extends JpaRepository<Student, Long> {
 
     List<Student> findAllByStudentClass_ReleaseYearAndStudentClass_Year(Integer releaseYear, Integer year);
 
+    List<Student> findAllByStudentIdIn(List<Long> studentIds);
+
     Boolean existsStudentByUser_Username(String username);
 }

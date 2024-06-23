@@ -99,6 +99,9 @@ import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 import {MatAutocomplete} from "@angular/material/autocomplete";
 import {ShowClassesTeacherComponent} from "./component/teacher/show-classes-teacher/show-classes-teacher.component";
 import {TeacherRequired} from "./routing-helper/teacher-required";
+import {
+  ClassStudentsTableComponent
+} from "./component/admin/choice/assign-choice/class-students-table/class-students-table.component";
 
 @NgModule({
   declarations: [
@@ -153,7 +156,8 @@ import {TeacherRequired} from "./routing-helper/teacher-required";
     ShowMessagesComponent,
     CreateMessageComponent,
     ShowMessageComponent,
-    ShowClassesTeacherComponent
+    ShowClassesTeacherComponent,
+    ClassStudentsTableComponent
   ],
   imports: [
     BrowserModule,

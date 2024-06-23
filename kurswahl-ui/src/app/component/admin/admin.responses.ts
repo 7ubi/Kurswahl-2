@@ -149,6 +149,15 @@ export interface ClassSizeSettingResponse {
   readonly resultOpen: boolean;
 }
 
+export interface StudentsChoicesResponse {
+  readonly choiceResponses: ChoiceResponse[];
+  readonly studentRuleResponses: StudentRuleResponse[];
+}
+
+export interface StudentRuleResponse extends StudentSurveillanceResponse {
+  readonly ruleResponses: RuleResponse[];
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",

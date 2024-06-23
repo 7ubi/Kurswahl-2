@@ -1,17 +1,20 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
 import {
+  ChoiceResponse,
   ChoiceTapeResponse,
   ClassChoiceResponse,
   ClassStudentsResponse,
-  StudentChoiceResponse
+  StudentChoiceResponse,
+  StudentsChoicesResponse
 } from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
 import {MatTableDataSource} from "@angular/material/table";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Sort} from "@angular/material/sort";
+import {ClassStudentsTableComponent} from "./class-students-table/class-students-table.component";
 
 @Component({
   selector: 'app-assign-choice',
@@ -36,6 +39,7 @@ export class AssignChoiceComponent implements OnDestroy {
   tapes?: ChoiceTapeResponse[];
   selectedTape?: ChoiceTapeResponse;
   studentChoice?: StudentChoiceResponse;
+  studentsChoices?: StudentsChoicesResponse;
 
   expandedElement: ClassStudentsResponse[] = [];
   dataSourceClassStudents!: MatTableDataSource<ClassStudentsResponse>;
@@ -52,6 +56,8 @@ export class AssignChoiceComponent implements OnDestroy {
 
   lastSort: Sort | null = null;
 
+  @ViewChildren('cmp', {read: ClassStudentsTableComponent}) components!: QueryList<ClassStudentsTableComponent>;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
@@ -59,6 +65,7 @@ export class AssignChoiceComponent implements OnDestroy {
 
     this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
     this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
+
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
@@ -79,7 +86,7 @@ export class AssignChoiceComponent implements OnDestroy {
     });
   }
 
-  loadClasses() {
+  loadClasses(classId?: number, studentIds?: number[]) {
     this.httpService.get<ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => {
         this.classes = response;
@@ -103,6 +110,10 @@ export class AssignChoiceComponent implements OnDestroy {
         });
 
         this.expandedElement = newExpandedElements;
+
+        if (classId && studentIds) {
+          this.reselectStudents(classId, studentIds);
+        }
       });
   }
 
@@ -124,36 +135,36 @@ export class AssignChoiceComponent implements OnDestroy {
     this.studentChoice = undefined;
     this.choiceTables = [];
     this.dataSourceChoiceTable = undefined;
-    this.httpService.get <StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
+    this.httpService.get<StudentChoiceResponse>(`/api/admin/studentChoices?studentId=${studentId}`,
       response => {
         if (this.year === response.year) {
           this.studentChoice = response;
           this.loadedChoice = true;
 
-          this.generateChoiceTable();
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
         }
       });
   }
 
-  private generateChoiceTable() {
-    const firstChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 1);
-    const secondChoice = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 2);
-    const alternative = this.studentChoice?.choiceResponses.find(choice => choice.choiceNumber === 3);
+  generateChoiceTable(choiceResponse: ChoiceResponse[]) {
+    const firstChoice = choiceResponse.find(choice => choice.choiceNumber === 1);
+    const secondChoice = choiceResponse.find(choice => choice.choiceNumber === 2);
+    const alternative = choiceResponse.find(choice => choice.choiceNumber === 3);
 
     this.choiceTables = [];
 
     this.tapes?.forEach(tape => {
       let choiceTable = new ChoiceTable(tape);
 
-      if (firstChoice) {
+      if (firstChoice && firstChoice.classChoiceResponses) {
         choiceTable.firstChoice = firstChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
-      if (secondChoice) {
+      if (secondChoice && secondChoice.classChoiceResponses) {
         choiceTable.secondChoice = secondChoice.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
-      if (alternative) {
+      if (alternative && alternative.classChoiceResponses) {
         choiceTable.alternativeChoice = alternative.classChoiceResponses.find(classChoice => classChoice.tapeId === tape.tapeId);
       }
 
@@ -163,36 +174,76 @@ export class AssignChoiceComponent implements OnDestroy {
     this.dataSourceChoiceTable = new MatTableDataSource(this.choiceTables);
   }
 
-  assignChoice(element: ClassChoiceResponse) {
-    if (element && element.selected) {
-      this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
-        this.studentChoice = response;
-        this.generateChoiceTable();
-        this.loadClasses();
-      });
+  assignChoice(element: ClassChoiceResponse, choiceNumber: number) {
+    if (this.studentChoice) {
+      if (element && element.selected) {
+        this.httpService.delete<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+      }
+
+      if (element && !element.selected) {
+        this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+      }
     }
 
-    if (element && !element.selected) {
-      this.httpService.put<StudentChoiceResponse>(`/api/admin/assignChoice?choiceClassId=${element.choiceClassId}`, null, response => {
-        this.studentChoice = response;
-        this.generateChoiceTable();
-        this.loadClasses();
-      });
+    if (this.studentsChoices) {
+      const studentIds: number[] = this.studentsChoices.studentRuleResponses.map(s => s.studentId);
+
+      if (element && !element.selected) {
+        this.httpService.put<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAssignChoicesRequest(element.classId, choiceNumber, studentIds),
+          response => {
+            this.studentsChoices = response;
+            this.generateChoiceTable(this.studentsChoices.choiceResponses);
+            this.loadClasses(element.classId, studentIds);
+          });
+      }
     }
   }
 
+  getAssignChoicesRequest(classId: number, choiceNumber: number, studentIds: number[]) {
+    return {
+      studentIds: studentIds,
+      classId: classId,
+      choiceNumber: choiceNumber
+    };
+  }
+
   assignAlternative(classId: number) {
-    this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
-      response => {
-        this.studentChoice = response;
-        this.generateChoiceTable();
-        this.loadClasses();
+    if (this.studentChoice) {
+      this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
+        response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+    }
+
+    if (this.studentsChoices) {
+      this.httpService.post<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAlternativesRequest(classId), response => {
+        this.studentsChoices = response;
+        this.generateChoiceTable(this.studentsChoices.choiceResponses);
+        this.loadClasses(classId, this.studentsChoices.studentRuleResponses.map(s => s.studentId));
       });
+    }
   }
 
   getAlternativeRequest(classId: number) {
     return {
       studentId: this.studentChoice?.studentId,
+      classId: classId
+    };
+  }
+
+  getAlternativesRequest(classId: number) {
+    return {
+      studentIds: this.studentsChoices?.studentRuleResponses.map(s => s.studentId),
       classId: classId
     };
   }
@@ -205,7 +256,7 @@ export class AssignChoiceComponent implements OnDestroy {
     if (alternative) {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
         this.studentChoice = response;
-        this.generateChoiceTable();
+        this.generateChoiceTable(this.studentChoice.choiceResponses);
       });
     }
   }
@@ -238,5 +289,9 @@ export class AssignChoiceComponent implements OnDestroy {
     } else {
       this.expandedElement.splice(index);
     }
+  }
+
+  private reselectStudents(classId: number, studentIds: number[]) {
+    this.components.filter(c => c.classId === classId)[0].selectStudentIds(studentIds);
   }
 }

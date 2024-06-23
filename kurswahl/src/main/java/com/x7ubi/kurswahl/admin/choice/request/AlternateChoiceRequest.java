@@ -5,6 +5,14 @@ public class AlternateChoiceRequest {
 
     private Long studentId;
 
+    public AlternateChoiceRequest() {
+    }
+
+    public AlternateChoiceRequest(Long classId, Long studentId) {
+        this.classId = classId;
+        this.studentId = studentId;
+    }
+
     public Long getClassId() {
         return classId;
     }
