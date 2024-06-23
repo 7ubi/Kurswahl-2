@@ -8,7 +8,8 @@
     <chapter id="verantwortlicher" title="Verantwortlicher">
         <p>Tobias Renner</p>
         E-Mail-Adresse: <a href="mailto:tobi.renner03@gmail.com">tobi.renner03@gmail.com</a>
-
+    </chapter>
+    <chapter id="zweck" title="0. Zweck der Cloud-Online-Anwendung">
         <p>
             Das Kurswahl-Programm steht online unter der Domain https://kurswahl-pds.de zur Verfügung. Es ermöglicht den
             Schülerinnen und Schülern der E-Phase und Q-Phase, ihre Kurse für das kommende Schuljahr auszuwählen.
@@ -30,7 +31,8 @@
             abgeschlossen
             (Art. 28 DSGVO), um den Schutz Ihrer Daten zu gewährleisten. Strato ist ISO 27001 zertifiziert, was
             bedeutet, dass
-            hohe Sicherheitsstandards eingehalten werden.
+            hohe Sicherheitsstandards eingehalten werden. Das Schutzniveau „ISO 27001 Zertifizierung auf Basis von
+            IT-Grundschutz“ ist als gültiges Zertikat gebucht. (SchDsV, He).
         </p>
         <p>Zum Schutz der Übertragung nutzt unsere Webseite ein SSL-Zertifikat. Dieses Zertifikat entspricht den
             Anforderungen der ISO 27001-Norm und gewährleistet eine sichere und verschlüsselte Datenübertragung. Sie
@@ -84,6 +86,21 @@
                 Die erhobenen Daten werden ein Jahr nach Zweckerfüllung gelöscht.
             </p>
         </chapter>
+        <chapter id="loeschfristen" title="2.4. Löschfristen">
+            <list>
+                <li>Alle erhobenen Daten werden ein halbes Jahr nach der Zweckerfüllung automatisch gelöscht. Der Zweck
+                    ist
+                    erfüllt, wenn die Kursbuchung erfolgreich umgesetzt ist. Die TLn werden dazu informiert.
+                </li>
+                <li>
+                    Das Ergebnis der Kurswahl wird automatisch in eine Excel oder PDF-Datei umgewandelt und kann
+                    ausgedruckt werden
+                    oder lokal gespeichert werden. Die Auswertungen sind durch die Anwender spätestens nach zwei Jahren
+                    lokal zu
+                    löschen. Die Schule überwacht diesen Prozess selbständig.
+                </li>
+            </list>
+        </chapter>
     </chapter>
     <chapter id="rechtsgrundlage" title="3. Maßgebliche Rechtsgrundlagen">
         <p><b>Maßgebliche Rechtsgrundlagen nach der DSGVO:</b> Im
@@ -119,21 +136,19 @@
             automatisierten Entscheidungsfindung im Einzelfall einschließlich Profiling. Ferner können
             Landesdatenschutzgesetze
             der einzelnen Bundesländer zur Anwendung gelangen.</p>
-        <p><b>Hinweis auf Geltung DSGVO und Schweizer DSG:</b> Diese Datenschutzhinweise dienen sowohl der
-            Informationserteilung nach dem schweizerischen Bundesgesetz über den Datenschutz (Schweizer DSG) als auch
-            nach
-            der
-            Datenschutzgrundverordnung (DSGVO). Aus diesem Grund bitten wir Sie zu beachten, dass aufgrund der breiteren
-            räumlichen Anwendung und Verständlichkeit die Begriffe der DSGVO verwendet werden. Insbesondere statt der im
-            Schweizer
-            DSG verwendeten Begriffe „Bearbeitung“ von „Personendaten“, "überwiegendes Interesse“ und "besonders
-            schützenswerte
-            Personendaten" werden die in der DSGVO verwendeten Begriffe „Verarbeitung“ von „personenbezogenen Daten“
-            sowie
-            "berechtigtes Interesse" und "besondere Kategorien von Daten" verwendet. Die gesetzliche Bedeutung der
-            Begriffe
-            wird
-            jedoch im Rahmen der Geltung des Schweizer DSG weiterhin nach dem Schweizer DSG bestimmt.</p>
+        <p><b>Hinweis auf Geltung DSGVO:</b> Diese Datenschutzhinweise dienen
+            Informationserteilung nach der Datenschutzgrundverordnung (DSGVO). Aus diesem Grund bitten wir Sie zu
+            beachten,
+            dass aufgrund der breiteren räumlichen Anwendung und Verständlichkeit die Begriffe der DSGVO verwendet
+            werden.
+            Aus diesem Grund bitten wir Sie zu beachten, dass aufgrund der breiteren räumlichen Anwendung und
+            Verständlichkeit
+            die Begriffe der DSGVO verwendet werden. Insbesondere statt der im Schweizer DSG verwendeten Begriffe
+            „Bearbeitung" von „Personendaten", "überwiegendes Interesse" und "besonders schützenswerte Personendaten"
+            werden
+            die in der DSGVO verwendeten Begriffe „Verarbeitung" von „personenbezogenen Daten" sowie "berechtigtes
+            Interesse"
+            und "besondere Kategorien von Daten" verwendet.</p>
     </chapter>
 
     <chapter id="rechte_personen" title="4. Rechte der betroffenen Personen">
@@ -214,6 +229,15 @@
             <li>
                 <b>Keine Tracker</b>: Wir nutzen keine Tracking-Technologien, die Ihr Online-Verhalten überwachen oder
                 aufzeichnen. Dies schließt sowohl eigene als auch Drittanbieter-Tracker aus.
+            </li>
+        </list>
+    </chapter>
+    <chapter id="Datenverarbeitung" title="6. Datenverarbeitung">
+        <list>
+            <li>Die Weitergabe der Daten an Dritte, auch über Softwaremodule Dritter, ist ausgeschlossen.</li>
+            <li>Der aktuelle Auftragsverarbeitungsvertrag erlischt, wenn Anpassungen der Verarbeitung, der
+                Subunternehmer und
+                Einbindung von Softwaremodule Dritter, die bisher nicht genannt sind, stattfinden.
             </li>
         </list>
     </chapter>

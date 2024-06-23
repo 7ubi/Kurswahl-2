@@ -40,7 +40,7 @@ export class ChoiceResultComponent implements OnDestroy {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute) {
-    this.displayedColumns = ['expansion', 'Auswählen', 'Kurs', 'Lehrer', 'Band', 'Status'];
+    this.displayedColumns = ['expansion', 'Auswählen', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
 
     this.eventSubscription = router.events.subscribe(event => {
       if (event instanceof ChildActivationEnd) {
