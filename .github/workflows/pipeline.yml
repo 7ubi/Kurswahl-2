@@ -59,7 +59,7 @@ jobs:
       - build
     environment:
       name: production
-      url: https://test.kurswahl.7ubi.de
+      url: https://kurswahl-pds.de
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
