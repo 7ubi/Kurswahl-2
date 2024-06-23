@@ -86,7 +86,7 @@ export class AssignChoiceComponent implements OnDestroy {
     });
   }
 
-  loadClasses() {
+  loadClasses(classId?: number, studentIds?: number[]) {
     this.httpService.get<ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => {
         this.classes = response;
@@ -110,6 +110,10 @@ export class AssignChoiceComponent implements OnDestroy {
         });
 
         this.expandedElement = newExpandedElements;
+
+        if (classId && studentIds) {
+          this.reselectStudents(classId, studentIds);
+        }
       });
   }
 
@@ -190,36 +194,56 @@ export class AssignChoiceComponent implements OnDestroy {
     }
 
     if (this.studentsChoices) {
+      const studentIds: number[] = this.studentsChoices.studentRuleResponses.map(s => s.studentId);
+
       if (element && !element.selected) {
-        this.httpService.put<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAssignChoicesRequest(element.classId, choiceNumber), response => {
-          this.studentsChoices = response;
-          this.generateChoiceTable(this.studentsChoices.choiceResponses);
-          this.loadClasses();
-        });
+        this.httpService.put<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAssignChoicesRequest(element.classId, choiceNumber, studentIds),
+          response => {
+            this.studentsChoices = response;
+            this.generateChoiceTable(this.studentsChoices.choiceResponses);
+            this.loadClasses(element.classId, studentIds);
+          });
       }
     }
   }
 
-  getAssignChoicesRequest(classId: number, choiceNumber: number) {
+  getAssignChoicesRequest(classId: number, choiceNumber: number, studentIds: number[]) {
     return {
-      studentIds: this.studentsChoices?.studentRuleResponses.map(s => s.studentId),
+      studentIds: studentIds,
       classId: classId,
       choiceNumber: choiceNumber
     };
   }
 
   assignAlternative(classId: number) {
-    this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
-      response => {
-        this.studentChoice = response;
-        this.generateChoiceTable(this.studentChoice.choiceResponses);
-        this.loadClasses();
+    if (this.studentChoice) {
+      this.httpService.post<StudentChoiceResponse>(`/api/admin/assignChoice`, this.getAlternativeRequest(classId),
+        response => {
+          this.studentChoice = response;
+          this.generateChoiceTable(this.studentChoice.choiceResponses);
+          this.loadClasses();
+        });
+    }
+
+    if (this.studentsChoices) {
+      this.httpService.post<StudentsChoicesResponse>(`/api/admin/assignChoices`, this.getAlternativesRequest(classId), response => {
+        this.studentsChoices = response;
+        this.generateChoiceTable(this.studentsChoices.choiceResponses);
+        this.loadClasses(classId, this.studentsChoices.studentRuleResponses.map(s => s.studentId));
       });
+    }
   }
 
   getAlternativeRequest(classId: number) {
     return {
       studentId: this.studentChoice?.studentId,
+      classId: classId
+    };
+  }
+
+  getAlternativesRequest(classId: number) {
+    return {
+      studentIds: this.studentsChoices?.studentRuleResponses.map(s => s.studentId),
       classId: classId
     };
   }
@@ -265,5 +289,9 @@ export class AssignChoiceComponent implements OnDestroy {
     } else {
       this.expandedElement.splice(index);
     }
+  }
+
+  private reselectStudents(classId: number, studentIds: number[]) {
+    this.components.filter(c => c.classId === classId)[0].selectStudentIds(studentIds);
   }
 }

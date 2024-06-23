@@ -4,6 +4,7 @@ import com.x7ubi.kurswahl.admin.choice.mapper.ChoiceTapeMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.ClassStudentsMapper;
 import com.x7ubi.kurswahl.admin.choice.mapper.StudentChoiceMapper;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
+import com.x7ubi.kurswahl.admin.choice.request.AlternateChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.request.AssignChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.response.*;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
@@ -150,10 +151,17 @@ public class AssignChoiceService {
                             return false;
                         }
 
-                        return choice.getChoiceClasses().stream().noneMatch(
+                        Optional<ChoiceClass> choiceClassOptional = choice.getChoiceClasses().stream().filter(
                                 choiceClass -> Objects.equals(choiceClass.getaClass().getClassId(),
-                                        classChoiceResponse.getClassId()) &&
-                                        Objects.equals(choiceClass.isSelected(), classChoiceResponse.isSelected()));
+                                        classChoiceResponse.getClassId())).findFirst();
+
+                        if (choiceClassOptional.isEmpty()) {
+                            return true;
+                        }
+
+                        classChoiceResponse.setSelected(choiceClassOptional.get().isSelected() && classChoiceResponse.isSelected());
+
+                        return false;
                     }
             );
         }));
@@ -310,5 +318,14 @@ public class AssignChoiceService {
         });
 
         return getStudentsChoices(assignChoicesRequest.getStudentIds());
+    }
+
+    @Transactional
+    public StudentsChoicesResponse assignAlternateChoices(AlternateChoicesRequest alternateChoicesRequest) throws EntityNotFoundException {
+        for (Long studentId : alternateChoicesRequest.getStudentIds()) {
+            assignAlternateChoice(new AlternateChoiceRequest(alternateChoicesRequest.getClassId(), studentId));
+        }
+
+        return getStudentsChoices(alternateChoicesRequest.getStudentIds());
     }
 }

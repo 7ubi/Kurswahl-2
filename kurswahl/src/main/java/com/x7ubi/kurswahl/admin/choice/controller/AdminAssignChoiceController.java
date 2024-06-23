@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.admin.choice.controller;
 
 import com.x7ubi.kurswahl.admin.authentication.AdminRequired;
 import com.x7ubi.kurswahl.admin.choice.request.AlternateChoiceRequest;
+import com.x7ubi.kurswahl.admin.choice.request.AlternateChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.request.AssignChoicesRequest;
 import com.x7ubi.kurswahl.admin.choice.response.ChoiceTapeResponse;
 import com.x7ubi.kurswahl.admin.choice.response.ClassStudentsResponse;
@@ -123,6 +124,27 @@ public class AdminAssignChoiceController {
         logger.info("Assigning ChoiceClass to Student");
 
         StudentChoicesResponse responses = this.assignChoiceService.assignChoice(choiceClassId);
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
+    @PostMapping("/assignChoices")
+    @AdminRequired
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "Assigning alternate Choice to students")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Assigned alternate Choice to student", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = StudentChoicesResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Student could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "404", description = "Class could not be found.", content =
+                    {@Content(mediaType = "application/json", schema =
+                    @Schema(implementation = String.class))})
+    })
+    public ResponseEntity<StudentsChoicesResponse> assignAlternateChoices(@RequestBody AlternateChoicesRequest alternateChoicesRequest) throws EntityNotFoundException {
+        logger.info("Assigning alternate Choice to Students");
+
+        StudentsChoicesResponse responses = this.assignChoiceService.assignAlternateChoices(alternateChoicesRequest);
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 

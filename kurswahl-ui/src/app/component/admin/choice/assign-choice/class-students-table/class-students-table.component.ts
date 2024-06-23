@@ -14,6 +14,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 export class ClassStudentsTableComponent implements OnInit {
   @Input() studentSurveillanceResponses?: StudentSurveillanceResponse[];
   @Input() parent!: AssignChoiceComponent;
+  @Input() classId!: number;
   dataSourceClassStudents!: MatTableDataSource<StudentSurveillanceResponse>;
   displayedColumnsClassStudents: string[];
 
@@ -64,6 +65,24 @@ export class ClassStudentsTableComponent implements OnInit {
       });
   }
 
+  openChoices() {
+    const ids = this.selection.selected.map(student => student.studentId);
+
+    this.parent.loadedChoice = false;
+    this.parent.studentsChoices = undefined;
+    this.parent.studentChoice = undefined;
+    this.parent.choiceTables = [];
+    this.parent.dataSourceChoiceTable = undefined;
+
+    this.httpService.get<StudentsChoicesResponse>(`/api/admin/studentsChoices?studentIds=${ids}`,
+      response => {
+        this.parent.studentsChoices = response;
+        this.parent.loadedChoice = true;
+
+        this.parent.generateChoiceTable(response.choiceResponses);
+      });
+  }
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSourceClassStudents.filteredData.length;
@@ -102,21 +121,7 @@ export class ClassStudentsTableComponent implements OnInit {
     }
   }
 
-  openChoices() {
-    const ids = this.selection.selected.map(student => student.studentId);
-
-    this.parent.loadedChoice = false;
-    this.parent.studentsChoices = undefined;
-    this.parent.studentChoice = undefined;
-    this.parent.choiceTables = [];
-    this.parent.dataSourceChoiceTable = undefined;
-
-    this.httpService.get<StudentsChoicesResponse>(`/api/admin/studentsChoices?studentIds=${ids}`,
-      response => {
-        this.parent.studentsChoices = response;
-        this.parent.loadedChoice = true;
-
-        this.parent.generateChoiceTable(response.choiceResponses);
-      });
+  selectStudentIds(studentIds: number[]) {
+    this.selection.select(...this.dataSourceClassStudents.data.filter(student => studentIds.includes(student.studentId)));
   }
 }

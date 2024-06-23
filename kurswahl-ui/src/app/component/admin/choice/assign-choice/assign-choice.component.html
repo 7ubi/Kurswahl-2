@@ -58,6 +58,7 @@
               <div class="example-element-detail detail-container"
                    [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
                 <app-class-students-table #cmp
+                                          [classId]="element.classId"
                                           [studentSurveillanceResponses]="element.studentSurveillanceResponses"
                                           [parent]="this"></app-class-students-table>
               </div>
@@ -96,7 +97,7 @@
         <div *ngIf="studentsChoices">
           <div class="choice-header">
            <span *ngFor="let student of studentsChoices.studentRuleResponses; index as index">
-            {{ student.firstname }} {{ student.surname }} {{ index < studentsChoices.studentRuleResponses.length - 1 ? ', ' : '' }}
+            {{ student.firstname }} {{ student.surname }}{{ index < studentsChoices.studentRuleResponses.length - 1 ? ', ' : '' }}
            </span>
           </div>
           <div *ngFor="let studentRule of studentsChoices.studentRuleResponses">
