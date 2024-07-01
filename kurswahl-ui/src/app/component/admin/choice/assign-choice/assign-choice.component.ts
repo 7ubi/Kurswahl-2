@@ -83,6 +83,9 @@ export class AssignChoiceComponent implements OnDestroy {
     this.httpService.get<ClassStudentsResponse[]>(`/api/admin/classesStudents?year=${this.year}`,
       response => {
         this.classes = response;
+        this.classes.forEach(c => {
+          c.studentSurveillanceResponses.sort((a, b) => a.surname.localeCompare(b.surname));
+        })
         this.dataSourceClassStudents = new MatTableDataSource(this.classes);
         this.loadedClasses = true;
         if (this.lastSort) {
@@ -102,7 +105,7 @@ export class AssignChoiceComponent implements OnDestroy {
           }
         });
 
-        this.expandedElement = newExpandedElements;
+        this.expandedElement = newExpandedElements
       });
   }
 

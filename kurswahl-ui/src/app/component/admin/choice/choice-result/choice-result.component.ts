@@ -63,6 +63,9 @@ export class ChoiceResultComponent implements OnDestroy {
     this.httpService.get<ChoiceResultResponse>(`/api/admin/result?year=${this.year}`,
       response => {
         this.results = response;
+        this.results.classStudentsResponses.forEach(classStudents => {
+          classStudents.studentSurveillanceResponses.sort((a, b) => a.surname.localeCompare(b.surname));
+        })
         this.dataSource = new MatTableDataSource(this.results.classStudentsResponses);
         this.loadedResults = true;
       });
