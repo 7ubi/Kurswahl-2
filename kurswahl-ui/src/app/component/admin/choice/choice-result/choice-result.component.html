@@ -66,7 +66,7 @@
                      [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
                   <div class="detail-container">
                     <div class="choice" *ngFor="let student of element.studentSurveillanceResponses">
-                      {{ student.firstname }} {{ student.surname }}
+                      {{ student.surname }}, {{ student.firstname }}
                     </div>
                   </div>
                 </div>
