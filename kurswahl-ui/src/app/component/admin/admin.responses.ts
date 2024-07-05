@@ -146,7 +146,8 @@ export interface ClassSizeSettingResponse {
   readonly classSizeWarning: number;
   readonly classSizeCritical: number;
   readonly choiceOpen: boolean;
-  readonly resultOpen: boolean;
+  readonly resultOpen11: boolean;
+  readonly resultOpen12: boolean;
 }
 
 export enum Role {

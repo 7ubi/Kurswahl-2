@@ -24,7 +24,8 @@ public class AdminSettingsServiceTest {
         Assertions.assertEquals(result.getClassSizeWarning(), SettingsService.CLASS_SIZE_WARNING_DEFAULT_VALUE);
         Assertions.assertEquals(result.getClassSizeCritical(), SettingsService.CLASS_SIZE_CRITICAL_DEFAULT_VALUE);
         Assertions.assertTrue(result.isChoiceOpen());
-        Assertions.assertFalse(result.isResultOpen());
+        Assertions.assertFalse(result.isResultOpen11());
+        Assertions.assertFalse(result.isResultOpen12());
     }
 
     @Test
@@ -34,7 +35,8 @@ public class AdminSettingsServiceTest {
         editSettingsRequest.setClassSizeWarning(3);
         editSettingsRequest.setClassSizeCritical(5);
         editSettingsRequest.setChoiceOpen(false);
-        editSettingsRequest.setResultOpen(true);
+        editSettingsRequest.setResultOpen11(true);
+        editSettingsRequest.setResultOpen12(true);
 
         // When
         SettingsResponse result = this.adminSettingsService.editSettings(editSettingsRequest);
@@ -43,6 +45,7 @@ public class AdminSettingsServiceTest {
         Assertions.assertEquals(result.getClassSizeWarning(), 3);
         Assertions.assertEquals(result.getClassSizeCritical(), 5);
         Assertions.assertFalse(result.isChoiceOpen());
-        Assertions.assertTrue(result.isResultOpen());
+        Assertions.assertTrue(result.isResultOpen11());
+        Assertions.assertTrue(result.isResultOpen12());
     }
 }

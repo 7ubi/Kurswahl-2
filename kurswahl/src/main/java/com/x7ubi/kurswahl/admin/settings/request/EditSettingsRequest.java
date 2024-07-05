@@ -8,7 +8,9 @@ public class EditSettingsRequest {
 
     private boolean choiceOpen;
 
-    private boolean resultOpen;
+    private boolean resultOpen11;
+
+    private boolean resultOpen12;
 
     public Integer getClassSizeWarning() {
         return classSizeWarning;
@@ -34,11 +36,19 @@ public class EditSettingsRequest {
         this.choiceOpen = choiceOpen;
     }
 
-    public boolean isResultOpen() {
-        return resultOpen;
+    public boolean isResultOpen11() {
+        return resultOpen11;
     }
 
-    public void setResultOpen(boolean resultOpen) {
-        this.resultOpen = resultOpen;
+    public void setResultOpen11(boolean resultOpen11) {
+        this.resultOpen11 = resultOpen11;
+    }
+
+    public boolean isResultOpen12() {
+        return resultOpen12;
+    }
+
+    public void setResultOpen12(boolean resultOpen12) {
+        this.resultOpen12 = resultOpen12;
     }
 }

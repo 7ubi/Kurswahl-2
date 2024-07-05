@@ -22,7 +22,8 @@ export class SettingsComponent {
       warning: ['', [Validators.required, Validators.min(0)]],
       critical: ['', [Validators.required, Validators.min(0)]],
       choiceOpen: ['', [Validators.required]],
-      resultOpen: ['', [Validators.required]]
+      resultOpen11: ['', [Validators.required]],
+      resultOpen12: ['', [Validators.required]]
     });
 
     this.httpService.get<ClassSizeSettingResponse>('/api/admin/settings', response => {
@@ -30,7 +31,8 @@ export class SettingsComponent {
       this.settingsForm.controls['warning'].setValue(this.classSizeSettingResponse.classSizeWarning);
       this.settingsForm.controls['critical'].setValue(this.classSizeSettingResponse.classSizeCritical);
       this.settingsForm.controls['choiceOpen'].setValue(this.classSizeSettingResponse.choiceOpen);
-      this.settingsForm.controls['resultOpen'].setValue(this.classSizeSettingResponse.resultOpen);
+      this.settingsForm.controls['resultOpen11'].setValue(this.classSizeSettingResponse.resultOpen11);
+      this.settingsForm.controls['resultOpen12'].setValue(this.classSizeSettingResponse.resultOpen12);
     });
   }
 
@@ -39,7 +41,8 @@ export class SettingsComponent {
     this.hasChanges = (this.settingsForm.get('warning')?.value !== this.classSizeSettingResponse?.classSizeWarning
         || this.settingsForm.get('critical')?.value !== this.classSizeSettingResponse?.classSizeCritical
         || this.settingsForm.get('choiceOpen')?.value !== this.classSizeSettingResponse?.choiceOpen
-        || this.settingsForm.get('resultOpen')?.value !== this.classSizeSettingResponse?.resultOpen)
+        || this.settingsForm.get('resultOpen11')?.value !== this.classSizeSettingResponse?.resultOpen11
+        || this.settingsForm.get('resultOpen12')?.value !== this.classSizeSettingResponse?.resultOpen12)
       && this.settingsForm.valid;
   }
 
@@ -56,7 +59,8 @@ export class SettingsComponent {
       classSizeWarning: this.settingsForm.get('warning')?.value,
       classSizeCritical: this.settingsForm.get('critical')?.value,
       choiceOpen: this.settingsForm.get('choiceOpen')?.value,
-      resultOpen: this.settingsForm.get('resultOpen')?.value
+      resultOpen11: this.settingsForm.get('resultOpen11')?.value,
+      resultOpen12: this.settingsForm.get('resultOpen12')?.value
     };
   }
 }

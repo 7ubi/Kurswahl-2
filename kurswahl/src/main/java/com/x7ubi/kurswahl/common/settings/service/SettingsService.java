@@ -16,7 +16,8 @@ public class SettingsService {
     public static final Integer CLASS_SIZE_CRITICAL_DEFAULT_VALUE = 25;
     public static final String CHOICE_OPEN = "CHOICE_OPEN";
     public static final boolean CHOICE_OPEN_DEFAULT_VALUE = true;
-    public static final String RESULT_OPEN = "RESULT_OPEN";
+    public static final String RESULT_OPEN_11 = "RESULT_OPEN_11";
+    public static final String RESULT_OPEN_12 = "RESULT_OPEN_12";
     public static final boolean RESULT_OPEN_DEFAULT_VALUE = false;
 
     private final SettingRepo settingRepo;
