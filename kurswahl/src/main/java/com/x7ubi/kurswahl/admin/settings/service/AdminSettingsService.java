@@ -25,7 +25,9 @@ public class AdminSettingsService {
                 SettingsService.CLASS_SIZE_WARNING_DEFAULT_VALUE).getValue());
         response.setChoiceOpen(BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.CHOICE_OPEN,
                 SettingsService.CHOICE_OPEN_DEFAULT_VALUE).getValue()));
-        response.setResultOpen(BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.RESULT_OPEN,
+        response.setResultOpen11(BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.RESULT_OPEN_11,
+                SettingsService.RESULT_OPEN_DEFAULT_VALUE).getValue()));
+        response.setResultOpen12(BooleanUtils.toBoolean(this.settingsService.getOrCreateSetting(SettingsService.RESULT_OPEN_12,
                 SettingsService.RESULT_OPEN_DEFAULT_VALUE).getValue()));
 
         return response;
@@ -43,9 +45,12 @@ public class AdminSettingsService {
         Setting choiceOpen = this.settingsService.updateSetting(SettingsService.CHOICE_OPEN,
                 editSettingsRequest.isChoiceOpen());
         response.setChoiceOpen(BooleanUtils.toBoolean(choiceOpen.getValue()));
-        Setting resultOpen = this.settingsService.updateSetting(SettingsService.RESULT_OPEN,
-                editSettingsRequest.isResultOpen());
-        response.setResultOpen(BooleanUtils.toBoolean(resultOpen.getValue()));
+        Setting resultOpen11 = this.settingsService.updateSetting(SettingsService.RESULT_OPEN_11,
+                editSettingsRequest.isResultOpen11());
+        Setting resultOpen12 = this.settingsService.updateSetting(SettingsService.RESULT_OPEN_12,
+                editSettingsRequest.isResultOpen12());
+        response.setResultOpen11(BooleanUtils.toBoolean(resultOpen11.getValue()));
+        response.setResultOpen12(BooleanUtils.toBoolean(resultOpen12.getValue()));
 
         return response;
     }
