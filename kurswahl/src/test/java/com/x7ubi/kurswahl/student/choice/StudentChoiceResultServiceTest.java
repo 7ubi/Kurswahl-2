@@ -2,6 +2,7 @@ package com.x7ubi.kurswahl.student.choice;
 
 import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.DisabledException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
@@ -188,7 +189,7 @@ public class StudentChoiceResultServiceTest {
     }
 
     @Test
-    public void testGetChoiceResult() throws EntityNotFoundException {
+    public void testGetChoiceResult() throws EntityNotFoundException, DisabledException {
         // Given
         setupClasses();
         setupChoice(aClass, true);
@@ -203,7 +204,7 @@ public class StudentChoiceResultServiceTest {
     }
 
     @Test
-    public void testGetChoiceResultNotSelected() throws EntityNotFoundException {
+    public void testGetChoiceResultNotSelected() throws EntityNotFoundException, DisabledException {
         // Given
         setupClasses();
         setupChoice(aClass, false);
