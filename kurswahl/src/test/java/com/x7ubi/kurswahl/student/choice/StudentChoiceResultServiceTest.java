@@ -7,6 +7,7 @@ import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
 import com.x7ubi.kurswahl.common.repository.*;
+import com.x7ubi.kurswahl.common.settings.service.SettingsService;
 import com.x7ubi.kurswahl.student.choice.response.ChoiceResponse;
 import com.x7ubi.kurswahl.student.choice.service.StudentChoiceResultService;
 import org.junit.Assert;
@@ -62,6 +63,8 @@ public class StudentChoiceResultServiceTest {
     private com.x7ubi.kurswahl.common.models.Class aClass;
 
     private StudentClass studentClass;
+    @Autowired
+    private SettingsService settingsService;
 
     @BeforeEach
     public void setupTest() {
@@ -191,6 +194,7 @@ public class StudentChoiceResultServiceTest {
     @Test
     public void testGetChoiceResult() throws EntityNotFoundException, DisabledException {
         // Given
+        settingsService.updateSetting(SettingsService.RESULT_OPEN_11, true);
         setupClasses();
         setupChoice(aClass, true);
 
@@ -206,6 +210,7 @@ public class StudentChoiceResultServiceTest {
     @Test
     public void testGetChoiceResultNotSelected() throws EntityNotFoundException, DisabledException {
         // Given
+        settingsService.updateSetting(SettingsService.RESULT_OPEN_11, true);
         setupClasses();
         setupChoice(aClass, false);
 
