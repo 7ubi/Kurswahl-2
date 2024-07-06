@@ -131,11 +131,27 @@ export class ChoiceResultComponent implements OnDestroy {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'name':
-          return this.compare(a.name, b.name, isAsc);
+          const nameSort = this.compare(a.name, b.name, isAsc);
+          if (nameSort === 0) {
+            return this.compare(a.tapeName, b.tapeName, isAsc);
+          }
+          return nameSort;
         case 'teacher':
-          return this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
+          const teacherSort = this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
+          if (teacherSort === 0) {
+            const nameSort = this.compare(a.name, b.name, isAsc);
+            if (nameSort === 0) {
+              return this.compare(a.tapeName, b.tapeName, isAsc);
+            }
+            return nameSort;
+          }
+          return teacherSort;
         case 'tape':
-          return this.compare(a.tapeName, b.tapeName, isAsc);
+          const tapeSort = this.compare(a.tapeName, b.tapeName, isAsc);
+          if (tapeSort === 0) {
+            return this.compare(a.name, b.name, isAsc);
+          }
+          return tapeSort;
         default:
           return 0;
       }
@@ -143,7 +159,7 @@ export class ChoiceResultComponent implements OnDestroy {
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    return (a == b ? 0 : a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   expandElement(element: ClassStudentsResponse) {
