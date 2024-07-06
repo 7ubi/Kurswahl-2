@@ -10,6 +10,8 @@ public class ClassStudentsResponse {
 
     private String name;
 
+    private String subjectName;
+
     private TeacherResponse teacherResponse;
 
     private List<StudentSurveillanceResponse> studentSurveillanceResponses;
@@ -74,5 +76,13 @@ public class ClassStudentsResponse {
 
     public void setSizeCritical(boolean sizeCritical) {
         isSizeCritical = sizeCritical;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 }

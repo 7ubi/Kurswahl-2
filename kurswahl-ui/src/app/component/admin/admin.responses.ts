@@ -98,6 +98,7 @@ export interface StudentSurveillanceResponse extends UserResponse {
 export interface ClassStudentsResponse {
   readonly classId: number;
   readonly name: string;
+  readonly subjectName: string;
   readonly teacherResponse: TeacherResponse;
   readonly studentSurveillanceResponses: StudentSurveillanceResponse[];
   readonly tapeName: string;
