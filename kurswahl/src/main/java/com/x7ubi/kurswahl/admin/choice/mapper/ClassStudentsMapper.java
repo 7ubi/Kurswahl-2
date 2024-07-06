@@ -5,7 +5,9 @@ import com.x7ubi.kurswahl.admin.choice.response.StudentSurveillanceResponse;
 import com.x7ubi.kurswahl.admin.user.mapper.TeacherMapper;
 import com.x7ubi.kurswahl.common.models.ChoiceClass;
 import com.x7ubi.kurswahl.common.models.Class;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public interface ClassStudentsMapper {
     @Mapping(source = "teacher", target = "teacherResponse")
     @Mapping(source = "choiceClasses", target = "studentSurveillanceResponses")
     @Mapping(source = "tape.name", target = "tapeName")
+    @Mapping(source = "subject.name", target = "subjectName")
     ClassStudentsResponse classToClassChoiceResponse(Class aclass);
 
     List<ClassStudentsResponse> classesToClassChoiceResponses(List<Class> classes);

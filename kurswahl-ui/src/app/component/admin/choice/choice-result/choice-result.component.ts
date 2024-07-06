@@ -67,6 +67,7 @@ export class ChoiceResultComponent implements OnDestroy {
           classStudents.studentSurveillanceResponses.sort((a, b) => a.surname.localeCompare(b.surname));
         })
         this.dataSource = new MatTableDataSource(this.results.classStudentsResponses);
+        this.sortData({active: 'name', direction: 'asc'});
         this.loadedResults = true;
       });
   }
@@ -127,19 +128,20 @@ export class ChoiceResultComponent implements OnDestroy {
   }
 
   sortData(sort: Sort) {
+    console.log(this.dataSource.data)
     this.dataSource.data = this.dataSource.data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'name':
-          const nameSort = this.compare(a.name, b.name, isAsc);
-          if (nameSort === 0) {
+          const subjectSort = this.compare(a.subjectName, b.subjectName, isAsc);
+          if (subjectSort === 0) {
             return this.compare(a.tapeName, b.tapeName, isAsc);
           }
-          return nameSort;
+          return subjectSort;
         case 'teacher':
           const teacherSort = this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
           if (teacherSort === 0) {
-            const nameSort = this.compare(a.name, b.name, isAsc);
+            const nameSort = this.compare(a.subjectName, b.subjectName, isAsc);
             if (nameSort === 0) {
               return this.compare(a.tapeName, b.tapeName, isAsc);
             }
@@ -149,7 +151,7 @@ export class ChoiceResultComponent implements OnDestroy {
         case 'tape':
           const tapeSort = this.compare(a.tapeName, b.tapeName, isAsc);
           if (tapeSort === 0) {
-            return this.compare(a.name, b.name, isAsc);
+            return this.compare(a.subjectName, b.subjectName, isAsc);
           }
           return tapeSort;
         default:

@@ -91,8 +91,7 @@ export class AssignChoiceComponent implements OnDestroy {
         if (this.lastSort) {
           this.sortData(this.lastSort);
         } else {
-          this.dataSourceClassStudents.data
-            = this.dataSourceClassStudents.data.sort((a, b) => this.compare(a.name, b.name, true));
+          this.sortData({active: 'name', direction: 'asc'});
         }
 
         const newExpandedElements: ClassStudentsResponse[] = [];
@@ -218,7 +217,7 @@ export class AssignChoiceComponent implements OnDestroy {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'name':
-          const nameSort = this.compare(a.name, b.name, isAsc);
+          const nameSort = this.compare(a.subjectName, b.subjectName, isAsc);
           if (nameSort === 0) {
             return this.compare(a.tapeName, b.tapeName, isAsc);
           }
@@ -226,7 +225,7 @@ export class AssignChoiceComponent implements OnDestroy {
         case 'teacher':
           const teacherSort = this.compare(a.teacherResponse.abbreviation, b.teacherResponse.abbreviation, isAsc);
           if (teacherSort === 0) {
-            const nameSort = this.compare(a.name, b.name, isAsc);
+            const nameSort = this.compare(a.subjectName, b.subjectName, isAsc);
             if (nameSort === 0) {
               return this.compare(a.tapeName, b.tapeName, isAsc);
             }
@@ -236,7 +235,7 @@ export class AssignChoiceComponent implements OnDestroy {
         case 'tape':
           const tapeSort = this.compare(a.tapeName, b.tapeName, isAsc);
           if (tapeSort === 0) {
-            return this.compare(a.name, b.name, isAsc);
+            return this.compare(a.subjectName, b.subjectName, isAsc);
           }
           return tapeSort;
         default:
