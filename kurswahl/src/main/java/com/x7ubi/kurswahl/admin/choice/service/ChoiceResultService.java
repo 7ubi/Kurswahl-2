@@ -98,7 +98,16 @@ public class ChoiceResultService {
 
     private void getClasses(Integer year, ChoiceResultResponse choiceResultResponse) {
         List<Class> classes = this.classRepo.findAllByTapeYearAndTapeReleaseYear(year, Year.now().getValue());
-        classes.forEach(c -> c.setChoiceClasses(c.getChoiceClasses().stream().filter(ChoiceClass::isSelected).collect(Collectors.toSet())));
+        classes.forEach(c -> {
+            List<Student> students = new ArrayList<>();
+            c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
+                if (students.contains(choiceClass.getChoice().getStudent()) || !choiceClass.isSelected()) {
+                    return false;
+                }
+                students.add(choiceClass.getChoice().getStudent());
+                return true;
+            }).collect(Collectors.toSet()));
+        });
 
         logger.info(String.format("Filtered Students, who chose classes in year %s", year));
 
