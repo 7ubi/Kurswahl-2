@@ -124,20 +124,31 @@ public class AssignChoiceService {
         Set<Choice> choices = choiceClass.getChoice().getStudent().getChoices().stream()
                 .filter(choice -> choice.getReleaseYear() == Year.now().getValue()).collect(Collectors.toSet());
 
-        choices.forEach(choice -> choice.getChoiceClasses().forEach(choiceClassOfChoice -> {
-            if (Objects.equals(choiceClassOfChoice.getChoiceClassId(), choiceClass.getChoiceClassId())) {
-                return;
-            }
+        choices.forEach(choice -> {
+            Set<ChoiceClass> choiceClassesToRemove = new HashSet<>();
+            choice.getChoiceClasses().forEach(choiceClassOfChoice -> {
+                if (Objects.equals(choiceClassOfChoice.getChoiceClassId(), choiceClass.getChoiceClassId())) {
+                    return;
+                }
+                if (choiceClassOfChoice.isSelected() &&
+                        (Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
+                                choiceClass.getaClass().getSubject().getSubjectId()) ||
+                                Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
+                                        choiceClass.getaClass().getTape().getTapeId()))) {
 
-            if (choiceClassOfChoice.isSelected() &&
-                    (Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
-                            choiceClass.getaClass().getSubject().getSubjectId()) ||
-                            Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
-                                    choiceClass.getaClass().getTape().getTapeId()))) {
-                choiceClassOfChoice.setSelected(false);
-                this.choiceClassRepo.save(choiceClassOfChoice);
+                    if (choice.getChoiceNumber() == 3) {
+                        choiceClassesToRemove.add(choiceClassOfChoice);
+                        this.choiceClassRepo.delete(choiceClassOfChoice);
+                    } else {
+                        choiceClassOfChoice.setSelected(false);
+                        this.choiceClassRepo.save(choiceClassOfChoice);
+                    }
+                }
+            });
+            for (ChoiceClass choiceClassToRemove : choiceClassesToRemove) {
+                choice.getChoiceClasses().remove(choiceClassToRemove);
             }
-        }));
+        });
     }
 
     private ChoiceClass getChoiceClass(Long choiceClassId) throws EntityNotFoundException {
