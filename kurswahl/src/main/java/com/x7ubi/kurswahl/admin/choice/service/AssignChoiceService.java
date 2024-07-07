@@ -130,16 +130,20 @@ public class AssignChoiceService {
                 if (Objects.equals(choiceClassOfChoice.getChoiceClassId(), choiceClass.getChoiceClassId())) {
                     return;
                 }
-                if (choiceClassOfChoice.isSelected() &&
-                        (Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
-                                choiceClass.getaClass().getSubject().getSubjectId()) ||
-                                Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
-                                        choiceClass.getaClass().getTape().getTapeId()))) {
-
-                    if (choice.getChoiceNumber() == 3) {
+                if (choice.getChoiceNumber() == 3) {
+                    if ((Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
+                            choiceClass.getaClass().getSubject().getSubjectId()) ||
+                            Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
+                                    choiceClass.getaClass().getTape().getTapeId()))) {
                         choiceClassesToRemove.add(choiceClassOfChoice);
                         this.choiceClassRepo.delete(choiceClassOfChoice);
-                    } else {
+                    }
+                } else {
+                    if (choiceClassOfChoice.isSelected() &&
+                            (Objects.equals(choiceClassOfChoice.getaClass().getSubject().getSubjectId(),
+                                    choiceClass.getaClass().getSubject().getSubjectId()) ||
+                                    Objects.equals(choiceClassOfChoice.getaClass().getTape().getTapeId(),
+                                            choiceClass.getaClass().getTape().getTapeId()))) {
                         choiceClassOfChoice.setSelected(false);
                         this.choiceClassRepo.save(choiceClassOfChoice);
                     }
