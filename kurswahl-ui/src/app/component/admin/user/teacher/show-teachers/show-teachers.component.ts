@@ -7,6 +7,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatDialog} from "@angular/material/dialog";
 import {TeacherCsvImportDialogComponent} from "./teacher-csv-import-dialog/teacher-csv-import-dialog.component";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 @Component({
   selector: 'app-show-teachers',
@@ -147,5 +149,24 @@ export class ShowTeachersComponent implements OnInit {
         });
       }
     });
+  }
+
+
+  exportTeachers() {
+    if (this.teacherResponses!.length > 0) {
+      const doc = new jsPDF();
+
+      const head = ['Nutzername', 'Vorname', 'Nachname', 'Generiertes Password'];
+      const info: {}[] = [];
+      this.dataSource.filteredData.forEach(teacher =>
+        info.push([teacher.username, teacher.firstname, teacher.surname, teacher.generatedPassword]));
+
+      autoTable(doc, {
+        head: [head],
+        body: info,
+      });
+
+      doc.save(`Lehrer.pdf`);
+    }
   }
 }

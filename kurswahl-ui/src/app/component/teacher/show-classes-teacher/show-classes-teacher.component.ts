@@ -22,14 +22,13 @@ export class ShowClassesTeacherComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.get<TeacherClassResponse[]>('/api/teacher/classes', response => {
       this.teacherClassResponses = response;
+
       this.teacherClassResponses.forEach(teacherClass => {
-        console.log(teacherClass.teacherClassStudentResponses);
         this.dataSources.push(new TeacherClassDataSource(teacherClass.name, teacherClass.tapeName, teacherClass.year,
-          new MatTableDataSource(teacherClass.teacherClassStudentResponses)))
+          new MatTableDataSource(teacherClass.teacherClassStudentResponses)));
       });
+      this.dataSources.sort((a, b) => this.compare(a.name, b.name, true));
       this.loadedClasses = true;
-      console.log(this.teacherClassResponses)
-      console.log(this.dataSources);
     });
   }
 
