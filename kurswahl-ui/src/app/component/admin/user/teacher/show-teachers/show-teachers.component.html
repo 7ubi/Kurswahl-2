@@ -8,6 +8,9 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Name" #input>
       </mat-form-field>
       <div>
+        <button (click)="exportTeachers()" color="primary" mat-raised-button style="margin-right: 5px">
+          Lehrer exportieren
+        </button>
         <button (click)="openDialog()" color="primary" mat-raised-button style="margin-right: 5px">
           Lehrer aus Datei importieren
         </button>
