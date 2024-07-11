@@ -29,5 +29,7 @@ public interface ChoiceMapper {
     @Mapping(source = "aClass.tape.tapeId", target = "tapeId")
     @Mapping(source = "aClass.name", target = "name")
     @Mapping(source = "aClass.classId", target = "classId")
+    @Mapping(source = "aClass.teacher.abbreviation", target = "teacherAbbreviation")
+    @Mapping(source = "aClass.teacher.user.surname", target = "teacherName")
     ClassChoiceResponse classToClassChoiceResponse(ChoiceClass c);
 }

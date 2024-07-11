@@ -7,6 +7,10 @@ public class ClassChoiceResponse {
 
     private Long tapeId;
 
+    private String teacherName;
+
+    private String teacherAbbreviation;
+
     public Long getClassId() {
         return classId;
     }
@@ -29,5 +33,21 @@ public class ClassChoiceResponse {
 
     public void setTapeId(Long tapeId) {
         this.tapeId = tapeId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getTeacherAbbreviation() {
+        return teacherAbbreviation;
+    }
+
+    public void setTeacherAbbreviation(String teacherAbbreviation) {
+        this.teacherAbbreviation = teacherAbbreviation;
     }
 }
