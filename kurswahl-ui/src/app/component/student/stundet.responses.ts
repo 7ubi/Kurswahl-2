@@ -16,6 +16,8 @@ export interface ClassChoiceResponse {
   readonly classId: number;
   readonly name: string;
   readonly tapeId: number;
+  readonly teacherName: string;
+  readonly teacherAbbreviation: string;
 }
 
 export interface ClassResponse {
