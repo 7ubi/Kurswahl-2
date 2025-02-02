@@ -31,7 +31,7 @@ jobs:
       - name: Build and Test with Maven
         run: mvn -B package --file kurswahl/pom.xml jacoco:prepare-agent jacoco:report
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: CompiledProject
           path: .
@@ -42,7 +42,7 @@ jobs:
       - build
     steps:
       - name: Download compiled artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: CompiledProject
           path: .
@@ -62,7 +62,7 @@ jobs:
       url: https://kurswahl-pds.de
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Start docker-compose
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
