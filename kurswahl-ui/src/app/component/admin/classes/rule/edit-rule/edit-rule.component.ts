@@ -8,7 +8,6 @@ import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatButton} from "@angular/material/button";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {runE2e} from "@angular/cli/src/commands/mcp/tools/e2e";
 
 @Component({
   selector: 'app-edit-rule',
@@ -81,6 +80,4 @@ export class EditRuleComponent implements OnInit {
       year: this.editRuleForm.get('year')?.value
     }
   }
-
-  protected readonly runE2e = runE2e;
 }

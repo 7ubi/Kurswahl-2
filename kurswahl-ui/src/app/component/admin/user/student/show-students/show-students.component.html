@@ -74,7 +74,9 @@
       <ng-container matColumnDef="Klasse">
         <th *matHeaderCellDef mat-header-cell> Klasse</th>
         <td *matCellDef="let element" mat-cell>
-          <span *ngIf="element.studentClassResponse">{{ element.studentClassResponse.name }}</span>
+          @if (element.studentClassResponse) {
+            {{ element.studentClassResponse.name }}
+          }
         </td>
       </ng-container>
 

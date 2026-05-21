@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal} from '@angular/core';
 import {StudentClassResponse, StudentResponse} from "../../../admin.responses";
 import {
   MatCell,
@@ -23,9 +23,9 @@ import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {HeroComponent} from "../../../../common/hero/hero.component";
-import {MatFormField, MatLabel} from "@angular/material/input";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {MatMiniFabButton} from "@angular/material/button";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
@@ -33,6 +33,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-students',
   templateUrl: './show-students.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -53,7 +54,9 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatHeaderRowDef,
     MatRowDef,
     MatRow,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatButton,
+    MatInput
   ],
   styleUrls: ['./show-students.component.css']
 })
@@ -67,7 +70,7 @@ export class ShowStudentsComponent implements OnInit {
   selectedStudentClass?: StudentClassResponse;
 
   selection = new SelectionModel<StudentResponse>(true, []);
-  loadedStudents = false;
+  loadedStudents = signal(false);
 
   file: string | null = null;
 
@@ -77,7 +80,8 @@ export class ShowStudentsComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Klasse', 'Generiertes Passwort', 'Aktionen'];
 
@@ -89,6 +93,7 @@ export class ShowStudentsComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClassResponses = response;
+      this.cdr.detectChanges();
     });
 
     this.loadStudents();
@@ -110,6 +115,7 @@ export class ShowStudentsComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.studentResponses);
       this.selectedStudentClass = undefined;
     }
+    this.cdr.detectChanges();
   }
 
   createStudent(): void {
@@ -125,6 +131,7 @@ export class ShowStudentsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -139,6 +146,7 @@ export class ShowStudentsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -165,6 +173,7 @@ export class ShowStudentsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -179,6 +188,7 @@ export class ShowStudentsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     }, () => {
     }, this.getDeleteStudentsRequest());
   }
@@ -187,7 +197,8 @@ export class ShowStudentsComponent implements OnInit {
     this.httpService.get<StudentResponse[]>('/api/admin/students', response => {
       this.studentResponses = response;
       this.dataSource = new MatTableDataSource(this.studentResponses);
-      this.loadedStudents = true;
+      this.loadedStudents.set(true);
+      this.cdr.detectChanges();
     });
   }
 
@@ -215,6 +226,7 @@ export class ShowStudentsComponent implements OnInit {
         this.httpService.post<StudentResponse[]>('/api/admin/csvStudents', result, response => {
           this.studentResponses = response;
           this.dataSource = new MatTableDataSource(this.studentResponses);
+          this.cdr.detectChanges();
         });
       }
     });
