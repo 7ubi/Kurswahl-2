@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../service/http.service";
 import {ClassSizeSettingResponse} from "../admin.responses";
@@ -12,6 +12,7 @@ import {MatSlideToggle} from "@angular/material/slide-toggle";
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -33,7 +34,8 @@ export class SettingsComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private cdr: ChangeDetectorRef
   ) {
     this.settingsForm = this.formBuilder.group({
       warning: ['', [Validators.required, Validators.min(0)]],
@@ -50,6 +52,7 @@ export class SettingsComponent {
       this.settingsForm.controls['choiceOpen'].setValue(this.classSizeSettingResponse.choiceOpen);
       this.settingsForm.controls['resultOpen11'].setValue(this.classSizeSettingResponse.resultOpen11);
       this.settingsForm.controls['resultOpen12'].setValue(this.classSizeSettingResponse.resultOpen12);
+      this.cdr.detectChanges();
     });
   }
 
@@ -68,6 +71,7 @@ export class SettingsComponent {
       response => {
         this.classSizeSettingResponse = response;
         this.hasChanges = false;
+        this.cdr.detectChanges();
       });
   }
 

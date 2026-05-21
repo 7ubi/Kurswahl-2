@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SubjectResponse, TapeResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-create-class',
   templateUrl: './create-class.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -32,7 +33,8 @@ export class CreateClassComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.createClassForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -47,12 +49,14 @@ export class CreateClassComponent implements OnInit {
     this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
       response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
+      this.cdr.detectChanges();
     });
 
     this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       response.sort((a, b) =>
         a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
+      this.cdr.detectChanges();
     });
   }
 
@@ -81,6 +85,7 @@ export class CreateClassComponent implements OnInit {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${year}`, response => {
       response.sort((a, b) => a.name.localeCompare(b.name));
       this.tapeResponses = response;
+      this.cdr.detectChanges();
     });
   }
 

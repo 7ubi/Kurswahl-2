@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-create-student',
   templateUrl: './create-student.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -30,7 +31,8 @@ export class CreateStudentComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.createStudentForm = this.formBuilder.group({
       firstname: ['', Validators.required],
@@ -42,6 +44,7 @@ export class CreateStudentComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClasses = response;
+      this.cdr.detectChanges();
     });
   }
 

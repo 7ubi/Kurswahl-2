@@ -2,7 +2,7 @@
 <form [formGroup]="editStudentClassForm" (ngSubmit)="editStudentClass()">
   <div class="container">
     @if (studentClass) {
-      <div class="center" *ngIf="studentClass">
+      <div class="center">
         <mat-form-field class="example-full-width">
           <mat-label>Name</mat-label>
           <input matInput formControlName="name" name="name" id="name" type="text">

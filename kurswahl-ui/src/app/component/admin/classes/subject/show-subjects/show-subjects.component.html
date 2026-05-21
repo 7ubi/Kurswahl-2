@@ -72,7 +72,7 @@
     </table>
   </div>
 
-  @if (loadedSubjects) {
+  @if (!loadedSubjects) {
     <div class="spinner-table">
       <mat-progress-spinner
         color="primary"

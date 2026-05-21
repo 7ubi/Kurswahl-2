@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -21,6 +21,7 @@ import {HeroComponent} from "../../common/hero/hero.component";
 @Component({
   selector: 'app-show-classes-teacher',
   templateUrl: './show-classes-teacher.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTable,
     MatProgressSpinner,
@@ -44,7 +45,7 @@ export class ShowClassesTeacherComponent implements OnInit {
   displayedColumns: string[];
   loadedClasses = false;
 
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private cdr: ChangeDetectorRef) {
     this.displayedColumns = ['Nachname', 'Vorname', 'Klasse'];
   }
 
@@ -58,6 +59,7 @@ export class ShowClassesTeacherComponent implements OnInit {
       });
       this.dataSources.sort((a, b) => this.compare(a.name, b.name, true));
       this.loadedClasses = true;
+      this.cdr.detectChanges();
     });
   }
 

@@ -63,7 +63,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-@if (loadedRules) {
+@if (!loadedRules) {
   <div class="spinner-table">
     <mat-progress-spinner
       color="primary"

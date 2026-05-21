@@ -1,4 +1,4 @@
-import {Component, Input, numberAttribute, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, numberAttribute, OnInit} from '@angular/core';
 import {TapeResponse} from "../../../../admin.responses";
 import {
   MatCell,
@@ -27,6 +27,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-tape-table',
   templateUrl: './tape-table.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatFormField,
     MatLabel,
@@ -66,7 +67,8 @@ export class TapeTableComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'LK', 'Aktionen'];
   }
@@ -79,6 +81,7 @@ export class TapeTableComponent implements OnInit {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.setDataSource(response);
       this.loadedTapes = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -102,6 +105,7 @@ export class TapeTableComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 

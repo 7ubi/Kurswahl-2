@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpService} from "../../../service/http.service";
@@ -13,6 +13,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -35,7 +36,8 @@ export class ChangePasswordComponent {
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.changePasswordFormGroup = this.formBuilder.group({
       oldPassword: ['', Validators.required],
@@ -74,6 +76,7 @@ export class ChangePasswordComponent {
       } else if (this.authenticationService.getRole() === Role.TEACHER.toString()) {
         this.router.navigate(['teacher']);
       }
+      this.cdr.detectChanges();
     });
   }
 

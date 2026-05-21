@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -31,6 +31,7 @@ export enum ShowMessageModes {
 @Component({
   selector: 'app-show-messages',
   templateUrl: './show-messages.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     MatFormField,
@@ -70,7 +71,8 @@ export class ShowMessagesComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Titel', 'Absender', 'Nachricht'];
 
@@ -84,6 +86,7 @@ export class ShowMessagesComponent implements OnInit {
       this.messageResponses = response;
       this.dataSource = new MatTableDataSource(this.messageResponses);
       this.loadedMessages = true;
+      this.cdr.detectChanges();
     });
   }
 

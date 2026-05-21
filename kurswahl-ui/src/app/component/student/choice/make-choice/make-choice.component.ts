@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
 import {
@@ -17,6 +17,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-make-choice',
   templateUrl: './make-choice.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ChoiceTableComponent,
     HeroComponent,
@@ -42,7 +43,8 @@ export class MakeChoiceComponent implements OnDestroy {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.loadTapes();
 
@@ -64,6 +66,7 @@ export class MakeChoiceComponent implements OnDestroy {
   private loadTapes() {
     this.httpService.get<TapeClassResponse[]>(`/api/student/tapeClasses`, response => {
       this.tapeClassResponses = response;
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['student']));
   }
 
@@ -74,18 +77,23 @@ export class MakeChoiceComponent implements OnDestroy {
   private loadSubjects() {
     this.httpService.get<SubjectTapeResponse[]>(`/api/student/subjectTapes`, response => {
       this.subjectTapeResponses = response;
+      this.cdr.detectChanges();
     });
   }
 
   private loadChoice() {
     this.httpService.get<ChoiceResponse>(`/api/student/choice?choiceNumber=${this.choiceNumber}`, response => {
       this.choiceResponse = response;
+      this.cdr.detectChanges();
     });
   }
 
   alterChoice(classId: number) {
     this.httpService.put<ChoiceResponse>('/api/student/choice', this.getAlterChoiceRequest(classId),
-      response => this.choiceResponse = response);
+      response => {
+        this.choiceResponse = response;
+        this.cdr.detectChanges();
+      });
   }
 
   getAlterChoiceRequest(classId: number) {
@@ -126,7 +134,10 @@ export class MakeChoiceComponent implements OnDestroy {
       c.tapeId === this.selectedTape?.tapeId)[0];
 
     if (classResponse) {
-      this.httpService.delete<ChoiceResponse>('/api/student/choice', response => this.choiceResponse = response,
+      this.httpService.delete<ChoiceResponse>('/api/student/choice', response => {
+          this.choiceResponse = response;
+          this.cdr.detectChanges();
+        },
         () => {
         }, this.getDeleteClassFromChoiceRequest(classResponse))
     }

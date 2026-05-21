@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
@@ -31,6 +31,7 @@ import {HeroComponent} from "../../../common/hero/hero.component";
 @Component({
   selector: 'app-choice-result',
   templateUrl: './choice-result.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({height: '0px', minHeight: '0'})),
@@ -77,7 +78,8 @@ export class ChoiceResultComponent implements OnDestroy {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef) {
     this.displayedColumns = ['expansion', 'Auswählen', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
 
     this.eventSubscription = router.events.subscribe(event => {
@@ -107,6 +109,7 @@ export class ChoiceResultComponent implements OnDestroy {
         this.dataSource = new MatTableDataSource(this.results.classStudentsResponses);
         this.sortData({active: 'name', direction: 'asc'});
         this.loadedResults = true;
+        this.cdr.detectChanges();
       });
   }
 

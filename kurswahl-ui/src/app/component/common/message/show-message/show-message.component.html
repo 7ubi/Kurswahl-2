@@ -7,9 +7,9 @@
         Von: {{ messageResponse?.senderResponse?.firstname }} {{ messageResponse?.senderResponse?.surname }}
       </mat-card-header>
       <mat-card-header>
-        <span>An: <span *ngFor="let addressee of messageResponse?.addresseeResponses; let i = index;">
-        {{ addressee.firstname }} {{ addressee.surname }} {{ i < messageResponse?.addresseeResponses!.length - 1 ? ', ' : '' }}
-          </span>
+        <span>An: @for (addressee of messageResponse?.addresseeResponses; let i = $index; track addressee.userId) {
+          {{ addressee.firstname }} {{ addressee.surname }} {{ i < messageResponse?.addresseeResponses!.length - 1 ? ', ' : '' }}
+        }
         </span>
       </mat-card-header>
       <mat-card-content

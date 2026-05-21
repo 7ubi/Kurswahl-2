@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-edit-admin',
   templateUrl: './edit-admin.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatFormField,
     MatLabel,
@@ -31,7 +32,8 @@ export class EditAdminComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.editAdminForm = this.formBuilder.group({
       firstname: ['', Validators.required],
@@ -46,6 +48,7 @@ export class EditAdminComponent implements OnInit {
       this.admin = response;
       this.editAdminForm.controls['firstname'].setValue(this.admin.firstname);
       this.editAdminForm.controls['surname'].setValue(this.admin.surname);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['admin', 'admins']));
   }
 

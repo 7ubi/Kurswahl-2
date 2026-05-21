@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -9,6 +9,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-create-teacher',
   templateUrl: './create-teacher.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {SubjectAreaResponse} from "../../../admin.responses";
 import {
   MatCell,
@@ -28,6 +28,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-subject-areas',
   templateUrl: './show-subject-areas.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatFormField,
     HeroComponent,
@@ -66,7 +67,8 @@ export class ShowSubjectAreasComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'Aktionen'];
   }
@@ -80,6 +82,7 @@ export class ShowSubjectAreasComponent implements OnInit {
     this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.setDataSource(response);
       this.loadedSubjectAreas = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -100,6 +103,7 @@ export class ShowSubjectAreasComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {StudentClassResponse, StudentResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
@@ -12,6 +12,7 @@ import {MatOption, MatSelect} from "@angular/material/select";
 @Component({
   selector: 'app-edit-student',
   templateUrl: './edit-student.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -35,7 +36,8 @@ export class EditStudentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -49,6 +51,7 @@ export class EditStudentComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClasses = response;
+      this.cdr.detectChanges();
     });
 
     this.httpService.get<StudentResponse>(`/api/admin/student?studentId=${this.id}`, response => {
@@ -57,6 +60,7 @@ export class EditStudentComponent implements OnInit {
       this.editStudentForm.controls['surname'].setValue(this.student.surname);
       this.editStudentForm.controls['studentClass']
         .setValue(this.student.studentClassResponse.studentClassId);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['admin', 'students']));
   }
 

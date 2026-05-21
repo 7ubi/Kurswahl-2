@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {ChoiceResponse, TapeClassResponse} from "../../stundet.responses";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
@@ -14,6 +14,7 @@ import {ChoiceTableComponent} from "../choice-table/choice-table.component";
 @Component({
   selector: 'app-show-choices',
   templateUrl: './show-choices.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     MatMiniFabButton,
@@ -29,7 +30,8 @@ export class ShowChoicesComponent {
   tapeClassResponses!: TapeClassResponse[];
 
   constructor(private httpService: HttpService, private router: Router,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              private cdr: ChangeDetectorRef) {
     this.loadTapes();
     this.loadChoices();
   }
@@ -37,12 +39,14 @@ export class ShowChoicesComponent {
   private loadChoices() {
     this.httpService.get<ChoiceResponse[]>('/api/student/choices', response => {
       this.choiceResponses = response.sort((a, b) => a.choiceNumber - b.choiceNumber);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['student']));
   }
 
   private loadTapes() {
     this.httpService.get<TapeClassResponse[]>(`/api/student/tapeClasses`, response => {
       this.tapeClassResponses = response.sort((a, b) => a.name.localeCompare(b.name));
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['student']));
   }
 

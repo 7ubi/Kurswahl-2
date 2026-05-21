@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {MessageResponse} from "../../common.response";
@@ -8,6 +8,7 @@ import {HeroComponent} from "../../hero/hero.component";
 @Component({
   selector: 'app-show-message',
   templateUrl: './show-message.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatCard,
     HeroComponent,
@@ -23,13 +24,17 @@ export class ShowMessageComponent implements OnInit {
 
   constructor(
     private httpService: HttpService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
   }
 
   ngOnInit(): void {
     this.httpService.get<MessageResponse>(`/api/common/message?messageId=${this.id}`,
-      response => this.messageResponse = response);
+      response => {
+        this.messageResponse = response;
+        this.cdr.detectChanges();
+      });
   }
 }

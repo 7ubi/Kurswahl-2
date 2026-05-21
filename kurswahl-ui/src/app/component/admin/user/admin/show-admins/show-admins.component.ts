@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../../service/http.service";
 import {AdminResponse} from "../../../admin.responses";
 import {
@@ -27,6 +27,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-admins',
   templateUrl: './show-admins.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     MatFormField,
@@ -64,7 +65,8 @@ export class ShowAdminsComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
@@ -78,6 +80,7 @@ export class ShowAdminsComponent implements OnInit {
       this.adminResponses = response;
       this.dataSource = new MatTableDataSource(this.adminResponses);
       this.loadedAdmins = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -99,6 +102,7 @@ export class ShowAdminsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -113,6 +117,7 @@ export class ShowAdminsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -139,6 +144,7 @@ export class ShowAdminsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -160,6 +166,7 @@ export class ShowAdminsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     }, () => {
     }, this.getSelectedAdminIds());
   }

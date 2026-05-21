@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {StudentClassResponse} from "../../../admin.responses";
 import {
   MatCell,
@@ -28,6 +28,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-student-classes',
   templateUrl: './show-student-classes.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     MatLabel,
@@ -66,7 +67,8 @@ export class ShowStudentClassesComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'Lehrer', 'Jahrgang', 'Aktionen'];
   }
@@ -80,6 +82,7 @@ export class ShowStudentClassesComponent implements OnInit {
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.setDataSource(response);
       this.loadedStudentClasses = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -108,6 +111,7 @@ export class ShowStudentClassesComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 

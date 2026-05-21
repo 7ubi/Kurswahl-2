@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
@@ -40,6 +40,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-assign-choice',
   templateUrl: './assign-choice.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({height: '0px', minHeight: '0'})),
@@ -104,7 +105,8 @@ export class AssignChoiceComponent implements OnDestroy {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef) {
 
     this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
     this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
@@ -153,7 +155,8 @@ export class AssignChoiceComponent implements OnDestroy {
           }
         });
 
-        this.expandedElement = newExpandedElements
+        this.expandedElement = newExpandedElements;
+        this.cdr.detectChanges();
       });
   }
 
@@ -163,6 +166,7 @@ export class AssignChoiceComponent implements OnDestroy {
       if (this.initialStudent) {
         this.openChoice(this.initialStudent);
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -182,6 +186,7 @@ export class AssignChoiceComponent implements OnDestroy {
           this.loadedChoice = true;
 
           this.generateChoiceTable();
+          this.cdr.detectChanges();
         }
       });
   }
@@ -220,6 +225,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
     }
 
@@ -228,6 +234,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
     }
   }
@@ -238,6 +245,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
   }
 
@@ -257,6 +265,7 @@ export class AssignChoiceComponent implements OnDestroy {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
         this.studentChoice = response;
         this.generateChoiceTable();
+        this.cdr.detectChanges();
       });
     }
   }

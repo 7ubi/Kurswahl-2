@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../../service/authentication.service";
@@ -12,6 +12,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     MatFormField,
@@ -31,7 +32,8 @@ export class LoginComponent {
     private router: Router,
     private authenticationService: AuthenticationService,
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginFormGroup = this.formBuilder.group({
       username: ['', Validators.required],
@@ -66,6 +68,7 @@ export class LoginComponent {
       } else if (this.authenticationService.getRole() === Role.TEACHER.toString()) {
         this.router.navigate(['teacher']);
       }
+      this.cdr.detectChanges();
     });
   }
 

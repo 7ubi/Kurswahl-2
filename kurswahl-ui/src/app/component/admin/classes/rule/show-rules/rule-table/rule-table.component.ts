@@ -1,4 +1,4 @@
-import {Component, Input, numberAttribute, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, numberAttribute, OnInit} from '@angular/core';
 import {RuleResponse} from "../../../../admin.responses";
 import {
   MatCell,
@@ -27,6 +27,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-rule-table',
   templateUrl: './rule-table.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatFormField,
     MatLabel,
@@ -65,7 +66,8 @@ export class RuleTableComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'Fächer', 'Aktionen'];
   }
@@ -78,6 +80,7 @@ export class RuleTableComponent implements OnInit {
     this.httpService.get<RuleResponse[]>(`/api/admin/rules?year=${this.year}`, response => {
       this.setDataSource(response);
       this.loadedRules = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -101,6 +104,7 @@ export class RuleTableComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -160,6 +164,7 @@ export class RuleTableComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     }, () => {
     }, this.getDeleteRulesRequest());
   }

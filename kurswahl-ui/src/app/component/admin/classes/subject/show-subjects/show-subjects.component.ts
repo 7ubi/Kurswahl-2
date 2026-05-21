@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {
   MatCell,
@@ -30,6 +30,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-subjects',
   templateUrl: './show-subjects.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -74,7 +75,8 @@ export class ShowSubjectsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'Fachbereich', 'Aktionen'];
 
@@ -89,12 +91,14 @@ export class ShowSubjectsComponent implements OnInit {
     this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.subjectAreaResponses = response;
       this.loadedSubjects = true;
+      this.cdr.detectChanges();
     });
   }
 
   private loadSubjectAreas() {
     this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
       this.setDataSource(response);
+      this.cdr.detectChanges();
     });
   }
 
@@ -131,6 +135,7 @@ export class ShowSubjectsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -191,6 +196,7 @@ export class ShowSubjectsComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     }, () => {
     }, this.getDeleteSubjectsRequest());
   }

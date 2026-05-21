@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-edit-teacher',
   templateUrl: './edit-teacher.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -31,7 +32,8 @@ export class EditTeacherComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -49,6 +51,7 @@ export class EditTeacherComponent implements OnInit {
       this.editTeacherForm.controls['firstname'].setValue(this.teacher.firstname);
       this.editTeacherForm.controls['surname'].setValue(this.teacher.surname);
       this.editTeacherForm.controls['abbreviation'].setValue(this.teacher.abbreviation);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['admin', 'teachers']));
   }
 

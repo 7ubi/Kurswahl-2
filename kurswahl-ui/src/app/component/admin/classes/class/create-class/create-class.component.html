@@ -9,9 +9,10 @@
       <mat-form-field class="example-full-width">
         <mat-label>Fach</mat-label>
         <mat-select formControlName="subject">
-          <mat-option *ngFor="let subject of subjectResponses"
-                      value="{{subject.subjectId}}"> {{ subject.name }}
-          </mat-option>
+          @for (subject of subjectResponses; track subject.subjectId) {
+            <mat-option value="{{subject.subjectId}}"> {{ subject.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field class="example-full-width">

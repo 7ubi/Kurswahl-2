@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -26,6 +26,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-choice-surveillance',
   templateUrl: './choice-surveillance.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     ReactiveFormsModule,
@@ -66,7 +67,8 @@ export class ChoiceSurveillanceComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Schüler', 'Gewählt', 'Wahlbedingungen erfüllt'];
 
@@ -88,10 +90,12 @@ export class ChoiceSurveillanceComponent implements OnInit {
         }
 
         this.loadedChoice = true;
+        this.cdr.detectChanges();
       });
 
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClassResponses = response;
+      this.cdr.detectChanges();
     });
   }
 

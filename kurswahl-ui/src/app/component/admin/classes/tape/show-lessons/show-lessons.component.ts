@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {
   MatCell,
@@ -24,6 +24,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-show-lessons',
   templateUrl: './show-lessons.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroComponent,
     MatChipListbox,
@@ -62,7 +63,8 @@ export class ShowLessonsComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.year = this.route.snapshot.paramMap.get('year');
 
@@ -77,6 +79,7 @@ export class ShowLessonsComponent implements OnInit {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.setTapeResponse(response, tapeId);
       this.loadedTapes = true;
+      this.cdr.detectChanges();
     });
   }
 

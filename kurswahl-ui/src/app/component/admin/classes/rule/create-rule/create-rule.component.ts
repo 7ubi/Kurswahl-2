@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'app-create-rule',
   templateUrl: './create-rule.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     HeroComponent,
@@ -30,7 +31,8 @@ export class CreateRuleComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.createRuleForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -43,6 +45,7 @@ export class CreateRuleComponent implements OnInit {
     this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
       response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
+      this.cdr.detectChanges();
     });
   }
 
