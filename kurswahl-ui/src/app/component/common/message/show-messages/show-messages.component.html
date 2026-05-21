@@ -42,11 +42,13 @@
           *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div *ngIf="!loadedMessages" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!loadedMessages) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

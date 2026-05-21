@@ -9,11 +9,13 @@
       <button mat-raised-button color="primary" type="submit">Fachbereich bearbeiten</button>
     </div>
 
-    <div *ngIf="!subjectArea" class="spinner">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!subjectArea) {
+      <div class="spinner">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </form>

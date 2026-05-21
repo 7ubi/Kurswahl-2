@@ -1,12 +1,27 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TapeResponse} from "../../../admin.responses";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-edit-tape',
   templateUrl: './edit-tape.component.html',
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatProgressSpinner,
+    MatLabel,
+    MatInput,
+    MatCheckbox,
+    MatButton
+  ],
   styleUrls: ['./edit-tape.component.css']
 })
 export class EditTapeComponent implements OnInit {

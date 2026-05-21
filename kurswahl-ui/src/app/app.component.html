@@ -4,7 +4,7 @@
   </button>
   <span>Kurswahl</span>
   <span class="example-spacer"></span>
-  <span *ngIf="isLoggedIn()">
+  @if (isLoggedIn()) {
 
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>person</mat-icon>
@@ -20,7 +20,7 @@
     <button (click)="logout()" mat-icon-button>
       <mat-icon>input</mat-icon>
     </button>
-  </span>
+  }
 </mat-toolbar>
 <mat-sidenav-container style="height: calc(100% - 64px)">
   <mat-sidenav

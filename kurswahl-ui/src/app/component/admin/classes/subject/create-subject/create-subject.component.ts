@@ -1,15 +1,29 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
 import {SubjectAreaResponse} from "../../../admin.responses";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-create-subject',
   templateUrl: './create-subject.component.html',
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton
+  ],
   styleUrls: ['./create-subject.component.css']
 })
-export class CreateSubjectComponent implements OnInit{
+export class CreateSubjectComponent implements OnInit {
   createSubjectForm: FormGroup;
   subjectAreaResponses?: SubjectAreaResponse[];
 

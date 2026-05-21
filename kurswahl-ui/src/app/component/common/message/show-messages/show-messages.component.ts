@@ -1,9 +1,26 @@
 import {Component, OnInit} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {MessageResponse} from "../../common.response";
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {HeroComponent} from "../../hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 export enum ShowMessageModes {
   ALL = "Empfange",
@@ -14,6 +31,27 @@ export enum ShowMessageModes {
 @Component({
   selector: 'app-show-messages',
   templateUrl: './show-messages.component.html',
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    ReactiveFormsModule,
+    MatOption,
+    MatInput,
+    MatButton,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatHeaderCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrl: './show-messages.component.css'
 })
 export class ShowMessagesComponent implements OnInit {

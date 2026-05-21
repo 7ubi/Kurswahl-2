@@ -1,14 +1,25 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../../service/authentication.service";
 import {LoginResponse, Role} from "../../admin/admin.responses";
 import {HttpService} from "../../../service/http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatIcon} from "@angular/material/icon";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatIcon,
+    MatButton,
+    MatInput
+  ],
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {

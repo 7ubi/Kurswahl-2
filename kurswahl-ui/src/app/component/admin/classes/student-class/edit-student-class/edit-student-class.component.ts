@@ -1,12 +1,28 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {StudentClassResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-student-class',
   templateUrl: './edit-student-class.component.html',
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatLabel,
+    MatFormField,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatProgressSpinner
+  ],
   styleUrls: ['./edit-student-class.component.css']
 })
 export class EditStudentClassComponent implements OnInit {

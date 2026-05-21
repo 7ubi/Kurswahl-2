@@ -1,15 +1,51 @@
 import {Component, Input, numberAttribute, OnInit} from '@angular/core';
 import {ClassResponse} from "../../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
-import {Sort} from "@angular/material/sort";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
+import {MatSort, Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MatFormField, MatLabel} from "@angular/material/input";
+import {MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-class-table',
   templateUrl: './class-table.component.html',
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatMiniFabButton,
+    MatIcon,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCheckbox,
+    MatCell,
+    MatCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrls: ['./class-table.component.css']
 })
 export class ClassTableComponent implements OnInit {

@@ -60,7 +60,6 @@
                 <mat-icon style="color: var(--warn)" [matTooltip]="'Kurs ist zu voll'">
                   error
                 </mat-icon>
-
               }
             </td>
           </ng-container>
@@ -103,10 +102,12 @@
                 </mat-expansion-panel-header>
                 @for (rule of studentChoice.ruleResponses; track rule.name) {
                   <div class="rule">
-                    {{ rule.name }} <span *ngIf="rule.subjectResponses && rule.subjectResponses!.length > 0">-
-                  <span *ngFor="let subject of rule.subjectResponses; index as i">
-                    {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
-                  </span></span>
+                    {{ rule.name }}@if (rule.subjectResponses && rule.subjectResponses!.length > 0) {
+                    -
+                    @for (subject of rule.subjectResponses; track subject.name; let i = $index) {
+                      {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+                    }
+                  }
                   </div>
                 }
               </mat-expansion-panel>
@@ -153,10 +154,11 @@
                           <mat-icon>expand_more</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                          <button mat-menu-item *ngFor="let c of selectedTape?.choiceTapeClassResponses"
-                                  (click)="assignAlternative(c.classId)">
-                            {{ c.name }}
-                          </button>
+                          @for (c of selectedTape?.choiceTapeClassResponses; track c.classId) {
+                            <button mat-menu-item (click)="assignAlternative(c.classId)">
+                              {{ c.name }}
+                            </button>
+                          }
                           <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
                             Keine Alternative
                           </button>
@@ -174,20 +176,24 @@
           </div>
         }
 
-        <div *ngIf="loadedChoice !== undefined && !loadedChoice" class="spinner-table">
-          <mat-progress-spinner
-            color="primary"
-            mode="indeterminate">
-          </mat-progress-spinner>
-        </div>
+        @if (loadedChoice && !loadedChoice) {
+          <div class="spinner-table">
+            <mat-progress-spinner
+              color="primary"
+              mode="indeterminate">
+            </mat-progress-spinner>
+          </div>
+        }
       </div>
     </div>
 
-    <div *ngIf="!loadedClasses" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!loadedClasses) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

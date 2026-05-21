@@ -1,6 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {TeacherResponse} from "../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -9,10 +21,37 @@ import {MatDialog} from "@angular/material/dialog";
 import {TeacherCsvImportDialogComponent} from "./teacher-csv-import-dialog/teacher-csv-import-dialog.component";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-teachers',
   templateUrl: './show-teachers.component.html',
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatMiniFabButton,
+    MatIcon,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCheckbox,
+    MatCell,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrls: ['./show-teachers.component.css']
 })
 export class ShowTeachersComponent implements OnInit {

@@ -3,12 +3,30 @@ import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ChoiceResultResponse, ClassStudentsResponse} from "../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
-import {Sort} from "@angular/material/sort";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
+import {MatSort, Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {MatIcon} from "@angular/material/icon";
+import {MatMiniFabButton} from "@angular/material/button";
+import {MatTooltip} from "@angular/material/tooltip";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatList, MatListItem} from "@angular/material/list";
+import {HeroComponent} from "../../../common/hero/hero.component";
 
 @Component({
   selector: 'app-choice-result',
@@ -19,6 +37,26 @@ import autoTable from "jspdf-autotable";
       state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+  ],
+  imports: [
+    MatIcon,
+    MatMiniFabButton,
+    MatTooltip,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatCheckbox,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatList,
+    MatListItem,
+    HeroComponent
   ],
   styleUrl: './choice-result.component.css'
 })

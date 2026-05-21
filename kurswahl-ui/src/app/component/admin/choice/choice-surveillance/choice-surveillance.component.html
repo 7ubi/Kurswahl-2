@@ -8,9 +8,10 @@
           <mat-label>Klasse</mat-label>
           <mat-select formControlName="name" (selectionChange)="applyFilter()">
             <mat-option value="">Alle</mat-option>
-            <mat-option *ngFor="let studentClass of studentClassResponses"
-                        value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
-            </mat-option>
+            @for (studentClass of studentClassResponses; track studentClass.studentClassId) {
+              <mat-option value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
       </form>
@@ -21,9 +22,8 @@
     </div>
     <table mat-table [dataSource]="dataSource!" class="mat-elevation-z8" matSortActive="name" matSortDirection="asc"
            matSort (matSortChange)="sortData($event)">
-
       <ng-container matColumnDef="Schüler">
-        <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Schüler</th>
+        <th mat-header-cell *matHeaderCellDef> Schüler</th>
         <td mat-cell
             (click)="goToAssignChoice(element.studentSurveillanceResponse.studentId, element.studentSurveillanceResponse.year)"
             *matCellDef="let element">
@@ -34,22 +34,26 @@
       <ng-container matColumnDef="Gewählt">
         <th mat-header-cell *matHeaderCellDef> Gewählt</th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary" *ngIf="element.chosen">check
-          </mat-icon>
-          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn" *ngIf="!element.chosen">close
-          </mat-icon>
+          @if (element.chosen) {
+            <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary">check</mat-icon>
+          } @else {
+            <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn">close</mat-icon>
+          }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="Wahlbedingungen erfüllt">
         <th mat-header-cell *matHeaderCellDef> Wahlbedingungen erfüllt</th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary" *ngIf="element.fulfilledRules">
-            check
-          </mat-icon>
-          <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn" *ngIf="!element.fulfilledRules">
-            close
-          </mat-icon>
+          @if (element.fulfilledRules) {
+            <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="primary">
+              check
+            </mat-icon>
+          } @else {
+            <mat-icon style="font-size: 30px; width: 30px; height: 30px" color="warn">
+              close
+            </mat-icon>
+          }
         </td>
       </ng-container>
 
@@ -57,11 +61,13 @@
       <tr class="choice" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div *ngIf="!loadedChoice" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!loadedChoice) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

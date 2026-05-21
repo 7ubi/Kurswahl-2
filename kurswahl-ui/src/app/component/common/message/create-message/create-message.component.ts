@@ -1,12 +1,27 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {UserMessageResponse} from "../../common.response";
 import {HttpService} from "../../../../service/http.service";
 import {Router} from "@angular/router";
+import {HeroComponent} from "../../hero/hero.component";
+import {MatFormField, MatHint, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-create-message',
   templateUrl: './create-message.component.html',
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatHint,
+    MatSelect,
+    MatButton,
+    MatOption
+  ],
   styleUrl: './create-message.component.css'
 })
 export class CreateMessageComponent implements OnInit {

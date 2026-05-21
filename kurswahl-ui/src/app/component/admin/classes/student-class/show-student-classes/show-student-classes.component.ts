@@ -1,15 +1,55 @@
 import {Component, OnInit} from '@angular/core';
 import {StudentClassResponse} from "../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
-import {Sort} from "@angular/material/sort";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
+import {MatSort, Sort} from "@angular/material/sort";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-student-classes',
   templateUrl: './show-student-classes.component.html',
+  imports: [
+    HeroComponent,
+    MatLabel,
+    MatFormField,
+    MatInput,
+    MatButton,
+    MatMiniFabButton,
+    MatIcon,
+    MatTable,
+    MatSort,
+    MatHeaderCell,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatCheckbox,
+    MatCell,
+    MatCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrls: ['./show-student-classes.component.css']
 })
 export class ShowStudentClassesComponent implements OnInit {

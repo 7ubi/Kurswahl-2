@@ -11,9 +11,10 @@
       <mat-form-field class="example-full-width">
         <mat-label>An</mat-label>
         <mat-select formControlName="addressee" multiple>
-          <mat-option *ngFor="let user of users"
-                      value="{{user.userId}}"> {{ user.firstname }} {{ user.surname }} ({{ user.username }})
-          </mat-option>
+          @for (user of users; track user.username) {
+            <mat-option value="{{user.userId}}"> {{ user.firstname }} {{ user.surname }} ({{ user.username }})
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field class="example-full-width">

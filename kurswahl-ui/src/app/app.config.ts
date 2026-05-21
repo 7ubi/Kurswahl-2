@@ -2,15 +2,15 @@ import {ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListene
 import {provideRouter} from '@angular/router';
 
 import {FormGroupDirective} from '@angular/forms';
-import {HttpService} from "./service/http.service.js";
-import {LoginRequired} from "./routing-helper/login-required.js";
-import {routes} from "./app.routes.js";
+import {HttpService} from "./service/http.service";
+import {LoginRequired} from "./routing-helper/login-required";
+import {routes} from "./app.routes";
 import {provideHttpClient} from "@angular/common/http";
-import {StudentRequired} from "./routing-helper/student-required.js";
-import {TeacherRequired} from "./routing-helper/teacher-required.js";
-import {AdminRequired} from "./routing-helper/admin-required.js";
-import {StorageService} from "./service/storage.service.js";
-import {AuthenticationService} from "./service/authentication.service.js";
+import {StudentRequired} from "./routing-helper/student-required";
+import {TeacherRequired} from "./routing-helper/teacher-required";
+import {AdminRequired} from "./routing-helper/admin-required";
+import {StorageService} from "./service/storage.service";
+import {AuthenticationService} from "./service/authentication.service";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';

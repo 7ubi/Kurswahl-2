@@ -8,51 +8,61 @@
     <div class="classes-tables">
       <div class="classes-table">
         <div class="class header"><span>Fächer</span></div>
-        <span *ngFor="let subjectTape of subjectTapeResponses">
-          <div
-            class="class"
-            *ngIf="subjectTape.tapeResponses.length > 0"
-          >
-            {{ subjectTape.name }} - <span *ngFor="let tape of subjectTape.tapeResponses; index as i">{{ tape.name }}
-            <span *ngIf="i < subjectTape.tapeResponses.length - 1">, </span></span>
-          </div>
-        </span>
+        @for (subjectTape of subjectTapeResponses; track subjectTape.name) {
+          @if (subjectTape.tapeResponses && subjectTape.tapeResponses.length > 0) {
+            <div
+              class="class"
+            >
+              {{ subjectTape.name }} -
+              @for (tape of subjectTape.tapeResponses; let i = $index; track tape.name) {
+                {{ tape.name }}
+                @if (i < subjectTape.tapeResponses.length - 1) {
+                  ,
+                }
+              }
+            </div>
+          }
+        }
       </div>
       <div class="classes-table">
         <div class="class header"><span>Kurse</span> {{ selectedTape ? '- ' + selectedTape.name : '' }}</div>
-        <div
-          class="class selectable {{ getClassForSelectClass(c) }}"
-          (click)="alterChoice(c.classId)"
-          *ngFor="let c of selectedTape?.classResponses">
-          {{ c.name }} - {{ c.teacherResponse.abbreviation }}
-        </div>
-        <div
-          *ngIf="selectedTape?.classResponses"
-          class="class selectable"
-          (click)="deleteClassFromChoice()">
-          Band nicht belegen
-        </div>
+        @for (c of selectedTape?.classResponses; track c.classId) {
+          <div
+            class="class selectable {{ getClassForSelectClass(c) }}"
+            (click)="alterChoice(c.classId)">
+            {{ c.name }} - {{ c.teacherResponse.abbreviation }}
+          </div>
+        }
+
+        @if (selectedTape?.classResponses) {
+          <div
+            class="class selectable"
+            (click)="deleteClassFromChoice()">
+            Band nicht belegen
+          </div>
+        }
       </div>
       <div class="classes-table">
         <div class="class header"><span>Nicht erfüllte Wahlbedingungen</span></div>
-        <div
-          class="class selectable"
-          style="padding: 0"
-          *ngFor="let rule of choiceResponse?.ruleResponses">
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                {{ rule.name }}
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <span *ngIf="rule.subjectResponses && rule.subjectResponses.length > 0">
-              Wähle eines dieser Fächer:
-              <span *ngFor="let subject of rule.subjectResponses; index as i">
-                {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
-              </span>
-            </span>
-          </mat-expansion-panel>
-        </div>
+        @for (rule of choiceResponse?.ruleResponses; track rule.name) {
+          <div
+            class="class selectable"
+            style="padding: 0">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ rule.name }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              @if (rule.subjectResponses && rule.subjectResponses.length > 0) {
+                Wähle eines dieser Fächer:
+                @for (subject of rule.subjectResponses; let i = $index; track subject.name) {
+                  {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+                }
+              }
+            </mat-expansion-panel>
+          </div>
+        }
         @if (choiceResponse && choiceResponse.ruleResponses && choiceResponse?.ruleResponses?.length === 0) {
           <div class="class">
             Alle Wahlbedingungen wurden erfüllt

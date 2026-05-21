@@ -5,10 +5,23 @@ import {Router} from "@angular/router";
 import jsPDF from "jspdf";
 import {AuthenticationService} from "../../../../service/authentication.service";
 import autoTable from "jspdf-autotable";
+import {HeroComponent} from "../../../common/hero/hero.component";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatTooltip} from "@angular/material/tooltip";
+import {MatIcon} from "@angular/material/icon";
+import {ChoiceTableComponent} from "../choice-table/choice-table.component";
 
 @Component({
   selector: 'app-show-choices',
   templateUrl: './show-choices.component.html',
+  imports: [
+    HeroComponent,
+    MatMiniFabButton,
+    MatTooltip,
+    MatIcon,
+    ChoiceTableComponent,
+    MatButton
+  ],
   styleUrl: './show-choices.component.css'
 })
 export class ShowChoicesComponent {

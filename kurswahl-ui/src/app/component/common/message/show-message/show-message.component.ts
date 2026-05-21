@@ -2,10 +2,18 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {MessageResponse} from "../../common.response";
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
+import {HeroComponent} from "../../hero/hero.component";
 
 @Component({
   selector: 'app-show-message',
   templateUrl: './show-message.component.html',
+  imports: [
+    MatCard,
+    HeroComponent,
+    MatCardHeader,
+    MatCardContent
+  ],
   styleUrl: './show-message.component.css'
 })
 export class ShowMessageComponent implements OnInit {

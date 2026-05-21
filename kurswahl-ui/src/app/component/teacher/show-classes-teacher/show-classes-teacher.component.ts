@@ -1,16 +1,40 @@
 import {Component, OnInit} from '@angular/core';
-import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {TeacherClassResponse, TeacherClassStudentResponse} from "../teacher.response";
 import {HttpService} from "../../../service/http.service";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {HeroComponent} from "../../common/hero/hero.component";
 
 @Component({
   selector: 'app-show-classes-teacher',
   templateUrl: './show-classes-teacher.component.html',
   imports: [
     MatTable,
-    MatProgressSpinner
+    MatProgressSpinner,
+    HeroComponent,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCell,
+    MatCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatRow
   ],
   styleUrl: './show-classes-teacher.component.css'
 })

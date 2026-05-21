@@ -1,12 +1,28 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-subject',
   templateUrl: './edit-subject.component.html',
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    ReactiveFormsModule,
+    MatButton,
+    MatProgressSpinner,
+    MatOption
+  ],
   styleUrls: ['./edit-subject.component.css']
 })
 export class EditSubjectComponent implements OnInit {
