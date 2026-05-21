@@ -1,12 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {TeacherClassResponse, TeacherClassStudentResponse} from "../teacher.response";
 import {HttpService} from "../../../service/http.service";
 import {Sort} from "@angular/material/sort";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-classes-teacher',
   templateUrl: './show-classes-teacher.component.html',
+  imports: [
+    MatTable,
+    MatProgressSpinner
+  ],
   styleUrl: './show-classes-teacher.component.css'
 })
 export class ShowClassesTeacherComponent implements OnInit {

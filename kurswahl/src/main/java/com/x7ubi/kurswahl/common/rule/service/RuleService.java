@@ -61,7 +61,7 @@ public class RuleService {
                 Optional<ChoiceClass> matchingChoiceClass = choiceClasses.stream()
                         .filter(choiceClass -> !usedChoiceClasses.contains(choiceClass))
                         .filter(choiceClass -> Objects.equals(choiceClass.getaClass().getSubject().getSubjectId(), subjectRule.getSubject().getSubjectId()))
-                        .findFirst();
+                        .min(Comparator.comparing(choiceClass -> choiceClass.getaClass().getSubject().getName()));
 
                 if (matchingChoiceClass.isPresent()) {
                     ruleFulfilled = true;

@@ -102,7 +102,7 @@ export class ChoiceResultComponent implements OnDestroy {
       const head = ['Vorname', 'Nachname', 'Klasse'];
 
       let firstElement = true;
-      this.selection.selected.forEach(classStudents => {
+      this.selection.selected.forEach((classStudents: ClassStudentsResponse) => {
         if (!firstElement) {
           doc.addPage();
         } else {

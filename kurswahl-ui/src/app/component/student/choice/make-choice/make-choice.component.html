@@ -53,11 +53,11 @@
             </span>
           </mat-expansion-panel>
         </div>
-        <div
-          class="class"
-          *ngIf="choiceResponse && choiceResponse.ruleResponses && choiceResponse?.ruleResponses?.length === 0">
-          Alle Wahlbedingungen wurden erfüllt
-        </div>
+        @if (choiceResponse && choiceResponse.ruleResponses && choiceResponse?.ruleResponses?.length === 0) {
+          <div class="class">
+            Alle Wahlbedingungen wurden erfüllt
+          </div>
+        }
       </div>
     </div>
 

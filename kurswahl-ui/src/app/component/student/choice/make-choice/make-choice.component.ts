@@ -9,10 +9,22 @@ import {
   TapeClassResponse
 } from "../../stundet.responses";
 import {Subscription} from "rxjs";
+import {ChoiceTableComponent} from "../choice-table/choice-table.component";
+import {HeroComponent} from "../../../common/hero/hero.component";
+import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-make-choice',
   templateUrl: './make-choice.component.html',
+  imports: [
+    ChoiceTableComponent,
+    HeroComponent,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatButton
+  ],
   styleUrl: './make-choice.component.css'
 })
 export class MakeChoiceComponent implements OnDestroy {
