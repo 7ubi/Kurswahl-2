@@ -1,14 +1,53 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../../../../../service/http.service";
 import {AdminResponse} from "../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SelectionModel} from "@angular/cdk/collections";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-admins',
   templateUrl: './show-admins.component.html',
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatMiniFabButton,
+    MatIcon,
+    MatCheckbox,
+    MatHeaderCell,
+    MatCell,
+    MatProgressSpinner,
+    MatTable,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow
+  ],
   styleUrls: ['./show-admins.component.css']
 })
 export class ShowAdminsComponent implements OnInit {

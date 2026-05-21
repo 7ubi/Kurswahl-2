@@ -9,9 +9,33 @@ import {
   StudentChoiceResponse
 } from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
+import {HeroComponent} from "../../../common/hero/hero.component";
+import {MatIcon} from "@angular/material/icon";
+import {MatTooltip} from "@angular/material/tooltip";
+import {
+  MatExpansionPanel,
+  MatExpansionPanelDescription,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle
+} from "@angular/material/expansion";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {MatIconButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-assign-choice',
@@ -22,6 +46,31 @@ import {Sort} from "@angular/material/sort";
       state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+  ],
+  imports: [
+    HeroComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatIcon,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatTooltip,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatRow,
+    MatHeaderRow,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
+    MatMenu,
+    MatIconButton,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatProgressSpinner
   ],
   styleUrl: './assign-choice.component.css'
 })

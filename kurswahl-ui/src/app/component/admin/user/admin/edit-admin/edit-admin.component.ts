@@ -1,12 +1,25 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AdminResponse} from "../../../admin.responses";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-edit-admin',
   templateUrl: './edit-admin.component.html',
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatProgressSpinner,
+    HeroComponent,
+    ReactiveFormsModule,
+    MatButton,
+    MatInput
+  ],
   styleUrls: ['./edit-admin.component.css']
 })
 export class EditAdminComponent implements OnInit {
