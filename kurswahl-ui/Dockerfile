@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS builder
+FROM node:22.12-alpine AS builder
 WORKDIR /app
 COPY . .
 RUN npm install && \
