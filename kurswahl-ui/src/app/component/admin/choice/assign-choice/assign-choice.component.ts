@@ -185,6 +185,7 @@ export class AssignChoiceComponent implements OnDestroy {
           this.studentChoice = response;
           this.loadedChoice = true;
 
+          console.log(this.studentChoice);
           this.generateChoiceTable();
           this.cdr.detectChanges();
         }
