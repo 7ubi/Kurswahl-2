@@ -1,11 +1,35 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {ChoiceResponse, TapeClassResponse} from "../../stundet.responses";
 import {LessonForTable, LessonTable} from "../lesson-table";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 
 @Component({
   selector: 'app-choice-table',
   templateUrl: './choice-table.component.html',
+  imports: [
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef
+  ],
   styleUrl: './choice-table.component.css'
 })
 export class ChoiceTableComponent implements OnChanges {

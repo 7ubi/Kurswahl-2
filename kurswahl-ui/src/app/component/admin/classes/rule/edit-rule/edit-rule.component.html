@@ -1,31 +1,36 @@
 <app-hero title="Wahlbedingungen bearbeiten"></app-hero>
 <form [formGroup]="editRuleForm" (ngSubmit)="createRule()">
   <div class="container">
-    <div class="center" *ngIf="rule">
-      <mat-form-field class="example-full-width">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" name="name" id="name" type="text">
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <mat-label>Jahrgang</mat-label>
-        <input matInput formControlName="year" name="year" id="year" type="number">
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <mat-label>Fächer</mat-label>
-        <mat-select formControlName="subjects" multiple>
-          <mat-option *ngFor="let subject of subjectResponses"
-                      value="{{subject.subjectId}}"> {{ subject.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">Wahlbedingungen bearbeiten</button>
-    </div>
+    @if (rule) {
+      <div class="center">
+        <mat-form-field class="example-full-width">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" name="name" id="name" type="text">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <mat-label>Jahrgang</mat-label>
+          <input matInput formControlName="year" name="year" id="year" type="number">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <mat-label>Fächer</mat-label>
+          <mat-select formControlName="subjects" multiple>
+            @for (subject of subjectResponses; track subject.subjectId) {
+              <mat-option value="{{subject.subjectId}}"> {{ subject.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Wahlbedingungen bearbeiten</button>
+      </div>
+    }
 
-    <div *ngIf="!rule" class="spinner">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!rule) {
+      <div class="spinner">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </form>

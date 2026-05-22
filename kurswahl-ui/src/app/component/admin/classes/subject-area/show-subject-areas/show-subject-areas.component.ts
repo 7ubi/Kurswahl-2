@@ -1,15 +1,56 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {SubjectAreaResponse} from "../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-subject-areas',
   templateUrl: './show-subject-areas.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatFormField,
+    HeroComponent,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatMiniFabButton,
+    MatIcon,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCheckbox,
+    MatCell,
+    MatCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatRow,
+    MatProgressSpinner
+  ],
   styleUrls: ['./show-subject-areas.component.css']
 })
 export class ShowSubjectAreasComponent implements OnInit {
@@ -26,7 +67,8 @@ export class ShowSubjectAreasComponent implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Name', 'Aktionen'];
   }
@@ -40,6 +82,7 @@ export class ShowSubjectAreasComponent implements OnInit {
     this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       this.setDataSource(response);
       this.loadedSubjectAreas = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -60,6 +103,7 @@ export class ShowSubjectAreasComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 

@@ -89,12 +89,13 @@
     </table>
 
 
-    <div *ngIf="!loadedTeachers" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
-
+    @if (!loadedTeachers) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

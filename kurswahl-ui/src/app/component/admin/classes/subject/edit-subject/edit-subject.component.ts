@@ -1,12 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SubjectAreaResponse, SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-subject',
   templateUrl: './edit-subject.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    ReactiveFormsModule,
+    MatButton,
+    MatProgressSpinner,
+    MatOption
+  ],
   styleUrls: ['./edit-subject.component.css']
 })
 export class EditSubjectComponent implements OnInit {
@@ -19,7 +36,8 @@ export class EditSubjectComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -35,11 +53,13 @@ export class EditSubjectComponent implements OnInit {
       this.editSubjectForm.controls['name'].setValue(this.subject.name);
       this.editSubjectForm.controls['subjectArea']
         .setValue(this.subject.subjectAreaResponse.subjectAreaId);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['admin', 'subjects']));
 
     this.httpService.get<SubjectAreaResponse[]>('/api/admin/subjectAreas', response => {
       response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectAreaResponses = response;
+      this.cdr.detectChanges();
     });
   }
 

@@ -2,7 +2,7 @@
 
 <div class="container">
   <div class="center">
-    <div *ngFor="let a of dataSources">
+    @for (a of dataSources; track a.dataSource) {
       <div class="header">
         <h2 style="text-align: left; margin-top: 15px">{{ a.name }} - {{ a.tapeName }} (Jahrgang {{ a.year }})</h2>
       </div>
@@ -10,31 +10,33 @@
              matSortDirection="asc" matSort (matSortChange)="sortData($event, a.dataSource)">
 
         <ng-container matColumnDef="Nachname">
-          <th mat-sort-header="surname" mat-header-cell *matHeaderCellDef> Nachname</th>
+          <th mat-header-cell *matHeaderCellDef> Nachname</th>
           <td mat-cell *matCellDef="let element"> {{ element.surname }}</td>
         </ng-container>
 
         <ng-container matColumnDef="Vorname">
-          <th mat-sort-header="firstname" mat-header-cell *matHeaderCellDef> Vorname</th>
+          <th mat-header-cell *matHeaderCellDef> Vorname</th>
           <td mat-cell *matCellDef="let element"> {{ element.firstname }}</td>
         </ng-container>
 
         <ng-container matColumnDef="Klasse">
-          <th mat-sort-header="studentClass" mat-header-cell *matHeaderCellDef> Klasse</th>
+          <th mat-header-cell *matHeaderCellDef> Klasse</th>
           <td mat-cell *matCellDef="let element"> {{ element.studentClassName }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-    </div>
+    }
   </div>
 
-  <div *ngIf="!loadedClasses" class="spinner-table">
-    <mat-progress-spinner
-      color="primary"
-      mode="indeterminate">
-    </mat-progress-spinner>
-  </div>
+  @if (!loadedClasses) {
+    <div class="spinner-table">
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+  }
 </div>
 

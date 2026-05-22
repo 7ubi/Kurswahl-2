@@ -1,12 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {StudentClassResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-student-class',
   templateUrl: './edit-student-class.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatLabel,
+    MatFormField,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatProgressSpinner
+  ],
   styleUrls: ['./edit-student-class.component.css']
 })
 export class EditStudentClassComponent implements OnInit {
@@ -19,7 +36,8 @@ export class EditStudentClassComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -37,12 +55,14 @@ export class EditStudentClassComponent implements OnInit {
         this.editStudentClassForm.controls['name'].setValue(this.studentClass.name);
         this.editStudentClassForm.controls['year'].setValue(this.studentClass.year);
         this.editStudentClassForm.controls['teacher'].setValue(this.studentClass.teacher.teacherId);
+        this.cdr.detectChanges();
       }, () => this.router.navigate(['admin', 'studentClasses']));
 
     this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       response.sort(
         (a, b) => a.abbreviation.localeCompare(b.abbreviation));
       this.teachers = response;
+      this.cdr.detectChanges();
     });
   }
 

@@ -1,4 +1,4 @@
-<app-hero title="Zuteilung Jahrgang {{ year }}"></app-hero>
+<app-hero title="Zuteilung Jahrgang {{ year }}"/>
 
 <div class="container">
   <div class="center">
@@ -16,14 +16,14 @@
           </ng-container>
 
           <ng-container matColumnDef="Kurs">
-            <th mat-sort-header="name" mat-header-cell *matHeaderCellDef> Kurs</th>
+            <th mat-header-cell *matHeaderCellDef> Kurs</th>
             <td mat-cell *matCellDef="let element">
               {{ element.name }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="Lehrer">
-            <th mat-sort-header="teacher" mat-header-cell *matHeaderCellDef> Lehrer</th>
+            <th mat-header-cell *matHeaderCellDef> Lehrer</th>
             <td mat-cell *matCellDef="let element">
               {{ element.teacherResponse.firstname }} {{ element.teacherResponse.surname }}
               - {{ element.teacherResponse.abbreviation }}
@@ -31,7 +31,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Band">
-            <th mat-sort-header="tape" mat-header-cell *matHeaderCellDef> Band</th>
+            <th mat-header-cell *matHeaderCellDef> Band</th>
             <td mat-cell *matCellDef="let element">
               {{ element.tapeName }}
             </td>
@@ -47,16 +47,20 @@
           <ng-container matColumnDef="Status">
             <th mat-header-cell *matHeaderCellDef> Status</th>
             <td mat-cell *matCellDef="let element">
-              <mat-icon *ngIf="!element.sizeWarning && !element.sizeCritical" style="color: var(--primary)"
-                        [matTooltip]="'Kursgröße ist akzeptabel'">
-                done
-              </mat-icon>
-              <mat-icon *ngIf="element.sizeWarning && !element.sizeCritical" style="color: var(--accent)"
-                        [matTooltip]="'Kurs ist möglicherweise zu voll'">warning
-              </mat-icon>
-              <mat-icon *ngIf="element.sizeCritical" style="color: var(--warn)" [matTooltip]="'Kurs ist zu voll'">
-                error
-              </mat-icon>
+              @if (!element.sizeWarning && !element.sizeCritical) {
+                <mat-icon style="color: var(--primary)" [matTooltip]="'Kursgröße ist akzeptabel'">
+                  done
+                </mat-icon>
+              } @else if (element.sizeWarning && !element.sizeCritical) {
+                <mat-icon style="color: var(--accent)"
+                          [matTooltip]="'Kurs ist möglicherweise zu voll'">warning
+                </mat-icon>
+
+              } @else if (element.sizeCritical) {
+                <mat-icon style="color: var(--warn)" [matTooltip]="'Kurs ist zu voll'">
+                  error
+                </mat-icon>
+              }
             </td>
           </ng-container>
 
@@ -64,10 +68,11 @@
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsClassStudents.length">
               <div class="example-element-detail detail-container"
                    [@detailExpand]="expandedElement.includes(element) ? 'expanded' : 'collapsed'">
-                <div class="choice" (click)="openChoice(student.studentId)"
-                     *ngFor="let student of element.studentSurveillanceResponses">
-                  {{ student.surname }}, {{ student.firstname }}
-                </div>
+                @for (student of element.studentSurveillanceResponses; track student.studentId) {
+                  <div class="choice" (click)="openChoice(student.studentId)">
+                    {{ student.surname }}, {{ student.firstname }}
+                  </div>
+                }
               </div>
             </td>
           </ng-container>
@@ -81,99 +86,114 @@
       </div>
 
       <div class="class">
-        <div class="student-choice" *ngIf="studentChoice">
-          <div class="choice-header">{{ studentChoice.firstname }} {{ studentChoice.surname }}</div>
-          <mat-expansion-panel *ngIf="studentChoice?.ruleResponses && studentChoice?.ruleResponses!.length > 0"
-                               style="margin-bottom: 5px;">
-            <mat-expansion-panel-header>
-              <mat-panel-title style="color: var(--warn)">
-                Nicht erfüllte Wahlbedingungen
-              </mat-panel-title>
-              <mat-panel-description style="color: var(--warn)">
-                {{ studentChoice!.ruleResponses.length }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="rule" *ngFor="let rule of studentChoice?.ruleResponses">
-              {{ rule.name }} <span *ngIf="rule.subjectResponses && rule.subjectResponses!.length > 0">-
-              <span *ngFor="let subject of rule.subjectResponses; index as i">
-                {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
-              </span></span>
-            </div>
-          </mat-expansion-panel>
-          <div class="choice-table">
-            <div class="table-header-group">
-              <table mat-table [dataSource]="dataSourceChoiceTable!" class="mat-elevation-z8">
+        @if (studentChoice) {
+          <div class="student-choice">
+            <div class="choice-header">{{ studentChoice?.firstname }} {{ studentChoice?.surname }}</div>
+            @if (studentChoice?.ruleResponses && studentChoice?.ruleResponses!.length > 0) {
 
-                <ng-container matColumnDef="Band">
-                  <th mat-header-cell *matHeaderCellDef> Band</th>
-                  <td mat-cell *matCellDef="let element"> {{ element.tape.name }}</td>
-                </ng-container>
+              <mat-expansion-panel style="margin-bottom: 5px;">
+                <mat-expansion-panel-header>
+                  <mat-panel-title style="color: var(--warn)">
+                    Nicht erfüllte Wahlbedingungen
+                  </mat-panel-title>
+                  <mat-panel-description style="color: var(--warn)">
+                    {{ studentChoice!.ruleResponses.length }}
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                @for (rule of studentChoice.ruleResponses; track rule.name) {
+                  <div class="rule">
+                    {{ rule.name }}@if (rule.subjectResponses && rule.subjectResponses!.length > 0) {
+                    -
+                    @for (subject of rule.subjectResponses; track subject.name; let i = $index) {
+                      {{ subject.name }}{{ i < rule.subjectResponses.length - 1 ? ', ' : '' }}
+                    }
+                  }
+                  </div>
+                }
+              </mat-expansion-panel>
+            }
+            <div class="choice-table">
+              <div class="table-header-group">
+                <table mat-table [dataSource]="dataSourceChoiceTable!" class="mat-elevation-z8">
 
-                <ng-container matColumnDef="1. Wahl">
-                  <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
-                  <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.firstChoice)"
-                      *matCellDef="let element"> {{ element.firstChoice?.name }}
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="Band">
+                    <th mat-header-cell *matHeaderCellDef> Band</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.tape.name }}</td>
+                  </ng-container>
 
-                <ng-container matColumnDef="2. Wahl">
-                  <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
-                  <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.secondChoice)"
-                      *matCellDef="let element"> {{ element.secondChoice?.name }}
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="1. Wahl">
+                    <th mat-header-cell *matHeaderCellDef> 1. Wahl</th>
+                    <td mat-cell class="{{ element.firstChoice?.selected ? 'selected selectable': 'selectable' }}"
+                        (click)="assignChoice(element.firstChoice)"
+                        *matCellDef="let element"> {{ element.firstChoice?.name }}
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="Alternative">
-                  <th mat-header-cell *matHeaderCellDef> Alternative</th>
-                  <td mat-cell class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
-                      (click)="assignChoice(element.alternativeChoice)"
-                      *matCellDef="let element">
-                    {{ element.alternativeChoice?.name }}
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="2. Wahl">
+                    <th mat-header-cell *matHeaderCellDef> 2. Wahl</th>
+                    <td mat-cell class="{{ element.secondChoice?.selected ? 'selected selectable': 'selectable' }}"
+                        (click)="assignChoice(element.secondChoice)"
+                        *matCellDef="let element"> {{ element.secondChoice?.name }}
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="Aktion">
-                  <th mat-header-cell *matHeaderCellDef></th>
-                  <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectTape(element.tape.tapeId)"
-                            aria-label="Example icon-button with a menu" style="float: right">
-                      <mat-icon>expand_more</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item *ngFor="let c of selectedTape?.choiceTapeClassResponses"
-                              (click)="assignAlternative(c.classId)">
-                        {{ c.name }}
+                  <ng-container matColumnDef="Alternative">
+                    <th mat-header-cell *matHeaderCellDef> Alternative</th>
+                    <td mat-cell
+                        class="{{ element.alternativeChoice?.selected ? 'selected selectable': 'selectable' }}"
+                        (click)="assignChoice(element.alternativeChoice)"
+                        *matCellDef="let element">
+                      {{ element.alternativeChoice?.name }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Aktion">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectTape(element.tape.tapeId)"
+                              aria-label="Example icon-button with a menu" style="float: right">
+                        <mat-icon>expand_more</mat-icon>
                       </button>
-                      <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
-                        Keine Alternative
-                      </button>
-                    </mat-menu>
-                  </td>
-                </ng-container>
+                      <mat-menu #menu="matMenu">
+                        @for (c of selectedTape?.choiceTapeClassResponses; track c.classId) {
+                          <button mat-menu-item (click)="assignAlternative(c.classId)">
+                            {{ c.name }}
+                          </button>
+                        }
+                        <button mat-menu-item (click)="deleteAlternative(element.alternativeChoice)">
+                          Keine Alternative
+                        </button>
+                      </mat-menu>
+                    </td>
+                  </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsChoiceTable"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsChoiceTable;"></tr>
-              </table>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumnsChoiceTable"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumnsChoiceTable;"></tr>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div *ngIf="loadedChoice !== undefined && !loadedChoice" class="spinner-table">
-          <mat-progress-spinner
-            color="primary"
-            mode="indeterminate">
-          </mat-progress-spinner>
-        </div>
+          @if (!loadedChoice) {
+            <div class="spinner-table">
+              <mat-progress-spinner
+                color="primary"
+                mode="indeterminate">
+              </mat-progress-spinner>
+            </div>
+          }
+        }
+
       </div>
     </div>
 
-    <div *ngIf="!loadedClasses" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+    @if (!loadedClasses) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

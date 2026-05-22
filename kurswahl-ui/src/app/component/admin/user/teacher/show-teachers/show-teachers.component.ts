@@ -1,6 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TeacherResponse} from "../../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -9,10 +21,38 @@ import {MatDialog} from "@angular/material/dialog";
 import {TeacherCsvImportDialogComponent} from "./teacher-csv-import-dialog/teacher-csv-import-dialog.component";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-teachers',
   templateUrl: './show-teachers.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatMiniFabButton,
+    MatIcon,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCheckbox,
+    MatCell,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrls: ['./show-teachers.component.css']
 })
 export class ShowTeachersComponent implements OnInit {
@@ -28,7 +68,8 @@ export class ShowTeachersComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Auswählen', 'Kürzel', 'Nutzername', 'Vorname', 'Nachname', 'Generiertes Passwort', 'Aktionen'];
   }
@@ -43,6 +84,7 @@ export class ShowTeachersComponent implements OnInit {
       this.teacherResponses = response;
       this.dataSource = new MatTableDataSource(this.teacherResponses);
       this.loadedTeachers = true;
+      this.cdr.detectChanges();
     });
   }
 
@@ -60,6 +102,7 @@ export class ShowTeachersComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -78,6 +121,7 @@ export class ShowTeachersComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -107,6 +151,7 @@ export class ShowTeachersComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     }, () => {
     }, this.getDeleteTeachersRequest());
   }
@@ -127,6 +172,7 @@ export class ShowTeachersComponent implements OnInit {
         verticalPosition: "bottom",
         duration: 5000
       });
+      this.cdr.detectChanges();
     });
   }
 
@@ -146,6 +192,7 @@ export class ShowTeachersComponent implements OnInit {
         this.httpService.post<TeacherResponse[]>('/api/admin/csvTeachers', result, response => {
           this.teacherResponses = response;
           this.dataSource = new MatTableDataSource(this.teacherResponses);
+          this.cdr.detectChanges();
         });
       }
     });

@@ -1,24 +1,63 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ChoiceResultResponse, ClassStudentsResponse} from "../../admin.responses";
-import {MatTableDataSource} from "@angular/material/table";
-import {Sort} from "@angular/material/sort";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
+import {MatSort, Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {MatIcon} from "@angular/material/icon";
+import {MatMiniFabButton} from "@angular/material/button";
+import {MatTooltip} from "@angular/material/tooltip";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatList, MatListItem} from "@angular/material/list";
+import {HeroComponent} from "../../../common/hero/hero.component";
 
 @Component({
   selector: 'app-choice-result',
   templateUrl: './choice-result.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({height: '0px', minHeight: '0'})),
       state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+  ],
+  imports: [
+    MatIcon,
+    MatMiniFabButton,
+    MatTooltip,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatCheckbox,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatList,
+    MatListItem,
+    HeroComponent
   ],
   styleUrl: './choice-result.component.css'
 })
@@ -39,7 +78,8 @@ export class ChoiceResultComponent implements OnDestroy {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef) {
     this.displayedColumns = ['expansion', 'Auswählen', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
 
     this.eventSubscription = router.events.subscribe(event => {
@@ -69,6 +109,7 @@ export class ChoiceResultComponent implements OnDestroy {
         this.dataSource = new MatTableDataSource(this.results.classStudentsResponses);
         this.sortData({active: 'name', direction: 'asc'});
         this.loadedResults = true;
+        this.cdr.detectChanges();
       });
   }
 
@@ -102,7 +143,7 @@ export class ChoiceResultComponent implements OnDestroy {
       const head = ['Vorname', 'Nachname', 'Klasse'];
 
       let firstElement = true;
-      this.selection.selected.forEach(classStudents => {
+      this.selection.selected.forEach((classStudents: ClassStudentsResponse) => {
         if (!firstElement) {
           doc.addPage();
         } else {

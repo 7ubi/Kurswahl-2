@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ChildActivationEnd, Router} from "@angular/router";
 import {HttpService} from "../../../../service/http.service";
 import {Subscription} from "rxjs";
@@ -9,19 +9,69 @@ import {
   StudentChoiceResponse
 } from "../../admin.responses";
 import {ChoiceTable} from "./choice-table";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
+import {HeroComponent} from "../../../common/hero/hero.component";
+import {MatIcon} from "@angular/material/icon";
+import {MatTooltip} from "@angular/material/tooltip";
+import {
+  MatExpansionPanel,
+  MatExpansionPanelDescription,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle
+} from "@angular/material/expansion";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {MatIconButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-assign-choice',
   templateUrl: './assign-choice.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({height: '0px', minHeight: '0'})),
       state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+  ],
+  imports: [
+    HeroComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatIcon,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatTooltip,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatRow,
+    MatHeaderRow,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
+    MatMenu,
+    MatIconButton,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatProgressSpinner
   ],
   styleUrl: './assign-choice.component.css'
 })
@@ -55,7 +105,8 @@ export class AssignChoiceComponent implements OnDestroy {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef) {
 
     this.displayedColumnsClassStudents = ['expansion', 'Kurs', 'Lehrer', 'Band', 'Kursgröße', 'Status'];
     this.displayedColumnsChoiceTable = ['Band', '1. Wahl', '2. Wahl', 'Alternative', 'Aktion'];
@@ -104,7 +155,8 @@ export class AssignChoiceComponent implements OnDestroy {
           }
         });
 
-        this.expandedElement = newExpandedElements
+        this.expandedElement = newExpandedElements;
+        this.cdr.detectChanges();
       });
   }
 
@@ -114,6 +166,7 @@ export class AssignChoiceComponent implements OnDestroy {
       if (this.initialStudent) {
         this.openChoice(this.initialStudent);
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -132,7 +185,9 @@ export class AssignChoiceComponent implements OnDestroy {
           this.studentChoice = response;
           this.loadedChoice = true;
 
+          console.log(this.studentChoice);
           this.generateChoiceTable();
+          this.cdr.detectChanges();
         }
       });
   }
@@ -171,6 +226,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
     }
 
@@ -179,6 +235,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
     }
   }
@@ -189,6 +246,7 @@ export class AssignChoiceComponent implements OnDestroy {
         this.studentChoice = response;
         this.generateChoiceTable();
         this.loadClasses();
+        this.cdr.detectChanges();
       });
   }
 
@@ -208,6 +266,7 @@ export class AssignChoiceComponent implements OnDestroy {
       this.httpService.delete<StudentChoiceResponse>(`/api/admin/alternativeChoice?choiceClassId=${alternative.choiceClassId}`, response => {
         this.studentChoice = response;
         this.generateChoiceTable();
+        this.cdr.detectChanges();
       });
     }
   }

@@ -8,9 +8,9 @@
           <mat-label>Klasse</mat-label>
           <mat-select formControlName="name" (selectionChange)="applyFilter()">
             <mat-option value="">Alle</mat-option>
-            <mat-option *ngFor="let studentClass of studentClassResponses"
-                        value="{{studentClass.studentClassId}}"> {{ studentClass.name }}
-            </mat-option>
+            @for (studentClass of studentClassResponses; track studentClass.name) {
+              <mat-option value="{{studentClass.studentClassId}}"> {{ studentClass.name }}</mat-option>
+            }
           </mat-select>
         </mat-form-field>
       </form>
@@ -74,7 +74,9 @@
       <ng-container matColumnDef="Klasse">
         <th *matHeaderCellDef mat-header-cell> Klasse</th>
         <td *matCellDef="let element" mat-cell>
-          <span *ngIf="element.studentClassResponse">{{ element.studentClassResponse.name }}</span>
+          @if (element.studentClassResponse) {
+            {{ element.studentClassResponse.name }}
+          }
         </td>
       </ng-container>
 
@@ -102,12 +104,13 @@
       <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
     </table>
 
-    <div *ngIf="!loadedStudents" class="spinner-table">
-      <mat-progress-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
-
+    @if (!loadedStudents) {
+      <div class="spinner-table">
+        <mat-progress-spinner
+          color="primary"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+    }
   </div>
 </div>

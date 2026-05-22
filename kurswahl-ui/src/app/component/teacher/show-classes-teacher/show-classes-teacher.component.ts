@@ -1,12 +1,42 @@
-import {Component, OnInit} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {TeacherClassResponse, TeacherClassStudentResponse} from "../teacher.response";
 import {HttpService} from "../../../service/http.service";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {HeroComponent} from "../../common/hero/hero.component";
 
 @Component({
   selector: 'app-show-classes-teacher',
   templateUrl: './show-classes-teacher.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatTable,
+    MatProgressSpinner,
+    HeroComponent,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCell,
+    MatCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatRow
+  ],
   styleUrl: './show-classes-teacher.component.css'
 })
 export class ShowClassesTeacherComponent implements OnInit {
@@ -15,7 +45,7 @@ export class ShowClassesTeacherComponent implements OnInit {
   displayedColumns: string[];
   loadedClasses = false;
 
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private cdr: ChangeDetectorRef) {
     this.displayedColumns = ['Nachname', 'Vorname', 'Klasse'];
   }
 
@@ -29,6 +59,7 @@ export class ShowClassesTeacherComponent implements OnInit {
       });
       this.dataSources.sort((a, b) => this.compare(a.name, b.name, true));
       this.loadedClasses = true;
+      this.cdr.detectChanges();
     });
   }
 

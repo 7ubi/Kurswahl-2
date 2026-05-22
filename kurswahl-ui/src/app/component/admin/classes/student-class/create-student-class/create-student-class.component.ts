@@ -1,12 +1,27 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-create-student-class',
   templateUrl: './create-student-class.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatInput
+  ],
   styleUrls: ['./create-student-class.component.css']
 })
 export class CreateStudentClassComponent implements OnInit {
@@ -16,7 +31,8 @@ export class CreateStudentClassComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.createStudentClassForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -30,6 +46,7 @@ export class CreateStudentClassComponent implements OnInit {
       response.sort(
         (a, b) => a.abbreviation.localeCompare(b.abbreviation));
       this.teachers = response;
+      this.cdr.detectChanges();
     });
   }
 

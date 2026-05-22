@@ -1,12 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {RuleResponse, SubjectResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-rule',
   templateUrl: './edit-rule.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatProgressSpinner
+  ],
   styleUrl: './edit-rule.component.css'
 })
 export class EditRuleComponent implements OnInit {
@@ -20,7 +37,8 @@ export class EditRuleComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
     this.editRuleForm = this.formBuilder.group({
@@ -43,7 +61,9 @@ export class EditRuleComponent implements OnInit {
           subjectIds.push(subject.subjectId.toString());
         });
         this.editRuleForm.controls['subjects'].setValue(subjectIds);
+        this.cdr.detectChanges();
       }, () => this.router.navigate(['admin', 'rules']));
+      this.cdr.detectChanges();
     });
   }
 

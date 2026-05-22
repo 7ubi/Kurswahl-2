@@ -1,12 +1,26 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SubjectAreaResponse} from "../../../admin.responses";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-subject-area',
   templateUrl: './edit-subject-area.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatProgressSpinner
+  ],
   styleUrls: ['./edit-subject-area.component.css']
 })
 export class EditSubjectAreaComponent implements OnInit {
@@ -18,7 +32,8 @@ export class EditSubjectAreaComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -31,6 +46,7 @@ export class EditSubjectAreaComponent implements OnInit {
     this.httpService.get<SubjectAreaResponse>(`/api/admin/subjectArea?subjectAreaId=${this.id}`, response => {
       this.subjectArea = response;
       this.editSubjectAreaForm.controls['name'].setValue(this.subjectArea.name);
+      this.cdr.detectChanges();
     }, () => this.router.navigate(['admin', 'subjectAreas']));
   }
 

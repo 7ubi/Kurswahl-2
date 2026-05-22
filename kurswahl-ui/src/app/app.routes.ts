@@ -1,5 +1,4 @@
-import {NgModule} from '@angular/core';
-import {mapToCanActivate, RouterModule, Routes} from '@angular/router';
+import {mapToCanActivate, Routes} from '@angular/router';
 import {LoginComponent} from "./component/auth/login/login.component";
 import {ShowAdminsComponent} from "./component/admin/user/admin/show-admins/show-admins.component";
 import {LoginRequired} from "./routing-helper/login-required";
@@ -61,7 +60,7 @@ import {CreateMessageComponent} from "./component/common/message/create-message/
 import {TeacherRequired} from "./routing-helper/teacher-required";
 import {ShowClassesTeacherComponent} from "./component/teacher/show-classes-teacher/show-classes-teacher.component";
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: LoginComponent,
@@ -269,10 +268,3 @@ const routes: Routes = [
     component: PageNotFoundComponent
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
-}

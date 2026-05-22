@@ -9,32 +9,37 @@
       <mat-form-field class="example-full-width">
         <mat-label>Fach</mat-label>
         <mat-select formControlName="subject">
-          <mat-option *ngFor="let subject of subjectResponses"
-                      value="{{subject.subjectId}}"> {{ subject.name }}
-          </mat-option>
+          @for (subject of subjectResponses; track subject.subjectId) {
+            <mat-option value="{{subject.subjectId}}"> {{ subject.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Lehrer</mat-label>
         <mat-select formControlName="teacher">
-          <mat-option *ngFor="let teacher of teacherResponses"
-                      value="{{teacher.teacherId}}">
-            {{ teacher.firstname }} {{ teacher.surname }} - {{ teacher.abbreviation }}
-          </mat-option>
+          @for (teacher of teacherResponses; track teacher.teacherId) {
+            <mat-option value="{{teacher.teacherId}}">
+              {{ teacher.firstname }} {{ teacher.surname }} - {{ teacher.abbreviation }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Jahrgang</mat-label>
         <input matInput formControlName="year" name="year" id="year" type="number" (keyup)="loadTapes($event)">
       </mat-form-field>
-      <mat-form-field class="example-full-width" *ngIf="isTapeFormFieldActive()">
-        <mat-label>Band</mat-label>
-        <mat-select formControlName="tape">
-          <mat-option *ngFor="let tape of tapeResponses"
-                      value="{{tape.tapeId}}"> {{ tape.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      @if (isTapeFormFieldActive()) {
+        <mat-form-field class="example-full-width">
+          <mat-label>Band</mat-label>
+          <mat-select formControlName="tape">
+            @for (tape of tapeResponses; track tape.tapeId) {
+              <mat-option value="{{tape.tapeId}}"> {{ tape.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
       <button mat-raised-button color="primary" type="submit">Kurs erstellen</button>
     </div>
   </div>

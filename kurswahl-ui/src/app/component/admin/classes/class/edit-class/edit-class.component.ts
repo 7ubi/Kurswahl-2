@@ -1,12 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ClassResponse, SubjectResponse, TapeResponse, TeacherResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-edit-class',
   templateUrl: './edit-class.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatProgressSpinner
+  ],
   styleUrls: ['./edit-class.component.css']
 })
 export class EditClassComponent implements OnInit {
@@ -21,7 +38,8 @@ export class EditClassComponent implements OnInit {
     private formBuilder: FormBuilder,
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -39,12 +57,14 @@ export class EditClassComponent implements OnInit {
     this.httpService.get<SubjectResponse[]>('/api/admin/subjects', response => {
       response.sort((a, b) => a.name.localeCompare(b.name));
       this.subjectResponses = response;
+      this.cdr.detectChanges();
     });
 
     this.httpService.get<TeacherResponse[]>('/api/admin/teachers', response => {
       response.sort((a, b) =>
         a.abbreviation.localeCompare(b.abbreviation));
       this.teacherResponses = response;
+      this.cdr.detectChanges();
     });
 
     this.httpService.get<ClassResponse>(`/api/admin/class?classId=${this.id}`, response => {
@@ -60,7 +80,9 @@ export class EditClassComponent implements OnInit {
         `/api/admin/tapes?year=${this.classResponse?.tapeResponse.year}`, response => {
           response.sort((a, b) => a.name.localeCompare(b.name));
           this.tapeResponses = response;
+          this.cdr.detectChanges();
         });
+      this.cdr.detectChanges();
     });
 
   }

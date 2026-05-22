@@ -1,14 +1,47 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {TapeResponse} from "../../../admin.responses";
 import {HttpService} from "../../../../../service/http.service";
 import {LessonsTable} from "./lessons-table";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {HeroComponent} from "../../../../common/hero/hero.component";
+import {MatChipListbox, MatChipOption} from "@angular/material/chips";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-show-lessons',
   templateUrl: './show-lessons.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    MatChipListbox,
+    ReactiveFormsModule,
+    MatChipOption,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCell,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrls: ['./show-lessons.component.css']
 })
 export class ShowLessonsComponent implements OnInit {
@@ -30,7 +63,8 @@ export class ShowLessonsComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.year = this.route.snapshot.paramMap.get('year');
 
@@ -45,6 +79,7 @@ export class ShowLessonsComponent implements OnInit {
     this.httpService.get<TapeResponse[]>(`/api/admin/tapes?year=${this.year}`, response => {
       this.setTapeResponse(response, tapeId);
       this.loadedTapes = true;
+      this.cdr.detectChanges();
     });
   }
 

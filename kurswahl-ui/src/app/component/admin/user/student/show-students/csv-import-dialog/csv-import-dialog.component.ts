@@ -1,9 +1,25 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatTooltip} from "@angular/material/tooltip";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-csv-import-dialog',
   templateUrl: './csv-import-dialog.component.html',
+  imports: [
+    MatDialogContent,
+    MatDialogTitle,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatTooltip,
+    MatButton,
+    MatDialogActions,
+    MatDialogClose
+  ],
   styleUrl: './csv-import-dialog.component.css'
 })
 export class CsvImportDialogComponent {

@@ -1,14 +1,54 @@
-import {Component, OnInit} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {ChoiceSurveillanceResponse, StudentClassResponse} from "../../admin.responses";
 import {HttpService} from "../../../../service/http.service";
-import {Sort} from "@angular/material/sort";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {MatSort, Sort} from "@angular/material/sort";
+import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
+import {HeroComponent} from "../../../common/hero/hero.component";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatIcon} from "@angular/material/icon";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-choice-surveillance',
   templateUrl: './choice-surveillance.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    HeroComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatInput,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCell,
+    MatCellDef,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatProgressSpinner
+  ],
   styleUrl: './choice-surveillance.component.css'
 })
 export class ChoiceSurveillanceComponent implements OnInit {
@@ -27,7 +67,8 @@ export class ChoiceSurveillanceComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.displayedColumns = ['Schüler', 'Gewählt', 'Wahlbedingungen erfüllt'];
 
@@ -49,10 +90,12 @@ export class ChoiceSurveillanceComponent implements OnInit {
         }
 
         this.loadedChoice = true;
+        this.cdr.detectChanges();
       });
 
     this.httpService.get<StudentClassResponse[]>('/api/admin/studentClasses', response => {
       this.studentClassResponses = response;
+      this.cdr.detectChanges();
     });
   }
 
