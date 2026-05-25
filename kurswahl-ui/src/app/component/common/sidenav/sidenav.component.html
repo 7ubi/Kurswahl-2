@@ -53,7 +53,9 @@
       <span style="padding: 0"><b>Kurswahlen</b></span>
     </mat-list-item>
     <div class="submenu">
-      <mat-list-item (click)="navigateTo('/student/choice/1')" class="side-nav-item"> Wahl tätigen</mat-list-item>
+      <mat-list-item (click)="navigateTo('/student/choice/1')" class="side-nav-item" [class.disabled]="isLoading"
+                     [class.loading]="isLoading"> Wahl tätigen
+      </mat-list-item>
       <mat-list-item (click)="navigateTo('/student/choices')" class="side-nav-item"> Wahl einsehen</mat-list-item>
       <mat-list-item (click)="navigateTo('/student/choiceResult')" class="side-nav-item"> Wahlergebnis</mat-list-item>
     </div>

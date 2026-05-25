@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {HttpService} from "../../../../service/http.service";
-import {ActivatedRoute, ActivationEnd, Router} from "@angular/router";
+import {ActivatedRoute, ActivationEnd, NavigationCancel, NavigationEnd, NavigationError, Router} from "@angular/router";
 import {
   ChoiceResponse,
   ClassChoiceResponse,
@@ -13,18 +13,22 @@ import {ChoiceTableComponent} from "../choice-table/choice-table.component";
 import {HeroComponent} from "../../../common/hero/hero.component";
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
 import {MatButton} from "@angular/material/button";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-make-choice',
   templateUrl: './make-choice.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CommonModule,
     ChoiceTableComponent,
     HeroComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
-    MatButton
+    MatButton,
+    MatProgressSpinner
   ],
   styleUrl: './make-choice.component.css'
 })
@@ -37,6 +41,7 @@ export class MakeChoiceComponent implements OnDestroy {
   tapeClassResponses!: TapeClassResponse[];
 
   selectedTape?: TapeClassResponse;
+  isLoading: boolean = false;
 
   eventSubscription: Subscription;
 
@@ -57,6 +62,11 @@ export class MakeChoiceComponent implements OnDestroy {
           }
           this.loadChoice();
         }
+      }
+
+      if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
 
@@ -89,9 +99,11 @@ export class MakeChoiceComponent implements OnDestroy {
   }
 
   alterChoice(classId: number) {
+    this.isLoading = true;
     this.httpService.put<ChoiceResponse>('/api/student/choice', this.getAlterChoiceRequest(classId),
       response => {
         this.choiceResponse = response;
+        this.isLoading = false;
         this.cdr.detectChanges();
       });
   }
@@ -115,6 +127,7 @@ export class MakeChoiceComponent implements OnDestroy {
 
   nextStep() {
     if (this.choiceNumber! === 1) {
+      this.isLoading = true;
       this.router.navigate(['student', 'choice', 2]);
     } else {
       this.router.navigate(['student', 'choices']);
@@ -134,11 +147,14 @@ export class MakeChoiceComponent implements OnDestroy {
       c.tapeId === this.selectedTape?.tapeId)[0];
 
     if (classResponse) {
+      this.isLoading = true;
       this.httpService.delete<ChoiceResponse>('/api/student/choice', response => {
           this.choiceResponse = response;
+          this.isLoading = false;
           this.cdr.detectChanges();
         },
         () => {
+          this.isLoading = false;
         }, this.getDeleteClassFromChoiceRequest(classResponse))
     }
   }

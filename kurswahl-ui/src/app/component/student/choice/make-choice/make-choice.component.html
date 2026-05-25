@@ -2,6 +2,12 @@
 
 <div class="container">
   <div class="center">
+    @if (isLoading) {
+      <div class="loading-overlay">
+        <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+      </div>
+    }
+
     <app-choice-table [tapeClassResponses]="tapeClassResponses" [choiceResponse]="choiceResponse"
                       (selectedTapeOutput)="selectTape($event)"></app-choice-table>
 
@@ -29,7 +35,8 @@
         @for (c of selectedTape?.classResponses; track c.classId) {
           <div
             class="class selectable {{ getClassForSelectClass(c) }}"
-            (click)="alterChoice(c.classId)">
+            [class.disabled]="isLoading"
+            (click)="!isLoading && alterChoice(c.classId)">
             {{ c.name }} - {{ c.teacherResponse.abbreviation }}
           </div>
         }
@@ -37,7 +44,8 @@
         @if (selectedTape?.classResponses) {
           <div
             class="class selectable"
-            (click)="deleteClassFromChoice()">
+            [class.disabled]="isLoading"
+            (click)="!isLoading && deleteClassFromChoice()">
             Band nicht belegen
           </div>
         }
@@ -48,7 +56,7 @@
           <div
             class="class selectable"
             style="padding: 0">
-            <mat-expansion-panel>
+            <mat-expansion-panel [disabled]="isLoading">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   {{ rule.name }}
@@ -72,7 +80,7 @@
     </div>
 
     <button mat-raised-button style="width: 100%" color="primary" (click)="nextStep()"
-            [disabled]="choiceResponse && choiceResponse.ruleResponses && choiceResponse.ruleResponses.length !== 0">
+            [disabled]="isLoading || (choiceResponse && choiceResponse.ruleResponses && choiceResponse.ruleResponses.length !== 0)">
       {{ getNextStepText() }}
     </button>
   </div>
