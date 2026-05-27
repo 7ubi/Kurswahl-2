@@ -90,6 +90,8 @@ export class ShowLessonsComponent implements OnInit {
     if (tapeId) {
       this.tapeFormGroup.controls['tapeOptions'].setValue(this.selectedTape?.name);
     }
+
+    this.cdr.detectChanges();
   }
 
   private generateTable() {
@@ -137,6 +139,8 @@ export class ShowLessonsComponent implements OnInit {
     } else {
       this.selectedTape = undefined;
     }
+
+    this.cdr.detectChanges();
   }
 
   getClassForCell(day: number, hour: number, element?: TapeResponse): string {
