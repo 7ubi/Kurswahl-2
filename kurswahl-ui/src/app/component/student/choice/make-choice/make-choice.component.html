@@ -52,7 +52,7 @@
       </div>
       <div class="classes-table">
         <div class="class header"><span>Nicht erfüllte Wahlbedingungen</span></div>
-        @for (rule of choiceResponse?.ruleResponses; track rule.name) {
+        @for (rule of choiceResponse ? choiceResponse.ruleResponses : []; track rule.name) {
           <div
             class="class selectable"
             style="padding: 0">
@@ -71,7 +71,7 @@
             </mat-expansion-panel>
           </div>
         }
-        @if (choiceResponse && choiceResponse.ruleResponses && choiceResponse?.ruleResponses?.length === 0) {
+        @if (choiceResponse && choiceResponse.ruleResponses && choiceResponse.ruleResponses.length === 0) {
           <div class="class">
             Alle Wahlbedingungen wurden erfüllt
           </div>

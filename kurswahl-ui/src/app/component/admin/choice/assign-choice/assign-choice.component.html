@@ -88,8 +88,8 @@
       <div class="class">
         @if (studentChoice) {
           <div class="student-choice">
-            <div class="choice-header">{{ studentChoice?.firstname }} {{ studentChoice?.surname }}</div>
-            @if (studentChoice?.ruleResponses && studentChoice?.ruleResponses!.length > 0) {
+            <div class="choice-header">{{ studentChoice.firstname }} {{ studentChoice.surname }}</div>
+            @if (studentChoice.ruleResponses && studentChoice.ruleResponses.length > 0) {
 
               <mat-expansion-panel style="margin-bottom: 5px;">
                 <mat-expansion-panel-header>

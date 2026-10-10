@@ -1,4 +1,4 @@
-FROM jelastic/maven:3.8.6-openjdk-20.ea-b24
+FROM maven:3.9-eclipse-temurin-21
 
 WORKDIR /app
 COPY . .

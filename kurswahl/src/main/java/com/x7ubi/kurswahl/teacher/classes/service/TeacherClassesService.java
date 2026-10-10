@@ -13,7 +13,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TeacherClassesService {
@@ -35,13 +34,13 @@ public class TeacherClassesService {
             if (c.getChoiceClasses() == null) {
                 return;
             }
-            c.setChoiceClasses(c.getChoiceClasses().stream().filter(choiceClass -> {
+            c.getChoiceClasses().removeIf(choiceClass -> {
                 if (students.contains(choiceClass.getChoice().getStudent()) || !choiceClass.isSelected()) {
-                    return false;
+                    return true;
                 }
                 students.add(choiceClass.getChoice().getStudent());
-                return true;
-            }).collect(Collectors.toSet()));
+                return false;
+            });
         });
         List<TeacherClassResponse> teacherClassResponse = this.teacherClassesMapper.mapClassesToClassResponses(classes);
         teacherClassResponse.forEach(classResponse -> {

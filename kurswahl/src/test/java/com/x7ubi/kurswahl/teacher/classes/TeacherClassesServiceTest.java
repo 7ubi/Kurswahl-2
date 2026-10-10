@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Year;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class TeacherClassesServiceTest {
         choiceClass.setaClass(class1);
         choiceClass.setChoice(choice);
 
-        class1.setChoiceClasses(Set.of(choiceClass));
+        class1.setChoiceClasses(new HashSet<>(Set.of(choiceClass)));
 
         return class1;
     }
