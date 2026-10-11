@@ -4,8 +4,8 @@ import com.x7ubi.kurswahl.KurswahlServiceTest;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.UnauthorizedException;
-import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.models.*;
+import com.x7ubi.kurswahl.common.models.Class;
 import com.x7ubi.kurswahl.common.repository.*;
 import com.x7ubi.kurswahl.student.choice.request.AlterStudentChoiceRequest;
 import com.x7ubi.kurswahl.student.choice.request.DeleteClassFromChoiceRequest;
@@ -646,7 +646,7 @@ public class StudentChoiceServiceTest {
         request.setClassId(aClass.getClassId());
 
         // When
-        ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(request);
+        ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(student.getUser().getUsername(), request);
 
         // Then
         Assertions.assertEquals(response.getChoiceId(), choice.getChoiceId());
@@ -673,7 +673,7 @@ public class StudentChoiceServiceTest {
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.studentChoiceService.deleteClassFromChoice(request));
+                this.studentChoiceService.deleteClassFromChoice(student.getUser().getUsername(), request));
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CHOICE_NOT_FOUND);
@@ -701,7 +701,7 @@ public class StudentChoiceServiceTest {
 
         // When
         EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
-                this.studentChoiceService.deleteClassFromChoice(request));
+                this.studentChoiceService.deleteClassFromChoice(student.getUser().getUsername(), request));
 
         // Then
         Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CLASS_NOT_IN_CHOICE);
@@ -712,5 +712,40 @@ public class StudentChoiceServiceTest {
 
         aClass = this.classRepo.findClassByClassId(aClass.getClassId()).get();
         Assertions.assertEquals(aClass.getChoiceClasses().stream().findFirst().get().getChoice().getChoiceId(), choice.getChoiceId());
+    }
+
+    @Test
+    public void testDeleteClassFromChoiceOfOtherStudent() {
+        // Given
+        setupClasses(aClass, "test", this.tape, this.teacher, this.subject);
+        aClass = this.classRepo.findClassByName("test").get();
+        setupChoice(aClass);
+        choice = this.choiceRepo.findChoiceByChoiceNumberAndStudent_StudentIdAndReleaseYear(1,
+                student.getStudentId(), Year.now().getValue()).get();
+
+        User otherUser = new User();
+        otherUser.setUsername("other.student");
+        otherUser.setFirstname("Other");
+        otherUser.setSurname("User");
+        otherUser.setPassword("Password");
+        Student otherStudent = new Student();
+        otherStudent.setUser(otherUser);
+        otherStudent.setChoices(new HashSet<>());
+        otherStudent.setStudentClass(studentClass);
+        this.studentRepo.save(otherStudent);
+
+        DeleteClassFromChoiceRequest request = new DeleteClassFromChoiceRequest();
+        request.setChoiceId(choice.getChoiceId());
+        request.setClassId(aClass.getClassId());
+
+        // When
+        EntityNotFoundException entityNotFoundException = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.studentChoiceService.deleteClassFromChoice("other.student", request));
+
+        // Then
+        Assertions.assertEquals(entityNotFoundException.getMessage(), ErrorMessage.CHOICE_NOT_FOUND);
+
+        choice = this.choiceRepo.findChoiceByChoiceId(choice.getChoiceId()).get();
+        Assertions.assertEquals(choice.getChoiceClasses().size(), 1);
     }
 }

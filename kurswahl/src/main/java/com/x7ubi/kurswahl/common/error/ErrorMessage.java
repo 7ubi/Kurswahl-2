@@ -3,6 +3,9 @@ package com.x7ubi.kurswahl.common.error;
 public class ErrorMessage {
 
     public static final String WRONG_OLD_PASSWORD = "Altes Passwort ist falsch";
+    public static final String PASSWORD_TOO_SHORT = "Das neue Passwort muss mindestens 8 Zeichen lang sein";
+    public static final String PASSWORD_TOO_LONG = "Das neue Passwort darf höchstens 72 Byte lang sein";
+    public static final String PASSWORD_UNCHANGED = "Das neue Passwort muss sich vom alten Passwort unterscheiden";
     public static final String USER_NOT_FOUND = "Nutzer konnte nicht gefunden werden";
     public static final String TAPE_ALREADY_EXISTS = "Ein Band mit diesem Namen existiert bereits";
     public static final String TAPE_NOT_FOUND = "Band konnte nicht gefunden werden!";
@@ -11,6 +14,7 @@ public class ErrorMessage {
     public static final String LESSON_NOT_AVAILABLE = "Zu dieser Zeit ist bereits ein anderes Band";
     public static final String LESSON_NOT_FOUND = "Stunde konnte nicht gefunden werden";
     public static final String ADMIN_NOT_FOUND = "Admin konnte nicht gefunden werden!";
+    public static final String STANDARD_ADMIN_NOT_ALLOWED = "Der Standard-Admin kann nur erstellt werden, wenn noch kein Admin existiert.";
     public static final String STUDENT_NOT_FOUND = "Schüler konnte nicht gefunden werden!";
     public static final String TEACHER_NOT_FOUND = "Lehrer konnte nicht gefunden werden!";
     public static final String SUBJECT_AREA_ALREADY_EXISTS = "Ein Fachbereich mit diesem Namen existiert bereits";

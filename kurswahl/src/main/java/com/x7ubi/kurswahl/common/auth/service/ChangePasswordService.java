@@ -5,6 +5,7 @@ import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.auth.utils.PasswordGenerator;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.InvalidPasswordException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
@@ -14,11 +15,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ChangePasswordService {
+
+    static final int MIN_PASSWORD_LENGTH = 8;
+
+    // BCrypt only uses the first 72 bytes of a password
+    static final int MAX_PASSWORD_BYTES = 72;
 
     private final Logger logger = LoggerFactory.getLogger(ChangePasswordService.class);
 
@@ -33,13 +40,14 @@ public class ChangePasswordService {
 
     @Transactional
     public void changePassword(String username, ChangePasswordRequest changePasswordRequest)
-            throws EntityNotFoundException, PasswordNotMatchingException {
+            throws EntityNotFoundException, PasswordNotMatchingException, InvalidPasswordException {
         Optional<User> userOptional = this.userRepo.findByUsername(username);
         if (userOptional.isEmpty()) {
             throw new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         User user = userOptional.get();
         oldPasswordCorrect(user, changePasswordRequest.getOldPassword());
+        validateNewPassword(changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         this.userRepo.save(user);
@@ -51,6 +59,18 @@ public class ChangePasswordService {
     private void oldPasswordCorrect(User user, String oldPassword) throws PasswordNotMatchingException {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new PasswordNotMatchingException(ErrorMessage.WRONG_OLD_PASSWORD);
+        }
+    }
+
+    private void validateNewPassword(String oldPassword, String newPassword) throws InvalidPasswordException {
+        if (newPassword == null || newPassword.length() < MIN_PASSWORD_LENGTH) {
+            throw new InvalidPasswordException(ErrorMessage.PASSWORD_TOO_SHORT);
+        }
+        if (newPassword.getBytes(StandardCharsets.UTF_8).length > MAX_PASSWORD_BYTES) {
+            throw new InvalidPasswordException(ErrorMessage.PASSWORD_TOO_LONG);
+        }
+        if (newPassword.equals(oldPassword)) {
+            throw new InvalidPasswordException(ErrorMessage.PASSWORD_UNCHANGED);
         }
     }
 

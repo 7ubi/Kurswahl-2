@@ -6,7 +6,7 @@ import {Role} from "../../admin/admin.responses";
 import {AuthenticationService} from "../../../service/authentication.service";
 import {Router} from "@angular/router";
 import {HeroComponent} from "../../common/hero/hero.component";
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatError, MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
 
@@ -20,6 +20,7 @@ import {MatButton} from "@angular/material/button";
     MatFormField,
     MatInput,
     MatLabel,
+    MatError,
     MatIcon,
     MatButton
   ],
@@ -41,7 +42,7 @@ export class ChangePasswordComponent {
   ) {
     this.changePasswordFormGroup = this.formBuilder.group({
       oldPassword: ['', Validators.required],
-      newPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
       newPasswordRepeat: ['', Validators.required],
     });
   }

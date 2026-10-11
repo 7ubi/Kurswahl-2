@@ -108,11 +108,13 @@ public class StudentChoiceController {
             @ApiResponse(responseCode = "403", description = "Student can not chose at this time", content =
                     {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))})
     })
-    public ResponseEntity<?> deleteClassFromChoice(@RequestBody DeleteClassFromChoiceRequest
+    public ResponseEntity<?> deleteClassFromChoice(@RequestHeader("Authorization") String authorization,
+                                                   @RequestBody DeleteClassFromChoiceRequest
                                                            deleteClassFromChoiceRequest) throws EntityNotFoundException {
         logger.info("Deleting class from choice");
 
-        ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(deleteClassFromChoiceRequest);
+        String username = jwtUtils.getUsernameFromAuthorizationHeader(authorization);
+        ChoiceResponse response = this.studentChoiceService.deleteClassFromChoice(username, deleteClassFromChoiceRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

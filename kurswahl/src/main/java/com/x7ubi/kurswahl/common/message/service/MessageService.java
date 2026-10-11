@@ -98,6 +98,11 @@ public class MessageService {
         User user = getUser(username);
         Optional<AddresseeMessage> addresseeMessageOptional = message.getAddresseeMessage().stream().filter(addresseeMessage ->
                 Objects.equals(addresseeMessage.getUser().getUserId(), user.getUserId())).findFirst();
+        boolean isSender = Objects.equals(message.getSender().getUserId(), user.getUserId());
+        if (addresseeMessageOptional.isEmpty() && !isSender) {
+            throw new EntityNotFoundException(ErrorMessage.MESSAGE_NOT_FOUND);
+        }
+
         if (addresseeMessageOptional.isPresent()) {
             AddresseeMessage addresseeMessage = addresseeMessageOptional.get();
             addresseeMessage.setReadMessage(true);

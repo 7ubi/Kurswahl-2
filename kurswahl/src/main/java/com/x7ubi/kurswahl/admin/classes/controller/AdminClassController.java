@@ -122,6 +122,7 @@ public class AdminClassController {
     }
 
     @GetMapping("classes")
+    @AdminRequired
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "Getting all classes")
     @ApiResponses(value = {

@@ -6,6 +6,7 @@ import com.x7ubi.kurswahl.common.auth.request.PasswordResetRequest;
 import com.x7ubi.kurswahl.common.auth.service.ChangePasswordService;
 import com.x7ubi.kurswahl.common.error.ErrorMessage;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.InvalidPasswordException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.UserRepo;
@@ -43,7 +44,8 @@ public class ChangePasswordServiceTest {
     }
 
     @Test
-    public void testChangePassword() throws EntityNotFoundException, PasswordNotMatchingException {
+    public void testChangePassword()
+            throws EntityNotFoundException, PasswordNotMatchingException, InvalidPasswordException {
         // Given
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
         changePasswordRequest.setOldPassword("Password");
@@ -70,6 +72,96 @@ public class ChangePasswordServiceTest {
 
         // Then
         Assertions.assertEquals(exception.getMessage(), ErrorMessage.WRONG_OLD_PASSWORD);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testChangePasswordEmpty() {
+        // Given
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setOldPassword("Password");
+        changePasswordRequest.setNewPassword("");
+
+        // When
+        InvalidPasswordException exception = Assert.assertThrows(InvalidPasswordException.class, () ->
+                this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.PASSWORD_TOO_SHORT);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testChangePasswordNull() {
+        // Given
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setOldPassword("Password");
+        changePasswordRequest.setNewPassword(null);
+
+        // When
+        InvalidPasswordException exception = Assert.assertThrows(InvalidPasswordException.class, () ->
+                this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.PASSWORD_TOO_SHORT);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testChangePasswordTooShort() {
+        // Given
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setOldPassword("Password");
+        changePasswordRequest.setNewPassword("1234567");
+
+        // When
+        InvalidPasswordException exception = Assert.assertThrows(InvalidPasswordException.class, () ->
+                this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.PASSWORD_TOO_SHORT);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testChangePasswordTooLong() {
+        // Given
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setOldPassword("Password");
+        changePasswordRequest.setNewPassword("a".repeat(73));
+
+        // When
+        InvalidPasswordException exception = Assert.assertThrows(InvalidPasswordException.class, () ->
+                this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.PASSWORD_TOO_LONG);
+
+        User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
+        Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
+    }
+
+    @Test
+    public void testChangePasswordUnchanged() {
+        // Given
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setOldPassword("Password");
+        changePasswordRequest.setNewPassword("Password");
+
+        // When
+        InvalidPasswordException exception = Assert.assertThrows(InvalidPasswordException.class, () ->
+                this.changePasswordService.changePassword(user.getUsername(), changePasswordRequest));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.PASSWORD_UNCHANGED);
 
         User updatedUser = this.userRepo.findByUsername(user.getUsername()).get();
         Assertions.assertTrue(passwordEncoder.matches("Password", updatedUser.getPassword()));
