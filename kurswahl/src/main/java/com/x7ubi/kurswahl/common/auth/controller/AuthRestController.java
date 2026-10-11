@@ -11,6 +11,7 @@ import com.x7ubi.kurswahl.common.auth.service.LoginHelperService;
 import com.x7ubi.kurswahl.common.auth.service.StandardAdminService;
 import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
+import com.x7ubi.kurswahl.common.exception.InvalidPasswordException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
 import com.x7ubi.kurswahl.common.models.SecurityUser;
@@ -115,7 +116,7 @@ public class AuthRestController {
     @Operation(description = "Changing Password of User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Changed Password of User."),
-            @ApiResponse(responseCode = "400", description = "Old Password was not correct", content = {
+            @ApiResponse(responseCode = "400", description = "Old Password was not correct or new Password does not meet the password policy", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
             }),
             @ApiResponse(responseCode = "404", description = "User could not be found.", content = {
@@ -125,7 +126,7 @@ public class AuthRestController {
     public ResponseEntity<?> changePassword(
             @RequestHeader("Authorization") String authorization,
             @RequestBody ChangePasswordRequest changePasswordRequest
-    ) throws EntityNotFoundException, PasswordNotMatchingException {
+    ) throws EntityNotFoundException, PasswordNotMatchingException, InvalidPasswordException {
 
         logger.info("Changing Password");
 
