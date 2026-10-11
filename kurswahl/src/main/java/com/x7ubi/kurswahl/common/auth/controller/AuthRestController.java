@@ -9,6 +9,7 @@ import com.x7ubi.kurswahl.common.auth.response.Role;
 import com.x7ubi.kurswahl.common.auth.service.ChangePasswordService;
 import com.x7ubi.kurswahl.common.auth.service.LoginHelperService;
 import com.x7ubi.kurswahl.common.auth.service.StandardAdminService;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.exception.EntityNotFoundException;
 import com.x7ubi.kurswahl.common.exception.PasswordNotMatchingException;
 import com.x7ubi.kurswahl.common.jwt.JwtUtils;
@@ -61,9 +62,12 @@ public class AuthRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Creating Standard Admin")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created Standard Admin. The username ist admin. The Password can be found in the logs.")
+            @ApiResponse(responseCode = "201", description = "Created Standard Admin. The username ist admin. The Password can be found in the logs."),
+            @ApiResponse(responseCode = "400", description = "An admin or a user named admin already exists.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            })
     })
-    public ResponseEntity<?> createStandardAdmin() {
+    public ResponseEntity<?> createStandardAdmin() throws EntityCreationException {
         logger.info("Creating standard Admin");
 
         standardAdminService.createStandardAdmin();

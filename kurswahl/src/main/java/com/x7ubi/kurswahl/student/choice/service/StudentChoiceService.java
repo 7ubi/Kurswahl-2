@@ -227,12 +227,15 @@ public class StudentChoiceService {
     }
 
     @Transactional
-    public ChoiceResponse deleteClassFromChoice(DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
+    public ChoiceResponse deleteClassFromChoice(String username, DeleteClassFromChoiceRequest deleteClassFromChoiceRequest)
             throws EntityNotFoundException {
+        Student student = getStudent(username);
+
         Optional<Choice> choiceOptional
                 = this.choiceRepo.findChoiceByChoiceId(deleteClassFromChoiceRequest.getChoiceId());
 
-        if (choiceOptional.isEmpty()) {
+        if (choiceOptional.isEmpty() ||
+                !Objects.equals(choiceOptional.get().getStudent().getStudentId(), student.getStudentId())) {
             throw new EntityNotFoundException(ErrorMessage.CHOICE_NOT_FOUND);
         }
         Choice choice = choiceOptional.get();

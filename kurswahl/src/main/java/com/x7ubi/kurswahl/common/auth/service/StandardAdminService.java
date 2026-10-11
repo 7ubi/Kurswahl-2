@@ -1,6 +1,8 @@
 package com.x7ubi.kurswahl.common.auth.service;
 
 import com.x7ubi.kurswahl.common.auth.utils.PasswordGenerator;
+import com.x7ubi.kurswahl.common.error.ErrorMessage;
+import com.x7ubi.kurswahl.common.exception.EntityCreationException;
 import com.x7ubi.kurswahl.common.models.Admin;
 import com.x7ubi.kurswahl.common.models.User;
 import com.x7ubi.kurswahl.common.repository.AdminRepo;
@@ -29,21 +31,14 @@ public class StandardAdminService {
     }
 
     @Transactional
-    public void createStandardAdmin() {
+    public void createStandardAdmin() throws EntityCreationException {
         String username = "admin";
-        String password = PasswordGenerator.generatePassword();
-        if (userRepo.existsByUsername(username)) {
-            logger.warn("Standard Admin already exists! Deleting old Standard Admin and creating a new one");
-
-            if (adminRepo.existsAdminByUser_Username(username)) {
-                Admin formerAdmin = adminRepo.findAdminByUser_Username(username).get();
-                adminRepo.delete(formerAdmin);
-            } else {
-                User user = userRepo.findByUsername(username).get();
-                userRepo.delete(user);
-            }
+        if (adminRepo.count() > 0 || userRepo.existsByUsername(username)) {
+            logger.warn("Refusing to create Standard Admin, because an admin or a user named admin already exists");
+            throw new EntityCreationException(ErrorMessage.STANDARD_ADMIN_NOT_ALLOWED);
         }
 
+        String password = PasswordGenerator.generatePassword();
 
         Admin admin = new Admin();
         User user = new User();

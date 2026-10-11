@@ -186,6 +186,39 @@ public class MessageServiceTest {
     }
 
     @Test
+    public void testGetMessageAsSender() throws EntityNotFoundException {
+        // Given
+        setupMessage();
+
+        // When
+        MessageResponse messageResponse = this.messageService.getMessage(message.getMessageId(), sender.getUsername());
+
+        // Then
+        Assertions.assertEquals(messageResponse.getMessageId(), message.getMessageId());
+        AddresseeMessage addresseeMessage = this.addresseeMessageRepo.findAll().get(0);
+        Assertions.assertFalse(addresseeMessage.isReadMessage());
+    }
+
+    @Test
+    public void testGetMessageNotSenderOrAddressee() {
+        // Given
+        setupMessage();
+        User other = new User();
+        other.setSurname("Other");
+        other.setFirstname("Other");
+        other.setUsername("other.other");
+        other.setPassword("password");
+        this.userRepo.save(other);
+
+        // When
+        EntityNotFoundException exception = Assert.assertThrows(EntityNotFoundException.class, () ->
+                this.messageService.getMessage(message.getMessageId(), other.getUsername()));
+
+        // Then
+        Assertions.assertEquals(exception.getMessage(), ErrorMessage.MESSAGE_NOT_FOUND);
+    }
+
+    @Test
     public void testGetMessageNotFound() {
         // Given
         setupMessage();

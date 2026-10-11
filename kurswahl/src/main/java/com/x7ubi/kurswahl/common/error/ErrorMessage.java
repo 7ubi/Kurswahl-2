@@ -11,6 +11,7 @@ public class ErrorMessage {
     public static final String LESSON_NOT_AVAILABLE = "Zu dieser Zeit ist bereits ein anderes Band";
     public static final String LESSON_NOT_FOUND = "Stunde konnte nicht gefunden werden";
     public static final String ADMIN_NOT_FOUND = "Admin konnte nicht gefunden werden!";
+    public static final String STANDARD_ADMIN_NOT_ALLOWED = "Der Standard-Admin kann nur erstellt werden, wenn noch kein Admin existiert.";
     public static final String STUDENT_NOT_FOUND = "Schüler konnte nicht gefunden werden!";
     public static final String TEACHER_NOT_FOUND = "Lehrer konnte nicht gefunden werden!";
     public static final String SUBJECT_AREA_ALREADY_EXISTS = "Ein Fachbereich mit diesem Namen existiert bereits";
