@@ -1,0 +1,15 @@
+# Only the pages reachable without login may be crawled:
+#   /            (Login)
+#   /dataPrivacy (Datenschutz)
+# Static files (JS, CSS, fonts, favicon) stay allowed so the pages can be rendered.
+User-agent: *
+Allow: /$
+Allow: /dataPrivacy$
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.woff2$
+Allow: /*.woff$
+Allow: /*.ttf$
+Allow: /favicon.ico$
+Allow: /assets/
+Disallow: /
