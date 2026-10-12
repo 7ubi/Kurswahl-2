@@ -1,7 +1,28 @@
-FROM maven:3.9-eclipse-temurin-21
+# --- Build stage ---
+FROM maven:3.9-eclipse-temurin-21 AS builder
+WORKDIR /build
 
+# Resolve dependencies in their own layer so they are cached until pom.xml changes
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
+
+COPY src ./src
+RUN mvn -B -q package -DskipTests \
+    && cp target/kurswahl-*.jar app.jar \
+    && java -Djarmode=tools -jar app.jar extract --layers --launcher --destination extracted
+
+# --- Runtime stage ---
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY . .
-RUN mvn clean install -DskipTests
+
+RUN addgroup -S kurswahl && adduser -S kurswahl -G kurswahl
+USER kurswahl
+
+# Copy the Spring Boot layers from least to most frequently changing
+COPY --from=builder /build/extracted/dependencies/ ./
+COPY --from=builder /build/extracted/spring-boot-loader/ ./
+COPY --from=builder /build/extracted/snapshot-dependencies/ ./
+COPY --from=builder /build/extracted/application/ ./
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/kurswahl-2.1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "org.springframework.boot.loader.launch.JarLauncher"]
